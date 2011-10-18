@@ -362,20 +362,30 @@ body {
   font-size: 21px;
   line-height: 1.5em;
   font-family: "Arial", sans-serif;
-  background: #fff0ff url("/images/little_pluses.png");
-  padding: 94.5px;
+  background: #f0f0f0 url("/images/little_pluses.png");
   border-top: 31.5px solid #333;
-  border-bottom: 15.75px solid #111;
+  border-bottom: 15.75px solid #333;
 }
 #container {
-  padding: 31.5px;
-  background: #fff0ff;
+  max-width: 900px;
+  margin: 63px auto;
+  background: #534741;
+  color: #eee;
+  padding: 1px 0;
   -webkit-border-radius: 15.75px;
   -moz-border-radius: 15.75px;
   border-radius: 15.75px;
   -moz-box-shadow: 7.875px 7.875px 7.875px #333;
   -webkit-box-shadow: 7.875px 7.875px 7.875px #333;
   box-shadow: 7.875px 7.875px 7.875px #333;
+}
+#main {
+  margin: 31.5px;
+}
+.logo {
+  color: #f37b4f;
+  font-size: 12.6px;
+  line-height: 1.5em;
 }
 @media all and (orientation:portrait) {
 }
