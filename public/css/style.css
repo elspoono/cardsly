@@ -248,12 +248,12 @@ textarea:invalid {
 ::-moz-selection {
   background: #fff;
   color: #fff;
-  text-shadow: none;
+  text-shadow: none none none #333;
 }
 ::selection {
   background: #fff;
   color: #fff;
-  text-shadow: none;
+  text-shadow: none none none #333;
 }
 a:link {
   -webkit-tap-highlight-color: #ff5e99;
@@ -322,7 +322,7 @@ h1,
 h2,
 h3 {
   font-weight: normal;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.30);
+  text-shadow: 0 0 1px 1px;
 }
 h1 {
   font-family: "Trebuchet MS", sans-serif;
@@ -369,7 +369,7 @@ body {
 #container {
   max-width: 900px;
   margin: 63px auto;
-  background: #534741;
+  background: #006e9f;
   color: #eee;
   padding: 1px 0;
   -webkit-border-radius: 15.75px;
@@ -383,9 +383,11 @@ body {
   margin: 31.5px;
 }
 .logo {
-  color: #f37b4f;
+  color: #f05a23;
   font-size: 12.6px;
   line-height: 1.5em;
+  text-shadow: 3.1500000000000004px 3.1500000000000004px 3.1500000000000004px #333;
+  font-weight: bold;
 }
 @media all and (orientation:portrait) {
 }
@@ -397,7 +399,7 @@ body {
   * {
     background: transparent;
     color: #000;
-    text-shadow: none;
+    text-shadow: none none none #333;
     filter: none;
     -ms-filter: none;
   }
