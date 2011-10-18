@@ -24,6 +24,6 @@
     return app.use(express.errorHandler());
   });
   require('./lib/routes');
-  app.listen(3000);
+  app.listen(process.env.PORT || 3030);
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 }).call(this);

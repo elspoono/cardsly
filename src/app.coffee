@@ -50,6 +50,7 @@ app.configure "production", ->
 # `app.js` should be used for basic app configurations
 require('./lib/routes')
 
+
 # ### Start server
-app.listen 3000
+app.listen process.env.PORT || 3030
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env

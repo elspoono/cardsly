@@ -4,12 +4,12 @@
   "private": true,
   "dependencies": {
     "express": "2.4.3",
-    "jade": ">= 0.0.1"
-  },
-  "devDependencies": {
-    "vows": ">= 0.5.9",
+    "jade": ">= 0.0.1",
     "stylus": ">= 0.13.9",
     "coffee-script": ">= 1.1.2"
+  },
+  "devDependencies": {
+    "vows": ">= 0.5.9"
   },
   "engines": {
     "node": "*"

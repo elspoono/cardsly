@@ -232,22 +232,26 @@ input:valid,
 textarea:valid,
 input:invalid,
 textarea:invalid {
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
   border-radius: 1px;
   -moz-box-shadow: 0px 0px 5px #f00;
   -webkit-box-shadow: 0px 0px 5px #f00;
-  box-shadow: 0px 0px 5px #f00;
+  -moz-box-shadow: 0px 0px 5px 0px;
+  -webkit-box-shadow: 0px 0px 5px 0px;
+  box-shadow: 0px 0px 5px 0px;
 }
 .no-boxshadow input:invalid,
 .no-boxshadow textarea:invalid {
   background-color: #f0dddd;
 }
 ::-moz-selection {
-  background: #ff9f8f;
+  background: #fff;
   color: #fff;
   text-shadow: none;
 }
 ::selection {
-  background: #ff9f8f;
+  background: #fff;
   color: #fff;
   text-shadow: none;
 }
@@ -312,16 +316,16 @@ body,
 select,
 input,
 textarea {
-  color: $c-font-color;
+  color: #333;
 }
 h1,
 h2,
 h3 {
   font-weight: normal;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.30);
 }
 h1 {
-  font-family: "Helvetica", sans-serif;
+  font-family: "Trebuchet MS", sans-serif;
   font-size: 50.4px;
   line-height: 1.5em;
 }
@@ -339,33 +343,39 @@ h5,
 h6 {
   margin-bottom: 15.75px;
 }
-h1 {
-  border-left: 7.875px dotted #8d9e71;
-  padding-left: 15.75px;
-}
 a {
-  color: #8d9e71;
-  border-bottom: 1px dotted #8d9e71;
+  color: #aaa;
+  border-bottom: 1px dotted #aaa;
   text-decoration: none;
 }
 a:active {
-  color: #8d9e71;
+  color: #aaa;
 }
 a:visited {
-  color: #8d9e71;
+  color: #aaa;
 }
 a:hover {
-  color: #ff9f8f;
-  border-color: #ff9f8f;
+  color: #fff;
+  border-color: #fff;
 }
 body {
   font-size: 21px;
   line-height: 1.5em;
-  font-family: "Georgia", serif;
-  background: #f9f0e0;
+  font-family: "Arial", sans-serif;
+  background: #fff0ff url("/images/little_pluses.png");
   padding: 94.5px;
-  border-top: 31.5px solid #332822;
-  border-bottom: 15.75px solid #7f7e60;
+  border-top: 31.5px solid #333;
+  border-bottom: 15.75px solid #111;
+}
+#container {
+  padding: 31.5px;
+  background: #fff0ff;
+  -webkit-border-radius: 15.75px;
+  -moz-border-radius: 15.75px;
+  border-radius: 15.75px;
+  -moz-box-shadow: 7.875px 7.875px 7.875px #333;
+  -webkit-box-shadow: 7.875px 7.875px 7.875px #333;
+  box-shadow: 7.875px 7.875px 7.875px #333;
 }
 @media all and (orientation:portrait) {
 }

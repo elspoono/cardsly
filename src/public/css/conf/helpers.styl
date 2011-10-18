@@ -44,3 +44,54 @@ hide-text()
 // Requires Nib
 trans($alpha=0.5, $bg-color=#000)
   linear-gradient-image(1px top, rgba($bg-color, $alpha), rgba($bg-color, $alpha))
+
+
+
+
+/********************************
+ *
+ * Generic Functions for css3/etc
+ *
+ ********************************/
+alpha-bg(color,n)
+  background rgb(color);
+  background rgba(color,n);
+box-shadow(n = gap(.25), color = $c-dark-warm, b = n)
+  -moz-box-shadow: n n b color
+  -webkit-box-shadow: n n b color
+  box-shadow: n n b color
+
+border-radius(n = gap(.5))
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+border-radius-except-top-right(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-top-right-radius 0
+  -moz-border-radius-topright 0
+  -webkit-border-top-right-radius 0
+border-radius-top-only(n)
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
+  border-top-right-radius n
+  -moz-border-radius-topright n
+  -webkit-border-top-right-radius n
+opacity(n)
+  opacity n
+  filter alpha\(opacity\=n*100\)
+absolute()
+  display none
+  position absolute
+  top 0
+  left 0
+gradient(color1=$c-background,color2=$c-background)
+  background-color color1
+  background-image -webkit-gradient(linear, left top, left bottom, from(color1), to(color2)) /* Saf4+, Chrome */
+  background-image -webkit-linear-gradient(top, color1, color2) /* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image -moz-linear-gradient(top, color1, color2) /* FF3.6 */
+  background-image -ms-linear-gradient(top, color1, color2) /* IE10 */
+  background-image -o-linear-gradient(top, color1, color2) /* Opera 11.10+ */
+  background-image linear-gradient(top, color1, color2)
