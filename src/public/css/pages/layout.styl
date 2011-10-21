@@ -3,21 +3,61 @@ body
   font-size(1)
   font-family $base-font-family
   background $c-background url('/images/little_pluses.png')
-  border-top gap(1) solid $c-dark-warm
-  border-bottom gap(.5) solid $c-dark-warm
-
+  overflow hidden
 #container
   max-width 900px
-  margin gap(2) auto
-  background $c-bg-dark
+  margin 0 auto
+header
+  margin 80px 0 60px 50px
+  gradient($c-bg-light,$c-bg-dark)
+  height 46px
+  .logo img
+    margin -45px 0 -39px -50px
+    float left
+  .navigation
+    float right
+    list-style-type none
+    margin 0
+    padding 0
+    overflow hidden
+    position relative
+    z-index 50
+    li
+      margin 7px 0
+      padding 0
+      float left
+      a
+        text-decoration none
+        color $c-a-nav
+      border-right 1px solid $c-a-nav
+      padding 0 30px
+    .last
+      border-right none
+      padding-right 0
+.header-back
+  gradient($c-bg-light,$c-bg-dark)
+  width 50%
+  top 80px
+  right 0
+  height 46px
+  position absolute
+.section
+  margin gap(3) 0
+  padding gap(1)
   color $c-light
-  padding 1px 0
+  position relative
+.cell-content
+  z-index 150
+  position relative
+.cell-bg
+  gradient($c-bg-light,$c-bg-dark)
+  opacity(.6)
+  color $c-light
   border-radius()
-  box-shadow()
-#main
-  margin gap(1)
-.logo
-  color $c-logo-light
-  font-size(.6)
-  text-shadow()
-  font-weight bold
+  box-shadow(5px,$c-black,16px)
+  height 100%
+  width 100%
+  position absolute
+  top 0
+  left 0
+  z-index 20
