@@ -44,20 +44,21 @@ header
     line-height 50px
   .hand
     position absolute
-.hand-container.right
-  top 400px
-  right 0
+.hand-container.first
+  top 450px
+  left 0
   .card
-    box-rotate(15deg)
+    box-rotate(-15deg)
     gradient(#006699,#003366)
     color #aaccee
-    height 115px
+    background url('/images/card-bg-small/scott-qr-blue.png')
+    height 114px
     width 200px
-    right 199px
-    top -51px
+    left 199px
+    top -50px
   .hand
     top 0
-    right 0
+    left 0
 .hand-container.left
   left -30px
   top 0
@@ -73,6 +74,23 @@ header
     top 31px
     left 64px
     border-radius(15px)
+
+
+// Buttons
+.add-button
+  height 53px
+  width 141px
+  background url('/images/buttons/add.png')
+  cursor pointer
+.add-button.hover
+  background url('/images/buttons/add-hover.png')
+.add-button.click
+  background url('/images/buttons/add-click.png')
+
+
+
+
+
 .header-back
   gradient($c-bg-light,$c-bg-dark)
   width 50%

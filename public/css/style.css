@@ -425,16 +425,16 @@ header .navigation li a {
 .hand-container .hand {
   position: absolute;
 }
-.hand-container.right {
-  top: 400px;
-  right: 0;
+.hand-container.first {
+  top: 450px;
+  left: 0;
 }
-.hand-container.right .card {
-  -webkit-transform: rotate(15deg);
-  -moz-transform: rotate(15deg);
-  -ms-transform: rotate(15deg);
-  -o-transform: rotate(15deg);
-  transform: rotate(15deg);
+.hand-container.first .card {
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  -ms-transform: rotate(-15deg);
+  -o-transform: rotate(-15deg);
+  transform: rotate(-15deg);
   filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
   zoom: 1;
   background-color: #069;
@@ -450,14 +450,15 @@ header .navigation li a {
 /* Opera 11.10+ */
   background-image: linear-gradient(top, #069, #036);
   color: #ace;
-  height: 115px;
+  background: url("/images/card-bg-small/scott-qr-blue.png");
+  height: 114px;
   width: 200px;
-  right: 199px;
-  top: -51px;
+  left: 199px;
+  top: -50px;
 }
-.hand-container.right .hand {
+.hand-container.first .hand {
   top: 0;
-  right: 0;
+  left: 0;
 }
 .hand-container.left {
   left: -30px;
@@ -495,6 +496,18 @@ header .navigation li a {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
+}
+.add-button {
+  height: 53px;
+  width: 141px;
+  background: url("/images/buttons/add.png");
+  cursor: pointer;
+}
+.add-button.hover {
+  background: url("/images/buttons/add-hover.png");
+}
+.add-button.click {
+  background: url("/images/buttons/add-click.png");
 }
 .header-back {
   background-color: #908575;
