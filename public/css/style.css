@@ -417,6 +417,8 @@ header .navigation li a {
   z-index: 0;
   top: 400px;
   right: 0;
+  opacity: 0.5;
+  filter: alpha ( opacity = 50 );
 }
 .hand-container .card {
   -webkit-transform: rotate(15deg);
@@ -443,7 +445,7 @@ header .navigation li a {
   position: absolute;
   right: 199px;
   top: -51px;
-  color: #fec;
+  color: #ace;
   font-family: Times New Roman;
   text-align: center;
   line-height: 50px;
@@ -452,6 +454,42 @@ header .navigation li a {
   position: absolute;
   top: 0;
   right: 0;
+}
+.hand-container.left {
+  left: 0;
+  top: 700px;
+}
+.hand-container.left .hand {
+  left: 0;
+}
+.hand-container.left .card {
+  height: 152px;
+  width: 250px;
+  color: #eac;
+  background-color: #903;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#903), to(#300));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #903, #300);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #903, #300);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #903, #300);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #903, #300);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #903, #300);
+  -webkit-transform: rotate(-25deg);
+  -moz-transform: rotate(-25deg);
+  -ms-transform: rotate(-25deg);
+  -o-transform: rotate(-25deg);
+  transform: rotate(-25deg);
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
+  zoom: 1;
+  left: 64px;
+  top: 31px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
 }
 .header-back {
   background-color: #908575;
