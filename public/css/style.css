@@ -415,8 +415,6 @@ header .navigation li a {
 .hand-container {
   position: absolute;
   z-index: 0;
-  opacity: 0.2;
-  filter: alpha ( opacity = 20 );
 }
 .hand-container .card {
   position: absolute;
@@ -462,8 +460,8 @@ header .navigation li a {
   right: 0;
 }
 .hand-container.left {
-  left: 0;
-  top: 1000px;
+  left: -30px;
+  top: 0;
 }
 .hand-container.left .hand {
   left: 0;
