@@ -8,32 +8,32 @@ body
   max-width 900px
   margin 0 auto
 header
-  margin 80px 0 60px 50px
+  position relative
+  z-index 50
+  margin 80px 0 0 50px
   gradient($c-bg-light,$c-bg-dark)
   height 46px
   .logo img
-    margin -45px 0 -39px -50px
+    margin -45px 0 0 -50px
     float left
-  .navigation
-    float right
-    list-style none
-    margin 0
-    padding 0
-    overflow hidden
     position relative
     z-index 50
+  .navigation
+    gradient($c-bg-light,$c-bg-dark)
+    float right
+    list-style none
+    margin 0 0 60px 0
+    padding 0
+    border-radius()
     li
-      margin 7px 0
-      padding 0
+      margin 0
       float left
       a
         text-decoration none
         color $c-a-nav
       border-right 1px solid $c-a-nav
-      padding 0 30px
-    .last
-      border-right none
-      padding-right 0
+      padding 7px 30px
+      border-radius(14px)
 .header-back
   gradient($c-bg-light,$c-bg-dark)
   width 50%

@@ -355,7 +355,9 @@ body {
   margin: 0 auto;
 }
 header {
-  margin: 80px 0 60px 50px;
+  position: relative;
+  z-index: 50;
+  margin: 80px 0 0 50px;
   background-color: #908575;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
 /* Saf4+, Chrome */
@@ -371,32 +373,44 @@ header {
   height: 46px;
 }
 header .logo img {
-  margin: -45px 0 -39px -50px;
+  margin: -45px 0 0 -50px;
   float: left;
-}
-header .navigation {
-  float: right;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
   position: relative;
   z-index: 50;
 }
-header .navigation li {
-  margin: 7px 0;
+header .navigation {
+  background-color: #908575;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #908575, #524641);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #908575, #524641);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #908575, #524641);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #908575, #524641);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #908575, #524641);
+  float: right;
+  list-style: none;
+  margin: 0 0 60px 0;
   padding: 0;
+  -webkit-border-radius: 15.75px;
+  -moz-border-radius: 15.75px;
+  border-radius: 15.75px;
+}
+header .navigation li {
+  margin: 0;
   float: left;
   border-right: 1px solid #d8cfc5;
-  padding: 0 30px;
+  padding: 7px 30px;
+  -webkit-border-radius: 14px;
+  -moz-border-radius: 14px;
+  border-radius: 14px;
 }
 header .navigation li a {
   text-decoration: none;
   color: #d8cfc5;
-}
-header .navigation .last {
-  border-right: none;
-  padding-right: 0;
 }
 .header-back {
   background-color: #908575;
