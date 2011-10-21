@@ -37,42 +37,43 @@ header
 .hand-container
   position absolute
   z-index 0
-  top 400px
-  right 0
-  opacity(.5)
+  opacity(.2)
   .card
-    box-rotate(15deg)
-    height 115px
-    width 200px
-    gradient(#006699,#003366)
     position absolute
-    right 199px
-    top -51px
-    color #aaccee
     font-family Times New Roman
     text-align center
     line-height 50px
   .hand
     position absolute
+.hand-container.right
+  top 400px
+  right 0
+  .card
+    box-rotate(15deg)
+    gradient(#006699,#003366)
+    color #aaccee
+    height 115px
+    width 200px
+    right 199px
+    top -51px
+  .hand
     top 0
     right 0
 .hand-container.left
   left 0
-  top 700px
+  top 1000px
   .hand
     left 0
+    top 0
   .card
+    box-rotate(-25deg)
+    gradient(#990033,#330000)
+    color #eeaacc
     height 152px
     width 250px
-    color #eeaacc
-    gradient(#990033,#330000)
-    box-rotate(-25deg)
-    left 64px
     top 31px
+    left 64px
     border-radius(15px)
-
-
-
 .header-back
   gradient($c-bg-light,$c-bg-dark)
   width 50%
