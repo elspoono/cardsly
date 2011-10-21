@@ -21,7 +21,7 @@ path($image-name)
 
 // Helper to set background image
 image($image-name, $args)
-  background: url(path($image-name)) $args
+  background url(path($image-name)) $args
   
 // Helper for font replacement
 replace-text($image-name, $display=block)
@@ -57,11 +57,11 @@ alpha-bg(color,n)
   background rgb(color);
   background rgba(color,n);
 box-shadow(n = gap(.25), color = $c-dark-warm, b = n)
-  -moz-box-shadow: n n b color
-  -webkit-box-shadow: n n b color
-  box-shadow: n n b color
+  -moz-box-shadow n n b color
+  -webkit-box-shadow n n b color
+  box-shadow n n b color
 text-shadow(n = gap(.1), color = $c-dark-warm, b = n)
-  text-shadow: n n b color
+  text-shadow n n b color
 
 border-radius(n = gap(.5))
   -webkit-border-radius n
@@ -89,6 +89,14 @@ absolute()
   position absolute
   top 0
   left 0
+box-rotate(degrees=7.5deg)
+  -webkit-transform rotate(degrees)
+  -moz-transform rotate(degrees)
+  -ms-transform rotate(degrees)  
+  -o-transform rotate(degrees)  
+  transform rotate(degrees)
+  filter progid\:DXImageTransform\.Microsoft\.Matrix\(M11\=0.9914448613738104, M12\=-0.13052619222005157,M21\=0.13052619222005157, M22\=0.9914448613738104, sizingMethod\='auto expand'\)
+  zoom 1
 gradient(color1=$c-background,color2=$c-background)
   background-color color1
   background-image -webkit-gradient(linear, left top, left bottom, from(color1), to(color2)) /* Saf4+, Chrome */
