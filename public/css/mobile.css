@@ -64,7 +64,7 @@ header h1 {
   margin: 50px auto;
   float: none;
   width: 310px;
-  height: 270px;
+  height: 300px;
   display: block;
 }
 .slides .arrow-left,
@@ -72,11 +72,7 @@ header h1 {
   height: 35px;
   width: 21px;
   z-index: 250;
-  top: 91px;
-}
-.slides h2 {
-  bottom: 0;
-  width: 100%;
+  top: 105px;
 }
 .slides .container {
   margin-top: -15px;
@@ -98,7 +94,7 @@ header h1 {
   height: 141px;
 }
 .slides .container .content .second {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 .slides .container .content .second img {
   width: 170px;
