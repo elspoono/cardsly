@@ -41,7 +41,7 @@
       return timer = setInterval(function() {
         newMargin -= marginIncrement;
         return advanceSlide();
-      }, 5000);
+      }, 6500);
     }, 2000);
   });
 }).call(this);

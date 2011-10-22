@@ -41,5 +41,5 @@ $ ->
     timer = setInterval ->
       newMargin -= marginIncrement
       advanceSlide()
-    , 5000
+    , 6500
   , 2000
