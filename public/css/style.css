@@ -497,9 +497,14 @@ header .navigation li a {
   -moz-border-radius: 15px;
   border-radius: 15px;
 }
+.image-loader {
+  display: none;
+  background: url("/images/buttons/add-click.png");
+  background: url("/images/buttons/add-hover.png");
+}
 .add-button {
-  height: 53px;
-  width: 141px;
+  height: 51px;
+  width: 140px;
   background: url("/images/buttons/add.png");
   cursor: pointer;
 }
