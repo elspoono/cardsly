@@ -43,7 +43,6 @@
     marginIncrement = 620;
     maxSlides--;
     advanceSlide = function() {
-      marginIncrement = $('.slides').width();
       if (newMargin < maxSlides * -marginIncrement) {
         newMargin = 0;
       } else if (newMargin > 0) {
@@ -54,20 +53,24 @@
       }, 400);
     };
     $('.slides .arrow-right').click(function() {
+      marginIncrement = $('.slides').width();
       clearTimeout(timer);
       newMargin -= marginIncrement;
       return advanceSlide();
     });
     $('.slides .arrow-left').click(function() {
+      marginIncrement = $('.slides').width();
       clearTimeout(timer);
       newMargin -= -marginIncrement;
       return advanceSlide();
     });
     return timer = setTimeout(function() {
+      marginIncrement = $('.slides').width();
       newMargin -= marginIncrement;
       advanceSlide();
       clearTimeout(timer);
       return timer = setInterval(function() {
+        marginIncrement = $('.slides').width();
         newMargin -= marginIncrement;
         return advanceSlide();
       }, 6500);

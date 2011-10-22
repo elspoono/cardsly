@@ -42,7 +42,6 @@ $ ->
 
   # each advance of the slide
   advanceSlide = ->
-    marginIncrement = $('.slides').width()
     if newMargin < maxSlides * -marginIncrement
       newMargin=0
     else if newMargin > 0
@@ -54,20 +53,24 @@ $ ->
 
   # click events
   $('.slides .arrow-right').click ->
+    marginIncrement = $('.slides').width()
     clearTimeout(timer)
     newMargin -= marginIncrement
     advanceSlide()
   $('.slides .arrow-left').click ->
+    marginIncrement = $('.slides').width()
     clearTimeout(timer)
     newMargin -= -marginIncrement
     advanceSlide()
 
   # The timer that starts and then repeats (cancelled on click)
   timer = setTimeout ->
+    marginIncrement = $('.slides').width()
     newMargin -= marginIncrement
     advanceSlide()
     clearTimeout(timer)
     timer = setInterval ->
+      marginIncrement = $('.slides').width()
       newMargin -= marginIncrement
       advanceSlide()
     , 6500
