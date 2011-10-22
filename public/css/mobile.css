@@ -112,14 +112,14 @@ header h1 {
   background: url("/images/card-bg-small/scott-qr-blue.png");
 }
 .text-fields {
-  margin: 30px 0;
+  margin: 30px -15px;
 }
 .text-fields label {
-  margin: 20px 0 5px 0;
+  margin: 0;
 }
 .text-fields input {
   width: 250px;
 }
 .text-fields li {
-  margin: 15px;
+  margin: 10px 15px;
 }

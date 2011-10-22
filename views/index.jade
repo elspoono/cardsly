@@ -59,7 +59,22 @@
 .section
   .cell-bg
   .cell-content
-    p This is where selecting the quantity and seeing the price and setting up google/facebook/custom signon is.
+    p Free Shipping
+    .radio-text-fields
+      ul
+        li
+          input(type='radio',name='quantity',checked='checked')
+          label 50 cards for $5
+        li
+          input(type='radio',name='quantity')
+          label 250 cards for $10
+        li
+          input(type='radio',name='quantity')
+          label 500 cards for $25
+        li
+          input(type='radio',name='quantity')
+          label 1500 cards for $50
+        .clear
     .checkout-button.button
     .img-loader
       img(src='/images/buttons/checkout-click.png')
