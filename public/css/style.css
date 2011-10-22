@@ -325,7 +325,7 @@ h3 {
   text-shadow: 0 0 1px 1px;
 }
 h1 {
-  font-family: "Trebuchet MS", sans-serif;
+  font-family: "Maven Pro", sans-serif;
   font-size: 50.4px;
   line-height: 1.5em;
 }
@@ -351,7 +351,7 @@ ul {
 body {
   font-size: 21px;
   line-height: 1.5em;
-  font-family: "Arial", sans-serif;
+  font-family: "Maven Pro", sans-serif;
   background: #cfbea8 url("/images/little_pluses.png");
   overflow: hidden;
 }
