@@ -25,20 +25,19 @@
       }, 400);
     };
     $('.slides .arrow-right').click(function() {
-      var timer;
-      timer = 0;
+      clearTimeout(timer);
       newMargin -= marginIncrement;
       return advanceSlide();
     });
     $('.slides .arrow-left').click(function() {
-      var timer;
-      timer = 0;
+      clearTimeout(timer);
       newMargin -= -marginIncrement;
       return advanceSlide();
     });
     return timer = setTimeout(function() {
       newMargin -= marginIncrement;
       advanceSlide();
+      clearTimeout(timer);
       return timer = setInterval(function() {
         newMargin -= marginIncrement;
         return advanceSlide();

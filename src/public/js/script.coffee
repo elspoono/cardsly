@@ -26,17 +26,18 @@ $ ->
     , 400
 
   $('.slides .arrow-right').click ->
-    timer = 0
+    clearTimeout(timer)
     newMargin -= marginIncrement
     advanceSlide()
   $('.slides .arrow-left').click ->
-    timer = 0
+    clearTimeout(timer)
     newMargin -= -marginIncrement
     advanceSlide()
 
   timer = setTimeout ->
     newMargin -= marginIncrement
     advanceSlide()
+    clearTimeout(timer)
     timer = setInterval ->
       newMargin -= marginIncrement
       advanceSlide()
