@@ -20,6 +20,7 @@ $ ->
 
   # each advance of the slide
   advanceSlide = ->
+    marginIncrement = $('.slides').width()
     if newMargin < maxSlides * -marginIncrement
       newMargin=0
     else if newMargin > 0

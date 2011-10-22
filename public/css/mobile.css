@@ -59,9 +59,9 @@ header h1 {
   margin: 15px;
 }
 .slides {
-  margin: 15px;
+  margin: 50px 15px 15px 15px;
   width: 310px;
-  height: 235px;
+  height: 270px;
 }
 .slides .arrow-left,
 .slides .arrow-right {

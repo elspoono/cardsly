@@ -15,6 +15,7 @@
     marginIncrement = 620;
     maxSlides--;
     advanceSlide = function() {
+      marginIncrement = $('.slides').width();
       if (newMargin < maxSlides * -marginIncrement) {
         newMargin = 0;
       } else if (newMargin > 0) {
