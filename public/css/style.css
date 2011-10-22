@@ -322,7 +322,13 @@ h1,
 h2,
 h3 {
   font-weight: normal;
+  font-family: "Maven Pro", sans-serif;
+  font-size: 21px;
+  line-height: 1.5em;
   text-shadow: 0 0 1px 1px;
+}
+.navigation {
+  font-family: "Maven Pro", sans-serif;
 }
 h1 {
   font-family: "Maven Pro", sans-serif;
@@ -349,11 +355,16 @@ ul {
   padding: 0;
 }
 body {
-  font-size: 21px;
+  font-size: 15.75px;
   line-height: 1.5em;
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Ubuntu", sans-serif;
   background: #cfbea8 url("/images/little_pluses.png");
   overflow: hidden;
+}
+input,
+li {
+  font-size: 21px;
+  line-height: 1.5em;
 }
 #container {
   max-width: 850px;
