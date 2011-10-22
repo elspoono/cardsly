@@ -1,0 +1,102 @@
+.ir {
+  display: block;
+  text-indent: -999em;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  text-align: left;
+  direction: ltr;
+}
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+.invisible {
+  visibility: hidden;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  zoom: 1;
+}
+header h1 {
+  top: -85px;
+  left: -45px;
+  font-size: 21px;
+  line-height: 1.5em;
+  line-height: 1.2em;
+}
+.section {
+  padding: 15px;
+}
+.phone-left {
+  margin: 15px;
+}
+.slides {
+  margin: 15px;
+  width: 310px;
+  height: 235px;
+}
+.slides .arrow-left,
+.slides .arrow-right {
+  height: 35px;
+  width: 21px;
+  z-index: 250;
+  top: 91px;
+}
+.slides h2 {
+  bottom: 0;
+  width: 100%;
+}
+.slides .container {
+  margin-top: -15px;
+  height: 205px;
+}
+.slides .container .content {
+  width: 9000px;
+}
+.slides .container .content li {
+  height: 175px;
+  margin: 30px;
+  width: 230px;
+}
+.slides .container .content .first {
+  margin-top: 40px;
+}
+.slides .container .content .first img {
+  width: 252px;
+  height: 141px;
+}
+.slides .container .content .second {
+  margin-top: 10px;
+}
+.slides .container .content .second img {
+  width: 170px;
+  height: 195px;
+}

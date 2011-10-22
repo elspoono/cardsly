@@ -532,8 +532,6 @@ header .navigation li a {
 }
 .hand-container-container .hand-container .card {
   position: absolute;
-  font-family: Times New Roman;
-  text-align: left;
   -webkit-transform: rotate(-15deg);
   -moz-transform: rotate(-15deg);
   -ms-transform: rotate(-15deg);
@@ -552,6 +550,19 @@ header .navigation li a {
 .hand-container-container .hand-container .card .content {
   margin: 5px 10px;
 }
+.hand-container-container .hand-container .card .qr {
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  margin: 15px 0 0 140px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
+  zoom: 1;
+}
 .hand-container-container .hand-container .hand {
   position: absolute;
   top: 0;
@@ -566,6 +577,7 @@ header .navigation li a {
 .scott-qr-blue {
   background: url("/images/card-bg/scott-qr-blue.png");
   color: #dcff18;
+  font-family: Times New Roman;
 }
 .text-fields {
   margin: 30px;

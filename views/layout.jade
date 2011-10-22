@@ -14,6 +14,7 @@ head
   link(rel='shortcut icon', href='/favicon.ico')
   link(rel='apple-touch-icon', href='/apple-touch-icon.png')
   link(rel='stylesheet', href='/css/style.css?v=2')
+  link(rel='stylesheet', href='/css/mobile.css', media='(max-width:840px)')
   //if lt IE 9
       script(src='http://html5shiv.googlecode.com/svn/trunk/html5.js')
       
@@ -31,7 +32,7 @@ body
           a(href='/') About
         li.last
           a(href='/') Login
-      h1
+      h1.fittext
         span business cards done easi
         span.alt ly
         span &nbsp;and less expensive
@@ -40,9 +41,8 @@ body
     #main(role='main')
       != body
     footer
-  script(src='//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js')
-  script
-    !window.jQuery && document.write(unescape('%3Cscript src="/js/libs/jquery-1.6.2.min.js"%3E%3C/script%3E'))
+  script(src='/js/libs/jquery-1.6.2.min.js')
+  //script(src='/js/libs/jquery.fittext.js')
   script(src='/js/plugins.js')
   script(src='/js/script.js')
 | </html>

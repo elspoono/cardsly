@@ -15,6 +15,10 @@ $ ->
   marginIncrement = 620
   maxSlides--
 
+
+  # Home Page Stuff
+
+  # each advance of the slide
   advanceSlide = ->
     if newMargin < maxSlides * -marginIncrement
       newMargin=0
@@ -25,6 +29,7 @@ $ ->
       'margin-left': newMargin
     , 400
 
+  # click events
   $('.slides .arrow-right').click ->
     clearTimeout(timer)
     newMargin -= marginIncrement
@@ -34,6 +39,7 @@ $ ->
     newMargin -= -marginIncrement
     advanceSlide()
 
+  # The timer that starts and then repeats (cancelled on click)
   timer = setTimeout ->
     newMargin -= marginIncrement
     advanceSlide()
@@ -43,3 +49,7 @@ $ ->
       advanceSlide()
     , 6500
   , 3000
+
+
+
+  $(".fittext").fitText();

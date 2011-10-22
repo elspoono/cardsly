@@ -34,7 +34,7 @@
       newMargin -= -marginIncrement;
       return advanceSlide();
     });
-    return timer = setTimeout(function() {
+    timer = setTimeout(function() {
       newMargin -= marginIncrement;
       advanceSlide();
       clearTimeout(timer);
@@ -43,5 +43,6 @@
         return advanceSlide();
       }, 6500);
     }, 3000);
+    return $(".fittext").fitText();
   });
 }).call(this);
