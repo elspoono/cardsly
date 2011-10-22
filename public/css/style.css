@@ -574,6 +574,7 @@ header .navigation li a {
 }
 .slides .arrow-left,
 .slides .arrow-right {
+  cursor: pointer;
   height: 35px;
   width: 21px;
   position: absolute;
@@ -588,6 +589,12 @@ header .navigation li a {
   background: url("/images/arrow-right.png");
   right: 5px;
 }
+.slides .arrow-left.hover {
+  background: url("/images/arrow-left-alt.png");
+}
+.slides .arrow-right.hover {
+  background: url("/images/arrow-right-alt.png");
+}
 .slides h2 {
   position: absolute;
   bottom: 0;
@@ -596,7 +603,9 @@ header .navigation li a {
   color: #000;
 }
 .slides .container {
-  height: 405px;
+  margin-top: -30px;
+  height: 435px;
+  overflow: hidden;
 }
 .slides .container .content {
   width: 9000px;
@@ -607,11 +616,15 @@ header .navigation li a {
   margin: 30px;
   width: 560px;
 }
+.slides .container .content li img {
+  margin: 0 auto;
+  display: block;
+}
 .slides .container .content .first {
-  margin-top: 50px;
+  margin-top: 80px;
 }
 .slides .container .content .second {
-  margin-top: -15px;
+  margin-top: 15px;
 }
 @media all and (orientation:portrait) {
 }

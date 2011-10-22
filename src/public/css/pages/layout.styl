@@ -151,6 +151,7 @@ header
   float left
   position relative
   .arrow-left,.arrow-right
+    cursor pointer
     height 35px
     width 21px
     position absolute
@@ -162,6 +163,10 @@ header
   .arrow-right
     background url('/images/arrow-right.png')
     right 5px
+  .arrow-left.hover
+    background url('/images/arrow-left-alt.png')
+  .arrow-right.hover
+    background url('/images/arrow-right-alt.png')
   h2
     position absolute
     bottom 0
@@ -169,7 +174,9 @@ header
     text-align center
     color $c-black
   .container
-    height 405px
+    margin-top -30px
+    height 435px
+    overflow hidden
     .content
       width 9000px
       li
@@ -177,7 +184,11 @@ header
         height 345px
         margin 30px
         width 560px
+        img
+          margin 0 auto
+          display block
       .first
-        margin-top 50px
+        margin-top 80px
       .second
-        margin-top -15px
+        margin-top 15px
+        
