@@ -84,7 +84,7 @@ header h1 {
 .slides .container .content li {
   height: 175px;
   margin: 30px;
-  width: 230px;
+  width: 250px;
 }
 .slides .container .content .first {
   margin-top: 40px;
@@ -99,6 +99,13 @@ header h1 {
 .slides .container .content .second img {
   width: 170px;
   height: 195px;
+}
+.slides .container .content .third {
+  margin-top: 40px;
+}
+.slides .container .content .third img {
+  width: 170px;
+  height: 150px;
 }
 .card.main {
   width: 200px;
