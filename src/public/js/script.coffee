@@ -1,6 +1,6 @@
 $ ->
   # function goes here
-  $('.add-button').hover ->
+  $('.add-button,.checkout-button').hover ->
     $(this).addClass 'hover'
   ,->
     $(this).removeClass 'hover'

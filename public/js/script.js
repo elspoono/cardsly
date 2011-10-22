@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    return $('.add-button').hover(function() {
+    return $('.add-button,.checkout-button').hover(function() {
       return $(this).addClass('hover');
     }, function() {
       return $(this).removeClass('hover');

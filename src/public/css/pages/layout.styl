@@ -1,4 +1,8 @@
 // Page layout
+ul
+  list-style none
+  margin 0
+  padding 0
 body
   font-size(1)
   font-family $base-font-family
@@ -7,6 +11,10 @@ body
 #container
   max-width 850px
   margin 0 auto
+
+// Every PAge
+
+// Header
 header
   position relative
   z-index 50
@@ -18,12 +26,15 @@ header
     float left
     position relative
     z-index 50
+  h1
+    position absolute
+    top 75px
+    color $c-logo-light
+    font-size(1.5)
   .navigation
     gradient($c-bg-light,$c-bg-dark)
     float right
-    list-style none
-    margin 0 0 60px 0
-    padding 0
+    margin 0
     border-radius()
     li
       margin 0
@@ -34,6 +45,73 @@ header
       border-right 1px solid $c-a-nav
       padding 7px 30px
       border-radius(14px)
+.header-back
+  gradient($c-bg-light,$c-bg-dark)
+  width 50%
+  top 80px
+  right 0
+  height 46px
+  position absolute
+
+// Sections
+.section
+  margin gap(3) 0
+  padding gap(1)
+  color $c-light
+  position relative
+.cell-content
+  z-index 150
+  position relative
+.cell-bg
+  gradient($c-bg-light,$c-bg-dark)
+  opacity(.6)
+  color $c-light
+  border-radius()
+  box-shadow(5px,$c-black,16px)
+  height 100%
+  width 100%
+  position absolute
+  top 0
+  left 0
+  z-index 20
+
+
+
+// Regular Handlers
+
+// Hide Images
+.img-loader
+  display none
+.clear
+  clear both
+
+// Buttons
+
+// Add Button
+.add-button
+  height 51px
+  width 140px
+  background url('/images/buttons/add.png')
+  cursor pointer
+.add-button.hover
+  background url('/images/buttons/add-hover.png')
+.add-button.click
+  background url('/images/buttons/add-click.png')
+.checkout-button
+  height 81px
+  width 327px
+  background url('/images/buttons/checkout.png')
+  cursor pointer
+.checkout-button.hover
+  background url('/images/buttons/checkout-hover.png')
+.checkout-button.click
+  background url('/images/buttons/checkout-click.png')
+
+
+
+// Home Page Stuff
+
+// Hand Container
 .hand-container
   position absolute
   z-index 0
@@ -59,64 +137,47 @@ header
   .hand
     top 0
     left 0
-.hand-container.left
-  left -30px
-  top 0
-  .hand
-    left 0
-    top 0
-  .card
-    box-rotate(-25deg)
-    gradient(#990033,#330000)
-    color #eeaacc
-    height 152px
-    width 250px
-    top 31px
-    left 64px
-    border-radius(15px)
 
-
-.img-loader
-  display none
-// Buttons
-.add-button
-  height 51px
-  width 140px
-  background url('/images/buttons/add.png')
-  cursor pointer
-.add-button.hover
-  background url('/images/buttons/add-hover.png')
-.add-button.click
-  background url('/images/buttons/add-click.png')
-
-
-
-
-
-.header-back
-  gradient($c-bg-light,$c-bg-dark)
-  width 50%
-  top 80px
-  right 0
-  height 46px
-  position absolute
-.section
-  margin gap(3) 0
-  padding gap(1)
-  color $c-light
+// Slides
+.section.home-first
+  padding 0
+.phone-left
+  width 200px
+  margin 30px 0 30px 30px
+  float left
+.slides
+  width 620px
+  height 465px
+  float left
   position relative
-.cell-content
-  z-index 150
-  position relative
-.cell-bg
-  gradient($c-bg-light,$c-bg-dark)
-  opacity(.6)
-  color $c-light
-  border-radius()
-  box-shadow(5px,$c-black,16px)
-  height 100%
-  width 100%
-  position absolute
-  top 0
-  left 0
-  z-index 20
+  .arrow-left,.arrow-right
+    height 35px
+    width 21px
+    position absolute
+    z-index 250
+    top 182px
+  .arrow-left
+    background url('/images/arrow-left.png')
+    left 5px
+  .arrow-right
+    background url('/images/arrow-right.png')
+    right 5px
+  h2
+    position absolute
+    bottom 0
+    width 100%
+    text-align center
+    color $c-black
+  .container
+    height 405px
+    .content
+      width 9000px
+      li
+        float left
+        height 345px
+        margin 30px
+        width 560px
+      .first
+        margin-top 50px
+      .second
+        margin-top -15px
