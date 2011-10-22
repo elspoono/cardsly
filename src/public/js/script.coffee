@@ -1,5 +1,27 @@
 $ ->
-  # function goes here
+
+  
+
+  $win = $(window)
+  winH = $win.height()+$win.scrollTop()
+  hasHidden = []
+  $('.section-to-hide').each ->
+    $this = $(this)
+    thisT = $this.offset().top
+    if(winH<thisT)
+      hasHidden.push
+        $this: $this
+        thisT: thisT
+  for i in hasHidden
+    i.$this.hide()
+  $win.scroll ->
+    newWinH = $win.height()+$win.scrollTop()
+    for i in hasHidden
+      if i.thisT-50 < newWinH
+        i.$this.fadeIn(2000)
+
+
+  # Buttons everywhere need hover and click states
   $('.button').hover ->
     $(this).addClass 'hover'
   ,->
@@ -50,7 +72,3 @@ $ ->
       advanceSlide()
     , 6500
   , 3000
-
-
-
-  $(".fittext").fitText();

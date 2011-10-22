@@ -16,6 +16,16 @@ input,li
 
 // Every PAge
 
+// cardsly
+.cardsly
+  gradient($c-bg-light,$c-bg-dark)
+  padding 0 2px 0 5px
+  height 5px
+  border-radius(5px)
+  color $c-logo-light
+  .alt
+    color $c-logo-alt
+
 // Header
 header
   position relative
@@ -63,6 +73,8 @@ header
   padding gap(1)
   color $c-light
   position relative
+.section.first
+  margin gap(4) 0 gap(3) 0
 .cell-content
   z-index 150
   position relative
@@ -93,6 +105,7 @@ header
 
 // Add Button
 .add-button
+  margin 0 auto
   height 51px
   width 140px
   background url('/images/buttons/add.png')
@@ -102,6 +115,7 @@ header
 .add-button.click
   background url('/images/buttons/add-click.png')
 .checkout-button
+  margin 0 auto
   height 81px
   width 327px
   background url('/images/buttons/checkout.png')
@@ -114,6 +128,10 @@ header
 
 
 // Home Page Stuff
+
+// Meh
+h2
+  text-align center
 
 // Hand Container
 .hand-container-container
@@ -213,11 +231,13 @@ header
     background url('/images/arrow-left-alt.png')
   .arrow-right.hover
     background url('/images/arrow-right-alt.png')
-  h2
+  h2.prompt
+    color $c-black
+    margin 0
+  h2.caption
     position absolute
     bottom 0
     width 100%
-    text-align center
     color $c-black
   .container
     margin-top -30px
@@ -234,7 +254,7 @@ header
           margin 0 auto
           display block
       .first
-        margin-top 80px
+        margin-top 60px
       .second
-        margin-top 20px
+        margin-top 30px
         

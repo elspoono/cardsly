@@ -370,6 +370,29 @@ li {
   max-width: 850px;
   margin: 0 auto;
 }
+.cardsly {
+  background-color: #908575;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #908575, #524641);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #908575, #524641);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #908575, #524641);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #908575, #524641);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #908575, #524641);
+  padding: 0 2px 0 5px;
+  height: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  color: #f05a23;
+}
+.cardsly .alt {
+  color: #56a3da;
+}
 header {
   position: relative;
   z-index: 50;
@@ -461,6 +484,9 @@ header .navigation li a {
   color: #eee;
   position: relative;
 }
+.section.first {
+  margin: 126px 0 94.5px 0;
+}
 .cell-content {
   z-index: 150;
   position: relative;
@@ -501,6 +527,7 @@ header .navigation li a {
   clear: both;
 }
 .add-button {
+  margin: 0 auto;
   height: 51px;
   width: 140px;
   background: url("/images/buttons/add.png");
@@ -513,6 +540,7 @@ header .navigation li a {
   background: url("/images/buttons/add-click.png");
 }
 .checkout-button {
+  margin: 0 auto;
   height: 81px;
   width: 327px;
   background: url("/images/buttons/checkout.png");
@@ -523,6 +551,9 @@ header .navigation li a {
 }
 .checkout-button.click {
   background: url("/images/buttons/checkout-click.png");
+}
+h2 {
+  text-align: center;
 }
 .hand-container-container {
   position: absolute;
@@ -654,11 +685,14 @@ header .navigation li a {
 .slides .arrow-right.hover {
   background: url("/images/arrow-right-alt.png");
 }
-.slides h2 {
+.slides h2.prompt {
+  color: #000;
+  margin: 0;
+}
+.slides h2.caption {
   position: absolute;
   bottom: 0;
   width: 100%;
-  text-align: center;
   color: #000;
 }
 .slides .container {
@@ -680,10 +714,10 @@ header .navigation li a {
   display: block;
 }
 .slides .container .content .first {
-  margin-top: 80px;
+  margin-top: 60px;
 }
 .slides .container .content .second {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 @media all and (orientation:portrait) {
 }
