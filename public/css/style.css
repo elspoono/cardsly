@@ -529,6 +529,13 @@ header .navigation li a {
   z-index: 0;
   top: 450px;
   left: 0;
+  width: 100%;
+}
+.hand-container-container .hand-container {
+  width: 1000px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
 }
 .hand-container-container .hand-container .card {
   position: absolute;
@@ -542,7 +549,7 @@ header .navigation li a {
   background: url("/images/card-bg-small/scott-qr-blue.png");
   height: 114px;
   width: 200px;
-  left: 199px;
+  left: -1px;
   top: -50px;
   font-size: 10.5px;
   line-height: 1.5em;
@@ -566,7 +573,7 @@ header .navigation li a {
 .hand-container-container .hand-container .hand {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -200px;
 }
 .card.main {
   width: 420px;
