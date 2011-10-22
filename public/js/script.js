@@ -39,7 +39,7 @@
       return $(this).removeClass('click');
     });
     newMargin = 0;
-    maxSlides = 2;
+    maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
     advanceSlide = function() {
