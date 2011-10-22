@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var advanceSlide, marginIncrement, maxSlides, newMargin, timer;
+    var advanceSlide, doItAgain, marginIncrement, maxSlides, newMargin, timer;
     $('.button').hover(function() {
       return $(this).addClass('hover');
     }, function() {
@@ -34,14 +34,17 @@
       newMargin -= -marginIncrement;
       return advanceSlide();
     });
-    return timer = setTimeout(function() {
+    doItAgain = function() {
+      var timer;
       newMargin -= marginIncrement;
       advanceSlide();
       clearTimeout(timer);
-      return timer = setInterval(function() {
-        newMargin -= marginIncrement;
-        return advanceSlide();
+      return timer = setTimeout(function() {
+        return doItAgain();
       }, 6500);
+    };
+    return timer = setTimeout(function() {
+      return doItAgain();
     }, 3000);
   });
 }).call(this);

@@ -34,12 +34,13 @@ $ ->
     newMargin -= -marginIncrement
     advanceSlide()
 
-  timer = setTimeout ->
+  doItAgain = ->
     newMargin -= marginIncrement
     advanceSlide()
     clearTimeout(timer)
-    timer = setInterval ->
-      newMargin -= marginIncrement
-      advanceSlide()
+    timer = setTimeout ->
+      doItAgain()
     , 6500
+  timer = setTimeout ->
+    doItAgain()
   , 3000
