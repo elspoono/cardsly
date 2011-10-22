@@ -116,31 +116,28 @@ header
 // Home Page Stuff
 
 // Hand Container
-.hand-container
+.hand-container-container
   position absolute
   z-index 0
-  .card
-    position absolute
-    font-family Times New Roman
-    text-align center
-    line-height 50px
-  .hand
-    position absolute
-.hand-container.first
   top 450px
   left 0
-  .card
-    box-rotate(-15deg)
-    gradient(#006699,#003366)
-    color #aaccee
-    background url('/images/card-bg-small/scott-qr-blue.png')
-    height 114px
-    width 200px
-    left 199px
-    top -50px
-  .hand
-    top 0
-    left 0
+  .hand-container
+    .card
+      position absolute
+      box-rotate(-15deg)
+      background url('/images/card-bg-small/scott-qr-blue.png')
+      height 114px
+      width 200px
+      .content
+        margin 5px 10px
+      left 199px
+      top -50px
+      font-size(.5)
+      .
+    .hand
+      position absolute
+      top 0
+      left 0
 
 // Business Cards
 .card.main
@@ -150,6 +147,8 @@ header
   margin 0 auto
 .scott-qr-blue
   background url('/images/card-bg/scott-qr-blue.png')
+  color #dcff18
+  font-family Times New Roman
 
 // Form Layout
 .text-fields
