@@ -21,7 +21,7 @@ $ ->
     else if newMargin > 0
       newMargin = maxSlides * -marginIncrement
 
-    $('.slides .content').animate
+    $('.slides .content').stop(true,false).animate
       'margin-left': newMargin
     , 400
 
@@ -34,13 +34,12 @@ $ ->
     newMargin -= -marginIncrement
     advanceSlide()
 
-  doItAgain = ->
+  timer = setTimeout ->
     newMargin -= marginIncrement
     advanceSlide()
     clearTimeout(timer)
-    timer = setTimeout ->
-      doItAgain()
+    timer = setInterval ->
+      newMargin -= marginIncrement
+      advanceSlide()
     , 6500
-  timer = setTimeout ->
-    doItAgain()
   , 3000
