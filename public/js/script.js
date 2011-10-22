@@ -42,6 +42,6 @@
         newMargin -= marginIncrement;
         return advanceSlide();
       }, 6500);
-    }, 2000);
+    }, 3000);
   });
 }).call(this);

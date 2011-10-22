@@ -26,7 +26,23 @@
 .section
   .cell-bg
   .cell-content
-    p This is where the card selection stuff will go, the gallery if you will. All of these fonts are the google font Maven Pro right now.
+    .card.main.scott-qr-blue
+    .text-fields
+      ul
+        li
+          label Name
+          input.name(placeholder='Ted Mosby')
+        li
+          label Title
+          input.title(placeholder='Architect')
+        li
+          label Phone Number
+          input.phone(placeholder='555.555.5555')
+        li
+          label Email Address
+          input.email(placeholder='ted@mosby.com')
+        .clear
+    p This is where the card selection stuff will go, the gallery if you will.
     .add-button.button
     .img-loader
       img(src='/images/buttons/add-click.png')

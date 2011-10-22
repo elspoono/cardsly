@@ -558,6 +558,31 @@ header .navigation li a {
   top: 0;
   left: 0;
 }
+.card.main {
+  width: 420px;
+  height: 240px;
+  display: block;
+  margin: 0 auto;
+}
+.scott-qr-blue {
+  background: url("/images/card-bg/scott-qr-blue.png");
+}
+.text-fields {
+  margin: 30px;
+}
+.text-fields label {
+  margin: 20px 0 5px 0;
+  font-size: 13.65px;
+  line-height: 1.5em;
+  display: block;
+}
+.text-fields input {
+  width: 300px;
+}
+.text-fields li {
+  float: left;
+  margin: 0 25px;
+}
 .section.home-first {
   padding: 0;
 }

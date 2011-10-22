@@ -42,4 +42,4 @@ $ ->
       newMargin -= marginIncrement
       advanceSlide()
     , 6500
-  , 2000
+  , 3000
