@@ -401,6 +401,9 @@ header h1 {
   font-size: 31.5px;
   line-height: 1.5em;
 }
+header h1 .alt {
+  color: #56a3da;
+}
 header .navigation {
   background-color: #908575;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
@@ -660,7 +663,7 @@ header .navigation li a {
   margin-top: 80px;
 }
 .slides .container .content .second {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 @media all and (orientation:portrait) {
 }
