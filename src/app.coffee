@@ -103,7 +103,7 @@ everyauth.google.scope 'https://www.google.com/m8/feeds'
 everyauth.google.redirectPath '/success'
 
 rest = require('./node_modules/everyauth/node_modules/restler');
-everyauth.google.fetchOAuthUser =  (accessToken) ->
+everyauth.google.fetchOAuthUser (accessToken) ->
   promise = new Promise()
   rest.get this.apiHost() + '/contacts/default/full', 
     query:

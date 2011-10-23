@@ -81,7 +81,7 @@
   everyauth.google.scope('https://www.google.com/m8/feeds');
   everyauth.google.redirectPath('/success');
   rest = require('./node_modules/everyauth/node_modules/restler');
-  everyauth.google.fetchOAuthUser = function(accessToken) {
+  everyauth.google.fetchOAuthUser(function(accessToken) {
     var promise;
     promise = new Promise();
     rest.get(this.apiHost() + '/contacts/default/full', {
@@ -101,7 +101,7 @@
       return null;
     });
     return promise;
-  };
+  });
   /*
   everyauth.googlehybrid.consumerKey 'cards.ly'
   everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
