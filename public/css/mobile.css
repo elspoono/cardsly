@@ -108,11 +108,10 @@ header h1 {
   height: 150px;
 }
 .card.main {
-  width: 200px;
-  height: 114px;
-}
-.scott-qr-blue {
-  background: url("/images/card-bg-small/scott-qr-blue.png");
+  -webkit-transform: scale(0.5, 0.5);
+  -moz-transform: scale(0.5, 0.5);
+  -ms-transform: scale(0.5, 0.5);
+  transform: scale(0.5, 0.5);
 }
 .text-fields {
   margin: 30px -15px;
