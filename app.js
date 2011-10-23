@@ -55,11 +55,12 @@
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
   updateOrCreateUser = function(user) {
-    console.log(user);
+    console.log('user', user);
     return false;
   };
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
+    console.log('userMeta', userMeta);
     promise = new Promise();
     user = {
       something: 'something'
@@ -110,6 +111,7 @@
       }
     }).on('success', function(data, res) {
       var oauthUser;
+      console.log('data', util.inspect(data));
       oauthUser = {
         id: data.email
       };

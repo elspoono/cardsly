@@ -73,10 +73,11 @@ everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
 updateOrCreateUser = (user) ->
-  console.log user
+  console.log 'user', user
   false
 
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
+  console.log 'userMeta', userMeta
   promise = new Promise()
   user =
     something: 'something'
@@ -126,6 +127,7 @@ everyauth.google.fetchOAuthUser (accessToken) ->
       oauth_token: accessToken
       alt: 'json'
   .on 'success',(data, res) ->
+    console.log 'data', util.inspect data
     oauthUser = 
       id: data.email
     promise.fulfill oauthUser
