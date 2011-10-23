@@ -72,9 +72,25 @@ compareEncrypted = (inString,hash) ->
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
+updateOrCreateUser = (user) ->
+  console.log user
+  false
+
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   promise = new Promise()
-  console.log userMeta
+  user = {}
+  if userMeta.apiStandardProfileRequest
+    user.name = userMeta.apiStandardProfileRequest.firstName+' '+userMeta.apiStandardProfileRequest.lastName
+    user.linkedin_url = userMeta.apiStandardProfileRequest.publicProfileUrl
+  if userMeta.name
+    user.name = userMeta.name
+  if userMeta.link
+    user.facebook_url = userMeta.link
+  if userMeta.screen_name
+    user.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
+  
+  updateOrCreateUser user
+
   promise.fulfill
     name: 'Whatever'
   promise
@@ -112,6 +128,8 @@ everyauth.google.fetchOAuthUser (accessToken) ->
     oauthUser = 
       id: data.email
     promise.fulfill oauthUser
+    updateOrCreateUser
+      email: data.email
     null
   .on 'error', (data, res) ->
     promise.fail data

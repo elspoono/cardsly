@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, updateOrCreateUser, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -54,10 +54,28 @@
   };
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
+  updateOrCreateUser = function(user) {
+    console.log(user);
+    return false;
+  };
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
-    var promise;
+    var promise, user;
     promise = new Promise();
-    console.log(userMeta);
+    user = {};
+    if (userMeta.apiStandardProfileRequest) {
+      user.name = userMeta.apiStandardProfileRequest.firstName + ' ' + userMeta.apiStandardProfileRequest.lastName;
+      user.linkedin_url = userMeta.apiStandardProfileRequest.publicProfileUrl;
+    }
+    if (userMeta.name) {
+      user.name = userMeta.name;
+    }
+    if (userMeta.link) {
+      user.facebook_url = userMeta.link;
+    }
+    if (userMeta.screen_name) {
+      user.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
+    }
+    updateOrCreateUser(user);
     promise.fulfill({
       name: 'Whatever'
     });
@@ -95,6 +113,9 @@
         id: data.email
       };
       promise.fulfill(oauthUser);
+      updateOrCreateUser({
+        email: data.email
+      });
       return null;
     }).on('error', function(data, res) {
       promise.fail(data);
