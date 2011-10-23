@@ -61,7 +61,9 @@
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
     promise = new Promise();
-    user = {};
+    user = {
+      something: 'something'
+    };
     if (userMeta.publicProfileUrl) {
       user.name = userMeta.firstName + ' ' + userMeta.lastName;
       user.linkedin_url = userMeta.publicProfileUrl;
