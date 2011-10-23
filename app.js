@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -52,10 +52,14 @@
     return bcrypt.compare_sync(inString, hash);
   };
   everyauth = require('everyauth');
+  Promise = everyauth.Promise;
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
   everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
   everyauth.twitter.findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserMetadata) {
-    return console.log(twitterUserMetadata);
+    var promise;
+    promise = new Promise();
+    console.log(twitterUserMetadata);
+    return promise;
   });
   everyauth.twitter.redirectPath('/');
   everyauth.debug = true;

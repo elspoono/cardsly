@@ -68,12 +68,14 @@ compareEncrypted = (inString,hash) ->
   bcrypt.compare_sync(inString, hash)
 
 everyauth = require 'everyauth'
-
+Promise = everyauth.Promise
 
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
 everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
 everyauth.twitter.findOrCreateUser (session, accessToken, accessTokenSecret, twitterUserMetadata) ->
+  promise = new Promise()
   console.log twitterUserMetadata
+  return promise
 everyauth.twitter.redirectPath '/'
 
 everyauth.debug = true
