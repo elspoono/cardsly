@@ -417,6 +417,11 @@ header .logo img {
   position: relative;
   z-index: 50;
 }
+header .checkout-button.top {
+  position: absolute;
+  top: 65px;
+  right: 0;
+}
 header h1 {
   position: absolute;
   top: 75px;
@@ -619,6 +624,39 @@ h2 {
   background: url("/images/card-bg/scott-qr-blue.png");
   color: #dcff18;
   font-family: Times New Roman;
+}
+.blue-green-gradient {
+  background: url("/images/card-bg-small/blue-green-gradient.png");
+}
+.circles-blue {
+  background: url("/images/card-bg-small/circles-blue.png");
+}
+.gray-blue-gradient {
+  background: url("/images/card-bg-small/gray-blue-gradient.png");
+}
+.kickback-blue {
+  background: url("/images/card-bg-small/kickback-blue.png");
+}
+.kickback-tan {
+  background: url("/images/card-bg-small/kickback-tan.png");
+}
+.tri-color {
+  background: url("/images/card-bg-small/tri-color.png");
+}
+.blue {
+  background: url("/images/card-bg-small/blue.png");
+}
+.blue {
+  background: url("/images/card-bg-small/blue.png");
+}
+.gallery {
+  overflow: hidden;
+}
+.gallery li {
+  height: 114px;
+  width: 200px;
+  float: left;
+  margin: 30px;
 }
 .text-fields {
   margin: 30px;

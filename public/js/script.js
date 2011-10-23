@@ -42,6 +42,12 @@
     maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
+    $('.checkout-button.top').click(function() {
+      $('html,body').animate({
+        scrollTop: $('.section:eq(2)').offset().top
+      }, 1000);
+      return false;
+    });
     advanceSlide = function() {
       if (newMargin < maxSlides * -marginIncrement) {
         newMargin = 0;

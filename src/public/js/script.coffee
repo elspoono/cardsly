@@ -40,6 +40,14 @@ $ ->
 
   # Home Page Stuff
 
+  # Button Clicking Stuff
+  $('.checkout-button.top').click ->
+    $('html,body').animate
+      scrollTop: $('.section:eq(2)').offset().top
+    ,
+    1000
+    false
+
   # each advance of the slide
   advanceSlide = ->
     if newMargin < maxSlides * -marginIncrement
