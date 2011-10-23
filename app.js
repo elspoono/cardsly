@@ -57,7 +57,9 @@
     var promise;
     promise = new Promise();
     console.log(userMeta);
-    promise.fulfill(userMeta);
+    promise.fulfill({
+      name: 'Whatever'
+    });
     return promise;
   };
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
