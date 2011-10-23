@@ -59,7 +59,7 @@
     var promise;
     promise = new Promise();
     console.log(twitterUserMetadata);
-    promise.fulfull(twitterUserMetadata);
+    promise.fulfill(twitterUserMetadata);
     return promise;
   });
   everyauth.twitter.redirectPath('/');
