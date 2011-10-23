@@ -133,10 +133,10 @@
     return app.use(express.errorHandler());
   });
   app.get('/', function(req, res) {
-    return res.render('index', {
-      script: 'home',
-      title: 'KickbackCard - iPhone App Loyalty Card Program'
-    });
+    return res.render('index');
+  });
+  app.get('/success', function(req, res) {
+    return res.render('success');
   });
   app.get('/robots.txt', function(req, res, next) {
     return res.send('User-agent: *\nDisallow: ', {

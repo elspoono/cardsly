@@ -174,10 +174,9 @@ app.configure "production", ->
 
 app.get '/', (req, res) ->
   res.render 'index'
-    script: 'home'
-    title: 'KickbackCard - iPhone App Loyalty Card Program'
 
-
+app.get '/success', (req, res) ->
+  res.render 'success'
 
 app.get '/robots.txt', (req, res, next) ->
   res.send 'User-agent: *\nDisallow: ',
