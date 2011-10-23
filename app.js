@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -80,10 +80,9 @@
   everyauth.google.findOrCreateUser(handleGoodResponse);
   everyauth.google.scope('https://www.google.com/m8/feeds');
   everyauth.google.redirectPath('/success');
-  rest = require('./node_modules/everyauth/node_modules/restler');
   everyauth.google.fetchOAuthUser(function(accessToken) {
     var promise;
-    promise = new Promise();
+    promise = this.Promise();
     rest.get(this.apiHost() + '/contacts/default/full', {
       query: {
         oauth_token: accessToken,
