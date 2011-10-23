@@ -41,7 +41,7 @@ $ ->
   # Home Page Stuff
 
   # Button Clicking Stuff
-  $('.checkout-button.top').click ->
+  $('.design-button.top').click ->
     $('html,body').animate
       scrollTop: $('.section:eq(1)').offset().top
     ,
