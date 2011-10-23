@@ -79,6 +79,7 @@
   everyauth.google.findOrCreateUser(handleGoodResponse);
   everyauth.google.scope('https://www.google.com/m8/feeds');
   everyauth.google.redirectPath('/success');
+  console.log(everyauth.google.configurable());
   /*
   everyauth.googlehybrid.consumerKey 'cards.ly'
   everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'

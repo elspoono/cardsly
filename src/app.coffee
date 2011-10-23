@@ -99,7 +99,21 @@ everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
 everyauth.google.findOrCreateUser handleGoodResponse
 everyauth.google.scope 'https://www.google.com/m8/feeds'
 everyauth.google.redirectPath '/success'
+everyauth.google.fetchOAuthUser =  (accessToken) ->
+  var promise = this.Promise()
+  rest.get this.apiHost() + '/contacts/default/full', 
+    query:
+      oauth_token: accessToken
+      alt: 'json'
+  .on 'success',(data, res) ->
+    oauthUser = 
+      id: data.feed.id.$t
+    promise.fulfill oauthUser
+  .on 'error', (data, res) ->
+    promise.fail data
+  promise;
 
+  
 ###
 everyauth.googlehybrid.consumerKey 'cards.ly'
 everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
