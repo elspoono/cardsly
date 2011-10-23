@@ -43,7 +43,7 @@ $ ->
   # Button Clicking Stuff
   $('.checkout-button.top').click ->
     $('html,body').animate
-      scrollTop: $('.section:eq(2)').offset().top
+      scrollTop: $('.section:eq(1)').offset().top
     ,
     1000
     false

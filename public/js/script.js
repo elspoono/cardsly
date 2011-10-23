@@ -44,7 +44,7 @@
     maxSlides--;
     $('.checkout-button.top').click(function() {
       $('html,body').animate({
-        scrollTop: $('.section:eq(2)').offset().top
+        scrollTop: $('.section:eq(1)').offset().top
       }, 1000);
       return false;
     });
