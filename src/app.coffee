@@ -75,7 +75,7 @@ everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
 everyauth.twitter.findOrCreateUser (session, accessToken, accessTokenSecret, twitterUserMetadata) ->
   promise = new Promise()
   console.log twitterUserMetadata
-  everyAuth.fulfull twitterUserMetadata
+  promise.fulfull twitterUserMetadata
   promise
 everyauth.twitter.redirectPath '/'
 
