@@ -62,17 +62,16 @@
     var promise, user;
     promise = new Promise();
     user = {};
-    if (userMeta.apiStandardProfileRequest) {
-      user.name = userMeta.apiStandardProfileRequest.firstName + ' ' + userMeta.apiStandardProfileRequest.lastName;
-      user.linkedin_url = userMeta.apiStandardProfileRequest.publicProfileUrl;
-    }
-    if (userMeta.name) {
-      user.name = userMeta.name;
+    if (userMeta.publicProfileUrl) {
+      user.name = userMeta.firstName + ' ' + userMeta.lastName;
+      user.linkedin_url = userMeta.publicProfileUrl;
     }
     if (userMeta.link) {
+      user.name = userMeta.name;
       user.facebook_url = userMeta.link;
     }
     if (userMeta.screen_name) {
+      user.name = userMeta.name;
       user.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
     }
     updateOrCreateUser(user);
