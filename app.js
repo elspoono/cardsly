@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -53,16 +53,21 @@
   };
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
-  everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
-  everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
-  everyauth.twitter.findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserMetadata) {
+  handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise;
     promise = new Promise();
-    console.log(twitterUserMetadata);
-    promise.fulfill(twitterUserMetadata);
+    console.log(userMeta);
+    promise.fulfill(userMeta);
     return promise;
-  });
-  everyauth.twitter.redirectPath('/');
+  };
+  everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
+  everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
+  everyauth.twitter.findOrCreateUser(handleGoodResponse);
+  everyauth.twitter.redirectPath('/success');
+  everyauth.facebook.appId('292309860797409');
+  everyauth.facebook.appSecret('70bcb1477ede9a706e285f7faafa8e32');
+  everyauth.facebook.findOrCreateUser(handleGoodResponse);
+  everyauth.facebook.redirectPath('/success');
   everyauth.debug = true;
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);

@@ -70,14 +70,22 @@ compareEncrypted = (inString,hash) ->
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
+handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
+  promise = new Promise()
+  console.log userMeta
+  promise.fulfill userMeta
+  promise
+
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
 everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
-everyauth.twitter.findOrCreateUser (session, accessToken, accessTokenSecret, twitterUserMetadata) ->
-  promise = new Promise()
-  console.log twitterUserMetadata
-  promise.fulfill twitterUserMetadata
-  promise
-everyauth.twitter.redirectPath '/'
+everyauth.twitter.findOrCreateUser handleGoodResponse
+everyauth.twitter.redirectPath '/success'
+
+
+everyauth.facebook.appId '292309860797409'
+everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
+everyauth.facebook.findOrCreateUser handleGoodResponse
+everyauth.facebook.redirectPath '/success'
 
 everyauth.debug = true
 
