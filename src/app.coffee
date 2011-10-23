@@ -93,6 +93,11 @@ everyauth.linkedin.consumerSecret 'pvWmN5CkrdT3GHF3'
 everyauth.linkedin.findOrCreateUser handleGoodResponse
 everyauth.linkedin.redirectPath '/success'
 
+everyauth.google.appId '90634622438.apps.googleusercontent.com'
+everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
+everyauth.google.findOrCreateUser handleGoodResponse
+everyauth.google.redirectPath '/success'
+
 everyauth.debug = true
 
 # ## App configurations
