@@ -69,10 +69,7 @@ compareEncrypted = (inString,hash) ->
 
 everyauth = require 'everyauth'
 
-everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
-everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
-everyauth.twitter.findOrCreateUser (session, accessToken, accessTokenSecret, twitterUserData) ->
-  console.log twitterUserData
+everyauth.debug = true
 
 # ## App configurations
 # ### Global app settings
@@ -91,8 +88,8 @@ app.configure ->
   app.use express.session
     secret: conf.sessionSecret
     store: sessionStore
-  app.use everyauth.middleware
   app.use express.static(__dirname + conf.dir.public)
+  app.use everyauth.middleware
 
 # ### Environment based settings
 
@@ -117,10 +114,22 @@ app.configure "production", ->
 
 # ### Require routes
 
-# **Note**: Routes are placed in a seperate file to reduce the clutter of the main `app.js` file,
-# `app.js` should be used for basic app configurations
-require('./lib/routes')
 
+app.get '/', (req, res) ->
+  res.render 'index'
+    script: 'home'
+    title: 'KickbackCard - iPhone App Loyalty Card Program'
+
+
+
+app.get '/robots.txt', (req, res, next) ->
+  res.send 'User-agent: *\nDisallow: ',
+    'Content-Type': 'text/plain'
+
+app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->
+  res.send '',
+    Location:'/'
+  , 301
 
 
 # ### Start server

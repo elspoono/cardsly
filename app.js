@@ -52,11 +52,7 @@
     return bcrypt.compare_sync(inString, hash);
   };
   everyauth = require('everyauth');
-  everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
-  everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
-  everyauth.twitter.findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserData) {
-    return console.log(twitterUserData);
-  });
+  everyauth.debug = true;
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
@@ -68,8 +64,8 @@
       secret: conf.sessionSecret,
       store: sessionStore
     }));
-    app.use(everyauth.middleware);
-    return app.use(express.static(__dirname + conf.dir.public));
+    app.use(express.static(__dirname + conf.dir.public));
+    return app.use(everyauth.middleware);
   });
   app.configure("development", function() {
     return app.use(express.errorHandler({
@@ -80,7 +76,22 @@
   app.configure("production", function() {
     return app.use(express.errorHandler());
   });
-  require('./lib/routes');
+  app.get('/', function(req, res) {
+    return res.render('index', {
+      script: 'home',
+      title: 'KickbackCard - iPhone App Loyalty Card Program'
+    });
+  });
+  app.get('/robots.txt', function(req, res, next) {
+    return res.send('User-agent: *\nDisallow: ', {
+      'Content-Type': 'text/plain'
+    });
+  });
+  app.get(/^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, function(req, res, next) {
+    return res.send('', {
+      Location: '/'
+    }, 301);
+  });
   app.listen(process.env.PORT || 3000);
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 }).call(this);
