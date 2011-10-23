@@ -87,6 +87,12 @@ everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
 everyauth.facebook.findOrCreateUser handleGoodResponse
 everyauth.facebook.redirectPath '/success'
 
+
+everyauth.linkedin.consumerKey 'fuj9rhx302d7'
+everyauth.linkedin.consumerSecret 'pvWmN5CkrdT3GHF3'
+everyauth.linkedin.findOrCreateUser handleGoodResponse
+everyauth.linkedin.redirectPath '/success'
+
 everyauth.debug = true
 
 # ## App configurations
