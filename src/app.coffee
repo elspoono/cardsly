@@ -99,11 +99,12 @@ everyauth.linkedin.redirectPath '/success'
 everyauth.google.appId '90634622438.apps.googleusercontent.com'
 everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
 everyauth.google.findOrCreateUser handleGoodResponse
-everyauth.google.scope 'https://www.google.com/m8/feeds'
+everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'
 everyauth.google.redirectPath '/success'
+rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser (accessToken) ->
   promise = this.Promise()
-  rest.get this.apiHost() + '/contacts/default/full', 
+  rest.get 'https://www.googleapis.com/userinfo/email', 
     query:
       oauth_token: accessToken
       alt: 'json'

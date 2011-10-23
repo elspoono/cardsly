@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -78,12 +78,13 @@
   everyauth.google.appId('90634622438.apps.googleusercontent.com');
   everyauth.google.appSecret('Bvpnj5wXiakpkOnwmXyy4vDj');
   everyauth.google.findOrCreateUser(handleGoodResponse);
-  everyauth.google.scope('https://www.google.com/m8/feeds');
+  everyauth.google.scope('https://www.googleapis.com/auth/userinfo.email');
   everyauth.google.redirectPath('/success');
+  rest = require('./node_modules/everyauth/node_modules/restler');
   everyauth.google.fetchOAuthUser(function(accessToken) {
     var promise;
     promise = this.Promise();
-    rest.get(this.apiHost() + '/contacts/default/full', {
+    rest.get('https://www.googleapis.com/userinfo/email', {
       query: {
         oauth_token: accessToken,
         alt: 'json'
