@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, sessionStore, url;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -77,9 +77,28 @@
   everyauth.google.appId('90634622438.apps.googleusercontent.com');
   everyauth.google.appSecret('Bvpnj5wXiakpkOnwmXyy4vDj');
   everyauth.google.findOrCreateUser(handleGoodResponse);
-  everyauth.google.scope('https://www.google.com/m8/feeds');
+  everyauth.google.scope('https://www.googleapis.com/auth/userinfo.email');
   everyauth.google.redirectPath('/success');
-  console.log(everyauth.google.configurable());
+  rest = require('./node_modules/everyauth/node_modules/restler');
+  everyauth.google.fetchOAuthUser = function(accessToken) {
+    var promise;
+    promise = this.Promise();
+    rest.get('https://www.googleapis.com/userinfo/email', {
+      query: {
+        oauth_token: accessToken,
+        alt: 'json'
+      }
+    }).on('success', function(data, res) {
+      var oauthUser;
+      oauthUser = {
+        id: data.feed.id.$t
+      };
+      return promise.fulfill(oauthUser);
+    }).on('error', function(data, res) {
+      return promise.fail(data);
+    });
+    return promise;
+  };
   /*
   everyauth.googlehybrid.consumerKey 'cards.ly'
   everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
