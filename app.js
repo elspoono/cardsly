@@ -83,7 +83,7 @@
   rest = require('./node_modules/everyauth/node_modules/restler');
   everyauth.google.fetchOAuthUser = function(accessToken) {
     var promise;
-    promise = this.Promise();
+    promise = new Promise();
     rest.get(this.apiHost() + '/contacts/default/full', {
       query: {
         oauth_token: accessToken,
