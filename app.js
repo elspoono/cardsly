@@ -77,6 +77,9 @@
       user.name = userMeta.name;
       user.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
     }
+    if (userMeta.email) {
+      user.email = userMeta.email;
+    }
     updateOrCreateUser(user);
     promise.fulfill({
       name: 'Whatever'
@@ -111,18 +114,12 @@
       }
     }).on('success', function(data, res) {
       var oauthUser;
-      console.log('data', util.inspect(data));
       oauthUser = {
-        id: data.email
+        email: data.data.email
       };
-      promise.fulfill(oauthUser);
-      updateOrCreateUser({
-        email: data.email
-      });
-      return null;
+      return promise.fulfill(oauthUser);
     }).on('error', function(data, res) {
-      promise.fail(data);
-      return null;
+      return promise.fail(data);
     });
     return promise;
   });

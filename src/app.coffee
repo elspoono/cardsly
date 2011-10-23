@@ -90,7 +90,9 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   if userMeta.screen_name
     user.name = userMeta.name
     user.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
-  
+  if userMeta.email
+    user.email = userMeta.email
+
   updateOrCreateUser user
 
   promise.fulfill
@@ -127,16 +129,11 @@ everyauth.google.fetchOAuthUser (accessToken) ->
       oauth_token: accessToken
       alt: 'json'
   .on 'success',(data, res) ->
-    console.log 'data', util.inspect data
     oauthUser = 
-      id: data.email
+      email: data.data.email
     promise.fulfill oauthUser
-    updateOrCreateUser
-      email: data.email
-    null
   .on 'error', (data, res) ->
     promise.fail data
-    null
   promise;
 
 
