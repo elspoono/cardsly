@@ -77,10 +77,9 @@ updateOrCreateUser = (user) ->
   false
 
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
-  console.log 'userMeta', userMeta
+  #console.log 'userMeta', userMeta
   promise = new Promise()
-  user =
-    something: 'something'
+  user = {}
   if userMeta.publicProfileUrl
     user.name = userMeta.firstName+' '+userMeta.lastName
     user.linkedin_url = userMeta.publicProfileUrl
