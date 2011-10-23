@@ -83,7 +83,6 @@
   everyauth.google.fetchOAuthUser = function(accessToken) {
     var promise;
     promise = this.Promise();
-    console.log(this);
     console.log(promise);
     rest.get(this.apiHost() + '/contacts/default/full', {
       query: {

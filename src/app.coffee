@@ -103,7 +103,6 @@ everyauth.google.redirectPath '/success'
 rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser =  (accessToken) ->
   promise = this.Promise()
-  console.log this
   console.log promise
   rest.get this.apiHost() + '/contacts/default/full', 
     query:
