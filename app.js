@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -42,6 +42,7 @@
     username: dbAuth.username,
     password: dbAuth.password
   });
+  util = require('util');
   bcrypt = require('bcrypt');
   encrypted = function(inString) {
     var salt;
@@ -83,7 +84,6 @@
   everyauth.google.fetchOAuthUser = function(accessToken) {
     var promise;
     promise = this.Promise();
-    console.log(promise);
     rest.get(this.apiHost() + '/contacts/default/full', {
       query: {
         oauth_token: accessToken,
@@ -94,9 +94,11 @@
       oauthUser = {
         id: data.feed.id.$t
       };
-      return promise.fulfill(oauthUser);
+      promise.fulfill(oauthUser);
+      return null;
     }).on('error', function(data, res) {
-      return promise.fail(data);
+      promise.fail(data);
+      return null;
     });
     return promise;
   };

@@ -59,6 +59,8 @@ sessionStore = new mongoStore
   username: dbAuth.username
   password: dbAuth.password
 
+util = require 'util'
+
 # BCRYPT for password storage
 bcrypt = require 'bcrypt'
 encrypted = (inString) ->
@@ -103,7 +105,6 @@ everyauth.google.redirectPath '/success'
 rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser =  (accessToken) ->
   promise = this.Promise()
-  console.log promise
   rest.get this.apiHost() + '/contacts/default/full', 
     query:
       oauth_token: accessToken
@@ -112,8 +113,10 @@ everyauth.google.fetchOAuthUser =  (accessToken) ->
     oauthUser = 
       id: data.feed.id.$t
     promise.fulfill oauthUser
+    null
   .on 'error', (data, res) ->
     promise.fail data
+    null
   promise;
 
 
