@@ -96,7 +96,16 @@ everyauth.linkedin.redirectPath '/success'
 everyauth.google.appId '90634622438.apps.googleusercontent.com'
 everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
 everyauth.google.findOrCreateUser handleGoodResponse
+everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'
 everyauth.google.redirectPath '/success'
+
+###
+everyauth.googlehybrid.consumerKey 'cards.ly'
+everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
+everyauth.googlehybrid.findOrCreateUser handleGoodResponse
+everyauth.googlehybrid.scope ['email']
+everyauth.googlehybrid.redirectPath '/success'
+###
 
 everyauth.debug = true
 
