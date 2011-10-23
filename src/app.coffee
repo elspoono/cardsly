@@ -104,7 +104,7 @@ everyauth.google.redirectPath '/success'
 rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser (accessToken) ->
   promise = this.Promise()
-  rest.get this.apiHost() + '/userinfo/email', 
+  rest.get 'https://www.googleapis.com/userinfo/email', 
     query:
       oauth_token: accessToken
       alt: 'json'

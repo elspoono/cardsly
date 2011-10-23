@@ -84,7 +84,7 @@
   everyauth.google.fetchOAuthUser(function(accessToken) {
     var promise;
     promise = this.Promise();
-    rest.get(this.apiHost() + '/userinfo/email', {
+    rest.get('https://www.googleapis.com/userinfo/email', {
       query: {
         oauth_token: accessToken,
         alt: 'json'
