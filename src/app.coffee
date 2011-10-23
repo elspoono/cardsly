@@ -67,6 +67,12 @@ encrypted = (inString) ->
 compareEncrypted = (inString,hash) ->
   bcrypt.compare_sync(inString, hash)
 
+everyauth = require 'everyauth'
+
+everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
+everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
+everyauth.twitter.findOrCreateUser (session, accessToken, accessTokenSecret, twitterUserData) ->
+  console.log twitterUserData
 
 # ## App configurations
 # ### Global app settings
@@ -81,9 +87,11 @@ app.configure ->
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
+  app.use app.router
   app.use express.session
     secret: conf.sessionSecret
     store: sessionStore
+  app.use everyauth.middleware
   app.use express.static(__dirname + conf.dir.public)
 
 # ### Environment based settings
