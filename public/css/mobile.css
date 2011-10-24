@@ -118,6 +118,9 @@ header .design-button {
   transform: scale(0.7, 0.7);
   margin-left: -50px;
 }
+.move {
+  display: none;
+}
 .text-fields {
   margin: 30px -15px;
 }

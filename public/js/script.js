@@ -532,6 +532,10 @@
         return $('.card .' + c).html(v);
       });
     });
+    $('.gallery').sortable({
+      item: '.card',
+      connectWith: '.gallery'
+    });
     $('.move').click(function() {
       var $t, d, r;
       $t = $(this);

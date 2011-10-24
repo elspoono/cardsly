@@ -482,6 +482,12 @@ $ ->
       c = this.className
       v = this.value
       $('.card .'+c).html(v)
+
+  # Moving Stuff
+  $('.gallery').sortable
+    item: '.card'
+    connectWith: '.gallery'
+  
   # Button Clicking Stuff
 
   # Move Button
