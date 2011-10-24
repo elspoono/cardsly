@@ -648,24 +648,60 @@ header .navigation li a {
 }
 .button.normal {
   background-color: #56a3da;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2d8cd0));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
 /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #56a3da, #2d8cd0);
+  background-image: -webkit-linear-gradient(top, #56a3da, #2470a6);
 /* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #56a3da, #2d8cd0);
+  background-image: -moz-linear-gradient(top, #56a3da, #2470a6);
 /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #56a3da, #2d8cd0);
+  background-image: -ms-linear-gradient(top, #56a3da, #2470a6);
 /* IE10 */
-  background-image: -o-linear-gradient(top, #56a3da, #2d8cd0);
+  background-image: -o-linear-gradient(top, #56a3da, #2470a6);
 /* Opera 11.10+ */
-  background-image: linear-gradient(top, #56a3da, #2d8cd0);
-  width: 150px;
+  background-image: linear-gradient(top, #56a3da, #2470a6);
+  width: 120px;
   text-align: center;
-  padding: 5px 10px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  padding: 8px 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
   margin: 0 auto;
+  -moz-box-shadow: 1px 1px 1px #000;
+  -webkit-box-shadow: 1px 1px 1px #000;
+  box-shadow: 1px 1px 1px #000;
+  font-size: 25.2px;
+  line-height: 1.5em;
+  color: #eee;
+}
+.button.normal.hover {
+  color: #bbb;
+  background-color: #2d8cd0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2d8cd0), to(#1b547c));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #2d8cd0, #1b547c);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #2d8cd0, #1b547c);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #2d8cd0, #1b547c);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #2d8cd0, #1b547c);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #2d8cd0, #1b547c);
+}
+.button.normal.click {
+  padding: 11px 12px 5px 18px;
+  background-color: #2470a6;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2470a6), to(#123752));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #2470a6, #123752);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #2470a6, #123752);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #2470a6, #123752);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #2470a6, #123752);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #2470a6, #123752);
 }
 .button {
   cursor: pointer;
@@ -892,9 +928,16 @@ header .navigation li a {
 .text-fields {
   margin: 30px;
 }
+.text-fields .suggestions {
+  color: #362e2a;
+  font-size: 10.5px;
+  line-height: 1.5em;
+  line-height: 1em;
+}
 .text-fields textarea {
   width: 100%;
   height: 75px;
+  margin: 0;
 }
 .text-fields label {
   color: #eee;
@@ -904,6 +947,7 @@ header .navigation li a {
 }
 .text-fields input {
   width: 300px;
+  max-width: 100%;
   display: block;
   font-size: 16.8px;
   line-height: 1.5em;
