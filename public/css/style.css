@@ -731,8 +731,8 @@ header .navigation li a {
   background: url("/images/buttons/checkout-click.png");
 }
 .design-button {
-  height: 50px;
-  width: 200px;
+  height: 46px;
+  width: 166px;
   background: url("/images/buttons/design.png");
 }
 .design-button.hover {
