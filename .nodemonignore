@@ -1,0 +1,4 @@
+./views/*
+./public/*
+./src/*
+.*.git

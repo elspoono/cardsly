@@ -76,7 +76,7 @@
      * 
   */
   loadModal = function(options, next) {
-    var $body, buttons, cancel, close, confirm, height, modal, myNext, ok, resizeEvent, scrollbarWidth, settings, width, win;
+    var $body, Close, buttons, cancel, close, confirm, height, modal, myNext, ok, resizeEvent, scrollbarWidth, settings, width, win;
     scrollbarWidth = $.scrollbarWidth();
     modal = $('<div class="modal" />');
     win = $('<div class="window" />');
@@ -89,6 +89,26 @@
     if (options) {
       $.extend(settings, options);
     }
+    myNext = function() {
+      $window.unbind('scroll resize', resizeEvent);
+      $window.unbind('resize', resizeEvent);
+      $body.css({
+        overflow: 'inherit',
+        'padding-right': 0
+      });
+      modal.fadeOut(function() {
+        return modal.remove();
+      });
+      close.fadeOut(function() {
+        return close.remove();
+      });
+      return win.fadeOut(function() {
+        win.remove();
+        if ($('.window').length === 0) {
+          return $('#container').show();
+        }
+      });
+    };
     if (settings.closeText) {
       close.html(settings.closeText);
     }
@@ -104,24 +124,31 @@
       win.width(settings.width);
     }
     buttons = $('<div class="buttons" />');
+    if (settings.Close) {
+      Close = $('<input type="button" value="Close" class="submit">');
+      Close.click(function() {
+        return settings.Close(myNext);
+      });
+      buttons.append(Close);
+    }
     if (settings.Ok) {
       ok = $('<input type="button" value="Ok" class="submit">');
       ok.click(function() {
-        return settings.Ok(false, win, modal);
+        return settings.Ok(myNext);
       });
       buttons.append(ok);
     }
     if (settings.Cancel) {
       cancel = $('<input type="button" value="Cancel" class="cancel">');
       cancel.click(function() {
-        return settings.Cancel(false, win, modal);
+        return settings.Cancel(myNext);
       });
       buttons.append(cancel);
     }
     if (settings.Confirm) {
       confirm = $('<input type="button" value="Confirm" class="submit">');
       confirm.click(function() {
-        return settings.Confirm(false, win, modal);
+        return settings.Confirm(myNext);
       });
       buttons.append(confirm);
     }
@@ -133,13 +160,14 @@
       width = $window.width();
       height = $window.height();
       if (width < settings.width || height < win.height()) {
+        $window.unbind('scroll resize', resizeEvent);
         close.css({
           position: 'relative'
         });
         win.width(width - 60).css({
           position: 'relative'
         });
-        $('.body,.footer,.header').hide();
+        $('#container').hide();
         top = close.offset().top;
         modal.css({
           top: 0,
@@ -155,8 +183,8 @@
         });
         win.position({
           of: $window,
-          at: 'center top',
-          my: 'center top',
+          at: 'center center',
+          my: 'center center',
           offset: '0 40px'
         });
         modal.position({
@@ -171,26 +199,7 @@
         });
       }
     };
-    $window.bind('resize', resizeEvent);
-    myNext = function() {
-      $window.unbind('resize', resizeEvent);
-      $body.css({
-        overflow: 'inherit',
-        'padding-right': 0
-      });
-      modal.fadeOut(function() {
-        return modal.remove();
-      });
-      close.fadeOut(function() {
-        return close.remove();
-      });
-      return win.fadeOut(function() {
-        win.remove();
-        if ($('.window').length === 0) {
-          return $('.body,.footer,.header').show();
-        }
-      });
-    };
+    $window.bind('resize scroll', resizeEvent);
     modal.click(myNext);
     close.click(myNext);
     width = $window.width();
@@ -205,7 +214,7 @@
       close.fadeIn();
     }
     if (next) {
-      next(false, win, modal);
+      next(myNext);
     }
     return resizeEvent();
   };
@@ -272,8 +281,8 @@
     }
     modifiedOptions = {
       content: 'Alert',
-      Ok: function(err, win, modal) {
-        return modal.click();
+      Ok: function(close) {
+        return close();
       },
       height: 80,
       width: 300
@@ -426,6 +435,46 @@
   };
   $(function() {
     var $win, advanceSlide, hasHidden, i, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
+    $('.google').click(function() {
+      loadAlert({
+        content: '<iframe height=400 width=100% src=/auth/google ></iframe>',
+        height: 400,
+        width: 700
+      });
+      return false;
+    });
+    $('.twitter').click(function() {
+      loadAlert({
+        content: '<iframe height=400 width=100% src=/auth/twitter ></iframe>',
+        height: 400,
+        width: 700
+      });
+      return false;
+    });
+    $('.facebook').click(function() {
+      loadAlert({
+        content: '<iframe height=400 width=100% src=/auth/facebook ></iframe>',
+        height: 400,
+        width: 700
+      });
+      return false;
+    });
+    $('.linkedin').click(function() {
+      loadAlert({
+        content: '<iframe height=400 width=100% src=/auth/linkedin ></iframe>',
+        height: 400,
+        width: 700
+      });
+      return false;
+    });
+    $('.create').click(function() {
+      loadAlert({
+        content: '<iframe height=400 width=100% src=/login ></iframe>',
+        height: 400,
+        width: 700
+      });
+      return false;
+    });
     $win = $(window);
     winH = $win.height() + $win.scrollTop();
     hasHidden = [];

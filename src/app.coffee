@@ -72,7 +72,6 @@ compareEncrypted = (inString,hash) ->
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
-
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
   promise = new Promise()

@@ -46,11 +46,14 @@
   zoom: 1;
 }
 header h1 {
-  top: -85px;
+  top: -80px;
   left: -45px;
   font-size: 21px;
   line-height: 1.5em;
   line-height: 1.2em;
+}
+header .design-button.top {
+  top: -80px;
 }
 .section {
   padding: 15px;
@@ -112,6 +115,7 @@ header h1 {
   -moz-transform: scale(0.7, 0.7);
   -ms-transform: scale(0.7, 0.7);
   transform: scale(0.7, 0.7);
+  margin-left: -50px;
 }
 .text-fields {
   margin: 30px -15px;

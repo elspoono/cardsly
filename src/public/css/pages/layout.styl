@@ -26,6 +26,70 @@ input,li
   .alt
     color $c-logo-alt
 
+
+
+// Modal BAckgrounds
+.modal
+  z-index 200
+  gradient($c-bg-light,$c-bg-dark)
+  opacity(.6)
+  height 100%
+  width 100%
+  absolute()
+.close
+  font-size 1em
+  padding 4px 30px
+  background semi-light
+  alpha-bg($c-light,.75)
+  color semi-dark
+  absolute()
+  z-index 201
+  cursor pointer
+  border-radius-top-only(8px)
+.window
+  z-index 201
+  alpha-bg($c-light,.9)
+  border-radius-except-top-right(8px)
+  color $c-black
+  a
+    color alt-color
+    text-decoration none
+  h2
+    font-size 1.5em
+  padding 30px
+  absolute()
+  overflow hidden
+  /**************************************
+   *
+   * Buttons at the bottom of most windows
+   *
+   **************************************/
+  .buttons
+    overflow hidden
+    width 100%
+    .submit,.cancel
+      margin 30px 0 0 0
+      font-size 1.2em
+      border 1px solid $c-bg-dark
+      border-radius(4px)
+      padding 0 30px
+    .cancel
+      background semi-light
+      color semi-dark
+    .submit
+      float right
+      margin-left 15px
+      submit()
+    .cancel
+      margin-right 15px
+      float left
+
+
+
+
+
+
+
 // Header
 header
   position relative

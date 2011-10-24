@@ -36,12 +36,8 @@ body
       ul.navigation
         li
           a(href='/') Home
-        li
-          a(href='/') Pricing
-        li
-          a(href='/') About
-        li.last
-          a(href='/') Login
+        li.last.login
+          a(href='/logout') Login
       h1.fittext
         span business cards done easi
         span.alt ly
@@ -54,8 +50,9 @@ body
       != body
     footer
   script(src='/js/libs/jquery-1.6.2.min.js')
+  script(src='/js/libs/jquery-ui-1.8.16.min.js')
   //script(src='/js/libs/jquery.fittext.js')
-  script(src='/js/libs/jquery.animate-enhanced.min.js')
+  //script(src='/js/libs/jquery.animate-enhanced.min.js')
   script(src='/js/plugins.js')
   script(src='/js/script.js')
   script

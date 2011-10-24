@@ -80,6 +80,20 @@ loadModal = (options, next) ->
   if options
     $.extend settings, options
 
+
+  myNext = () ->
+    $window.unbind 'scroll resize',resizeEvent
+    $window.unbind 'resize',resizeEvent
+    $body.css
+      overflow:'inherit'
+      'padding-right':0
+    modal.fadeOut () -> modal.remove()
+    close.fadeOut () -> close.remove()
+    win.fadeOut () ->
+      win.remove()
+      if($('.window').length==0)
+        $('#container').show()
+
   if settings.closeText
     close.html settings.closeText
   if settings.content
@@ -92,22 +106,28 @@ loadModal = (options, next) ->
 
   buttons = $ '<div class="buttons" />'
 
+  if settings.Close
+    Close = $ '<input type="button" value="Close" class="submit">'
+    Close.click () ->
+      settings.Close myNext
+    buttons.append Close
+
   if settings.Ok
     ok = $ '<input type="button" value="Ok" class="submit">'
     ok.click () ->
-      settings.Ok false,win,modal
+      settings.Ok myNext
     buttons.append ok
 
   if settings.Cancel
     cancel = $ '<input type="button" value="Cancel" class="cancel">'
     cancel.click () ->
-      settings.Cancel false,win,modal
+      settings.Cancel myNext
     buttons.append cancel
 
   if settings.Confirm
     confirm = $ '<input type="button" value="Confirm" class="submit">'
     confirm.click () ->
-      settings.Confirm false,win,modal
+      settings.Confirm myNext
     buttons.append confirm
 
   win.append buttons
@@ -120,11 +140,12 @@ loadModal = (options, next) ->
     width = $window.width()
     height = $window.height()
     if width < settings.width || height < win.height()
+      $window.unbind 'scroll resize',resizeEvent
       close.css
         position:'relative'
       win.width(width-60).css
         position:'relative'
-      $('.body,.footer,.header').hide()
+      $('#container').hide()
       top = close.offset().top
       modal.css
         top:0
@@ -138,8 +159,8 @@ loadModal = (options, next) ->
         'padding-right':scrollbarWidth
       win.position
         of:$window
-        at:'center top'
-        my:'center top'
+        at:'center center'
+        my:'center center'
         offset:'0 40px'
       modal.position
         of:$window
@@ -150,18 +171,7 @@ loadModal = (options, next) ->
         my:'right bottom'
         offset:'0 0'
 
-  $window.bind 'resize', resizeEvent
-  myNext = () ->
-    $window.unbind 'resize',resizeEvent
-    $body.css
-      overflow:'inherit'
-      'padding-right':0
-    modal.fadeOut () -> modal.remove()
-    close.fadeOut () -> close.remove()
-    win.fadeOut () ->
-      win.remove()
-      if($('.window').length==0)
-        $('.body,.footer,.header').show()
+  $window.bind 'resize scroll', resizeEvent
 
   modal.click myNext
   close.click myNext
@@ -177,7 +187,7 @@ loadModal = (options, next) ->
     close.fadeIn()
 
   if next
-    next false,win,modal
+    next myNext
   resizeEvent()
 
 ###
@@ -233,16 +243,12 @@ loadAlert = (options, next) ->
       content:options
   modifiedOptions =
     content: 'Alert'
-    Ok: (err,win,modal) -> modal.click()
+    Ok: (close) -> close()
     height: 80
     width: 300
   for i,v of options
     modifiedOptions[i] = options[i]
-
   loadModal modifiedOptions, next
-
-
-
 
 
 ###
@@ -386,6 +392,45 @@ Date::format = (mask, utc) ->
 $ ->
 
   
+
+  #loadAlert 'Test', (close) ->
+    #close()
+
+  $('.google').click () ->
+    loadAlert
+      content: '<iframe height=400 width=100% src=/auth/google ></iframe>'
+      height: 400
+      width: 700
+    false
+
+  $('.twitter').click () ->
+    loadAlert
+      content: '<iframe height=400 width=100% src=/auth/twitter ></iframe>'
+      height: 400
+      width: 700
+    false
+
+  $('.facebook').click () ->
+    loadAlert
+      content: '<iframe height=400 width=100% src=/auth/facebook ></iframe>'
+      height: 400
+      width: 700
+    false
+
+  $('.linkedin').click () ->
+    loadAlert
+      content: '<iframe height=400 width=100% src=/auth/linkedin ></iframe>'
+      height: 400
+      width: 700
+    false
+
+  $('.create').click () ->
+    loadAlert
+      content: '<iframe height=400 width=100% src=/login ></iframe>'
+      height: 400
+      width: 700
+    false
+
 
   $win = $(window)
   winH = $win.height()+$win.scrollTop()
