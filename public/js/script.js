@@ -436,11 +436,7 @@
   $(function() {
     var $win, advanceSlide, hasHidden, i, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
     $('.google').click(function() {
-      loadAlert({
-        content: '<iframe height=400 width=100% src=/auth/google ></iframe>',
-        height: 400,
-        width: 700
-      });
+      window.open('auth/google', 'auth', 'height=300,width=600');
       return false;
     });
     $('.twitter').click(function() {
@@ -460,11 +456,7 @@
       return false;
     });
     $('.linkedin').click(function() {
-      loadAlert({
-        content: '<iframe height=400 width=100% src=/auth/linkedin ></iframe>',
-        height: 400,
-        width: 700
-      });
+      window.open('auth/linkedin', 'auth', 'height=300,width=400');
       return false;
     });
     $('.create').click(function() {

@@ -397,10 +397,7 @@ $ ->
     #close()
 
   $('.google').click () ->
-    loadAlert
-      content: '<iframe height=400 width=100% src=/auth/google ></iframe>'
-      height: 400
-      width: 700
+    window.open 'auth/google', 'auth', 'height=300,width=600'
     false
 
   $('.twitter').click () ->
@@ -418,10 +415,7 @@ $ ->
     false
 
   $('.linkedin').click () ->
-    loadAlert
-      content: '<iframe height=400 width=100% src=/auth/linkedin ></iframe>'
-      height: 400
-      width: 700
+    window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
 
   $('.create').click () ->
