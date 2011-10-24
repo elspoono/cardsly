@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, UserSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -54,6 +54,54 @@
   };
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
+  err = function(res, err) {
+    return res.send('', {
+      Location: '/error'
+    }, 302);
+  };
+  /*
+  DATABASE SCHEMA
+  *****************************************
+  
+  All our schemas
+  
+  *****************************************
+  */
+  UserSchema = new Schema({
+    email: String,
+    password_encrypted: String,
+    role: String,
+    name: String,
+    title: String,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  UserSchema.static('authenticate', function(email, password, next) {
+    return this.find({
+      email: email,
+      active: true
+    }, function(err, data) {
+      if (err) {
+        return err(err);
+      } else {
+        if (data.length > 0) {
+          if (compareEncrypted(password, data[0].password_encrypted)) {
+            return next(null, data[0]);
+          } else {
+            return next('Password incorrect.');
+          }
+        } else {
+          return next('Email not found.');
+        }
+      }
+    });
+  });
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
     promise = new Promise();
@@ -155,6 +203,9 @@
   app.get('/cards', function(req, res) {
     return res.render('cards');
   });
+  app.get('/error', function(req, res) {
+    return res.render('error');
+  });
   app.get('/robots.txt', function(req, res, next) {
     return res.send('User-agent: *\nDisallow: ', {
       'Content-Type': 'text/plain'
@@ -165,6 +216,6 @@
       Location: '/'
     }, 301);
   });
-  app.listen(process.env.PORT || 3000);
+  app.listen(process.env.PORT || 4000);
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 }).call(this);

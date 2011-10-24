@@ -72,6 +72,58 @@ compareEncrypted = (inString,hash) ->
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
+
+
+# Redirect Error
+
+err = (res, err) ->
+  res.send '',
+    Location: '/error'
+  , 302
+
+
+###
+DATABASE SCHEMA
+*****************************************
+
+All our schemas
+
+*****************************************
+###
+
+
+# User
+UserSchema = new Schema
+  email:String
+  password_encrypted: String
+  role: String
+  name: String
+  title: String
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+
+# User Authentication
+UserSchema.static 'authenticate', (email, password, next) ->
+  this.find
+    email: email
+    active:true
+  , (err,data) ->
+    if err
+      err err
+    else
+      if data.length > 0
+        if compareEncrypted password, data[0].password_encrypted
+          next null, data[0]
+        else
+          next 'Password incorrect.'
+      else
+        next 'Email not found.'
+
+
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
   promise = new Promise()
@@ -132,6 +184,7 @@ everyauth.google.fetchOAuthUser (accessToken) ->
   promise;
 
 
+
 ###
 everyauth.googlehybrid.consumerKey 'cards.ly'
 everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
@@ -162,7 +215,7 @@ app.configure ->
   app.use everyauth.middleware()
 
 # ### Environment based settings
-
+#
 # **Note**: Express defaults to 'development' environment if $NODE_ENV is not defined.
 # If you wish to change to any other environment, run `export NODE_ENV='myEnv'`.
 # You can define as many environments and configurations as you wish.
@@ -194,6 +247,9 @@ app.get '/success', (req, res) ->
 app.get '/cards', (req, res) ->
   res.render 'cards'
 
+app.get '/error', (req, res) ->
+  res.render 'error'
+
 app.get '/robots.txt', (req, res, next) ->
   res.send 'User-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
@@ -205,5 +261,5 @@ app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->
 
 
 # ### Start server
-app.listen process.env.PORT || 3000
+app.listen process.env.PORT || 4000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
