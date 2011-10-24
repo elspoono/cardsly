@@ -436,23 +436,15 @@
   $(function() {
     var $win, advanceSlide, hasHidden, i, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
     $('.google').click(function() {
-      window.open('auth/google', 'auth', 'height=300,width=600');
+      window.open('auth/google', 'auth', 'height=350,width=600');
       return false;
     });
     $('.twitter').click(function() {
-      loadAlert({
-        content: '<iframe height=400 width=100% src=/auth/twitter ></iframe>',
-        height: 400,
-        width: 700
-      });
+      window.open('auth/twitter', 'auth', 'height=400,width=500');
       return false;
     });
     $('.facebook').click(function() {
-      loadAlert({
-        content: '<iframe height=400 width=100% src=/auth/facebook ></iframe>',
-        height: 400,
-        width: 700
-      });
+      window.open('auth/facebook', 'auth', 'height=400,width=900');
       return false;
     });
     $('.linkedin').click(function() {

@@ -397,21 +397,15 @@ $ ->
     #close()
 
   $('.google').click () ->
-    window.open 'auth/google', 'auth', 'height=300,width=600'
+    window.open 'auth/google', 'auth', 'height=350,width=600'
     false
 
   $('.twitter').click () ->
-    loadAlert
-      content: '<iframe height=400 width=100% src=/auth/twitter ></iframe>'
-      height: 400
-      width: 700
+    window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
 
   $('.facebook').click () ->
-    loadAlert
-      content: '<iframe height=400 width=100% src=/auth/facebook ></iframe>'
-      height: 400
-      width: 700
+    window.open 'auth/facebook', 'auth', 'height=400,width=900'
     false
 
   $('.linkedin').click () ->
