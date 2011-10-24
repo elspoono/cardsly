@@ -53,7 +53,7 @@ header h1 {
   line-height: 1.2em;
   width: 120px;
 }
-header .design-button.top {
+header .design-button {
   top: -80px;
 }
 .section {

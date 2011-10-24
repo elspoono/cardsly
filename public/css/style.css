@@ -513,10 +513,11 @@ header .logo img {
   position: relative;
   z-index: 50;
 }
-header .design-button.top {
+header .design-button {
   position: absolute;
   top: 75px;
   right: 0;
+  display: block;
 }
 header h1 {
   position: absolute;
@@ -659,7 +660,7 @@ header .navigation li a {
   background-image: -o-linear-gradient(top, #56a3da, #2470a6);
 /* Opera 11.10+ */
   background-image: linear-gradient(top, #56a3da, #2470a6);
-  width: 120px;
+  width: 140px;
   text-align: center;
   padding: 8px 15px;
   -webkit-border-radius: 10px;
@@ -674,34 +675,34 @@ header .navigation li a {
   color: #eee;
 }
 .button.normal.hover {
-  color: #bbb;
-  background-color: #2d8cd0;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#2d8cd0), to(#1b547c));
+  color: #fff;
+  background-color: #80bae3;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#80bae3), to(#2d8cd0));
 /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #2d8cd0, #1b547c);
+  background-image: -webkit-linear-gradient(top, #80bae3, #2d8cd0);
 /* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #2d8cd0, #1b547c);
+  background-image: -moz-linear-gradient(top, #80bae3, #2d8cd0);
 /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #2d8cd0, #1b547c);
+  background-image: -ms-linear-gradient(top, #80bae3, #2d8cd0);
 /* IE10 */
-  background-image: -o-linear-gradient(top, #2d8cd0, #1b547c);
+  background-image: -o-linear-gradient(top, #80bae3, #2d8cd0);
 /* Opera 11.10+ */
-  background-image: linear-gradient(top, #2d8cd0, #1b547c);
+  background-image: linear-gradient(top, #80bae3, #2d8cd0);
 }
 .button.normal.click {
-  padding: 11px 12px 5px 18px;
-  background-color: #2470a6;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#2470a6), to(#123752));
+  padding: 10px 12px 6px 18px;
+  background-color: #2d8cd0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2d8cd0), to(#80bae3));
 /* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #2470a6, #123752);
+  background-image: -webkit-linear-gradient(top, #2d8cd0, #80bae3);
 /* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #2470a6, #123752);
+  background-image: -moz-linear-gradient(top, #2d8cd0, #80bae3);
 /* FF3.6 */
-  background-image: -ms-linear-gradient(top, #2470a6, #123752);
+  background-image: -ms-linear-gradient(top, #2d8cd0, #80bae3);
 /* IE10 */
-  background-image: -o-linear-gradient(top, #2470a6, #123752);
+  background-image: -o-linear-gradient(top, #2d8cd0, #80bae3);
 /* Opera 11.10+ */
-  background-image: linear-gradient(top, #2470a6, #123752);
+  background-image: linear-gradient(top, #2d8cd0, #80bae3);
 }
 .button {
   cursor: pointer;
@@ -729,17 +730,6 @@ header .navigation li a {
 }
 .checkout-button.click {
   background: url("/images/buttons/checkout-click.png");
-}
-.design-button {
-  height: 46px;
-  width: 166px;
-  background: url("/images/buttons/design.png");
-}
-.design-button.hover {
-  background: url("/images/buttons/design-hover.png");
-}
-.design-button.click {
-  background: url("/images/buttons/design-click.png");
 }
 .google,
 .facebook,

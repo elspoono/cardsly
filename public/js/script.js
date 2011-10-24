@@ -500,7 +500,7 @@
     maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
-    $('.design-button.top').click(function() {
+    $('.design-button').click(function() {
       $('html,body').animate({
         scrollTop: $('.section:eq(1)').offset().top
       }, 1000);

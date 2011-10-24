@@ -459,7 +459,7 @@ $ ->
   # Home Page Stuff
 
   # Button Clicking Stuff
-  $('.design-button.top').click ->
+  $('.design-button').click ->
     $('html,body').animate
       scrollTop: $('.section:eq(1)').offset().top
     ,
