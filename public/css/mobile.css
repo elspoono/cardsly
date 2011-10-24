@@ -46,11 +46,12 @@
   zoom: 1;
 }
 header h1 {
-  top: -80px;
+  top: 85px;
   left: -45px;
-  font-size: 21px;
+  font-size: 16.8px;
   line-height: 1.5em;
   line-height: 1.2em;
+  width: 120px;
 }
 header .design-button.top {
   top: -80px;
@@ -60,7 +61,7 @@ header .design-button.top {
 }
 .phone-left {
   margin: 150px 50px 50px;
-  display: block;
+  display: none;
   float: none;
 }
 .slides {
