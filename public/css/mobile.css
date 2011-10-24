@@ -130,3 +130,19 @@ header .design-button {
 .text-fields li {
   margin: 10px 15px;
 }
+.design-container {
+  position: relative;
+}
+.design-left {
+  width: auto;
+  float: none;
+  margin: 30px 0;
+}
+.design-right {
+  position: relative;
+  width: auto;
+  height: auto;
+  float: none;
+  padding: 0;
+  margin: 30px 0;
+}

@@ -38,43 +38,108 @@
           li.third
             img(src='/images/slide-3.png')
     .clear
-.section
-  .cell-bg
-  .cell-content
-    h3 Step 1 : Design Your Card
-    .card.main.scott-qr-blue
-      img(src='/images/qr.png').qr
-      ul.content
-        li.name John Stamos
-        li.title Uncle Jesse
-        li.phone 555.555.5555
-        li.email john@stamos.com
-    .text-fields
-      ul
-        li
-          label Name
-          input.name(placeholder='John Stamos',value='John Stamos')
-        li
-          label Title
-          input.title(placeholder='Uncle Jesse',value='Uncle Jesse')
-        li
-          label Phone Number
-          input.phone(placeholder='555.555.5555',value='555.555.5555')
-        li
-          label Email Address
-          input.email(placeholder='john@stamos.com',value='john@stamos.com')
+.design-container
+  .section.design-left
+    .cell-bg
+    .cell-content
+      h3 Step 1 : Design Your Card
+      .card.main.scott-qr-blue
+        img(src='/images/qr.png').qr
+        ul.content
+          li.name John Stamos
+          li.title Uncle Jesse
+          li.phone 555.555.5555
+          li.email john@stamos.com
+          li.company 
+          li.address 
+          li.fax 
+          li.address_2 
+          li.custom_1 
+          li.address_3 
+          li.custom_2 
+          li.custom_3 
+      .text-fields.main-fields
+        ul
+          li
+            label Name
+            input.name(placeholder='John Stamos',value='John Stamos')
+          li
+            label Title
+            input.title(placeholder='Uncle Jesse',value='Uncle Jesse')
+          li
+            label Phone Number
+            input.phone(placeholder='555.555.5555',value='555.555.5555')
+          li
+            label Email Address
+            input.email(placeholder='john@stamos.com',value='john@stamos.com')
         .clear
-    ul.gallery
-      li.blue-green-gradient
-      li.circles-blue
-      li.gray-blue-gradient
-      li.kickback-blue
-      li.kickback-tan
-      li.tri-color
-    .add-button.button
-    .img-loader
-      img(src='/images/buttons/add-click.png')
-      img(src='/images/buttons/add-hover.png')
+        ul.alt
+          li
+            label Company
+            input.company(placeholder='Disney',value='')
+          li
+            label Address
+            input.address(placeholder='123 Fake St',value='')
+          li
+            label Fax Number
+            input.fax(placeholder='fax: 555.555.5555',value='')
+          li
+            label Address Line 2
+            input.address_2(placeholder='Townsville, NY 90210',value='')
+          li
+            label Custom 1
+            input.custom_1(placeholder='@my_twitter',value='')
+          li
+            label Address Line 3
+            input.address_3(placeholder='USA',value='')
+          li
+            label Custom 2
+            input.custom_2(placeholder='fb.com/my_facebook',value='')
+          li
+            label Custom 3
+            input.custom_3(placeholder='talk to me.',value='')
+          .clear
+        a(href='#').more Add more fields
+        a(href='#').less Hide extra fields
+      ul.gallery
+        - for i in ['scott-qr-blue','blue-green-gradient','circles-blue','kickback-blue']
+          li.card(class=i)
+            img(src='/images/qr.png').qr
+            ul.content
+              li.name John Stamos
+              li.title Uncle Jesse
+              li.phone 555.555.5555
+              li.email john@stamos.com
+              li.company 
+              li.address 
+              li.fax 
+              li.address_2 
+              li.custom_1 
+              li.address_3 
+              li.custom_2 
+              li.custom_3 
+      .button.normal.move Move Cards
+  .section.design-right
+    .cell-bg
+    .cell-content
+      ul.gallery
+        - for i in ['blue-green-gradient','circles-blue','gray-blue-gradient','kickback-tan','tri-color']
+          li.card(class=i)
+            img(src='/images/qr.png').qr
+            ul.content
+              li.name John Stamos
+              li.title Uncle Jesse
+              li.phone 555.555.5555
+              li.email john@stamos.com
+              li.company 
+              li.address 
+              li.fax 
+              li.address_2 
+              li.custom_1 
+              li.address_3 
+              li.custom_2 
+              li.custom_3 
+  .clear
 .section
   .cell-bg
   .cell-content
@@ -92,7 +157,12 @@
       img(src='/images/buttons/new-hover.png')
 
     h3 Step 2 : Purchase
-    p I want to sign in with:
+    p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
+    p
+      | I want to sign in to 
+      span.cardsly cards
+        span.alt .ly
+      | &nbsp;with:
     a.button.twitter(href='/auth/twitter')
       span Twitter
     a.button.facebook(href='/auth/facebook')
@@ -105,24 +175,39 @@
     p -or-
     a.button.new(href='#')
       span Create a username and password
+      span.subtitle username and password
     .clear
     p &nbsp;
-    p Select the quantity:
-    .radio-text-fields
-      ul
-        li
-          input(type='radio',name='quantity',checked='checked')
-          label 50 cards for $5
-        li
-          input(type='radio',name='quantity')
-          label 250 cards for $15
-        li
-          input(type='radio',name='quantity')
-          label 500 cards for $25
-        li
-          input(type='radio',name='quantity')
-          label 1500 cards for $50
-        .clear
+    p I'd like to have this many cards:
+    
+    ul.radio-text-fields
+      li
+        input(type='radio',name='quantity',value='50',checked='checked')
+        label 50 cards for $5
+          .subtitle 10 cents per card
+      li
+        input(type='radio',name='quantity',value='250')
+        label 250 cards for $15
+          .subtitle 6 cents per card
+      li
+        input(type='radio',name='quantity',value='500')
+        label 500 cards for $25
+          .subtitle 5 cents per card
+      li
+        input(type='radio',name='quantity',value='1500')
+        label 1500 cards for $50
+          .subtitle 3.3 cents per card
+      .clear
+    p Shipped this quickly
+    ul.radio-text-fields
+      li
+        input(type='radio',name='shipping',value='1st class',checked='checked')
+        label First Class Mail for $0
+          .subtitle 1-3 days
+      li
+        input(type='radio',name='shipping',value='express')
+        label Express Mail for $25
+          .subtitle overnight
     .checkout-button.button
     .img-loader
       img(src='/images/buttons/checkout-click.png')

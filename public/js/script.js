@@ -433,6 +433,28 @@
     a = new dateFormat;
     return a.format(this, mask, utc);
   };
+  $.fn.box_rotate = function(options) {
+    var settings;
+    settings = {
+      position: 'below'
+    };
+    return this.each(function(i) {
+      var $t, degrees, rotate;
+      if (options) {
+        $.extend(settings, options);
+      }
+      $t = $(this);
+      degrees = settings.degrees;
+      rotate = Math.floor((degrees / 360) * 100) / 100;
+      return $t.css({
+        '-moz-transform': 'rotate(' + degrees + 'deg)',
+        '-webkit-transform': 'rotate(' + degrees + 'deg)',
+        '-o-transform': 'rotate(' + degrees + 'deg)',
+        '-ms-transform': 'rotate(' + degrees + 'deg)',
+        'filter:progid': 'DXImageTransform.Microsoft.BasicImage(rotation=' + rotate + ')'
+      });
+    });
+  };
   $(function() {
     var $win, advanceSlide, hasHidden, i, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
     $('.google').click(function() {
@@ -500,6 +522,59 @@
     maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
+    $('.main-fields input').each(function() {
+      var $t;
+      $t = $(this);
+      return $t.keyup(function() {
+        var c, v;
+        c = this.className;
+        v = this.value;
+        return $('.card .' + c).html(v);
+      });
+    });
+    $('.move').click(function() {
+      var $t, d, r;
+      $t = $(this);
+      if ($.browser.webkit) {
+        $('.gallery .card').addClass('wiggle-animate');
+      } else {
+        clearTimeout($('.move').data('timer'));
+        d = 0;
+        r = [-.5, -1, -.5, 0, .5, 1, .5, 0];
+        $t.data('timer', setInterval(function() {
+          var c;
+          d = d + 1;
+          c = r[d % r.length];
+          return $('.gallery .card').box_rotate({
+            degrees: c
+          });
+        }, 30));
+      }
+      setTimeout(function() {
+        var clearDoc;
+        clearDoc = function() {
+          clearTimeout($('.move').data('timer'));
+          $('.gallery .card').removeClass('wiggle-animate').box_rotate({
+            degrees: 0
+          });
+          return $('body').unbind('click', clearDoc);
+        };
+        return $('body').bind('click', clearDoc);
+      }, 0);
+      return false;
+    });
+    $('.main-fields .more').click(function() {
+      $('.main-fields .alt').slideDown(1000);
+      $(this).hide();
+      $('.main-fields .less').show();
+      return false;
+    });
+    $('.main-fields .less').hide().click(function() {
+      $('.main-fields .alt').slideUp(1000);
+      $(this).hide();
+      $('.main-fields .more').show();
+      return false;
+    });
     $('.design-button').click(function() {
       $('html,body').animate({
         scrollTop: $('.section:eq(1)').offset().top

@@ -8,7 +8,7 @@ body
   font-family $base-font-family
   background $c-body-bg url('/images/little_pluses.png')
   overflow hidden
-input,li
+input
   font-size(1)
 #container
   max-width 850px
@@ -115,6 +115,7 @@ header
     margin 0
     border-radius()
     li
+      font-size(1)
       margin 0
       float left
       a
@@ -145,6 +146,8 @@ header
   padding gap(1)
   color $c-black
   position relative
+  a,a:visited
+    color $c-light
 .section.left
   width 380px
   float left
@@ -228,8 +231,13 @@ header
   display block
   float left
   margin 0 10px 20px 0
+  text-decoration none
   span
     display none
+  .subtitle
+    display block
+    position absolute
+    margin-top 40px
   height 40px
   width 150px
 .google
@@ -319,19 +327,36 @@ header
   height 240px
   display block
   margin 0 auto
+  font-size(.8)
 .card
+  font-size(.4)
+  .content
+    padding 15px 10px
   .qr
+    height 35px
+    width 35px
     position absolute
-.scott-qr-blue
+    margin-left 150px
+    margin-top 35px
+.scott-qr-blue.main
   background url('/images/card-bg/scott-qr-blue.png')
-  color #dcff18
-  font-family Times New Roman
   .content
     padding 30px 20px
   .qr
     height 70px
     width 70px
     margin 30px 0 0 280px
+    box-rotate(45deg)
+.scott-qr-blue
+  background url('/images/card-bg-small/scott-qr-blue.png')
+  color #dcff18
+  font-family Times New Roman
+  .content
+    padding 15px 10px
+  .qr
+    height 35px
+    width 35px
+    margin 15px 0 0 140px
     box-rotate(45deg)
 .blue-green-gradient
   background url('/images/card-bg-small/blue-green-gradient.png')
@@ -352,17 +377,75 @@ header
 
 
 
+
+// Checkout Form
+.subtitle
+  color darken($c-bg-dark,10)
+  font-size(.6)
+
+// Main Form Layout
+.main-fields
+  .alt
+    display none
+  .more, .less
+    margin 30px 0 0 0
+    display block
+    text-align center
+  input
+    width 189px
+    border 1px solid $c-bg-light
+    padding 0 5px
+  li
+    margin 0 20px
+  label
+    margin 10px 0 1px 0
+    display block
+    font-size(.6)
+
 // Card Galleries
+.design-container
+  position relative
+.design-left
+  width 500px
+  float left
+  margin 0
+.design-right
+  position absolute
+  right 0
+  width 240px
+  height 100%
+  float right
+  padding 0
+  margin 0
 .gallery
   overflow hidden
-  li
+  .card
     height 114px
     width 200px
     float left
-    margin 30px
-// Form Layout
+    margin 20px
+
+@-webkit-keyframes rotate-part-one
+  0%
+    -webkit-transform: rotate(0deg)
+  25%
+    -webkit-transform: rotate(-1deg)
+  75%
+    -webkit-transform: rotate(1deg)
+  100%
+    -webkit-transform: rotate(0deg)
+
+.wiggle-animate
+  -webkit-animation: rotate-part-one .4s infinite
+
+// Form Layout Generic
+label
+  .subtitle
+    display block
+    margin 0 0 0 25px
+    font-size(.5)
 .text-fields
-  margin 30px
+  margin 30px 0
   .suggestions
     color darken($c-bg-dark,10)
     font-size(.5)
@@ -373,18 +456,16 @@ header
     margin 0
   label
     color $c-light
-    margin 20px 0 5px 0
-    font-size(.65)
   input
-    width 300px
-    max-width 100%
     display block
     font-size(.8)
   li
     float left
-    margin 0 25px
 .radio-text-fields
-  margin 0 0 30px 0
+  font-size(1)
+  margin -30px 0 15px 0
+  li
+    margin 10px
   label
     color $c-light
     font-size(.65)

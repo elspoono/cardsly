@@ -388,6 +388,23 @@ Date::format = (mask, utc) ->
   a = new dateFormat
   a.format(this, mask, utc)
 
+$.fn.box_rotate = (options) ->
+  settings = 
+    position: 'below'
+  this.each (i) ->
+    if options
+      $.extend settings, options
+
+    $t = $(this)
+    degrees = settings.degrees
+    rotate = Math.floor( (degrees/360)*100 )/100
+    $t.css
+      '-moz-transform':'rotate('+degrees+'deg)'
+      '-webkit-transform':'rotate('+degrees+'deg)'
+      '-o-transform':'rotate('+degrees+'deg)'
+      '-ms-transform':'rotate('+degrees+'deg)'
+      'filter:progid':'DXImageTransform.Microsoft.BasicImage(rotation='+rotate+')'
+
   
 $ ->
 
@@ -458,7 +475,52 @@ $ ->
 
   # Home Page Stuff
 
+  # Form Fields
+  $('.main-fields input').each ->
+    $t = $ this
+    $t.keyup ->
+      c = this.className
+      v = this.value
+      $('.card .'+c).html(v)
   # Button Clicking Stuff
+
+  # Move Button
+  $('.move').click ->
+    $t = $ this
+
+    if $.browser.webkit
+      $('.gallery .card').addClass('wiggle-animate')
+    else
+      clearTimeout($('.move').data 'timer')
+      d = 0
+      r = [-.5,-1,-.5,0,.5,1,.5,0]
+      $t.data 'timer', setInterval ->
+        d=d+1
+        c = r[d%r.length]
+        $('.gallery .card').box_rotate({degrees:c})
+      ,30
+    setTimeout ->
+      clearDoc = ->
+        clearTimeout($('.move').data 'timer')
+        $('.gallery .card').removeClass('wiggle-animate').box_rotate({degrees:0})
+        $('body').unbind 'click', clearDoc
+      $('body').bind 'click', clearDoc
+    ,0
+    false
+
+  # Show / Hide more fields
+  $('.main-fields .more').click ->
+    $('.main-fields .alt').slideDown 1000
+    $(this).hide()
+    $('.main-fields .less').show()
+    false
+  $('.main-fields .less').hide().click ->
+    $('.main-fields .alt').slideUp 1000
+    $(this).hide()
+    $('.main-fields .more').show()
+    false
+
+  # Get Started Button Scroll
   $('.design-button').click ->
     $('html,body').animate
       scrollTop: $('.section:eq(1)').offset().top
