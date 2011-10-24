@@ -152,6 +152,9 @@
   app.get('/success', function(req, res) {
     return res.render('success');
   });
+  app.get('/cards', function(req, res) {
+    return res.render('cards');
+  });
   app.get('/robots.txt', function(req, res, next) {
     return res.send('User-agent: *\nDisallow: ', {
       'Content-Type': 'text/plain'

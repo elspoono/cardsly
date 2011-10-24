@@ -136,11 +136,25 @@ header
   position absolute
 
 // Sections
+.card-list
+  th,td
+    text-align left
+    padding 10px
+  td
+    border-right 1px solid $c-bg-dark
+  input
+    margin-bottom 5px
 .section
   margin gap(3) 0
   padding gap(1)
   color $c-black
   position relative
+.section.left
+  width 380px
+  float left
+.section.right
+  width 300px
+  float right
 .section.first
   margin gap(4) 0 gap(3) 0
 .cell-content
@@ -203,7 +217,7 @@ header
 
 
 // Social Buttons
-.google,.facebook
+.google,.facebook,.twitter,.linkedin
   display block
   float left
   margin-right 10px
@@ -223,6 +237,18 @@ header
   background url('/images/buttons/facebook-hover.png')
 .facebook.click
   background url('/images/buttons/facebook-click.png')
+.twitter
+  background url('/images/buttons/twitter.png')
+.twitter.hover
+  background url('/images/buttons/twitter-hover.png')
+.twitter.click
+  background url('/images/buttons/twitter-click.png')
+.linkedin
+  background url('/images/buttons/linkedin.png')
+.linkedin.hover
+  background url('/images/buttons/linkedin-hover.png')
+.linkedin.click
+  background url('/images/buttons/linkedin-click.png')
 
 
 

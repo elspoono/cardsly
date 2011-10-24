@@ -587,11 +587,30 @@ header .navigation li a {
   height: 46px;
   position: absolute;
 }
+.card-list th,
+.card-list td {
+  text-align: left;
+  padding: 10px;
+}
+.card-list td {
+  border-right: 1px solid #524641;
+}
+.card-list input {
+  margin-bottom: 5px;
+}
 .section {
   margin: 94.5px 0;
   padding: 31.5px;
   color: #000;
   position: relative;
+}
+.section.left {
+  width: 380px;
+  float: left;
+}
+.section.right {
+  width: 300px;
+  float: right;
 }
 .section.first {
   margin: 126px 0 94.5px 0;
@@ -674,7 +693,9 @@ header .navigation li a {
   background: url("/images/buttons/design-click.png");
 }
 .google,
-.facebook {
+.facebook,
+.twitter,
+.linkedin {
   display: block;
   float: left;
   margin-right: 10px;
@@ -682,7 +703,9 @@ header .navigation li a {
   width: 150px;
 }
 .google span,
-.facebook span {
+.facebook span,
+.twitter span,
+.linkedin span {
   display: none;
 }
 .google {
@@ -702,6 +725,24 @@ header .navigation li a {
 }
 .facebook.click {
   background: url("/images/buttons/facebook-click.png");
+}
+.twitter {
+  background: url("/images/buttons/twitter.png");
+}
+.twitter.hover {
+  background: url("/images/buttons/twitter-hover.png");
+}
+.twitter.click {
+  background: url("/images/buttons/twitter-click.png");
+}
+.linkedin {
+  background: url("/images/buttons/linkedin.png");
+}
+.linkedin.hover {
+  background: url("/images/buttons/linkedin-hover.png");
+}
+.linkedin.click {
+  background: url("/images/buttons/linkedin-click.png");
 }
 h2 {
   text-align: center;

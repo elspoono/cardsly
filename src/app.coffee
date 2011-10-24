@@ -191,6 +191,9 @@ app.get '/', (req, res) ->
 app.get '/success', (req, res) ->
   res.render 'success'
 
+app.get '/cards', (req, res) ->
+  res.render 'cards'
+
 app.get '/robots.txt', (req, res, next) ->
   res.send 'User-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
