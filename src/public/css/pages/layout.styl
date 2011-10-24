@@ -51,11 +51,6 @@ input,li
   alpha-bg($c-light,.9)
   border-radius-except-top-right(8px)
   color $c-black
-  a
-    color alt-color
-    text-decoration none
-  h2
-    font-size 1.5em
   padding 30px
   absolute()
   overflow hidden
@@ -185,6 +180,15 @@ header
 
 // Buttons
 
+// Button Styles
+.button.normal
+  gradient($c-logo-alt,darken($c-logo-alt,10))
+  width 150px
+  text-align center
+  padding 5px 10px
+  border-radius(5px)
+  margin 0 auto
+
 // Add Button
 .button
   cursor pointer
@@ -217,10 +221,10 @@ header
 
 
 // Social Buttons
-.google,.facebook,.twitter,.linkedin
+.google,.facebook,.twitter,.linkedin,.new
   display block
   float left
-  margin-right 10px
+  margin 0 10px 20px 0
   span
     display none
   height 40px
@@ -249,6 +253,12 @@ header
   background url('/images/buttons/linkedin-hover.png')
 .linkedin.click
   background url('/images/buttons/linkedin-click.png')
+.new
+  background url('/images/buttons/new.png')
+.new.hover
+  background url('/images/buttons/new-hover.png')
+.new.click
+  background url('/images/buttons/new-click.png')
 
 
 
@@ -257,8 +267,11 @@ header
 // Home Page Stuff
 
 // Meh
-h2
-  text-align center
+.section
+  h3
+    border-bottom 15px solid $c-bg-light
+    margin-bottom 30px
+    padding-bottom 10px
 
 // Hand Container
 .hand-container-container
@@ -347,6 +360,9 @@ h2
 // Form Layout
 .text-fields
   margin 30px
+  textarea
+    width 100%
+    height 75px
   label
     color $c-light
     margin 20px 0 5px 0
@@ -397,9 +413,13 @@ h2
     background url('/images/arrow-left-alt.png')
   .arrow-right.hover
     background url('/images/arrow-right-alt.png')
+  h2.prompt,h2.caption
+    font-size(.8)
+    text-align center
   h2.prompt
-    margin 0
+    margin 0 0 10px 0
   h2.caption
+    margin 10px 0 0 0
     position absolute
     bottom 0
     width 100%

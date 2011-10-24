@@ -451,7 +451,7 @@
       window.open('auth/linkedin', 'auth', 'height=300,width=400');
       return false;
     });
-    $('.create').click(function() {
+    $('.new').click(function() {
       loadAlert({
         content: '<iframe height=400 width=100% src=/login ></iframe>',
         height: 400,

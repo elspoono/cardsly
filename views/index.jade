@@ -41,6 +41,7 @@
 .section
   .cell-bg
   .cell-content
+    h3 Step 1 : Design Your Card
     .card.main.scott-qr-blue
       img(src='/images/qr.png').qr
       ul.content
@@ -87,8 +88,10 @@
       img(src='/images/buttons/linkedin-hover.png')
       img(src='/images/buttons/twitter-click.png')
       img(src='/images/buttons/twitter-hover.png')
+      img(src='/images/buttons/new-click.png')
+      img(src='/images/buttons/new-hover.png')
 
-    h2 Set Up Credentials
+    h3 Step 2 : Purchase
     p I want to sign in with:
     a.button.twitter(href='/auth/twitter')
       span Twitter
@@ -98,9 +101,11 @@
       span LinkedIn
     a.button.google(href='/auth/google')
       span Google
-    a.create(href='#')
+    a.button.new(href='#')
       span Create a username and password
-    h2 Select the Quantity
+    .clear
+    p &nbsp;
+    p Select the quantity:
     .radio-text-fields
       ul
         li

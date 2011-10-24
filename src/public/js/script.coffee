@@ -412,7 +412,7 @@ $ ->
     window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
 
-  $('.create').click () ->
+  $('.new').click () ->
     loadAlert
       content: '<iframe height=400 width=100% src=/login ></iframe>'
       height: 400
