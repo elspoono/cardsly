@@ -9,7 +9,11 @@ extend = (main, sub) ->
   for prop of sub
     main[prop] = sub[prop] if sub[prop]?
   main
-  
+
+
+
+
+
 # ## Export module
 module.exports = 
   extend: extend

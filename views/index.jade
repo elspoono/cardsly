@@ -78,14 +78,17 @@
   .cell-bg
   .cell-content
     h2 Set Up Credentials
-    p I want to sign in next time with:
+    p I want to sign in with:
     a(href='/auth/twitter') Twitter
     | &nbsp;or 
     a(href='/auth/facebook') Facebook
     | &nbsp;or 
     a(href='/auth/linkedin') LinkedIn
     | &nbsp;or 
-    a(href='/auth/google') Google
+    a(href='/auth/google')
+      img(src='/images/buttons/google-connect.png',width=200)
+    | &nbsp;or 
+    a.create(href='#') Create a username and password
     h2 Select the Quantity
     .radio-text-fields
       ul

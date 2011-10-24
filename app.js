@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, updateOrCreateUser, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -54,10 +54,6 @@
   };
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
-  updateOrCreateUser = function(user) {
-    console.log('user', user);
-    return false;
-  };
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
     promise = new Promise();
@@ -77,9 +73,9 @@
     if (userMeta.email) {
       user.email = userMeta.email;
     }
-    updateOrCreateUser(user);
+    console.log(user);
     promise.fulfill({
-      name: 'Whatever'
+      id: 'after finding or creating the user, this is it'
     });
     return promise;
   };

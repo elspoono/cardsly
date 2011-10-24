@@ -72,9 +72,6 @@ compareEncrypted = (inString,hash) ->
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
-updateOrCreateUser = (user) ->
-  console.log 'user', user
-  false
 
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
@@ -92,10 +89,10 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   if userMeta.email
     user.email = userMeta.email
 
-  updateOrCreateUser user
+  console.log user
 
   promise.fulfill
-    name: 'Whatever'
+    id: 'after finding or creating the user, this is it'
   promise
 
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
