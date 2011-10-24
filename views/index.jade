@@ -77,18 +77,25 @@
 .section
   .cell-bg
   .cell-content
+
+    .img-loader
+      img(src='/images/buttons/google-click.png')
+      img(src='/images/buttons/google-hover.png')
+      img(src='/images/buttons/facebook-click.png')
+      img(src='/images/buttons/facebook-hover.png')
+
     h2 Set Up Credentials
     p I want to sign in with:
-    a.twitter(href='/auth/twitter') Twitter
-    | &nbsp;or 
-    a.facebook(href='/auth/facebook') Facebook
-    | &nbsp;or 
-    a.linkedin(href='/auth/linkedin') LinkedIn
-    | &nbsp;or 
-    a.google(href='/auth/google')
-      img(src='/images/buttons/google-connect.png',width=200)
-    | &nbsp;or 
-    a.create(href='#') Create a username and password
+    a.twitter(href='/auth/twitter')
+      span Twitter
+    a.button.facebook(href='/auth/facebook')
+      span Facebook
+    a.linkedin(href='/auth/linkedin')
+      span LinkedIn
+    a.button.google(href='/auth/google')
+      span Google
+    a.create(href='#')
+      span Create a username and password
     h2 Select the Quantity
     .radio-text-fields
       ul

@@ -673,6 +673,36 @@ header .navigation li a {
 .design-button.click {
   background: url("/images/buttons/design-click.png");
 }
+.google,
+.facebook {
+  display: block;
+  float: left;
+  margin-right: 10px;
+  height: 40px;
+  width: 150px;
+}
+.google span,
+.facebook span {
+  display: none;
+}
+.google {
+  background: url("/images/buttons/google.png");
+}
+.google.hover {
+  background: url("/images/buttons/google-hover.png");
+}
+.google.click {
+  background: url("/images/buttons/google-click.png");
+}
+.facebook {
+  background: url("/images/buttons/facebook.png");
+}
+.facebook.hover {
+  background: url("/images/buttons/facebook-hover.png");
+}
+.facebook.click {
+  background: url("/images/buttons/facebook-click.png");
+}
 h2 {
   text-align: center;
 }
