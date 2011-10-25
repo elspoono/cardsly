@@ -11,8 +11,6 @@ conf = require './lib/conf'
  Stuff we add to every app to setup sessions and mongo and mailing to work on heroku and locally
 ###
 
-
-
 im = require 'imagemagick'
 
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
@@ -263,5 +261,5 @@ app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->
 
 
 # ### Start server
-app.listen process.env.PORT || 4000
+app.listen process.env.PORT || process.env.C9_PORT || 4000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
