@@ -1447,6 +1447,44 @@ label .subtitle {
 .slides .container .content .third {
   margin-top: 40px;
 }
+.footer {
+  font-size: 12.6px;
+  line-height: 1.5em;
+  color: #524641;
+  margin-top: 20px;
+  text-align: center;
+}
+.footer a,
+.footer a:visited {
+  color: #524641;
+  text-decoration: none;
+}
+.footer .really-above {
+  color: semi-dark;
+  padding-bottom: 10px;
+}
+.footer .really-above a {
+  color: semi-dark;
+  text-decoration: none;
+}
+.footer .above {
+  border-top: 1px solid #908575;
+  padding: 20px 0 0 0;
+}
+.footer .other {
+  padding: 0 0 15px 0;
+}
+.footer .container {
+  padding: 0;
+}
+.footer ul {
+  text-align: center;
+}
+.footer ul li {
+  display: inline-block;
+  float: inherit;
+  margin: 15px 10px;
+}
 @media all and (orientation:portrait) {
 }
 @media all and (orientation:landscape) {

@@ -528,6 +528,13 @@ $ ->
   
   # Button Clicking Stuff
 
+  # Radio Select
+  $('.quantity input,.shipping_method input').bind 'click change', () ->
+    $q = $('.quantity input:checked')
+    $s = $('.shipping_method input:checked')
+    $('.order-total .price').html '$'+($q.val()*1 + $s.val()*1)
+
+
   # Move Button
   $('.move').click ->
     $t = $ this

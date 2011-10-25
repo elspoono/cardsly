@@ -580,6 +580,12 @@
       item: '.card',
       connectWith: '.design-left .gallery'
     });
+    $('.quantity input,.shipping_method input').bind('click change', function() {
+      var $q, $s;
+      $q = $('.quantity input:checked');
+      $s = $('.shipping_method input:checked');
+      return $('.order-total .price').html('$' + ($q.val() * 1 + $s.val() * 1));
+    });
     $('.move').click(function() {
       var $t, d, r;
       $t = $(this);

@@ -198,39 +198,39 @@
     .clear
     
     .order-details
-      ul.radio-text-fields.left
+      ul.radio-text-fields.left.quantity
         li
-          p I'd like to have this many cards:
+          p Quantity:
         li
-          input(type='radio',name='quantity',value='50',checked='checked')
+          input(type='radio',name='quantity',value='10',checked='checked')
           label 100 cards for $10
             .subtitle 10 cents per card
         li
-          input(type='radio',name='quantity',value='250')
+          input(type='radio',name='quantity',value='20')
           label 250 cards for $20
             .subtitle 8 cents per card
         li
-          input(type='radio',name='quantity',value='500')
+          input(type='radio',name='quantity',value='30')
           label 500 cards for $30
             .subtitle 6 cents per card
         li
-          input(type='radio',name='quantity',value='1500')
+          input(type='radio',name='quantity',value='60')
           label 1500 cards for $60
             .subtitle 4 cents per card
-      ul.radio-text-fields.right
+      ul.radio-text-fields.right.shipping_method
         li
-          p Shipped this quickly:
+          p Speed:
         li
-          input(type='radio',name='shipping',value='1st class',checked='checked')
+          input(type='radio',name='shipping_method',value='0',checked='checked')
           label USPS Priority Mail for $0
             .subtitle 1-3 days
         li
-          input(type='radio',name='shipping',value='express')
+          input(type='radio',name='shipping_method',value='25')
           label USPS Express Mail for $25
             .subtitle overnight
       ul.text-fields.shipping.righter
         li
-          p To this address:
+          p Shipped To:
         li
           label Address Line 1
           input.address(placeholder='123 Fake St')
