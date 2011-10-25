@@ -1,5 +1,5 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, UserSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  var Db, ObjectId, PDFDocument, Promise, Schema, Server, User, UserSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -102,6 +102,7 @@
       }
     });
   });
+  User = mongoose.model('User', UserSchema);
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
     promise = new Promise();

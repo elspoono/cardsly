@@ -123,6 +123,8 @@ UserSchema.static 'authenticate', (email, password, next) ->
       else
         next 'Email not found.'
 
+# Assign the User Model
+User = mongoose.model 'User', UserSchema
 
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
