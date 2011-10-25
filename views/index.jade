@@ -38,6 +38,7 @@
           li.third
             img(src='/images/slide-3.png')
     .clear
+.gallery-select
 .design-container
   .section.design-left
     .cell-bg
@@ -102,7 +103,7 @@
         a(href='#').more Add more fields
         a(href='#').less Hide extra fields
       ul.gallery
-        - for i in ['scott-qr-blue','blue-green-gradient','circles-blue','kickback-blue']
+        - for i in ['scott-qr-blue','stripes','tri-color','circles-blue']
           li.card(class=i)
             img(src='/images/qr.png').qr
             ul.content
@@ -123,7 +124,25 @@
     .cell-bg
     .cell-content
       ul.gallery
-        - for i in ['blue-green-gradient','circles-blue','gray-blue-gradient','kickback-tan','tri-color']
+        li.category.active Post-Modern
+        - for i in ['black-red','blue-boxes','Gnome']
+          li.card(class=i)
+            img(src='/images/qr.png').qr
+            ul.content
+              li.name John Stamos
+              li.title Uncle Jesse
+              li.phone 555.555.5555
+              li.email john@stamos.com
+              li.company 
+              li.address 
+              li.fax 
+              li.address_2 
+              li.custom_1 
+              li.address_3 
+              li.custom_2 
+              li.custom_3 
+        li.category Professional
+        - for i in ['green-grid','hello','white-purple']
           li.card(class=i)
             img(src='/images/qr.png').qr
             ul.content
@@ -177,38 +196,58 @@
       span Create a username and password
       span.subtitle username and password
     .clear
-    p &nbsp;
-    p I'd like to have this many cards:
     
-    ul.radio-text-fields
-      li
-        input(type='radio',name='quantity',value='50',checked='checked')
-        label 100 cards for $10
-          .subtitle 10 cents per card
-      li
-        input(type='radio',name='quantity',value='250')
-        label 250 cards for $20
-          .subtitle 8 cents per card
-      li
-        input(type='radio',name='quantity',value='500')
-        label 500 cards for $30
-          .subtitle 6 cents per card
-      li
-        input(type='radio',name='quantity',value='1500')
-        label 1500 cards for $60
-          .subtitle 4 cents per card
+    .order-details
+      ul.radio-text-fields.left
+        li
+          p I'd like to have this many cards:
+        li
+          input(type='radio',name='quantity',value='50',checked='checked')
+          label 100 cards for $10
+            .subtitle 10 cents per card
+        li
+          input(type='radio',name='quantity',value='250')
+          label 250 cards for $20
+            .subtitle 8 cents per card
+        li
+          input(type='radio',name='quantity',value='500')
+          label 500 cards for $30
+            .subtitle 6 cents per card
+        li
+          input(type='radio',name='quantity',value='1500')
+          label 1500 cards for $60
+            .subtitle 4 cents per card
+      ul.radio-text-fields.right
+        li
+          p Shipped this quickly:
+        li
+          input(type='radio',name='shipping',value='1st class',checked='checked')
+          label USPS Priority Mail for $0
+            .subtitle 1-3 days
+        li
+          input(type='radio',name='shipping',value='express')
+          label USPS Express Mail for $25
+            .subtitle overnight
+      ul.text-fields.shipping.righter
+        li
+          p To this address:
+        li
+          label Address Line 1
+          input.address(placeholder='123 Fake St')
+        li
+          label Address Line 2
+          input.address-2(placeholder='Apt 2032')
+        li
+          label City
+          input.city(placeholder='Cityville')
+        li
+          label State
+          input.state(placeholder='State')
+          .subtitle U.S. Addresses only right now
       .clear
-    p Shipped this quickly
-    ul.radio-text-fields
-      li
-        input(type='radio',name='shipping',value='1st class',checked='checked')
-        label First Class Mail for $0
-          .subtitle 1-3 days
-      li
-        input(type='radio',name='shipping',value='express')
-        label Express Mail for $25
-          .subtitle overnight
-    .checkout-button.button
-    .img-loader
-      img(src='/images/buttons/checkout-click.png')
-      img(src='/images/buttons/checkout-hover.png')
+    .order-total
+      .title It costs this much
+      .price $10
+      .button.normal.checkout Buy Now
+      .subtitle checkout with paypal
+        

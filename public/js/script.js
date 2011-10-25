@@ -456,7 +456,7 @@
     });
   };
   $(function() {
-    var $win, advanceSlide, hasHidden, i, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
+    var $gs, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
     $('.google').click(function() {
       window.open('auth/google', 'auth', 'height=350,width=600');
       return false;
@@ -475,11 +475,51 @@
     });
     $('.new').click(function() {
       loadAlert({
-        content: '<iframe height=400 width=100% src=/login ></iframe>',
+        content: '<p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p>',
         height: 400,
         width: 700
       });
       return false;
+    });
+    item_name = '100 cards';
+    $('.checkout').click(function() {
+      loadAlert({
+        content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 1st 2011)'
+      });
+      return false;
+    });
+    $gs = $('.gallery-select');
+    $gs.css({
+      left: -220,
+      top: 0
+    });
+    $('.gallery .card').click(function() {
+      var $findClass, $t, className;
+      $t = $(this);
+      $('.card').removeClass('active');
+      $t.addClass('active');
+      $findClass = $t.clone();
+      className = $findClass.removeClass('card')[0].className;
+      $findClass.remove();
+      $('.main').attr({
+        "class": 'card main ' + className
+      });
+      if ($gs.offset().top === $t.offset().top - 10) {
+        return $gs.animate({
+          left: $t.offset().left - 10
+        }, 500);
+      } else {
+        return $gs.stop(true, false).animate({
+          top: $t.offset().top - 10
+        }, 500, 'linear', function() {
+          return $gs.animate({
+            left: $t.offset().left - 10
+          }, 500, 'linear');
+        });
+      }
+    });
+    $(window).load(function() {
+      return $('.gallery:first .card:first').click();
     });
     $win = $(window);
     winH = $win.height() + $win.scrollTop();
@@ -532,9 +572,13 @@
         return $('.card .' + c).html(v);
       });
     });
-    $('.gallery').sortable({
+    $('.design-left .gallery').sortable({
       item: '.card',
-      connectWith: '.gallery'
+      connectWith: '.design-right .gallery'
+    });
+    $('.design-right .gallery').sortable({
+      item: '.card',
+      connectWith: '.design-left .gallery'
     });
     $('.move').click(function() {
       var $t, d, r;
@@ -568,13 +612,17 @@
       return false;
     });
     $('.main-fields .more').click(function() {
-      $('.main-fields .alt').slideDown(1000);
+      $('.main-fields .alt').slideDown(500, 'linear', function() {
+        return $('.gallery .card.active').click();
+      });
       $(this).hide();
       $('.main-fields .less').show();
       return false;
     });
     $('.main-fields .less').hide().click(function() {
-      $('.main-fields .alt').slideUp(1000);
+      $('.main-fields .alt').slideUp(500, 'linear', function() {
+        return $('.gallery .card.active').click();
+      });
       $(this).hide();
       $('.main-fields .more').show();
       return false;

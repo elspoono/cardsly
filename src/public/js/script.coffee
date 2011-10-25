@@ -431,11 +431,46 @@ $ ->
 
   $('.new').click () ->
     loadAlert
-      content: '<iframe height=400 width=100% src=/login ></iframe>'
+      content: '<p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p>'
       height: 400
       width: 700
     false
 
+  item_name = '100 cards'
+
+
+  $('.checkout').click () ->
+    loadAlert
+      content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 1st 2011)'
+    false
+
+  $gs = $ '.gallery-select'
+  $gs.css
+    left: -220
+    top: 0
+  $('.gallery .card').click () ->
+    $t = $ this
+    $('.card').removeClass 'active'
+    $t.addClass('active')
+    $findClass = $t.clone()
+    className = $findClass.removeClass('card')[0].className
+    $findClass.remove()
+    $('.main').attr
+      class: 'card main '+className
+    if $gs.offset().top == $t.offset().top-10
+      $gs.animate
+        left: $t.offset().left-10
+      ,500
+    else
+      $gs.stop(true,false).animate
+        top: $t.offset().top-10
+      ,500,'linear',() ->
+          $gs.animate
+            left: $t.offset().left-10
+          ,500,'linear'
+  $(window).load () ->
+    $('.gallery:first .card:first').click()
+  
 
   $win = $(window)
   winH = $win.height()+$win.scrollTop()
@@ -484,9 +519,12 @@ $ ->
       $('.card .'+c).html(v)
 
   # Moving Stuff
-  $('.gallery').sortable
+  $('.design-left .gallery').sortable
     item: '.card'
-    connectWith: '.gallery'
+    connectWith: '.design-right .gallery'
+  $('.design-right .gallery').sortable
+    item: '.card'
+    connectWith: '.design-left .gallery'
   
   # Button Clicking Stuff
 
@@ -516,12 +554,14 @@ $ ->
 
   # Show / Hide more fields
   $('.main-fields .more').click ->
-    $('.main-fields .alt').slideDown 1000
+    $('.main-fields .alt').slideDown 500, 'linear', () ->
+      $('.gallery .card.active').click()
     $(this).hide()
     $('.main-fields .less').show()
     false
   $('.main-fields .less').hide().click ->
-    $('.main-fields .alt').slideUp 1000
+    $('.main-fields .alt').slideUp 500, 'linear', () ->
+      $('.gallery .card.active').click()
     $(this).hide()
     $('.main-fields .more').show()
     false
