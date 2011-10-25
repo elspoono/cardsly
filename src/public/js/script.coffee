@@ -476,7 +476,7 @@ $ ->
   # Home Page Stuff
 
   # Form Fields
-  $('.main-fields input').each ->
+  $('.main-fields input').each () ->
     $t = $ this
     $t.keyup ->
       c = this.className

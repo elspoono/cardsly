@@ -105,11 +105,11 @@ header .design-button {
   height: 195px;
 }
 .slides .container .content .third {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 .slides .container .content .third img {
-  width: 170px;
-  height: 150px;
+  width: 273px;
+  height: 185px;
 }
 .card.main {
   -webkit-transform: scale(0.7, 0.7);
