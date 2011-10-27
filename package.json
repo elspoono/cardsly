@@ -17,6 +17,7 @@
     , "pdfkit": ">=0.0.1"
     , "imagemagick": ">=0.0.1"
     , "everyauth": ">=0.0.1"
+    , "knox": ">=0.0.1"
   },
   "devDependencies": {
     "vows": ">= 0.5.9"
