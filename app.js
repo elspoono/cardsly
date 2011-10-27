@@ -59,6 +59,9 @@
       Location: '/error'
     }, 302);
   };
+
+
+
   /*
   DATABASE SCHEMA
   *****************************************
@@ -67,6 +70,8 @@
   
   *****************************************
   */
+
+  // This is the schema for the users
   UserSchema = new Schema({
     email: String,
     password_encrypted: String,
@@ -82,6 +87,8 @@
       "default": true
     }
   });
+
+  //
   UserSchema.static('authenticate', function(email, password, next) {
     return this.find({
       email: email,

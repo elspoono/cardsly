@@ -517,14 +517,6 @@ $ ->
       c = this.className
       v = this.value
       $('.card .'+c).html(v)
-
-  # Moving Stuff
-  $('.design-left .gallery').sortable
-    item: '.card'
-    connectWith: '.design-right .gallery'
-  $('.design-right .gallery').sortable
-    item: '.card'
-    connectWith: '.design-left .gallery'
   
   # Button Clicking Stuff
 
@@ -534,30 +526,6 @@ $ ->
     $s = $('.shipping_method input:checked')
     $('.order-total .price').html '$'+($q.val()*1 + $s.val()*1)
 
-
-  # Move Button
-  $('.move').click ->
-    $t = $ this
-
-    if $.browser.webkit
-      $('.gallery .card').addClass('wiggle-animate')
-    else
-      clearTimeout($('.move').data 'timer')
-      d = 0
-      r = [-.5,-1,-.5,0,.5,1,.5,0]
-      $t.data 'timer', setInterval ->
-        d=d+1
-        c = r[d%r.length]
-        $('.gallery .card').box_rotate({degrees:c})
-      ,30
-    setTimeout ->
-      clearDoc = ->
-        clearTimeout($('.move').data 'timer')
-        $('.gallery .card').removeClass('wiggle-animate').box_rotate({degrees:0})
-        $('body').unbind 'click', clearDoc
-      $('body').bind 'click', clearDoc
-    ,0
-    false
 
   # Show / Hide more fields
   $('.main-fields .more').click ->

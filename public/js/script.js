@@ -572,50 +572,11 @@
         return $('.card .' + c).html(v);
       });
     });
-    $('.design-left .gallery').sortable({
-      item: '.card',
-      connectWith: '.design-right .gallery'
-    });
-    $('.design-right .gallery').sortable({
-      item: '.card',
-      connectWith: '.design-left .gallery'
-    });
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
       $s = $('.shipping_method input:checked');
       return $('.order-total .price').html('$' + ($q.val() * 1 + $s.val() * 1));
-    });
-    $('.move').click(function() {
-      var $t, d, r;
-      $t = $(this);
-      if ($.browser.webkit) {
-        $('.gallery .card').addClass('wiggle-animate');
-      } else {
-        clearTimeout($('.move').data('timer'));
-        d = 0;
-        r = [-.5, -1, -.5, 0, .5, 1, .5, 0];
-        $t.data('timer', setInterval(function() {
-          var c;
-          d = d + 1;
-          c = r[d % r.length];
-          return $('.gallery .card').box_rotate({
-            degrees: c
-          });
-        }, 30));
-      }
-      setTimeout(function() {
-        var clearDoc;
-        clearDoc = function() {
-          clearTimeout($('.move').data('timer'));
-          $('.gallery .card').removeClass('wiggle-animate').box_rotate({
-            degrees: 0
-          });
-          return $('body').unbind('click', clearDoc);
-        };
-        return $('body').bind('click', clearDoc);
-      }, 0);
-      return false;
     });
     $('.main-fields .more').click(function() {
       $('.main-fields .alt').slideDown(500, 'linear', function() {

@@ -559,9 +559,8 @@ header
   width 500px
   float left
   margin 0
-  .card
-    cursor pointer
 .design-right
+  overflow hidden
   position absolute
   right 0
   width 240px
@@ -577,8 +576,6 @@ header
     margin 20px 20px 0 20px
     width 190px
     padding 5px
-  .card
-    cursor move
 .gallery
   overflow hidden
   .card
@@ -592,20 +589,7 @@ header
   position absolute
   gradient($c-logo-light,darken($c-logo-light,10))
   z-index 30
-  
 
-@-webkit-keyframes rotate-part-one
-  0%
-    -webkit-transform: rotate(0deg)
-  25%
-    -webkit-transform: rotate(-1deg)
-  75%
-    -webkit-transform: rotate(1deg)
-  100%
-    -webkit-transform: rotate(0deg)
-
-.wiggle-animate
-  -webkit-animation: rotate-part-one .4s infinite
 
 // Form Layout Generic
 label

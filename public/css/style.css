@@ -1232,10 +1232,8 @@ header .navigation li a {
   float: left;
   margin: 0;
 }
-.design-left .card {
-  cursor: pointer;
-}
 .design-right {
+  overflow: hidden;
   position: absolute;
   right: 0;
   width: 240px;
@@ -1254,9 +1252,6 @@ header .navigation li a {
   margin: 20px 20px 0 20px;
   width: 190px;
   padding: 5px;
-}
-.design-right .card {
-  cursor: move;
 }
 .gallery {
   overflow: hidden;
@@ -1284,26 +1279,6 @@ header .navigation li a {
 /* Opera 11.10+ */
   background-image: linear-gradient(top, #f05a23, #d2430e);
   z-index: 30;
-}
-@-webkit-keyframes rotate-part-one {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-
-  25% {
-    -webkit-transform: rotate(-1deg);
-  }
-
-  75% {
-    -webkit-transform: rotate(1deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(0deg);
-  }
-}
-.wiggle-animate {
-  -webkit-animation: rotate-part-one 0.4s infinite;
 }
 label .subtitle {
   display: block;
