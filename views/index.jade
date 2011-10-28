@@ -40,74 +40,28 @@
     .clear
 .gallery-select
 .design-container
-  .section.design-left
+  .section
     .cell-bg
     .cell-content
       h3 Step 1 : Design Your Card
       .card.main.scott-qr-blue
         img(src='/images/qr.png').qr
         ul.content
-          li.name John Stamos
-          li.title Uncle Jesse
-          li.phone 555.555.5555
-          li.email john@stamos.com
-          li.company 
-          li.address 
-          li.fax 
-          li.address_2 
-          li.custom_1 
-          li.address_3 
-          li.custom_2 
-          li.custom_3 
-      .text-fields.main-fields
-        ul
-          li
-            label Name
-            input.name(placeholder='John Stamos',value='John Stamos')
-          li
-            label Title
-            input.title(placeholder='Uncle Jesse',value='Uncle Jesse')
-          li
-            label Phone Number
-            input.phone(placeholder='555.555.5555',value='555.555.5555')
-          li
-            label Email Address
-            input.email(placeholder='john@stamos.com',value='john@stamos.com')
-        .clear
-        ul.alt
-          li
-            label Company
-            input.company(placeholder='Disney',value='')
-          li
-            label Address
-            input.address(placeholder='123 Fake St',value='')
-          li
-            label Fax Number
-            input.fax(placeholder='fax: 555.555.5555',value='')
-          li
-            label Address Line 2
-            input.address_2(placeholder='Townsville, NY 90210',value='')
-          li
-            label Custom 1
-            input.custom_1(placeholder='@my_twitter',value='')
-          li
-            label Address Line 3
-            input.address_3(placeholder='USA',value='')
-          li
-            label Custom 2
-            input.custom_2(placeholder='fb.com/my_facebook',value='')
-          li
-            label Custom 3
-            input.custom_3(placeholder='talk to me.',value='')
-          .clear
-        a(href='#').more Add more fields
-        a(href='#').less Hide extra fields
-  .section.design-right
-    .cell-bg
-    .cell-content
+          input.name(value='John Stamos')
+          input.title(value='Uncle Jesse')
+          input.phone(value='555.555.5555')
+          input.email(value='john@stamos.com')
+          input.company 
+          input.address 
+          input.fax 
+          input.address_2 
+          input.custom_1 
+          input.address_3 
+          input.custom_2 
+          input.custom_3
+      
       ul.gallery
-        li.category.active Post-Modern
-        - for i in ['black-red','blue-boxes','Gnome']
+        - for i in ['black-red','blue-boxes','Gnome','purple-blue']
           li.card(class=i)
             img(src='/images/qr.png').qr
             ul.content
@@ -123,8 +77,7 @@
               li.address_3 
               li.custom_2 
               li.custom_3 
-        li.category Professional
-        - for i in ['green-grid','hello','white-purple']
+        - for i in ['green-grid','hello','white-purple','prime-grid']
           li.card(class=i)
             img(src='/images/qr.png').qr
             ul.content

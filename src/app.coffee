@@ -1,19 +1,25 @@
+
+###
+GENERIC LIBRARY LOADING AND SETUP
+*****************************************
+
+Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
+
+*****************************************
+###
+
+
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
 express = require "express"
 app = module.exports = express.createServer()
-
 # Module requires
 conf = require './lib/conf'
 
-
-###
- Stuff we add to every app to setup sessions and mongo and mailing to work on heroku and locally
-###
-
+# Image Magick for graphic editing
 im = require 'imagemagick'
 
-db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
+
 
 geo = require('geo')
 
@@ -32,9 +38,11 @@ nodemailer.SMTP =
 
 
 
-
-
+# DATABASE
+# url set
+db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
 url = require 'url' 
+# parse the url
 parsed = url.parse db_uri
 mongodb = require 'mongodb'
 dbAuth = {}
@@ -45,19 +53,33 @@ if parsed.auth
 Db = mongodb.Db
 Server = mongodb.Server
 db = new Db(parsed.pathname.replace(/^\//, ''), new Server(parsed.hostname, parsed.port))
+# This library is for the database store for the session
 mongoStore = require 'connect-mongodb'
 
+# Mongoose is for everyone 
 mongoose = require 'mongoose'
 mongoose.connect db_uri
 Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
 
+# This store is for the session
 sessionStore = new mongoStore
   db: db
   username: dbAuth.username
   password: dbAuth.password
 
+###
+UTIL
+
+it's a useful for inspecting.
+
+USAGE:
+
+console.log util.inspect myVariableIWantToInspect
+
+###
 util = require 'util'
+
 
 # BCRYPT for password storage
 bcrypt = require 'bcrypt'
@@ -67,21 +89,14 @@ encrypted = (inString) ->
 compareEncrypted = (inString,hash) ->
   bcrypt.compare_sync(inString, hash)
 
+# Everyauth for 3rd party providers
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
 
 
 
-# Redirect Error
-
-err = (res, err) ->
-  res.send '',
-    Location: '/error'
-  , 302
-
-
 ###
-DATABASE SCHEMA
+DATABASE MODELING
 *****************************************
 
 All our schemas
@@ -90,13 +105,24 @@ All our schemas
 ###
 
 
-# User
+# User Schema Definition
 UserSchema = new Schema
   email:String
   password_encrypted: String
   role: String
   name: String
   title: String
+  phone: String
+  company: String
+  fax: String
+  address: String
+  address_2: String
+  twitter_url: String
+  facebook_url: String
+  linkedin_url: String
+  custom_1: String
+  custom_2: String
+  custom_3: String
   date_added:
     type: Date
     default: Date.now
@@ -111,7 +137,7 @@ UserSchema.static 'authenticate', (email, password, next) ->
     active:true
   , (err,data) ->
     if err
-      err err
+      next 'Database Error'
     else
       if data.length > 0
         if compareEncrypted password, data[0].password_encrypted
@@ -121,9 +147,112 @@ UserSchema.static 'authenticate', (email, password, next) ->
       else
         next 'Email not found.'
 
-# Assign the User Model
+# Actually build the User Model we just created
 User = mongoose.model 'User', UserSchema
 
+
+# Cards
+CardSchema = new Schema
+  user_id: Number
+  print_id: Number
+  path: String
+  template_id: Number
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+Card = mongoose.model 'Card', CardSchema
+
+
+# Images
+ImageSchema = new Schema
+  height: Number
+  width: Number
+  buffer: String
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+Image = mongoose.model 'Image', ImageSchema
+
+# Messages
+MessageSchema = new Schema
+  include_contact: Boolean
+  content: String
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+Message = mongoose.model 'Message', MessageSchema
+
+
+
+# Templates
+TemplateSchema = new Schema
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+Template = mongoose.model 'Template', TemplateSchema
+
+# Template Themes
+ThemeSchema = new Schema
+  template_id: Number
+  thumb_image_id: Number
+  preview_image_id: Number
+  big_image_id: Number
+  qr_size: Number
+  qr_x: Number
+  qr_y: Number
+Theme = mongoose.model 'Theme', ThemeSchema
+
+# TemplateTheme Field Positions
+PositionSchema = new Schema
+  theme_id: Number
+  order_id: Number
+  font_size: Number
+  x: Number
+  y: Number
+Position = mongoose.model 'Position', PositionSchema
+
+# Views (for stats)
+ViewSchema = new Schema
+  ip_address: String
+  user_agent: String
+  card_id: Number
+  date_added:
+    type: Date
+    default: Date.now
+View = mongoose.model 'View', ViewSchema
+
+
+
+
+###
+EVERYAUTH STUFF
+*****************************************
+
+Authenticating to 3rd Party Providers
+
+*****************************************
+###
+
+
+# Handle Good Response
+#
+# Set up a response handler for all of the everyauth configs we are about to use
+# Every one of those everyauth guys down below will call this
+# 
+# This should create the user or grab it based on the auth info
+#
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
   promise = new Promise()
@@ -146,28 +275,32 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
     id: 'after finding or creating the user, this is it'
   promise
 
+# Twitter API Key and Config
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
 everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
 everyauth.twitter.findOrCreateUser handleGoodResponse
 everyauth.twitter.redirectPath '/success'
 
-
+# Facebook API Key / Config
 everyauth.facebook.appId '292309860797409'
 everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
 everyauth.facebook.findOrCreateUser handleGoodResponse
 everyauth.facebook.redirectPath '/success'
 
-
+# LinkedIn API Key / Config
 everyauth.linkedin.consumerKey 'fuj9rhx302d7'
 everyauth.linkedin.consumerSecret 'pvWmN5CkrdT3GHF3'
 everyauth.linkedin.findOrCreateUser handleGoodResponse
 everyauth.linkedin.redirectPath '/success'
 
+# Google API Key / Config
 everyauth.google.appId '90634622438.apps.googleusercontent.com'
 everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
 everyauth.google.findOrCreateUser handleGoodResponse
 everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'
 everyauth.google.redirectPath '/success'
+
+# Google API requires additional setup to use 
 rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser (accessToken) ->
   promise = this.Promise()
@@ -192,8 +325,14 @@ everyauth.googlehybrid.findOrCreateUser handleGoodResponse
 everyauth.googlehybrid.scope ['email']
 everyauth.googlehybrid.redirectPath '/success'
 ###
-
 everyauth.debug = true
+
+
+
+
+
+
+
 
 # ## App configurations
 # ### Global app settings
@@ -201,7 +340,6 @@ everyauth.debug = true
 # **Note**: Notice that we got our session secret from the configuration file. In this file
 # we can define our configurations as globals or based on the node environment, thus 
 # keeping all the configurable variables centralized instead of being scattered all over.
-
 app.configure ->
   app.set "views", __dirname + conf.dir.views
   app.set "view engine", "jade"
@@ -210,9 +348,10 @@ app.configure ->
   app.use express.cookieParser()
   app.use express.session
     secret: conf.sessionSecret
-    store: sessionStore
+    store: sessionStore #
   app.use express.static(__dirname + conf.dir.public)
   app.use everyauth.middleware()
+
 
 # ### Environment based settings
 #
@@ -225,7 +364,6 @@ app.configure ->
 # For example, 
 #
 #     console.log(app.settings.env)
-
 app.configure "development", ->
   app.use express.errorHandler(
     dumpExceptions: true
@@ -235,25 +373,48 @@ app.configure "development", ->
 app.configure "production", ->
   app.use express.errorHandler()
 
-# ### Require routes
+###
+ROUTES
+
+All of our routes are defined here
+
+###
+
+# Redirect Error
+err = (res, err) ->
+  res.send '',
+    Location: '/error'
+  , 302
 
 
+# Home Page
 app.get '/', (req, res) ->
   res.render 'index'
 
+# Success Page
+#
+# Where they land after authenticating
+# This should close automatically or redirect to the home page if no caller
 app.get '/success', (req, res) ->
   res.render 'success'
 
+# Cards Page Mockup
 app.get '/cards', (req, res) ->
   res.render 'cards'
 
+# Generic Error handler page itself
 app.get '/error', (req, res) ->
   res.render 'error'
 
+# Robots.txt to tell google it's cool to crawl
 app.get '/robots.txt', (req, res, next) ->
   res.send 'User-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
 
+
+# Default Rout
+#
+# Redirect everything to the home page automagically
 app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->
   res.send '',
     Location:'/'

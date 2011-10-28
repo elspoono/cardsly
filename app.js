@@ -1,13 +1,17 @@
 (function() {
-  var Db, ObjectId, PDFDocument, Promise, Schema, Server, User, UserSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  /*
+  GENERIC LIBRARY LOADING AND SETUP
+  *****************************************
+  
+  Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
+  
+  *****************************************
+  */
+  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
-  /*
-   Stuff we add to every app to setup sessions and mongo and mailing to work on heroku and locally
-  */
   im = require('imagemagick');
-  db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
   geo = require('geo');
   require('coffee-script');
   PDFDocument = require('pdfkit');
@@ -20,6 +24,7 @@
     pass: process.env.SENDGRID_PASSWORD,
     domain: process.env.SENDGRID_DOMAIN
   };
+  db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
   url = require('url');
   parsed = url.parse(db_uri);
   mongodb = require('mongodb');
@@ -42,6 +47,16 @@
     username: dbAuth.username,
     password: dbAuth.password
   });
+  /*
+  UTIL
+  
+  it's a useful for inspecting.
+  
+  USAGE:
+  
+  console.log util.inspect myVariableIWantToInspect
+  
+  */
   util = require('util');
   bcrypt = require('bcrypt');
   encrypted = function(inString) {
@@ -54,30 +69,31 @@
   };
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
-  err = function(res, err) {
-    return res.send('', {
-      Location: '/error'
-    }, 302);
-  };
-
-
-
   /*
-  DATABASE SCHEMA
+  DATABASE MODELING
   *****************************************
   
   All our schemas
   
   *****************************************
   */
-
-  // This is the schema for the users
   UserSchema = new Schema({
     email: String,
     password_encrypted: String,
     role: String,
     name: String,
     title: String,
+    phone: String,
+    company: String,
+    fax: String,
+    address: String,
+    address_2: String,
+    twitter_url: String,
+    facebook_url: String,
+    linkedin_url: String,
+    custom_1: String,
+    custom_2: String,
+    custom_3: String,
     date_added: {
       type: Date,
       "default": Date.now
@@ -87,15 +103,13 @@
       "default": true
     }
   });
-
-  //
   UserSchema.static('authenticate', function(email, password, next) {
     return this.find({
       email: email,
       active: true
     }, function(err, data) {
       if (err) {
-        return err(err);
+        return next('Database Error');
       } else {
         if (data.length > 0) {
           if (compareEncrypted(password, data[0].password_encrypted)) {
@@ -110,6 +124,95 @@
     });
   });
   User = mongoose.model('User', UserSchema);
+  CardSchema = new Schema({
+    user_id: Number,
+    print_id: Number,
+    path: String,
+    template_id: Number,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  Card = mongoose.model('Card', CardSchema);
+  ImageSchema = new Schema({
+    height: Number,
+    width: Number,
+    buffer: String,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  Image = mongoose.model('Image', ImageSchema);
+  MessageSchema = new Schema({
+    include_contact: Boolean,
+    content: String,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  Message = mongoose.model('Message', MessageSchema);
+  TemplateSchema = new Schema({
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  Template = mongoose.model('Template', TemplateSchema);
+  ThemeSchema = new Schema({
+    template_id: Number,
+    thumb_image_id: Number,
+    preview_image_id: Number,
+    big_image_id: Number,
+    qr_size: Number,
+    qr_x: Number,
+    qr_y: Number
+  });
+  Theme = mongoose.model('Theme', ThemeSchema);
+  PositionSchema = new Schema({
+    theme_id: Number,
+    order_id: Number,
+    font_size: Number,
+    x: Number,
+    y: Number
+  });
+  Position = mongoose.model('Position', PositionSchema);
+  ViewSchema = new Schema({
+    ip_address: String,
+    user_agent: String,
+    card_id: Number,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    }
+  });
+  View = mongoose.model('View', ViewSchema);
+  /*
+  EVERYAUTH STUFF
+  *****************************************
+  
+  Authenticating to 3rd Party Providers
+  
+  *****************************************
+  */
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, user;
     promise = new Promise();
@@ -202,6 +305,17 @@
   app.configure("production", function() {
     return app.use(express.errorHandler());
   });
+  /*
+  ROUTES
+  
+  All of our routes are defined here
+  
+  */
+  err = function(res, err) {
+    return res.send('', {
+      Location: '/error'
+    }, 302);
+  };
   app.get('/', function(req, res) {
     return res.render('index');
   });
