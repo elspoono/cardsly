@@ -349,8 +349,8 @@
   app.get('/cards', function(req, res) {
     return res.render('cards');
   });
-  app.get('/contact', function(req, res) {
-    return res.render('contact');
+  app.get('/about', function(req, res) {
+    return res.render('about');
   });
   app.get('/error', function(req, res) {
     return res.render('error');

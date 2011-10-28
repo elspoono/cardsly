@@ -430,9 +430,9 @@ app.get '/cards', (req, res) ->
   res.render 'cards'
 
 
-# Contact Page
-app.get '/contact', (req, res) ->
-  res.render 'contact'
+# About Page
+app.get '/about', (req, res) ->
+  res.render 'about'
 
 # Generic Error handler page itself
 app.get '/error', (req, res) ->
