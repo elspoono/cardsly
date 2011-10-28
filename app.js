@@ -341,10 +341,12 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
-    User.findById(req.session.auth.userId, function(err, user) {
-      return console.log(user);
+    return User.findById(req.session.auth.userId, function(err, user) {
+      return res.render('success', {
+        err: err,
+        user: user
+      });
     });
-    return res.render('success');
   });
   app.get('/cards', function(req, res) {
     return res.render('cards');

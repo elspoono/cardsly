@@ -421,9 +421,9 @@ app.get '/success', (req, res) ->
 
   
   User.findById req.session.auth.userId, (err, user) ->
-    console.log user
-
-  res.render 'success'
+    res.render 'success'
+      err: err
+      user: user
 
 # Cards Page Mockup
 app.get '/cards', (req, res) ->
