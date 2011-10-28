@@ -673,6 +673,7 @@ header .navigation li a {
   background: #eee;
   font-size: 6.3px;
   line-height: 1.5em;
+  cursor: pointer;
 }
 .card .content {
   padding: 15px 10px;
