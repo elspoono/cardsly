@@ -456,7 +456,56 @@
     });
   };
   $(function() {
-    var $gs, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
+    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
+    $win = $(window);
+    $mc = $('.main.card');
+    winH = $win.height() + $win.scrollTop();
+    hasHidden = [];
+    $('.section-to-hide').each(function() {
+      var $this, thisT;
+      $this = $(this);
+      thisT = $this.offset().top;
+      if (winH < thisT) {
+        return hasHidden.push({
+          $this: $this,
+          thisT: thisT
+        });
+      }
+    });
+    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
+      i = hasHidden[_i];
+      i.$this.hide();
+    }
+    $win.scroll(function() {
+      var i, newWinH, timeLapse, _j, _len2, _results;
+      newWinH = $win.height() + $win.scrollTop();
+      if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
+        $mc.data('didLoad', true);
+        timeLapse = 0;
+        $mc.find('input').each(function() {
+          var $t, j, v, _ref, _results;
+          $t = $(this);
+          v = $t.val();
+          $t.val('');
+          _results = [];
+          for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
+            _results.push((function(j) {
+              setTimeout(function() {
+                return $t.val(v.substr(0, j));
+              }, timeLapse * 70);
+              return timeLapse++;
+            })(j));
+          }
+          return _results;
+        });
+      }
+      _results = [];
+      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
+        i = hasHidden[_j];
+        _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
+      }
+      return _results;
+    });
     $('.google').click(function() {
       window.open('auth/google', 'auth', 'height=350,width=600');
       return false;
@@ -521,34 +570,6 @@
     $(window).load(function() {
       return $('.gallery:first .card:first').click();
     });
-    $win = $(window);
-    winH = $win.height() + $win.scrollTop();
-    hasHidden = [];
-    $('.section-to-hide').each(function() {
-      var $this, thisT;
-      $this = $(this);
-      thisT = $this.offset().top;
-      if (winH < thisT) {
-        return hasHidden.push({
-          $this: $this,
-          thisT: thisT
-        });
-      }
-    });
-    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
-      i = hasHidden[_i];
-      i.$this.hide();
-    }
-    $win.scroll(function() {
-      var i, newWinH, _j, _len2, _results;
-      newWinH = $win.height() + $win.scrollTop();
-      _results = [];
-      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
-        i = hasHidden[_j];
-        _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
-      }
-      return _results;
-    });
     $('.button').hover(function() {
       return $(this).addClass('hover');
     }, function() {
@@ -568,14 +589,12 @@
       $c = $t.closest('.category');
       return $g = $c.find('.gallery');
     });
-    $('.main-fields input').each(function() {
+    $('.card.main input').each(function() {
       var $t;
       $t = $(this);
       return $t.keyup(function() {
-        var c, v;
-        c = this.className;
-        v = this.value;
-        return $('.card .' + c).html(v);
+        var v;
+        return v = this.value;
       });
     });
     $('.quantity input,.shipping_method input').bind('click change', function() {
@@ -603,7 +622,7 @@
     $('.design-button').click(function() {
       $('html,body').animate({
         scrollTop: $('.section:eq(1)').offset().top
-      }, 1000);
+      }, 500);
       return false;
     });
     advanceSlide = function() {

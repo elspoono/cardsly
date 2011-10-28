@@ -408,6 +408,51 @@ $.fn.box_rotate = (options) ->
   
 $ ->
 
+  # Window and Main Card to use later
+  $win = $ window
+  $mc = $ '.main.card'
+
+  # Set up the hasHidden array with all of non visible sections
+  winH = $win.height()+$win.scrollTop()
+  hasHidden = []
+  $('.section-to-hide').each ->
+    $this = $(this)
+    thisT = $this.offset().top
+    if(winH<thisT)
+      hasHidden.push
+        $this: $this
+        thisT: thisT
+  # Hide them
+  for i in hasHidden
+    i.$this.hide()
+
+  # On the window scroll event ...
+  $win.scroll ->
+
+    # Get the new bottom of the window position
+    newWinH = $win.height()+$win.scrollTop()
+
+    # If the main card bottom is now visible
+    if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
+      $mc.data 'didLoad', true
+      timeLapse = 0
+      $mc.find('input').each ->
+        $t = $ this
+        v = $t.val()
+        $t.val('')
+        for j in [0..v.length]
+          do (j) ->
+            setTimeout ->
+              $t.val v.substr 0,j
+            ,timeLapse*70
+            timeLapse++
+
+
+    # Show any hidden sections
+    for i in hasHidden
+      if i.thisT-50 < newWinH
+        i.$this.fadeIn(2000)
+  
   
 
   #loadAlert 'Test', (close) ->
@@ -472,23 +517,6 @@ $ ->
     $('.gallery:first .card:first').click()
   
 
-  $win = $(window)
-  winH = $win.height()+$win.scrollTop()
-  hasHidden = []
-  $('.section-to-hide').each ->
-    $this = $(this)
-    thisT = $this.offset().top
-    if(winH<thisT)
-      hasHidden.push
-        $this: $this
-        thisT: thisT
-  for i in hasHidden
-    i.$this.hide()
-  $win.scroll ->
-    newWinH = $win.height()+$win.scrollTop()
-    for i in hasHidden
-      if i.thisT-50 < newWinH
-        i.$this.fadeIn(2000)
 
 
   # Buttons everywhere need hover and click states
@@ -517,12 +545,10 @@ $ ->
     $g = $c.find '.gallery'
 
   # Form Fields
-  $('.main-fields input').each () ->
+  $('.card.main input').each () ->
     $t = $ this
     $t.keyup ->
-      c = this.className
       v = this.value
-      $('.card .'+c).html(v)
   
   # Button Clicking Stuff
 
@@ -552,7 +578,7 @@ $ ->
     $('html,body').animate
       scrollTop: $('.section:eq(1)').offset().top
     ,
-    1000
+    500
     false
 
   # each advance of the slide

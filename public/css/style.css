@@ -335,6 +335,9 @@ header .navigation li a {
  * Buttons
  *
  *******************************************/
+.button {
+  cursor: pointer;
+}
 .button.normal {
   background-color: #56a3da;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
