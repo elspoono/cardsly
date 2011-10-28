@@ -488,27 +488,31 @@ header
   height 240px
   display block
   margin 0 auto
+  box-shadow(4px,$c-bg-dark)
   relative-size(.8)
   .content
     padding 30px 20px
   .qr
-    height 70px
-    width 70px
+    height 80px
+    width 80px
     position absolute
-    margin-left 300px
-    margin-top 70px
-  border 20px solid $c-logo-light
+    margin-left 320px
+    margin-top 64px
 .card
+  box-shadow(3px,$c-bg-dark)
+  height 90px
+  width 158px
+  background-size 100%
   background $c-light
-  relative-size(.4)
+  relative-size(.3)
   .content
     padding 15px 10px
   .qr
-    height 35px
-    width 35px
+    height 30px
+    width 30px
     position absolute
-    margin-left 150px
-    margin-top 35px
+    margin-left 120px
+    margin-top 24px
   input
     background none
     border none
@@ -518,26 +522,6 @@ header
     margin 0
     width 100%
     border-bottom 1px solid $c-dark-warm
-.scott-qr-blue.main
-  background url('/images/card-bg/scott-qr-blue.png')
-  .content
-    padding 30px 20px
-  .qr
-    height 70px
-    width 70px
-    margin 30px 0 0 280px
-    box-rotate(45deg)
-.scott-qr-blue
-  background url('/images/card-bg-small/scott-qr-blue.png')
-  color #dcff18
-  font-family Times New Roman
-  .content
-    padding 15px 10px
-  .qr
-    height 35px
-    width 35px
-    margin 15px 0 0 140px
-    box-rotate(45deg)
 
 
 
@@ -711,41 +695,30 @@ header
     relative-size(.6)
 
 // Card Galleries
-.design-container
+.category
   position relative
-.design-left
-  width 500px
-  float left
-  margin 0
-.design-right
-  overflow hidden
-  position absolute
-  right 0
-  width 240px
-  height 100%
-  float right
-  padding 0
-  margin 0
-  .gallery,.cell-content
-    height 100%
-  .category
-    background $c-bg-light
-    float left
-    margin 20px 20px 0 20px
-    width 190px
-    padding 5px
+  .gallery
+    display none
+  h4
+    cursor pointer
+    gradient($c-bg-light,$c-bg-dark)
+    color $c-a-nav
+    padding 5px 10px
+    border-radius(5px)
+    border-bottom 1px solid $c-bg-dark
+.category.active
+  .gallery
+    display block
 .gallery
   overflow hidden
   .card
-    height 114px
-    width 200px
     float left
-    margin 20px
+    margin 15px
 .gallery-select
-  height 134px
-  width 220px
+  height 110px
+  width 178px
   position absolute
-  gradient($c-logo-light,darken($c-logo-light,10))
+  gradient(lighten($c-body-bg,20),$c-body-bg)
   z-index 30
 
 

@@ -54,10 +54,10 @@
           input
           input
       
-      .category
+      .category.active
         h4 Professional
         ul.gallery
-          - for i in ['black-red','blue-boxes','Gnome','purple-blue']
+          - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
             li.card(class=i)
               img(src='/images/qr.png').qr
               ul.content
@@ -76,7 +76,26 @@
       .category
         h4 Modern
         ul.gallery
-          - for i in ['green-grid','hello','white-purple','prime-grid']
+          - for i in ['retroish','stripes','tri-color','vertical-gray']
+            li.card(class=i)
+              img(src='/images/qr.png').qr
+              ul.content
+                li.name John Stamos
+                li.title Uncle Jesse
+                li.phone 555.555.5555
+                li.email john@stamos.com
+                li.company 
+                li.address 
+                li.fax 
+                li.address_2 
+                li.custom_1 
+                li.address_3 
+                li.custom_2 
+                li.custom_3 
+      .category
+        h4 Other
+        ul.gallery
+          - for i in ['purple-blue','green-grid','retroish','stripes','tri-color','vertical-gray']
             li.card(class=i)
               img(src='/images/qr.png').qr
               ul.content
