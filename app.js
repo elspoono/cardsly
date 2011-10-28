@@ -259,6 +259,16 @@
     });
     return promise;
   };
+  /*
+  
+  Create the Everyauth Accessing the user function
+  
+  per the "Accessing the user" section of the everyauth README
+  
+  */
+  everyauth.everymodule.findUserById(function(userId, callback) {
+    return User.findById(userId, callback);
+  });
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
   everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
   everyauth.twitter.findOrCreateUser(handleGoodResponse);
@@ -341,14 +351,8 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
-    console.log(req.session.auth);
-    return User.findById(req.session.auth.userId, function(err, user) {
-      console.log(1);
-      console.log(user);
-      return res.render('success', {
-        err: err,
-        user: user
-      });
+    return res.render('success', {
+      user: req.user
     });
   });
   app.get('/cards', function(req, res) {

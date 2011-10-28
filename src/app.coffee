@@ -295,6 +295,18 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
             user: user
   promise
 
+
+###
+
+Create the Everyauth Accessing the user function
+
+per the "Accessing the user" section of the everyauth README
+
+###
+
+everyauth.everymodule.findUserById (userId, callback) ->
+  User.findById userId, callback
+
 # Twitter API Key and Config
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
 everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
@@ -415,17 +427,9 @@ app.get '/', (req, res) ->
 #
 # Where they land after authenticating
 # This should close automatically or redirect to the home page if no caller
-
-
 app.get '/success', (req, res) ->
-
-  console.log req.session.auth
-  User.findById req.session.auth.userId, (err, user) ->
-    console.log 1
-    console.log user
-    res.render 'success'
-      err: err
-      user: user
+  res.render 'success'
+    user: req.user
 
 # Cards Page Mockup
 app.get '/cards', (req, res) ->
