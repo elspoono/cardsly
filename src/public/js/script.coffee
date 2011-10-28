@@ -439,7 +439,7 @@ $ ->
       $mc.find('input').each ->
         $t = $ this
         v = $t.val()
-        $t.val('')
+        $t.val ''
         for j in [0..v.length]
           do (j) ->
             setTimeout ->
@@ -513,6 +513,11 @@ $ ->
           $gs.animate
             left: $t.offset().left-10
           ,500,'linear'
+  $gs.bind 'activeMoved', ->
+    $a = $ '.card.active'
+    $gs.css
+      left: $a.offset().left-10
+      top: $a.offset().top-10
   $(window).load () ->
     $('.gallery:first .card:first').click()
   
@@ -543,6 +548,14 @@ $ ->
     $t = $ this
     $c = $t.closest '.category'
     $g = $c.find '.gallery'
+    $a = $ '.category.active'
+    $a.removeClass('active')
+    $a.find('.gallery').show().slideUp 400
+    $gs.hide()
+    $c.find('.gallery').slideDown 400, ->
+      $gs.show()
+      $c.find('.card:first').click()
+    $c.addClass('active')
 
   # Form Fields
   $('.card.main input').each () ->
