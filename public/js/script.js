@@ -456,7 +456,7 @@
     });
   };
   $(function() {
-    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, winH, _i, _len;
+    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, updateCards, winH, _i, _len;
     $win = $(window);
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
@@ -476,27 +476,54 @@
       i = hasHidden[_i];
       i.$this.hide();
     }
+    /*
+      Update Cards
+    
+      Function used a few places below
+      */
+    updateCards = function(rowNumber, value) {
+      return $('.card .content').each(function() {
+        return $(this).find('li:eq(' + rowNumber + ')').html(value);
+      });
+    };
     $win.scroll(function() {
       var i, newWinH, timeLapse, _j, _len2, _results;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
         $mc.data('didLoad', true);
         timeLapse = 0;
-        $mc.find('input').each(function() {
-          var $t, j, v, _ref, _results;
+        $mc.find('input').each(function(rowNumber) {
+          var $t, j, timers, v;
           $t = $(this);
           v = $t.val();
           $t.val('');
-          _results = [];
-          for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
-            _results.push((function(j) {
-              setTimeout(function() {
-                return $t.val(v.substr(0, j));
-              }, timeLapse * 70);
-              return timeLapse++;
-            })(j));
-          }
-          return _results;
+          timers = (function() {
+            var _ref, _results;
+            _results = [];
+            for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
+              _results.push((function(j) {
+                var timer;
+                timer = setTimeout(function() {
+                  var v_substring;
+                  v_substring = v.substr(0, j);
+                  $t.val(v_substring);
+                  return updateCards(rowNumber, v_substring);
+                }, timeLapse * 70);
+                timeLapse++;
+                return timer;
+              })(j));
+            }
+            return _results;
+          })();
+          return $t.one('focus', function() {
+            var i, _j, _len2;
+            for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
+              i = timers[_j];
+              clearTimeout(i);
+            }
+            $t.val('');
+            return updateCards(rowNumber, '');
+          });
         });
       }
       _results = [];
@@ -597,21 +624,22 @@
       $c = $t.closest('.category');
       $g = $c.find('.gallery');
       $a = $('.category.active');
-      $a.removeClass('active');
-      $a.find('.gallery').show().slideUp(400);
-      $gs.hide();
-      $c.find('.gallery').slideDown(400, function() {
-        $gs.show();
-        return $c.find('.card:first').click();
-      });
-      return $c.addClass('active');
+      if (!$c.hasClass('active')) {
+        $a.removeClass('active');
+        $a.find('.gallery').show().slideUp(400);
+        $gs.hide();
+        $c.find('.gallery').slideDown(400, function() {
+          $gs.show();
+          return $c.find('.card:first').click();
+        });
+        return $c.addClass('active');
+      }
     });
-    $('.card.main input').each(function() {
+    $('.card.main input').each(function(i) {
       var $t;
       $t = $(this);
       return $t.keyup(function() {
-        var v;
-        return v = this.value;
+        return updateCards(i, this.value);
       });
     });
     $('.quantity input,.shipping_method input').bind('click change', function() {

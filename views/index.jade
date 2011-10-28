@@ -61,18 +61,9 @@
             li.card(class=i)
               img(src='/images/qr.png').qr
               ul.content
-                li.name John Stamos
-                li.title Uncle Jesse
-                li.phone 555.555.5555
-                li.email john@stamos.com
-                li.company 
-                li.address 
-                li.fax 
-                li.address_2 
-                li.custom_1 
-                li.address_3 
-                li.custom_2 
-                li.custom_3
+                - for (i=0; i<=6; i++)
+                  li
+
       .category
         h4 Modern
         ul.gallery
@@ -80,18 +71,8 @@
             li.card(class=i)
               img(src='/images/qr.png').qr
               ul.content
-                li.name John Stamos
-                li.title Uncle Jesse
-                li.phone 555.555.5555
-                li.email john@stamos.com
-                li.company 
-                li.address 
-                li.fax 
-                li.address_2 
-                li.custom_1 
-                li.address_3 
-                li.custom_2 
-                li.custom_3 
+                - for (i=0; i<=6; i++)
+                  li
       .category
         h4 Other
         ul.gallery
@@ -99,18 +80,8 @@
             li.card(class=i)
               img(src='/images/qr.png').qr
               ul.content
-                li.name John Stamos
-                li.title Uncle Jesse
-                li.phone 555.555.5555
-                li.email john@stamos.com
-                li.company 
-                li.address 
-                li.fax 
-                li.address_2 
-                li.custom_1 
-                li.address_3 
-                li.custom_2 
-                li.custom_3 
+                - for (i=0; i<=6; i++)
+                  li
   .clear
 .section
   .cell-bg

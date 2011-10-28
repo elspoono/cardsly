@@ -425,6 +425,16 @@ $ ->
   # Hide them
   for i in hasHidden
     i.$this.hide()
+  
+
+  ###
+  Update Cards
+
+  Function used a few places below
+  ###
+  updateCards = (rowNumber, value) ->
+    $('.card .content').each -> $(this).find('li:eq('+rowNumber+')').html value
+
 
   # On the window scroll event ...
   $win.scroll ->
@@ -436,16 +446,25 @@ $ ->
     if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
       $mc.data 'didLoad', true
       timeLapse = 0
-      $mc.find('input').each ->
+      $mc.find('input').each (rowNumber) ->
         $t = $ this
         v = $t.val()
         $t.val ''
-        for j in [0..v.length]
+        timers = for j in [0..v.length]
           do (j) ->
-            setTimeout ->
-              $t.val v.substr 0,j
+            timer = setTimeout ->
+              v_substring = v.substr 0,j
+              $t.val v_substring
+              updateCards rowNumber, v_substring
             ,timeLapse*70
             timeLapse++
+            timer
+        $t.one 'focus', ->
+          for i in timers
+            clearTimeout i
+          $t.val ''
+          updateCards rowNumber, ''
+        
 
 
     # Show any hidden sections
@@ -549,19 +568,20 @@ $ ->
     $c = $t.closest '.category'
     $g = $c.find '.gallery'
     $a = $ '.category.active'
-    $a.removeClass('active')
-    $a.find('.gallery').show().slideUp 400
-    $gs.hide()
-    $c.find('.gallery').slideDown 400, ->
-      $gs.show()
-      $c.find('.card:first').click()
-    $c.addClass('active')
+    if !$c.hasClass 'active'
+      $a.removeClass('active')
+      $a.find('.gallery').show().slideUp 400
+      $gs.hide()
+      $c.find('.gallery').slideDown 400, ->
+        $gs.show()
+        $c.find('.card:first').click()
+      $c.addClass('active')
 
   # Form Fields
-  $('.card.main input').each () ->
+  $('.card.main input').each (i) ->
     $t = $ this
-    $t.keyup ->
-      v = this.value
+    $t.keyup -> 
+      updateCards i, this.value
   
   # Button Clicking Stuff
 
