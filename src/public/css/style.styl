@@ -46,7 +46,7 @@ $c-a-nav = #d8cfc5
  ********************************/
 
 // CHAM builtin style functions
-font-size($size-multiplier, $set-line-height=true)
+relative-size($size-multiplier, $set-line-height=true)
   $font-size = unit($base-font-size * $size-multiplier, 'px')
   font-size $font-size
   if $set-line-height
@@ -139,17 +139,17 @@ h1, h2, h3
   font-weight normal
   font-family $display-font-family
 h1 
-  font-size(2.4)
+  relative-size(2.4)
 ul
   list-style none
   margin 0
   padding 0
 body
-  font-size(.75)
+  relative-size(.75)
   font-family $base-font-family
   background $c-body-bg url('/images/little_pluses.png')
 input
-  font-size(1)
+  relative-size(1)
 // END Base Tag Definitions
 
 
@@ -252,7 +252,7 @@ header
     color $c-logo-light
     .alt
       color $c-logo-alt
-    font-size(1.5)
+    relative-size(1.5)
   .navigation
     font-family $display-font-family
     gradient($c-bg-light,$c-bg-dark)
@@ -260,7 +260,7 @@ header
     margin 0
     border-radius()
     li
-      font-size(1)
+      relative-size(1)
       margin 0
       float left
       a
@@ -350,7 +350,7 @@ header
   border-radius(10px)
   margin 0 auto
   box-shadow(1px,$c-black)
-  font-size(1.2)
+  relative-size(1.2)
   color $c-light
 .button.normal.hover
   color lighten($c-light,10)
@@ -362,7 +362,7 @@ header
 // Checkout Button
 .checkout.button
   gradient($c-go,darken($c-go,20))
-  font-size(1.6)
+  relative-size(1.6)
   width 200px
   color $c-dark-warm
 .checkout.button.hover
@@ -442,7 +442,7 @@ header
     padding-bottom 5px
   .price
     padding 15px
-    font-size(2)
+    relative-size(2)
     font-weight bold
 
 // Hand Container
@@ -470,7 +470,7 @@ header
         margin 5px 10px
       left -1px
       top -50px
-      font-size(.5)
+      relative-size(.5)
       .qr
         height 35px
         width 35px
@@ -488,7 +488,7 @@ header
   height 240px
   display block
   margin 0 auto
-  font-size(.8)
+  relative-size(.8)
   .content
     padding 30px 20px
   .qr
@@ -500,7 +500,7 @@ header
   border 20px solid $c-logo-light
 .card
   background $c-light
-  font-size(.4)
+  relative-size(.4)
   .content
     padding 15px 10px
   .qr
@@ -513,6 +513,11 @@ header
     background none
     border none
     color inherit
+    font-size inherit
+    padding 0
+    margin 0
+    width 100%
+    border-bottom 1px solid $c-dark-warm
 .scott-qr-blue.main
   background url('/images/card-bg/scott-qr-blue.png')
   .content
@@ -684,7 +689,7 @@ header
 // Checkout Form
 .subtitle
   color darken($c-bg-dark,10)
-  font-size(.6)
+  relative-size(.6)
 
 // Main Form Layout
 .main-fields
@@ -703,7 +708,7 @@ header
   label
     margin 10px 0 1px 0
     display block
-    font-size(.6)
+    relative-size(.6)
 
 // Card Galleries
 .design-container
@@ -749,12 +754,12 @@ label
   .subtitle
     display block
     margin 0 0 0 25px
-    font-size(.5)
+    relative-size(.5)
 .text-fields
   margin 30px 0
   .suggestions
     color darken($c-bg-dark,10)
-    font-size(.5)
+    relative-size(.5)
     line-height 1em
   textarea
     width 100%
@@ -764,26 +769,26 @@ label
     color $c-light
   input
     display block
-    font-size(.8)
+    relative-size(.8)
   li
     float left
 .shipping
-  font-size(1)
+  relative-size(1)
   li
     margin 10px
     display block
     float none
   label
     color $c-bg-dark
-    font-size(.65)
+    relative-size(.65)
 .radio-text-fields
-  font-size(1)
+  relative-size(1)
   margin -30px 0 15px 0
   li
     margin 10px
   label
     color $c-light
-    font-size(.65)
+    relative-size(.65)
   input
     margin 10px 10px 0 0
     float left
@@ -819,7 +824,7 @@ label
   .arrow-right.hover
     background url('/images/arrow-right-alt.png')
   h2.prompt,h2.caption
-    font-size(.8)
+    relative-size(.8)
     text-align center
   h2.prompt
     margin 0 0 10px 0
@@ -851,7 +856,7 @@ label
 // Footer
 
 .footer
-  font-size(.6)
+  relative-size(.6)
   color $c-bg-dark
   a,a:visited
     color $c-bg-dark

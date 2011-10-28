@@ -90,8 +90,7 @@ input {
   left: 0;
 }
 .close {
-  font-size: 21px;
-  line-height: 1.5em;
+  font-size: 1em;
   padding: 4px 30px;
   background: semi-light;
   background: #eee;
@@ -142,8 +141,7 @@ input {
 .window .buttons .submit,
 .window .buttons .cancel {
   margin: 30px 0 0 0;
-  font-size: 25.2px;
-  line-height: 1.5em;
+  font-size: 1.2em;
   border: 1px solid #524641;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -637,6 +635,11 @@ header .navigation li a {
   background: none;
   border: none;
   color: inherit;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  border-bottom: 1px solid #333;
 }
 .scott-qr-blue.main {
   background: url("/images/card-bg/scott-qr-blue.png");
