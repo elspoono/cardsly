@@ -258,23 +258,41 @@ Authenticating to 3rd Party Providers
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #console.log 'userMeta', userMeta
   promise = new Promise()
-  user = {}
+
+
+
+  userSearch = {}
   if userMeta.publicProfileUrl
-    user.name = userMeta.firstName+' '+userMeta.lastName
-    user.linkedin_url = userMeta.publicProfileUrl
+    userSearch.name = userMeta.firstName+' '+userMeta.lastName
+    userSearch.linkedin_url = userMeta.publicProfileUrl
   if userMeta.link
-    user.name = userMeta.name
-    user.facebook_url = userMeta.link
+    userSearch.name = userMeta.name
+    userSearch.facebook_url = userMeta.link
   if userMeta.screen_name
-    user.name = userMeta.name
-    user.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
+    userSearch.name = userMeta.name
+    userSearch.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
   if userMeta.email
-    user.email = userMeta.email
+    userSearch.email = userMeta.email
 
-  console.log user
-
-  promise.fulfill
-    id: 'after finding or creating the user, this is it'
+  User.findOne userSearch, (err,user) ->
+    if err
+      promise.fail err
+    else if user
+      promise.fulfill
+        user: user
+    else
+      user = new User
+      user.name = userSearch.name
+      user.linkedin_url = userSearch.linkedin_url
+      user.facebook_url = userSearch.facebook_url
+      user.twitter_url = userSearch.twitter_url
+      user.email = userSearch.email
+      user.save (err, user) -> 
+        if err
+          promise.fail err
+        else
+          promise.fulfill
+            user: user
   promise
 
 # Twitter API Key and Config
@@ -397,12 +415,24 @@ app.get '/', (req, res) ->
 #
 # Where they land after authenticating
 # This should close automatically or redirect to the home page if no caller
+
+
 app.get '/success', (req, res) ->
+
+  
+  User.findById req.session.auth.userId, (err, user) ->
+    console.log user
+
   res.render 'success'
 
 # Cards Page Mockup
 app.get '/cards', (req, res) ->
   res.render 'cards'
+
+
+# Contact Page
+app.get '/contact', (req, res) ->
+  res.render 'contact'
 
 # Generic Error handler page itself
 app.get '/error', (req, res) ->
@@ -414,7 +444,7 @@ app.get '/robots.txt', (req, res, next) ->
     'Content-Type': 'text/plain'
 
 
-# Default Rout
+# Default Route
 #
 # Redirect everything to the home page automagically
 app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->

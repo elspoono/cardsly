@@ -214,27 +214,48 @@
   *****************************************
   */
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
-    var promise, user;
+    var promise, userSearch;
     promise = new Promise();
-    user = {};
+    userSearch = {};
     if (userMeta.publicProfileUrl) {
-      user.name = userMeta.firstName + ' ' + userMeta.lastName;
-      user.linkedin_url = userMeta.publicProfileUrl;
+      userSearch.name = userMeta.firstName + ' ' + userMeta.lastName;
+      userSearch.linkedin_url = userMeta.publicProfileUrl;
     }
     if (userMeta.link) {
-      user.name = userMeta.name;
-      user.facebook_url = userMeta.link;
+      userSearch.name = userMeta.name;
+      userSearch.facebook_url = userMeta.link;
     }
     if (userMeta.screen_name) {
-      user.name = userMeta.name;
-      user.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
+      userSearch.name = userMeta.name;
+      userSearch.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
     }
     if (userMeta.email) {
-      user.email = userMeta.email;
+      userSearch.email = userMeta.email;
     }
-    console.log(user);
-    promise.fulfill({
-      id: 'after finding or creating the user, this is it'
+    User.findOne(userSearch, function(err, user) {
+      if (err) {
+        return promise.fail(err);
+      } else if (user) {
+        return promise.fulfill({
+          user: user
+        });
+      } else {
+        user = new User;
+        user.name = userSearch.name;
+        user.linkedin_url = userSearch.linkedin_url;
+        user.facebook_url = userSearch.facebook_url;
+        user.twitter_url = userSearch.twitter_url;
+        user.email = userSearch.email;
+        return user.save(function(err, user) {
+          if (err) {
+            return promise.fail(err);
+          } else {
+            return promise.fulfill({
+              user: user
+            });
+          }
+        });
+      }
     });
     return promise;
   };
@@ -320,10 +341,16 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
+    User.findById(req.session.auth.userId, function(err, user) {
+      return console.log(user);
+    });
     return res.render('success');
   });
   app.get('/cards', function(req, res) {
     return res.render('cards');
+  });
+  app.get('/contact', function(req, res) {
+    return res.render('contact');
   });
   app.get('/error', function(req, res) {
     return res.render('error');
