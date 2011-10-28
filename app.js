@@ -341,7 +341,10 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
+    console.log(req.session.auth);
     return User.findById(req.session.auth.userId, function(err, user) {
+      console.log(1);
+      console.log(user);
       return res.render('success', {
         err: err,
         user: user

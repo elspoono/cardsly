@@ -419,8 +419,10 @@ app.get '/', (req, res) ->
 
 app.get '/success', (req, res) ->
 
-  
+  console.log req.session.auth
   User.findById req.session.auth.userId, (err, user) ->
+    console.log 1
+    console.log user
     res.render 'success'
       err: err
       user: user

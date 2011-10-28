@@ -2,5 +2,6 @@
   .cell-bg
   .cell-content
     p Got It 
-      =user.name
-      =user.email
+      if user
+        =user.name
+        =user.email
