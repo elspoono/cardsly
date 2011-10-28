@@ -364,11 +364,20 @@ header
   gradient($c-go,darken($c-go,20))
   relative-size(1.6)
   width 200px
-  color $c-dark-warm
+  text-shadow(1px,$c-black,0)
 .checkout.button.hover
-  color $c-black
   gradient(lighten($c-go,10),darken($c-go,10))
 .checkout.button.click
+  gradient(darken($c-go,10),lighten($c-go,10))
+
+
+// Checkout Button
+.design-button.button
+  gradient($c-go,darken($c-go,20))
+  text-shadow(1px,$c-black,0)
+.design-button.button.hover
+  gradient(lighten($c-go,10),darken($c-go,10))
+.design-button.button.click
   gradient(darken($c-go,10),lighten($c-go,10))
 
 // Social Buttons

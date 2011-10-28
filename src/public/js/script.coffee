@@ -441,7 +441,7 @@ $ ->
 
   $('.checkout').click () ->
     loadAlert
-      content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 1st 2011)'
+      content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 5th 2011)'
     false
 
   $gs = $ '.gallery-select'
@@ -509,6 +509,12 @@ $ ->
 
 
   # Home Page Stuff
+
+  #
+  $('.category h4').click () ->
+    $t = $ this
+    $c = $t.closest '.category'
+    $g = $c.find '.gallery'
 
   # Form Fields
   $('.main-fields input').each () ->

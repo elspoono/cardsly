@@ -484,7 +484,7 @@
     item_name = '100 cards';
     $('.checkout').click(function() {
       loadAlert({
-        content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 1st 2011)'
+        content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 5th 2011)'
       });
       return false;
     });
@@ -562,6 +562,12 @@
     maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
+    $('.category h4').click(function() {
+      var $c, $g, $t;
+      $t = $(this);
+      $c = $t.closest('.category');
+      return $g = $c.find('.gallery');
+    });
     $('.main-fields input').each(function() {
       var $t;
       $t = $(this);

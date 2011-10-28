@@ -408,10 +408,9 @@ header .navigation li a {
   font-size: 33.6px;
   line-height: 1.5em;
   width: 200px;
-  color: #333;
+  text-shadow: 1px 1px 0 #000;
 }
 .checkout.button.hover {
-  color: #000;
   background-color: #53f388;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#53f388), to(#0ed24f));
 /* Saf4+, Chrome */
@@ -426,6 +425,49 @@ header .navigation li a {
   background-image: linear-gradient(top, #53f388, #0ed24f);
 }
 .checkout.button.click {
+  background-color: #0ed24f;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#0ed24f), to(#53f388));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #0ed24f, #53f388);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #0ed24f, #53f388);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #0ed24f, #53f388);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #0ed24f, #53f388);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #0ed24f, #53f388);
+}
+.design-button.button {
+  background-color: #23f067;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #23f067, #0ba23d);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #23f067, #0ba23d);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #23f067, #0ba23d);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #23f067, #0ba23d);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #23f067, #0ba23d);
+  text-shadow: 1px 1px 0 #000;
+}
+.design-button.button.hover {
+  background-color: #53f388;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#53f388), to(#0ed24f));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #53f388, #0ed24f);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #53f388, #0ed24f);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #53f388, #0ed24f);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #53f388, #0ed24f);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #53f388, #0ed24f);
+}
+.design-button.button.click {
   background-color: #0ed24f;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#0ed24f), to(#53f388));
 /* Saf4+, Chrome */
