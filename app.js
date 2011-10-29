@@ -234,8 +234,10 @@
     }
     User.findOne(userSearch, function(err, user) {
       if (err) {
+        console.log('err: ', err);
         return promise.fail(err);
       } else if (user) {
+        console.log('user exists: ', user);
         return promise.fulfill({
           user: user
         });
@@ -248,8 +250,10 @@
         user.email = userSearch.email;
         return user.save(function(err, user) {
           if (err) {
+            console.log('err: ', err);
             return promise.fail(err);
           } else {
+            console.log('user created: ', user);
             return promise.fulfill({
               user: user
             });
