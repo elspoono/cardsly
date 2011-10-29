@@ -355,9 +355,7 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
-    console.log('Request User: ', util.inspect(req.user));
-    console.log('Request Session Auth userId: ', util.inspect(req.session.auth.userId));
-    console.log('Request Session Auth: ', util.inspect(req.session.auth));
+    console.log('Request User: ', req.user);
     return res.render('success', {
       user: req.user
     });
