@@ -355,6 +355,7 @@
     return res.render('index');
   });
   app.get('/success', function(req, res) {
+    console.log('Request User: ', req.user);
     return res.render('success', {
       user: req.user
     });

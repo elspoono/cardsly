@@ -432,6 +432,7 @@ app.get '/', (req, res) ->
 # Where they land after authenticating
 # This should close automatically or redirect to the home page if no caller
 app.get '/success', (req, res) ->
+  console.log 'Request User: ', req.user
   res.render 'success'
     user: req.user
 
