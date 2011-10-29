@@ -356,6 +356,7 @@
   });
   app.get('/success', function(req, res) {
     console.log('Request User: ', req.user);
+    console.log('Request Session Auth: ', req.session.auth);
     return res.render('success', {
       user: req.user
     });
