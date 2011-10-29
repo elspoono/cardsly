@@ -434,6 +434,7 @@ app.get '/', (req, res) ->
 app.get '/success', (req, res) ->
   console.log 'Request User: ', req.user
   console.log 'Request Session Auth: ', req.session.auth
+  console.log 'Request Session Auth userId: ', req.session.auth.userId
   res.render 'success'
     user: req.user
 
