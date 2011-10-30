@@ -234,6 +234,7 @@
     }
     User.findOne(userSearch, function(err, existingUser) {
       var user;
+      console.log(1);
       if (err) {
         console.log('err: ', err);
         return promise.fail(err);
@@ -241,6 +242,7 @@
         console.log('user exists: ', existingUser);
         return promise.fulfill(existingUser);
       } else {
+        console.log(2);
         user = new User;
         user.name = userSearch.name;
         user.linkedin_url = userSearch.linkedin_url;

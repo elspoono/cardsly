@@ -275,6 +275,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
     userSearch.email = userMeta.email
 
   User.findOne userSearch, (err,existingUser) ->
+    console.log 1
     if err
       console.log 'err: ', err
       promise.fail err
@@ -282,6 +283,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
       console.log 'user exists: ', existingUser
       promise.fulfill existingUser
     else
+      console.log 2
       user = new User
       user.name = userSearch.name
       user.linkedin_url = userSearch.linkedin_url
