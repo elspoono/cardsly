@@ -232,15 +232,14 @@
     if (userMeta.email) {
       userSearch.email = userMeta.email;
     }
-    User.findOne(userSearch, function(err, user) {
+    User.findOne(userSearch, function(err, existingUser) {
+      var user;
       if (err) {
         console.log('err: ', err);
         return promise.fail(err);
-      } else if (user) {
-        console.log('user exists: ', user);
-        return promise.fulfill({
-          user: user
-        });
+      } else if (existingUser) {
+        console.log('user exists: ', existingUser);
+        return promise.fulfill(existingUser);
       } else {
         user = new User;
         user.name = userSearch.name;
@@ -253,10 +252,8 @@
             console.log('err: ', err);
             return promise.fail(err);
           } else {
-            console.log('user created: ', user);
-            return promise.fulfill({
-              user: user
-            });
+            console.log('user created: ', createdUser);
+            return promise.fulfill(createdUser);
           }
         });
       }

@@ -274,14 +274,13 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   if userMeta.email
     userSearch.email = userMeta.email
 
-  User.findOne userSearch, (err,user) ->
+  User.findOne userSearch, (err,existingUser) ->
     if err
       console.log 'err: ', err
       promise.fail err
-    else if user
-      console.log 'user exists: ', user
-      promise.fulfill
-        user: user
+    else if existingUser
+      console.log 'user exists: ', existingUser
+      promise.fulfill existingUser
     else
       user = new User
       user.name = userSearch.name
@@ -294,9 +293,8 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
           console.log 'err: ', err
           promise.fail err
         else
-          console.log 'user created: ', user
-          promise.fulfill
-            user: user
+          console.log 'user created: ', createdUser
+          promise.fulfill createdUser
   promise
 
 
