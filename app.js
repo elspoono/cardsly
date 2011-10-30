@@ -234,7 +234,6 @@
     }
     User.findOne(userSearch, function(err, existingUser) {
       var user;
-      console.log(1);
       if (err) {
         console.log('err: ', err);
         return promise.fail(err);
@@ -242,14 +241,13 @@
         console.log('user exists: ', existingUser);
         return promise.fulfill(existingUser);
       } else {
-        console.log(2);
         user = new User;
         user.name = userSearch.name;
         user.linkedin_url = userSearch.linkedin_url;
         user.facebook_url = userSearch.facebook_url;
         user.twitter_url = userSearch.twitter_url;
         user.email = userSearch.email;
-        return user.save(function(err, user) {
+        return user.save(function(err, createdUser) {
           if (err) {
             console.log('err: ', err);
             return promise.fail(err);
