@@ -428,6 +428,14 @@ err = (res, err) ->
 
 
 app.post '/saveForm', (req, res) ->
+  ###
+  TODO
+  
+  We're going to have to save these form inputs in a cookie that expires faster.
+  Like on browser close.
+  It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
+  Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
+  ###
   req.session.savedInputs = req.body.inputs.split '`~`'
   res.send
     success: true
