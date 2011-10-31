@@ -473,6 +473,13 @@ app.get '/about', (req, res) ->
     user: req.user
     session: req.session
 
+# How it Works Page
+app.get '/how-it-works', (req, res) ->
+  res.render 'how-it-works'
+    user: req.user
+    session: req.session
+
+
 # Generic Error handler page itself
 app.get '/error', (req, res) ->
   res.render 'error'

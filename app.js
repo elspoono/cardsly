@@ -397,6 +397,12 @@
       session: req.session
     });
   });
+  app.get('/how-it-works', function(req, res) {
+    return res.render('how-it-works', {
+      user: req.user,
+      session: req.session
+    });
+  });
   app.get('/error', function(req, res) {
     return res.render('error');
   });
