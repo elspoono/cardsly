@@ -125,28 +125,28 @@
     }
     buttons = $('<div class="buttons" />');
     if (settings.Close) {
-      Close = $('<input type="button" value="Close" class="submit">');
+      Close = $('<input type="button" class="button normal" value="Close" class="submit">');
       Close.click(function() {
         return settings.Close(myNext);
       });
       buttons.append(Close);
     }
     if (settings.Ok) {
-      ok = $('<input type="button" value="Ok" class="submit">');
+      ok = $('<input type="button" class="button normal" value="Ok" class="submit">');
       ok.click(function() {
         return settings.Ok(myNext);
       });
       buttons.append(ok);
     }
     if (settings.Cancel) {
-      cancel = $('<input type="button" value="Cancel" class="cancel">');
+      cancel = $('<input type="button" class="button normal" value="Cancel" class="cancel">');
       cancel.click(function() {
         return settings.Cancel(myNext);
       });
       buttons.append(cancel);
     }
     if (settings.Confirm) {
-      confirm = $('<input type="button" value="Confirm" class="submit">');
+      confirm = $('<input type="button" class="button normal" value="Confirm" class="submit">');
       confirm.click(function() {
         return settings.Confirm(myNext);
       });
@@ -490,7 +490,7 @@
     });
   };
   $(function() {
-    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, timer, updateCards, winH, _i, _len;
+    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, timer, updateCards, winH, _i, _len;
     $win = $(window);
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
@@ -523,52 +523,54 @@
     $win.scroll(function() {
       var i, newWinH, timeLapse, _j, _len2, _results;
       newWinH = $win.height() + $win.scrollTop();
-      if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
-        $mc.data('didLoad', true);
-        timeLapse = 0;
-        $('.main.card').find('input').each(function(rowNumber) {
-          return updateCards(rowNumber, this.value);
-        });
-        $('.main.card .defaults').find('input').each(function(rowNumber) {
-          var $t, j, timers, v;
-          $t = $(this);
-          v = $t.val();
-          $t.val('');
-          timers = (function() {
-            var _ref, _results;
-            _results = [];
-            for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
-              _results.push((function(j) {
-                var timer;
-                timer = setTimeout(function() {
-                  var v_substring;
-                  v_substring = v.substr(0, j);
-                  $t.val(v_substring);
-                  return updateCards(rowNumber, v_substring);
-                }, timeLapse * 70);
-                timeLapse++;
-                return timer;
-              })(j));
-            }
-            return _results;
-          })();
-          $t.bind('clearMe', function() {
-            var i, _j, _len2;
-            console.log($t.data('cleared'));
-            if (!$t.data('cleared')) {
-              for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
-                i = timers[_j];
-                clearTimeout(i);
+      if ($mc.length) {
+        if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
+          $mc.data('didLoad', true);
+          timeLapse = 0;
+          $('.main.card').find('input').each(function(rowNumber) {
+            return updateCards(rowNumber, this.value);
+          });
+          $('.main.card .defaults').find('input').each(function(rowNumber) {
+            var $t, j, timers, v;
+            $t = $(this);
+            v = $t.val();
+            $t.val('');
+            timers = (function() {
+              var _ref, _results;
+              _results = [];
+              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
+                _results.push((function(j) {
+                  var timer;
+                  timer = setTimeout(function() {
+                    var v_substring;
+                    v_substring = v.substr(0, j);
+                    $t.val(v_substring);
+                    return updateCards(rowNumber, v_substring);
+                  }, timeLapse * 70);
+                  timeLapse++;
+                  return timer;
+                })(j));
               }
-              $t.val('');
-              updateCards(rowNumber, '');
-              return $t.data('cleared', true);
-            }
+              return _results;
+            })();
+            $t.bind('clearMe', function() {
+              var i, _j, _len2;
+              console.log($t.data('cleared'));
+              if (!$t.data('cleared')) {
+                for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
+                  i = timers[_j];
+                  clearTimeout(i);
+                }
+                $t.val('');
+                updateCards(rowNumber, '');
+                return $t.data('cleared', true);
+              }
+            });
+            return $t.bind('focus', function() {
+              return $t.trigger('clearMe');
+            });
           });
-          return $t.bind('focus', function() {
-            return $t.trigger('clearMe');
-          });
-        });
+        }
       }
       _results = [];
       for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
@@ -668,13 +670,13 @@
     $(window).load(function() {
       return $('.gallery:first .card:first').click();
     });
-    $('.button').hover(function() {
+    $('.button').live('mouseenter', function() {
       return $(this).addClass('hover');
-    }, function() {
+    }).live('mouseleave', function() {
       return $(this).removeClass('hover');
-    }).mousedown(function() {
+    }).live('mousedown', function() {
       return $(this).addClass('click');
-    }).mouseup(function() {
+    }).live('mouseup', function() {
       return $(this).removeClass('click');
     });
     newMargin = 0;
@@ -760,12 +762,21 @@
       $('.main-fields .more').show();
       return false;
     });
+    path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design-button').click(function() {
-      $('html,body').animate({
-        scrollTop: $('.section:eq(1)').offset().top
-      }, 500);
+      if (path !== '/') {
+        document.location.href = '/#design-button';
+      } else {
+        $('html,body').animate({
+          scrollTop: $('.section:eq(1)').offset().top
+        }, 500);
+      }
       return false;
     });
+    if (path === '/#design-button') {
+      document.location.href = '#';
+      $('.design-button').click();
+    }
     advanceSlide = function() {
       if (newMargin < maxSlides * -marginIncrement) {
         newMargin = 0;

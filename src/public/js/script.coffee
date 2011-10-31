@@ -107,25 +107,25 @@ loadModal = (options, next) ->
   buttons = $ '<div class="buttons" />'
 
   if settings.Close
-    Close = $ '<input type="button" value="Close" class="submit">'
+    Close = $ '<input type="button" class="button normal" value="Close" class="submit">'
     Close.click () ->
       settings.Close myNext
     buttons.append Close
 
   if settings.Ok
-    ok = $ '<input type="button" value="Ok" class="submit">'
+    ok = $ '<input type="button" class="button normal" value="Ok" class="submit">'
     ok.click () ->
       settings.Ok myNext
     buttons.append ok
 
   if settings.Cancel
-    cancel = $ '<input type="button" value="Cancel" class="cancel">'
+    cancel = $ '<input type="button" class="button normal" value="Cancel" class="cancel">'
     cancel.click () ->
       settings.Cancel myNext
     buttons.append cancel
 
   if settings.Confirm
-    confirm = $ '<input type="button" value="Confirm" class="submit">'
+    confirm = $ '<input type="button" class="button normal" value="Confirm" class="submit">'
     confirm.click () ->
       settings.Confirm myNext
     buttons.append confirm
@@ -481,36 +481,36 @@ $ ->
 
     # Get the new bottom of the window position
     newWinH = $win.height()+$win.scrollTop()
-
-    # If the main card bottom is now visible
-    if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
-      $mc.data 'didLoad', true
-      timeLapse = 0
-      $('.main.card').find('input').each (rowNumber) ->
-        updateCards rowNumber, this.value
-      $('.main.card .defaults').find('input').each (rowNumber) ->
-        $t = $ this
-        v = $t.val()
-        $t.val ''
-        timers = for j in [0..v.length]
-          do (j) ->
-            timer = setTimeout ->
-              v_substring = v.substr 0,j
-              $t.val v_substring
-              updateCards rowNumber, v_substring
-            ,timeLapse*70
-            timeLapse++
-            timer
-        $t.bind 'clearMe', ->
-          console.log $t.data 'cleared'
-          if !$t.data 'cleared'
-            for i in timers
-              clearTimeout i
-            $t.val ''
-            updateCards rowNumber, ''
-            $t.data 'cleared', true
-        $t.bind 'focus', ->
-          $t.trigger 'clearMe'
+    if $mc.length
+      # If the main card bottom is now visible
+      if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
+        $mc.data 'didLoad', true
+        timeLapse = 0
+        $('.main.card').find('input').each (rowNumber) ->
+          updateCards rowNumber, this.value
+        $('.main.card .defaults').find('input').each (rowNumber) ->
+          $t = $ this
+          v = $t.val()
+          $t.val ''
+          timers = for j in [0..v.length]
+            do (j) ->
+              timer = setTimeout ->
+                v_substring = v.substr 0,j
+                $t.val v_substring
+                updateCards rowNumber, v_substring
+              ,timeLapse*70
+              timeLapse++
+              timer
+          $t.bind 'clearMe', ->
+            console.log $t.data 'cleared'
+            if !$t.data 'cleared'
+              for i in timers
+                clearTimeout i
+              $t.val ''
+              updateCards rowNumber, ''
+              $t.data 'cleared', true
+          $t.bind 'focus', ->
+            $t.trigger 'clearMe'
 
 
     # Show any hidden sections
@@ -612,13 +612,13 @@ $ ->
 
 
   # Buttons everywhere need hover and click states
-  $('.button').hover ->
+  $('.button').live 'mouseenter', ->
     $(this).addClass 'hover'
-  ,->
+  .live 'mouseleave', ->
     $(this).removeClass 'hover'
-  .mousedown ->
+  .live 'mousedown', ->
     $(this).addClass 'click'
-  .mouseup ->
+  .live 'mouseup', ->
     $(this).removeClass 'click'
 
   # Define Margin
@@ -700,13 +700,21 @@ $ ->
     $('.main-fields .more').show()
     false
 
+  path = document.location.href.replace /http:\/\/[^\/]*/ig, ''
   # Get Started Button Scroll
   $('.design-button').click ->
-    $('html,body').animate
-      scrollTop: $('.section:eq(1)').offset().top
-    ,
-    500
+    if path != '/'
+      document.location.href = '/#design-button'
+    else
+      $('html,body').animate
+        scrollTop: $('.section:eq(1)').offset().top
+      ,
+      500
     false
+
+  if path == '/#design-button'
+    document.location.href = '#'
+    $('.design-button').click()
 
   # each advance of the slide
   advanceSlide = ->

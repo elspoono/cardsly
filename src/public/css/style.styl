@@ -183,45 +183,20 @@ input
 .close
   font-size 1em
   padding 4px 30px
-  background semi-light
-  alpha-bg($c-light,.75)
-  color semi-dark
+  background $c-black
+  color $c-light
   absolute()
   z-index 201
   cursor pointer
   border-radius-top-only(8px)
 .window
   z-index 201
-  alpha-bg($c-light,.9)
+  alpha-bg(darken($c-bg-dark,20),.9)
   border-radius-except-top-right(8px)
-  color $c-black
+  color $c-light
   padding 30px
   absolute()
   overflow hidden
-  /**************************************
-   *
-   * Buttons at the bottom of the modal window
-   *
-   **************************************/
-  .buttons
-    overflow hidden
-    width 100%
-    .submit,.cancel
-      margin 30px 0 0 0
-      font-size 1.2em
-      border 1px solid $c-bg-dark
-      border-radius(4px)
-      padding 0 30px
-    .cancel
-      background semi-light
-      color semi-dark
-    .submit
-      float right
-      margin-left 15px
-      submit()
-    .cancel
-      margin-right 15px
-      float left
 
 
 
@@ -296,7 +271,7 @@ header
     padding-bottom 10px
   margin gap(3) 0
   padding gap(1)
-  color $c-black
+  color darken($c-bg-dark,10)
   position relative
   a,a:visited
     color $c-light
@@ -692,8 +667,6 @@ header
 
 
 // General Style to lighten text
-.subtle
-  color darken($c-bg-dark,10)
 // Checkout Form
 .subtitle
   color darken($c-bg-dark,10)
@@ -861,6 +834,11 @@ label
           display block
       .first
         margin-top 75px
+        position relative
+        .video
+          position absolute
+          top 39px
+          left 98px
       .second
         margin-top 30px
       .third
