@@ -127,6 +127,13 @@ input {
   left: 0;
   overflow: hidden;
 }
+.create-form input {
+  width: 100%;
+}
+.create-form .button {
+  display: block;
+  float: none;
+}
 header {
   position: relative;
   z-index: 50;

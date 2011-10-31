@@ -613,9 +613,9 @@
     });
     $('.new').click(function() {
       loadAlert({
-        content: '<p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p>',
+        content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>',
         height: 400,
-        width: 700
+        width: 400
       });
       return false;
     });
