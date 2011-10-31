@@ -1,4 +1,4 @@
-.section.first
+.section.first.login-container
   .cell-bg
   .cell-content
     .signins
@@ -13,31 +13,33 @@
           span.cardsly cards
             span.alt .ly
           | &nbsp;with:
+        .clear.center
+        .socials
+          a.button.twitter(href='/auth/twitter')
+            span Twitter
+          a.button.facebook(href='/auth/facebook')
+            span Facebook
+          a.button.linkedin(href='/auth/linkedin')
+            span LinkedIn
+          a.button.google(href='/auth/google')
+            span Google
+          .clear
+          p.center -or-
+        .login-form
+          ul
+            li
+              input
+            li
+              input
+            li
+              .button.normal Login
+          .clear
+          p.center -or-
         .clear
-          .socials
-            a.button.twitter(href='/auth/twitter')
-              span Twitter
-            a.button.facebook(href='/auth/facebook')
-              span Facebook
-            a.button.linkedin(href='/auth/linkedin')
-              span LinkedIn
-            a.button.google(href='/auth/google')
-              span Google
-            .clear
-            p -or-
-          .local-existing
-            ul
-              li
-                input
-              li
-                input
-              li
-                .button.normal Login
-    
-            p -or-
-          .local
-            a.button.new(href='#')
-              span Create a username and password
-              span.subtitle username and password
-            .clear
-    
+        .local
+          a.button.new(href='#')
+            span Create a username and password
+            span.subtitle username and password
+          .clear
+        .clear
+.clear
