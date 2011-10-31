@@ -474,10 +474,13 @@ app.get '/about', (req, res) ->
     session: req.session
 
 # How it Works Page
-app.get '/how-it-works', (req, res) ->
+app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
+  console.log req
   res.render 'how-it-works'
     user: req.user
     session: req.session
+    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks
+
 
 
 # Generic Error handler page itself
@@ -493,7 +496,7 @@ app.get '/robots.txt', (req, res, next) ->
 # Default Route
 #
 # Redirect everything to the home page automagically
-app.get /^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, (req, res, next) ->
+app.get '*', (req, res, next) ->
   res.send '',
     Location:'/'
   , 301

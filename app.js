@@ -397,10 +397,12 @@
       session: req.session
     });
   });
-  app.get('/how-it-works', function(req, res) {
+  app.get('/how-it-works/:whateverComesAfterHowItWorks?', function(req, res) {
+    console.log(req);
     return res.render('how-it-works', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks
     });
   });
   app.get('/error', function(req, res) {
@@ -411,7 +413,7 @@
       'Content-Type': 'text/plain'
     });
   });
-  app.get(/^(?!(\/favicon.ico|\/images|\/js|\/css)).*$/, function(req, res, next) {
+  app.get('*', function(req, res, next) {
     return res.send('', {
       Location: '/'
     }, 301);
