@@ -691,7 +691,9 @@ header
 
 
 
-
+// General Style to lighten text
+.subtle
+  color darken($c-bg-dark,10)
 // Checkout Form
 .subtitle
   color darken($c-bg-dark,10)
@@ -701,8 +703,12 @@ header
 .card.main
   .nth-6,.nth-7,.nth-8,.nth-9,.nth-10,.nth-11
     display none
+//
+// Login Form On Login Page Styling
+//
+// container of whole section
 .login-container
-  max-width 320px
+  max-width 480px
   float right
   p
     text-align center
@@ -714,6 +720,8 @@ header
     span
       width 150px
       text-align center
+//
+// The two login fields specifically, and their login button
 .login-form
   input,.button
     margin 10px auto

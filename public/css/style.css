@@ -907,6 +907,9 @@ header .navigation li a {
 .white-purple {
   background: url("/images/card-bg-small/white-purple.png");
 }
+.subtle {
+  color: #362e2a;
+}
 .subtitle {
   color: #362e2a;
   font-size: 12.6px;
@@ -921,7 +924,7 @@ header .navigation li a {
   display: none;
 }
 .login-container {
-  max-width: 320px;
+  max-width: 480px;
   float: right;
 }
 .login-container p {
