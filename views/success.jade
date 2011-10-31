@@ -5,3 +5,8 @@
       if user
         =user.name
         =user.email
+    script
+      window.onload = function(){
+        $.cookie('success-login',true);
+        window.close();
+      }

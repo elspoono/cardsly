@@ -912,28 +912,13 @@ header .navigation li a {
   font-size: 12.6px;
   line-height: 1.5em;
 }
-.main-fields .alt {
+.card.main .nth-6,
+.card.main .nth-7,
+.card.main .nth-8,
+.card.main .nth-9,
+.card.main .nth-10,
+.card.main .nth-11 {
   display: none;
-}
-.main-fields .more,
-.main-fields .less {
-  margin: 30px 0 0 0;
-  display: block;
-  text-align: center;
-}
-.main-fields input {
-  width: 189px;
-  border: 1px solid #908575;
-  padding: 0 5px;
-}
-.main-fields li {
-  margin: 0 20px;
-}
-.main-fields label {
-  margin: 10px 0 1px 0;
-  display: block;
-  font-size: 12.6px;
-  line-height: 1.5em;
 }
 .category {
   position: relative;

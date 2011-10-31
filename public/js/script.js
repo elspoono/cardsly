@@ -433,6 +433,40 @@
     a = new dateFormat;
     return a.format(this, mask, utc);
   };
+  /*
+   * jQuery Cookie plugin
+   *
+   * Copyright (c) 2010 Klaus Hartl (stilbuero.de)
+   * Dual licensed under the MIT and GPL licenses:
+   * http://www.opensource.org/licenses/mit-license.php
+   * http://www.gnu.org/licenses/gpl.html
+   *
+  */
+  jQuery.cookie = function(key, value, options) {
+    var days, decode, result, t;
+    if (arguments.length > 1 && String(value) !== "[object Object]") {
+      options = jQuery.extend({}, options);
+      if (value === null || value === void 0) {
+        options.expires = -1;
+      }
+      if (typeof options.expires === 'number') {
+        days = options.expires;
+        t = options.expires = new Date();
+        t.setDate(t.getDate() + days);
+      }
+      value = String(value);
+      document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : 'path=/', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+    }
+    options = value || {};
+    decode = options.raw ? function(s) {
+      return s;
+    } : decodeURIComponent;
+    if ((result = new RegExp('(?:^| )' + encodeURIComponent(key) + '=([^]*)').exec(document.cookie))) {
+      return decode(result[1]);
+    } else {
+      return null;
+    }
+  };
   $.fn.box_rotate = function(options) {
     var settings;
     settings = {
@@ -456,7 +490,7 @@
     });
   };
   $(function() {
-    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, newMargin, timer, updateCards, winH, _i, _len;
+    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, timer, updateCards, winH, _i, _len;
     $win = $(window);
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
@@ -492,7 +526,10 @@
       if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
         $mc.data('didLoad', true);
         timeLapse = 0;
-        $mc.find('input').each(function(rowNumber) {
+        $('.main.card').find('input').each(function(rowNumber) {
+          return updateCards(rowNumber, this.value);
+        });
+        $('.main.card .defaults').find('input').each(function(rowNumber) {
           var $t, j, timers, v;
           $t = $(this);
           v = $t.val();
@@ -515,14 +552,21 @@
             }
             return _results;
           })();
-          return $t.one('focus', function() {
+          $t.bind('clearMe', function() {
             var i, _j, _len2;
-            for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
-              i = timers[_j];
-              clearTimeout(i);
+            console.log($t.data('cleared'));
+            if (!$t.data('cleared')) {
+              for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
+                i = timers[_j];
+                clearTimeout(i);
+              }
+              $t.val('');
+              updateCards(rowNumber, '');
+              return $t.data('cleared', true);
             }
-            $t.val('');
-            return updateCards(rowNumber, '');
+          });
+          return $t.bind('focus', function() {
+            return $t.trigger('clearMe');
           });
         });
       }
@@ -533,20 +577,36 @@
       }
       return _results;
     });
+    /*
+      Login stuff
+      */
+    monitorForComplete = function(openedWindow) {
+      var checkTimer;
+      $.cookie('success-login', null);
+      return checkTimer = setInterval(function() {
+        if ($.cookie('success-login')) {
+          $('.signins').fadeOut(1000);
+          $('.login a').attr('href', '/logout').html('Logout');
+          $.cookie('success-login', null);
+          window.focus();
+          return openedWindow.close();
+        }
+      }, 200);
+    };
     $('.google').click(function() {
-      window.open('auth/google', 'auth', 'height=350,width=600');
+      monitorForComplete(window.open('auth/google', 'auth', 'height=350,width=600'));
       return false;
     });
     $('.twitter').click(function() {
-      window.open('auth/twitter', 'auth', 'height=400,width=500');
+      monitorForComplete(window.open('auth/twitter', 'auth', 'height=400,width=500'));
       return false;
     });
     $('.facebook').click(function() {
-      window.open('auth/facebook', 'auth', 'height=400,width=900');
+      monitorForComplete(window.open('auth/facebook', 'auth', 'height=400,width=900'));
       return false;
     });
     $('.linkedin').click(function() {
-      window.open('auth/linkedin', 'auth', 'height=300,width=400');
+      monitorForComplete(window.open('auth/linkedin', 'auth', 'height=300,width=400'));
       return false;
     });
     $('.new').click(function() {
@@ -557,6 +617,9 @@
       });
       return false;
     });
+    /*
+      Shopping Cart Stuff
+      */
     item_name = '100 cards';
     $('.checkout').click(function() {
       loadAlert({
@@ -618,6 +681,9 @@
     maxSlides = 3;
     marginIncrement = 620;
     maxSlides--;
+    /*
+      # Home Page Stuff
+      */
     $('.category h4').click(function() {
       var $a, $c, $g, $t;
       $t = $(this);
@@ -638,10 +704,40 @@
     $('.card.main input').each(function(i) {
       var $t;
       $t = $(this);
+      $t.data('timer', 0);
       return $t.keyup(function() {
-        return updateCards(i, this.value);
+        updateCards(i, this.value);
+        clearTimeout($t.data('timer'));
+        $t.data('timer', setTimeout(function() {
+          var arrayOfInputValues;
+          $('.card.main input').each(function() {
+            return $(this).trigger('clearMe');
+          });
+          /*
+                    # TODO
+                    #
+                    # this.value should have a .replace ',' '\,'
+                    # on it so that we can use a comma character and escape anything.
+                    # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+                    */
+          arrayOfInputValues = $.makeArray($('.card.main input').map(function() {
+            return this.value;
+          }));
+          console.log(arrayOfInputValues);
+          $.ajax({
+            url: '/saveForm',
+            data: {
+              inputs: arrayOfInputValues.join('`~`')
+            }
+          });
+          return false;
+        }, 1000));
+        return false;
       });
     });
+    /*
+      # Button Clicking Stuff
+      */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');

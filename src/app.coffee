@@ -377,7 +377,13 @@ everyauth.debug = true
 app.configure ->
   app.set "views", __dirname + conf.dir.views
   app.set "view engine", "jade"
+  app.set 'view options',
+    script: false
+    scripts: []
+    user: false
+    session: false
   app.use express.bodyParser()
+
   app.use express.methodOverride()
   app.use express.cookieParser()
   app.use express.session
@@ -421,27 +427,43 @@ err = (res, err) ->
   , 302
 
 
+app.post '/saveForm', (req, res) ->
+  req.session.savedInputs = req.body.inputs.split '`~`'
+  res.send
+    success: true
+
 # Home Page
 app.get '/', (req, res) ->
   res.render 'index'
+    user: req.user
+    session: req.session
 
 # Success Page
 #
 # Where they land after authenticating
 # This should close automatically or redirect to the home page if no caller
 app.get '/success', (req, res) ->
-  console.log 'Request User: ', req.user
   res.render 'success'
     user: req.user
+    session: req.session
 
 # Cards Page Mockup
 app.get '/cards', (req, res) ->
   res.render 'cards'
+    user: req.user
+    session: req.session
 
+# login page
+app.get '/login', (req, res) ->
+  res.render 'login'
+    user: req.user
+    session: req.session
 
 # About Page
 app.get '/about', (req, res) ->
   res.render 'about'
+    user: req.user
+    session: req.session
 
 # Generic Error handler page itself
 app.get '/error', (req, res) ->

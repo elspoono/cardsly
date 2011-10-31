@@ -47,13 +47,24 @@
       p.card-title Enter your details here:
       .card.main.scott-qr-blue
         img(src='/images/qr.png').qr
-        ul.content
-          input(value='John Stamos')
-          input(value='Uncle Jesse')
-          input(value='555.555.5555')
-          input(value='john@stamos.com')
-          input
-          input
+        if session && session.savedInputs
+          ul.content
+            - for(var i=0; i<session.savedInputs.length; i++)
+              input(class='nth-'+i,value=session.savedInputs[i])
+        else
+          ul.content.defaults
+            input.nth-0(value='John Stamos')
+            input.nth-1(value='Uncle Jesse')
+            input.nth-2(value='555.555.5555')
+            input.nth-3(value='john@stamos.com')
+            input.nth-4
+            input.nth-5
+            input.nth-6
+            input.nth-7
+            input.nth-8
+            input.nth-9
+            input.nth-10
+            input.nth-11
       
       .category.active
         h4 Professional
@@ -101,27 +112,37 @@
       img(src='/images/buttons/new-hover.png')
 
     h3 Step 2 : Purchase
-    p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
-    p
-      | I want to sign in to 
-      span.cardsly cards
-        span.alt .ly
-      | &nbsp;with:
-    a.button.twitter(href='/auth/twitter')
-      span Twitter
-    a.button.facebook(href='/auth/facebook')
-      span Facebook
-    a.button.linkedin(href='/auth/linkedin')
-      span LinkedIn
-    a.button.google(href='/auth/google')
-      span Google
-    .clear
-    p -or-
-    a.button.new(href='#')
-      span Create a username and password
-      span.subtitle username and password
-    .clear
-    
+    .signins
+      if user
+        p.subtitle I see you've already signed in.
+        p
+          | Welcome back 
+          =user.name
+          =user.email
+      else
+        p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
+          .socials
+            p
+              | I want to sign in to 
+              span.cardsly cards
+                span.alt .ly
+              | &nbsp;with:
+            a.button.twitter(href='/auth/twitter')
+              span Twitter
+            a.button.facebook(href='/auth/facebook')
+              span Facebook
+            a.button.linkedin(href='/auth/linkedin')
+              span LinkedIn
+            a.button.google(href='/auth/google')
+              span Google
+            .clear
+            p -or-
+          .local
+            a.button.new(href='#')
+              span Create a username and password
+              span.subtitle username and password
+            .clear
+      
     .order-details
       ul.radio-text-fields.left.quantity
         li

@@ -1,0 +1,43 @@
+.section.first
+  .cell-bg
+  .cell-content
+    .signins
+      if user
+        p.subtitle I see you've already signed in.
+        p
+          | Welcome back 
+          =user.name
+          =user.email
+      else
+        h3 Login to 
+          span.cardsly cards
+            span.alt .ly
+          | &nbsp;with:
+        .clear
+          .socials
+            a.button.twitter(href='/auth/twitter')
+              span Twitter
+            a.button.facebook(href='/auth/facebook')
+              span Facebook
+            a.button.linkedin(href='/auth/linkedin')
+              span LinkedIn
+            a.button.google(href='/auth/google')
+              span Google
+            .clear
+            p -or-
+          .local-existing
+            ul
+              li
+                input
+              li
+                input
+              li
+                .button.normal Login
+    
+            p -or-
+          .local
+            a.button.new(href='#')
+              span Create a username and password
+              span.subtitle username and password
+            .clear
+    

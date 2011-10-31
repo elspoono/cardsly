@@ -318,6 +318,12 @@
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
+    app.set('view options', {
+      script: false,
+      scripts: [],
+      user: false,
+      session: false
+    });
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
@@ -348,20 +354,41 @@
       Location: '/error'
     }, 302);
   };
+  app.post('/saveForm', function(req, res) {
+    req.session.savedInputs = req.body.inputs.split('`~`');
+    return res.send({
+      success: true
+    });
+  });
   app.get('/', function(req, res) {
-    return res.render('index');
+    return res.render('index', {
+      user: req.user,
+      session: req.session
+    });
   });
   app.get('/success', function(req, res) {
-    console.log('Request User: ', req.user);
     return res.render('success', {
-      user: req.user
+      user: req.user,
+      session: req.session
     });
   });
   app.get('/cards', function(req, res) {
-    return res.render('cards');
+    return res.render('cards', {
+      user: req.user,
+      session: req.session
+    });
+  });
+  app.get('/login', function(req, res) {
+    return res.render('login', {
+      user: req.user,
+      session: req.session
+    });
   });
   app.get('/about', function(req, res) {
-    return res.render('about');
+    return res.render('about', {
+      user: req.user,
+      session: req.session
+    });
   });
   app.get('/error', function(req, res) {
     return res.render('error');

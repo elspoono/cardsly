@@ -388,6 +388,46 @@ Date::format = (mask, utc) ->
   a = new dateFormat
   a.format(this, mask, utc)
 
+
+###
+ * jQuery Cookie plugin
+ *
+ * Copyright (c) 2010 Klaus Hartl (stilbuero.de)
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+###
+jQuery.cookie = (key, value, options) ->
+
+  # key and at least value given, set cookie...
+  if arguments.length > 1 && String(value) != "[object Object]"
+    options = jQuery.extend {}, options
+    if value == null || value == undefined
+      options.expires = -1
+    if typeof options.expires == 'number'
+      days = options.expires
+      t = options.expires = new Date()
+      t.setDate t.getDate() + days
+
+    value = String value
+
+    document.cookie = [
+      encodeURIComponent(key), '=',
+      if options.raw then value else encodeURIComponent(value),
+      if options.expires then '; expires=' + options.expires.toUTCString() else '', # use expires attribute, max-age is not supported by IE
+      if options.path then '; path=' + options.path else 'path=/',
+      if options.domain then '; domain=' + options.domain else '',
+      if options.secure then '; secure' else ''
+    ].join('')
+
+  # key and possibly options given, get cookie...
+  options = value || {}
+  decode =  if options.raw  then (s) ->  s  else decodeURIComponent
+  if (result = new RegExp('(?:^| )' + encodeURIComponent(key) + '=([^]*)').exec(document.cookie)) then decode(result[1]) else null
+
+
+# Box rotate anything you want a lil bit
 $.fn.box_rotate = (options) ->
   settings = 
     position: 'below'
@@ -446,7 +486,9 @@ $ ->
     if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
       $mc.data 'didLoad', true
       timeLapse = 0
-      $mc.find('input').each (rowNumber) ->
+      $('.main.card').find('input').each (rowNumber) ->
+        updateCards rowNumber, this.value
+      $('.main.card .defaults').find('input').each (rowNumber) ->
         $t = $ this
         v = $t.val()
         $t.val ''
@@ -459,12 +501,16 @@ $ ->
             ,timeLapse*70
             timeLapse++
             timer
-        $t.one 'focus', ->
-          for i in timers
-            clearTimeout i
-          $t.val ''
-          updateCards rowNumber, ''
-        
+        $t.bind 'clearMe', ->
+          console.log $t.data 'cleared'
+          if !$t.data 'cleared'
+            for i in timers
+              clearTimeout i
+            $t.val ''
+            updateCards rowNumber, ''
+            $t.data 'cleared', true
+        $t.bind 'focus', ->
+          $t.trigger 'clearMe'
 
 
     # Show any hidden sections
@@ -476,23 +522,39 @@ $ ->
 
   #loadAlert 'Test', (close) ->
     #close()
-
+  
+  ###
+  Login stuff
+  ###
+  #
+  #
+  # Watch the popup windows every 200ms for when they set a cookie
+  monitorForComplete = (openedWindow) ->
+    $.cookie 'success-login', null
+    checkTimer = setInterval ->
+      if $.cookie 'success-login'
+        $('.signins').fadeOut 1000
+        $('.login a').attr('href','/logout').html 'Logout'
+        $.cookie 'success-login', null
+        window.focus()
+        openedWindow.close()
+    ,200
+  #
+  # Specific Socials Setup
   $('.google').click () ->
-    window.open 'auth/google', 'auth', 'height=350,width=600'
+    monitorForComplete window.open 'auth/google', 'auth', 'height=350,width=600'
     false
-
   $('.twitter').click () ->
-    window.open 'auth/twitter', 'auth', 'height=400,width=500'
+    monitorForComplete window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
-
   $('.facebook').click () ->
-    window.open 'auth/facebook', 'auth', 'height=400,width=900'
+    monitorForComplete window.open 'auth/facebook', 'auth', 'height=400,width=900'
     false
-
   $('.linkedin').click () ->
-    window.open 'auth/linkedin', 'auth', 'height=300,width=400'
+    monitorForComplete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
-
+  #
+  # New Login Creation
   $('.new').click () ->
     loadAlert
       content: '<p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p>'
@@ -500,14 +562,20 @@ $ ->
       width: 700
     false
 
+  ###
+  Shopping Cart Stuff
+  ###
+  #
+  # Default Item Name
   item_name = '100 cards'
-
-
+  #
+  # Checkout button action, default error for now.
   $('.checkout').click () ->
     loadAlert
       content: '<p>Our apologies - we are still in development.<p>Please check back next week!<p>(November 5th 2011)'
     false
-
+  #
+  # The floaty guy behind the gallery selection
   $gs = $ '.gallery-select'
   $gs.css
     left: -220
@@ -559,10 +627,12 @@ $ ->
   marginIncrement = 620
   maxSlides--
 
-
+  ###
   # Home Page Stuff
+  ###
 
-  #
+  # 
+  # Category Expand/Collapse
   $('.category h4').click () ->
     $t = $ this
     $c = $t.closest '.category'
@@ -577,14 +647,38 @@ $ ->
         $c.find('.card:first').click()
       $c.addClass('active')
 
+  #
   # Form Fields
   $('.card.main input').each (i) ->
     $t = $ this
+    $t.data 'timer', 0
     $t.keyup -> 
       updateCards i, this.value
+      clearTimeout $t.data 'timer'
+      $t.data 'timer',
+        setTimeout ->
+          $('.card.main input').each -> $(this).trigger 'clearMe'
+          ###
+          # TODO
+          #
+          # this.value should have a .replace ',' '\,'
+          # on it so that we can use a comma character and escape anything.
+          # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+          ###
+          arrayOfInputValues = $.makeArray $('.card.main input').map -> this.value
+          console.log arrayOfInputValues
+          $.ajax
+            url: '/saveForm'
+            data:
+              inputs: arrayOfInputValues.join('`~`')
+          false
+        ,1000
+      false
   
+  ###
   # Button Clicking Stuff
-
+  ###
+  #
   # Radio Select
   $('.quantity input,.shipping_method input').bind 'click change', () ->
     $q = $('.quantity input:checked')
