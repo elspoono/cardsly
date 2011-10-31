@@ -133,6 +133,13 @@ header .design-button {
 .text-fields li {
   margin: 10px 15px;
 }
+header .navigation li {
+  padding: 3px 15px;
+}
+header .navigation li a {
+  font-size: 16.8px;
+  line-height: 1.5em;
+}
 .design-container {
   position: relative;
 }

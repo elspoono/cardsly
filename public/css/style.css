@@ -920,6 +920,34 @@ header .navigation li a {
 .card.main .nth-11 {
   display: none;
 }
+.login-container {
+  max-width: 320px;
+  float: right;
+}
+.login-container p {
+  text-align: center;
+}
+.login-container .local {
+  text-align: center;
+}
+.login-container .new {
+  margin: 15px auto;
+  float: none;
+}
+.login-container .new span {
+  width: 150px;
+  text-align: center;
+}
+.login-form input,
+.login-form .button {
+  margin: 10px auto;
+  float: none;
+  display: block;
+  width: 250px;
+}
+.login-form .button {
+  width: 220px;
+}
 .category {
   position: relative;
 }
