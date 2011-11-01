@@ -427,6 +427,15 @@ err = (res, err) ->
   , 302
 
 
+
+###
+
+POST PAGES
+
+actions, like saving stuff, and checking stuff, from ajax
+
+###
+
 app.post '/saveForm', (req, res) ->
   ###
   TODO
@@ -526,6 +535,32 @@ app.post '/createUser', (req,res,next) ->
 ###
 
 
+# Get page helper functions
+securedAdminPage = (req, res, next) ->
+  if req.user && req.user.role == 'admin'
+    next()
+  else
+    res.send '',
+      Location: '/cards'
+    ,302
+securedPage = (req, res, next) ->
+  if req.user
+    next()
+  else
+    res.send '',
+      Location: '/'
+    ,302
+
+
+###
+
+GET PAGES
+
+like the home page and about page and stuff
+
+###
+
+
 # Home Page
 app.get '/', (req, res) ->
   res.render 'index'
@@ -542,8 +577,14 @@ app.get '/success', (req, res) ->
     session: req.session
 
 # Cards Page Mockup
-app.get '/cards', (req, res) ->
+app.get '/cards', securedPage, (req, res) ->
   res.render 'cards'
+    user: req.user
+    session: req.session
+
+# Admin Page Mockup
+app.get '/admin', securedAdminPage, (req, res) ->
+  res.render 'admin'
     user: req.user
     session: req.session
 

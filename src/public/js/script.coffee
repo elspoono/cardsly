@@ -450,13 +450,39 @@ $.fn.box_rotate = (options) ->
   
 $ ->
 
+  # Path we'll use a few places, it's just the page we're on now, yeah?
+  path = document.location.href.replace /http:\/\/[^\/]*/ig, ''
+
+  #
+  # Get Started Button Scroll
+  $('.design-button').click ->
+    if path != '/'
+      document.location.href = '/#design-button'
+    else
+      $('html,body').animate
+        scrollTop: $('.section:eq(1)').offset().top
+      ,
+      500
+    false
+
+  #
+  # And again, on the home page, if we were passed the hash, scroll down!
+  if path == '/#design-button'
+    document.location.href = '#'
+    $('.design-button').click()
+  
+  #
   # Successful Login Function
   successfulLogin = ->
-    $s = $ '.signins' 
-    $s.fadeOut 500, ->
-      $s.html 'You are now logged in. Please continue.'
-      $s.fadeIn 1000
-    $('.login a').attr('href','/logout').html 'Logout'
+    if path == '/login'
+      document.location.href = '/admin'
+    else
+      $s = $ '.signins' 
+      $s.fadeOut 500, ->
+        $s.html 'You are now logged in, please continue.'
+        $s.fadeIn 1000
+      $('.login a').attr('href','/logout').html 'Logout'
+
 
   # Window and Main Card to use later
   $win = $ window
@@ -811,22 +837,6 @@ $ ->
     $(this).hide()
     $('.main-fields .more').show()
     false
-
-  path = document.location.href.replace /http:\/\/[^\/]*/ig, ''
-  # Get Started Button Scroll
-  $('.design-button').click ->
-    if path != '/'
-      document.location.href = '/#design-button'
-    else
-      $('html,body').animate
-        scrollTop: $('.section:eq(1)').offset().top
-      ,
-      500
-    false
-
-  if path == '/#design-button'
-    document.location.href = '#'
-    $('.design-button').click()
 
   # each advance of the slide
   advanceSlide = ->

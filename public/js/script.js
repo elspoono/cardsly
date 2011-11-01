@@ -495,14 +495,33 @@
   };
   $(function() {
     var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
+    $('.design-button').click(function() {
+      if (path !== '/') {
+        document.location.href = '/#design-button';
+      } else {
+        $('html,body').animate({
+          scrollTop: $('.section:eq(1)').offset().top
+        }, 500);
+      }
+      return false;
+    });
+    if (path === '/#design-button') {
+      document.location.href = '#';
+      $('.design-button').click();
+    }
     successfulLogin = function() {
       var $s;
-      $s = $('.signins');
-      $s.fadeOut(500, function() {
-        $s.html('You are now logged in. Please continue.');
-        return $s.fadeIn(1000);
-      });
-      return $('.login a').attr('href', '/logout').html('Logout');
+      if (path === '/login') {
+        return document.location.href = '/admin';
+      } else {
+        $s = $('.signins');
+        $s.fadeOut(500, function() {
+          $s.html('You are now logged in, please continue.');
+          return $s.fadeIn(1000);
+        });
+        return $('.login a').attr('href', '/logout').html('Logout');
+      }
     };
     $win = $(window);
     $mc = $('.main.card');
@@ -915,21 +934,6 @@
       $('.main-fields .more').show();
       return false;
     });
-    path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
-    $('.design-button').click(function() {
-      if (path !== '/') {
-        document.location.href = '/#design-button';
-      } else {
-        $('html,body').animate({
-          scrollTop: $('.section:eq(1)').offset().top
-        }, 500);
-      }
-      return false;
-    });
-    if (path === '/#design-button') {
-      document.location.href = '#';
-      $('.design-button').click();
-    }
     advanceSlide = function() {
       if (newMargin < maxSlides * -marginIncrement) {
         newMargin = 0;

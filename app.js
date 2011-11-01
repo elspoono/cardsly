@@ -7,7 +7,7 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, sessionStore, url, util;
+  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, url, util;
   express = require("express");
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -354,6 +354,13 @@
       Location: '/error'
     }, 302);
   };
+  /*
+  
+  POST PAGES
+  
+  actions, like saving stuff, and checking stuff, from ajax
+  
+  */
   app.post('/saveForm', function(req, res) {
     /*
       TODO
@@ -460,6 +467,31 @@
   
     });
   */
+  securedAdminPage = function(req, res, next) {
+    if (req.user && req.user.role === 'admin') {
+      return next();
+    } else {
+      return res.send('', {
+        Location: '/cards'
+      }, 302);
+    }
+  };
+  securedPage = function(req, res, next) {
+    if (req.user) {
+      return next();
+    } else {
+      return res.send('', {
+        Location: '/'
+      }, 302);
+    }
+  };
+  /*
+  
+  GET PAGES
+  
+  like the home page and about page and stuff
+  
+  */
   app.get('/', function(req, res) {
     return res.render('index', {
       user: req.user,
@@ -472,8 +504,14 @@
       session: req.session
     });
   });
-  app.get('/cards', function(req, res) {
+  app.get('/cards', securedPage, function(req, res) {
     return res.render('cards', {
+      user: req.user,
+      session: req.session
+    });
+  });
+  app.get('/admin', securedAdminPage, function(req, res) {
+    return res.render('admin', {
       user: req.user,
       session: req.session
     });
