@@ -76,7 +76,7 @@
      * 
   */
   loadModal = function(options, next) {
-    var $body, Close, buttons, cancel, close, confirm, height, modal, myNext, ok, resizeEvent, scrollbarWidth, settings, width, win;
+    var $body, buttons, close, height, i, modal, myNext, resizeEvent, scrollbarWidth, settings, thisButton, width, win, _i, _len, _ref;
     scrollbarWidth = $.scrollbarWidth();
     modal = $('<div class="modal" />');
     win = $('<div class="window" />');
@@ -124,33 +124,32 @@
       win.width(settings.width);
     }
     buttons = $('<div class="buttons" />');
-    if (settings.Close) {
-      Close = $('<input type="button" class="button normal" value="Close" class="submit">');
-      Close.click(function() {
-        return settings.Close(myNext);
-      });
-      buttons.append(Close);
-    }
-    if (settings.Ok) {
-      ok = $('<input type="button" class="button normal" value="Ok" class="submit">');
-      ok.click(function() {
-        return settings.Ok(myNext);
-      });
-      buttons.append(ok);
-    }
-    if (settings.Cancel) {
-      cancel = $('<input type="button" class="button normal" value="Cancel" class="cancel">');
-      cancel.click(function() {
-        return settings.Cancel(myNext);
-      });
-      buttons.append(cancel);
-    }
-    if (settings.Confirm) {
-      confirm = $('<input type="button" class="button normal" value="Confirm" class="submit">');
-      confirm.click(function() {
-        return settings.Confirm(myNext);
-      });
-      buttons.append(confirm);
+    /*
+      Loop through the buttons passed in.
+    
+      Buttons will be passed in as an array of objects. Each object with label string and action function
+    
+      settings.buttons = [
+        {
+          label: 'Button 1'
+          action: function(){ alert('Button 1 clicked')}
+        },
+        {
+          label: 'Button 2'
+          action: function(){ alert('Button 2 clicked')}
+        }
+      ]
+      */
+    if (settings.buttons) {
+      _ref = settings.buttons;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        i = _ref[_i];
+        thisButton = $('<input type="button" class="button normal" value="' + i.label + '" class="submit">');
+        thisButton.click(function() {
+          return i.action(myNext);
+        });
+        buttons.append(thisButton);
+      }
     }
     win.append(buttons);
     $('body').append(modal, close, win);
@@ -281,9 +280,14 @@
     }
     modifiedOptions = {
       content: 'Alert',
-      Ok: function(close) {
-        return close();
-      },
+      buttons: [
+        {
+          action: function(close) {
+            return close();
+          },
+          label: 'Ok'
+        }
+      ],
       height: 80,
       width: 300
     };
@@ -612,9 +616,17 @@
       return false;
     });
     $('.new').click(function() {
-      loadAlert({
+      loadModal({
         content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>',
-        height: 400,
+        buttons: [
+          {
+            label: 'Save',
+            action: function(close) {
+              return close();
+            }
+          }
+        ],
+        height: 340,
         width: 400
       });
       return false;

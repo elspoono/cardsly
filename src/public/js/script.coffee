@@ -106,29 +106,28 @@ loadModal = (options, next) ->
 
   buttons = $ '<div class="buttons" />'
 
-  if settings.Close
-    Close = $ '<input type="button" class="button normal" value="Close" class="submit">'
-    Close.click () ->
-      settings.Close myNext
-    buttons.append Close
+  ###
+  Loop through the buttons passed in.
 
-  if settings.Ok
-    ok = $ '<input type="button" class="button normal" value="Ok" class="submit">'
-    ok.click () ->
-      settings.Ok myNext
-    buttons.append ok
+  Buttons will be passed in as an array of objects. Each object with label string and action function
 
-  if settings.Cancel
-    cancel = $ '<input type="button" class="button normal" value="Cancel" class="cancel">'
-    cancel.click () ->
-      settings.Cancel myNext
-    buttons.append cancel
-
-  if settings.Confirm
-    confirm = $ '<input type="button" class="button normal" value="Confirm" class="submit">'
-    confirm.click () ->
-      settings.Confirm myNext
-    buttons.append confirm
+  settings.buttons = [
+    {
+      label: 'Button 1'
+      action: function(){ alert('Button 1 clicked')}
+    },
+    {
+      label: 'Button 2'
+      action: function(){ alert('Button 2 clicked')}
+    }
+  ]
+  ###
+  if settings.buttons
+    for i in settings.buttons
+      thisButton = $ '<input type="button" class="button normal" value="'+i.label+'" class="submit">'
+      thisButton.click () ->
+        i.action myNext
+      buttons.append thisButton
 
   win.append buttons
 
@@ -243,7 +242,10 @@ loadAlert = (options, next) ->
       content:options
   modifiedOptions =
     content: 'Alert'
-    Ok: (close) -> close()
+    buttons: [
+      action: (close) -> close()
+      label: 'Ok'
+    ]
     height: 80
     width: 300
   for i,v of options
@@ -556,9 +558,14 @@ $ ->
   #
   # New Login Creation
   $('.new').click () ->
-    loadAlert
+    loadModal
       content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>'
-      height: 400
+      buttons: [
+        label: 'Save'
+        action: (close) ->
+          close()
+      ]
+      height: 340
       width: 400
     false
 
