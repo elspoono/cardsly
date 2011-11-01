@@ -173,6 +173,7 @@
   });
   Message = mongoose.model('Message', MessageSchema);
   TemplateSchema = new Schema({
+    category: String,
     date_added: {
       type: Date,
       "default": Date.now

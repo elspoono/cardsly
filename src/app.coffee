@@ -200,6 +200,7 @@ Message = mongoose.model 'Message', MessageSchema
 
 # Templates
 TemplateSchema = new Schema
+  category: String
   date_added:
     type: Date
     default: Date.now
@@ -208,7 +209,7 @@ TemplateSchema = new Schema
     default: true
 Template = mongoose.model 'Template', TemplateSchema
 
-# Template Themes
+# Theme OF a template
 ThemeSchema = new Schema
   template_id: Number
   thumb_image_id: Number
