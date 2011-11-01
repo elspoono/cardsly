@@ -115,7 +115,7 @@
           return next('Database Error');
         } else {
           if (data.length > 0) {
-            if (compareEncrypted(password, data[0].password_encrypted)) {
+            if (!data[0].password_encrypted || compareEncrypted(password, data[0].password_encrypted)) {
               return next(null, data[0]);
             } else {
               return next('Password incorrect for that email address.');
@@ -429,7 +429,7 @@
     }, function(err, already) {
       if (already > 0) {
         return res.send({
-          err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter?'
+          err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
         });
       } else {
         return next();

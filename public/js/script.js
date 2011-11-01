@@ -748,7 +748,7 @@
                 } else {
                   $t.removeClass('valid').addClass('error');
                   return $t.showTooltip({
-                    message: '' + data.email + ' is in use. Try signing in with a social login?'
+                    message: '' + data.email + ' is in use. Try signing in with a social login.'
                   });
                 }
               }

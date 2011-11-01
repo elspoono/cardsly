@@ -673,7 +673,7 @@ $ ->
               else
                 $t.removeClass('valid').addClass 'error'
                 $t.showTooltip
-                  message:''+data.email+' is in use. Try signing in with a social login?'
+                  message:''+data.email+' is in use. Try signing in with a social login.'
         else
           $t.removeClass('valid').addClass('error').showTooltip
             message: 'Is that an email?'
