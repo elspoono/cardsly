@@ -620,7 +620,7 @@
         content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>',
         buttons: [
           {
-            label: 'Save',
+            label: 'Create New',
             action: function(close) {
               return close();
             }
