@@ -171,6 +171,20 @@ input
     color $c-logo-alt
 
 
+// Tool Tips
+.tooltip
+  border 1px solid $c-black
+  border-radius(3px)
+  height 20px
+  line-height 20px
+  padding 2px 8px
+  background yellow
+  color dark
+  font-size .7em
+  margin-top -29px
+  z-index 350
+  absolute()
+
 
 // Modal Backgrounds
 .modal
@@ -332,6 +346,7 @@ header
   box-shadow(1px,$c-black)
   relative-size(1.2)
   color $c-light
+  border 0
 .button.normal.hover
   color lighten($c-light,10)
   gradient(lighten($c-logo-alt,10),darken($c-logo-alt,10))

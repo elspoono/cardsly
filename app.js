@@ -367,6 +367,99 @@
       success: true
     });
   });
+  app.post('/checkEmail', function(req, res, next) {
+    var handleReturn, params;
+    params = req.body || {};
+    req.email = params.email || '';
+    req.email = req.email.toLowerCase();
+    handleReturn = function(err, data) {
+      req.err = err;
+      req.data = data;
+      return next();
+    };
+    if (params.id) {
+      return User.count({
+        email: req.email,
+        active: true
+      }, handleReturn);
+    } else {
+      return User.count({
+        email: req.email,
+        active: true
+      }, handleReturn);
+    }
+  }, function(req, res, next) {
+    return res.send({
+      err: req.err,
+      data: req.data,
+      email: req.email
+    });
+  });
+  app.post('/login', function(req, res, next) {
+    return User.authenticate(req.body.email, req.body.password, function(err, user) {
+      req.session.auth = {
+        userId: user._id
+      };
+      if (err || !user) {
+        return res.send({
+          err: err
+        });
+      } else {
+        return res.send({
+          success: true
+        });
+      }
+    });
+  });
+  app.post('/createUser', function(req, res, next) {
+    return User.count({
+      email: req.body.email,
+      active: true
+    }, function(err, already) {
+      if (already > 0) {
+        return res.send({
+          err: true
+        });
+      } else {
+        return next();
+      }
+    });
+  }, function(req, res, next) {
+    var user;
+    user = new User();
+    user.email = req.body.email;
+    user.password_encrypted = encrypted(req.body.password);
+    return user.save(function(err, data) {
+      return res.send({
+        success: 'True'
+      });
+    });
+  });
+  /*
+    nodemailer.send_mail({
+      sender: 'notices@kickbackcard.com',
+      to: signup.email,
+      subject:'KickbackCard: Beta request for '+signup.name+' received',
+      html: ''
+      +'<p>Hi,</p>'
+      +'<p>Your beta request has been received.  We will contact you in the next 1-2 business days.  Thank you for your interest in Kickback Card and we look forward to your participation.</p>'
+      +'<p>Below is your vendor information that was submitted.</p>'
+      +'<h3>'+signup.name+'</h3>'
+      +'<div>'
+        +'<div><b>Name:</b> '+signup.name+'</div>'
+        +'<div>'+signup.address+'</div>'
+        +'<div>'+signup.contact+'</div>'
+        +'<div>'+signup.site_url+'</div>'
+        +'<div>'+signup.yelp_url+'</div>'
+        +'<div>'+signup.hours+'</div>'
+        +'<div><b>Deal:</b> Buy '+signup.buy_qty+' '+signup.buy_item+' get '+signup.get_item+'</div>'
+        +'<div><b>Email Registered:</b> '+signup.email+'</div>'
+      +'</div>',
+      body:'New Beta Request: '+signup.email
+    },function(err, data){
+  
+    });
+  */
   app.get('/', function(req, res) {
     return res.render('index', {
       user: req.user,

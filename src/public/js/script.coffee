@@ -450,6 +450,11 @@ $.fn.box_rotate = (options) ->
   
 $ ->
 
+  # Successful Login Function
+  successfulLogin = ->
+    $('.signins').fadeOut 1000
+    $('.login a').attr('href','/logout').html 'Logout'
+
   # Window and Main Card to use later
   $win = $ window
   $mc = $ '.main.card'
@@ -535,8 +540,7 @@ $ ->
     $.cookie 'success-login', null
     checkTimer = setInterval ->
       if $.cookie 'success-login'
-        $('.signins').fadeOut 1000
-        $('.login a').attr('href','/logout').html 'Logout'
+        successfulLogin()
         $.cookie 'success-login', null
         window.focus()
         openedWindow.close()
@@ -556,25 +560,117 @@ $ ->
     monitorForComplete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
   #
+  #
+  #Regular Login
+  $('.login-form').submit ->
+    loadLoading {}, (loadingClose) ->
+      $.ajax
+        url: '/login'
+        data:
+          email: $('.email-login').val()
+          password: $('.password-login').val()
+        success: (data) ->
+          loadingClose()
+          if data.err
+            loadAlert
+              content: data.err
+          else
+            successfulLogin()
+        error: (err) ->
+          loadingClose()
+          loadAlert
+            content: 'Our apologies. A server error occurred.'
+    false
+  #
   # New Login Creation
   $('.new').click () ->
     loadModal
-      content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>'
+      content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
       buttons: [
         label: 'Create New'
         action: (formClose) ->
-          formClose()
-          loadLoading {}, (loadingClose) ->
-            setTimeout ->
-              
-              loadingClose()
-              
-            , 1000
+          email = $ '.email'
+          password = $ '.password'
+          password2 = $ '.password2'
+
+          err = false
+          if email.val() == '' || password.val() == '' || password2.val() == ''
+            err = 'Please enter an email once and the password twice.'
+          else if password.val() != password2.val()
+            err = 'I\'m sorry, I don\'t think those passwords match.'
+          else if password.val().length<4
+            err = 'Password should be a little longer, at least 4 characters.'
+          if err
+            loadAlert {content:err}
+          else
+            formClose()
+            loadLoading {}, (loadingClose) ->
+              $.ajax
+                url: '/createUser'
+                data:
+                  email: email.val()
+                  password: password.val()
+                success: (data) ->
+                  loadingClose()
+                  if data.err
+                    loadAlert
+                      content: 'Our apologies. A server error occurred.'
+                  else
+                    successfulLogin()
+                error: (err) ->
+                  loadingClose()
+                  loadAlert
+                    content: 'Our apologies. A server error occurred.'
+              , 1000
       ]
       height: 340
       width: 400
+    
+    $('.email').data('timer',0).keyup ->
+      $t = $ this
+      clearTimeout $t.data 'timer'
+      $t.data 'timer', setTimeout ->
+        if $t.val().match /.{1,}@.{1,}\..{1,}/
+          $t.removeClass('error').addClass 'valid'
+          $.ajax
+            url: '/checkEmail'
+            data:
+              email: $t.val()
+            success: (data) ->
+              if data.data==0
+                $t.removeClass('error').addClass 'valid'
+                $t.showTooltip
+                  message: data.email+' is good'
+              else
+                $t.removeClass('valid').addClass 'error'
+                $t.showTooltip
+                  message:''+data.email+' already has an account. Try signing in please?'
+        else
+          $t.removeClass('valid').addClass('error').showTooltip
+            message: 'Is that an email?'
+      ,1000
+    $('.password').data('timer',0).keyup ->
+      $t = $ this
+      clearTimeout $t.data 'timer'
+      $t.data 'timer', setTimeout ->
+        if $t.val().length >= 4
+          $t.removeClass('error').addClass 'valid'
+        else
+          $t.removeClass('valid').addClass('error').showTooltip
+            message: 'Just '+(6-$t.val().length)+' more characters please.'
+      ,1000
+    $('.password2').data('timer',0).keyup ->
+      $t = $ this
+      clearTimeout $t.data 'timer'
+      $t.data 'timer', setTimeout ->
+        if $t.val() == $('.password').val()
+          $t.removeClass('error').addClass 'valid'
+          $('.step-4').fadeTo 300, 1
+        else
+          $t.removeClass('valid').addClass('error').showTooltip
+            message:'Passwords should match please.'
+      ,1000
     false
-
   ###
   Shopping Cart Stuff
   ###

@@ -494,7 +494,11 @@
     });
   };
   $(function() {
-    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, timer, updateCards, winH, _i, _len;
+    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    successfulLogin = function() {
+      $('.signins').fadeOut(1000);
+      return $('.login a').attr('href', '/logout').html('Logout');
+    };
     $win = $(window);
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
@@ -591,8 +595,7 @@
       $.cookie('success-login', null);
       return checkTimer = setInterval(function() {
         if ($.cookie('success-login')) {
-          $('.signins').fadeOut(1000);
-          $('.login a').attr('href', '/logout').html('Logout');
+          successfulLogin();
           $.cookie('success-login', null);
           window.focus();
           return openedWindow.close();
@@ -615,24 +618,152 @@
       monitorForComplete(window.open('auth/linkedin', 'auth', 'height=300,width=400'));
       return false;
     });
+    $('.login-form').submit(function() {
+      loadLoading({}, function(loadingClose) {
+        return $.ajax({
+          url: '/login',
+          data: {
+            email: $('.email-login').val(),
+            password: $('.password-login').val()
+          },
+          success: function(data) {
+            loadingClose();
+            if (data.err) {
+              return loadAlert({
+                content: data.err
+              });
+            } else {
+              return successfulLogin();
+            }
+          },
+          error: function(err) {
+            loadingClose();
+            return loadAlert({
+              content: 'Our apologies. A server error occurred.'
+            });
+          }
+        });
+      });
+      return false;
+    });
     $('.new').click(function() {
       loadModal({
-        content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>',
+        content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>',
         buttons: [
           {
             label: 'Create New',
             action: function(formClose) {
-              formClose();
-              return loadLoading({}, function(loadingClose) {
-                return setTimeout(function() {
-                  return loadingClose();
-                }, 1000);
-              });
+              var email, err, password, password2;
+              email = $('.email');
+              password = $('.password');
+              password2 = $('.password2');
+              err = false;
+              if (email.val() === '' || password.val() === '' || password2.val() === '') {
+                err = 'Please enter an email once and the password twice.';
+              } else if (password.val() !== password2.val()) {
+                err = 'I\'m sorry, I don\'t think those passwords match.';
+              } else if (password.val().length < 4) {
+                err = 'Password should be a little longer, at least 4 characters.';
+              }
+              if (err) {
+                return loadAlert({
+                  content: err
+                });
+              } else {
+                formClose();
+                return loadLoading({}, function(loadingClose) {
+                  return $.ajax({
+                    url: '/createUser',
+                    data: {
+                      email: email.val(),
+                      password: password.val()
+                    },
+                    success: function(data) {
+                      loadingClose();
+                      if (data.err) {
+                        return loadAlert({
+                          content: 'Our apologies. A server error occurred.'
+                        });
+                      } else {
+                        return successfulLogin();
+                      }
+                    },
+                    error: function(err) {
+                      loadingClose();
+                      return loadAlert({
+                        content: 'Our apologies. A server error occurred.'
+                      });
+                    }
+                  }, 1000);
+                });
+              }
             }
           }
         ],
         height: 340,
         width: 400
+      });
+      $('.email').data('timer', 0).keyup(function() {
+        var $t;
+        $t = $(this);
+        clearTimeout($t.data('timer'));
+        return $t.data('timer', setTimeout(function() {
+          if ($t.val().match(/.{1,}@.{1,}\..{1,}/)) {
+            $t.removeClass('error').addClass('valid');
+            return $.ajax({
+              url: '/checkEmail',
+              data: {
+                email: $t.val()
+              },
+              success: function(data) {
+                if (data.data === 0) {
+                  $t.removeClass('error').addClass('valid');
+                  return $t.showTooltip({
+                    message: data.email + ' is good'
+                  });
+                } else {
+                  $t.removeClass('valid').addClass('error');
+                  return $t.showTooltip({
+                    message: '' + data.email + ' already has an account. Try signing in please?'
+                  });
+                }
+              }
+            });
+          } else {
+            return $t.removeClass('valid').addClass('error').showTooltip({
+              message: 'Is that an email?'
+            });
+          }
+        }, 1000));
+      });
+      $('.password').data('timer', 0).keyup(function() {
+        var $t;
+        $t = $(this);
+        clearTimeout($t.data('timer'));
+        return $t.data('timer', setTimeout(function() {
+          if ($t.val().length >= 4) {
+            return $t.removeClass('error').addClass('valid');
+          } else {
+            return $t.removeClass('valid').addClass('error').showTooltip({
+              message: 'Just ' + (6 - $t.val().length) + ' more characters please.'
+            });
+          }
+        }, 1000));
+      });
+      $('.password2').data('timer', 0).keyup(function() {
+        var $t;
+        $t = $(this);
+        clearTimeout($t.data('timer'));
+        return $t.data('timer', setTimeout(function() {
+          if ($t.val() === $('.password').val()) {
+            $t.removeClass('error').addClass('valid');
+            return $('.step-4').fadeTo(300, 1);
+          } else {
+            return $t.removeClass('valid').addClass('error').showTooltip({
+              message: 'Passwords should match please.'
+            });
+          }
+        }, 1000));
       });
       return false;
     });

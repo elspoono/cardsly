@@ -25,16 +25,16 @@
             span Google
           .clear
         h3 Or sign in manually:
-        .login-form
+        form.login-form
           ul
             li
               span.subtitle Email:
-              input
+              input.email-login
             li
               span.subtitle Password:
-              input
+              input(type='password').password-login
             li
-              .button.normal Login
+              input(type='submit', value='Login').button.normal
           .clear
           p.center -or-
         .clear

@@ -440,6 +440,92 @@ app.post '/saveForm', (req, res) ->
   res.send
     success: true
 
+
+# Make Sure an email isn't taken
+app.post '/checkEmail', (req, res, next) ->
+  params = req.body || {}
+  req.email = params.email || ''
+  req.email = req.email.toLowerCase()
+  handleReturn = (err, data) ->
+    req.err = err
+    req.data = data
+    next()
+  if params.id
+    User.count
+      email:req.email
+      active:true
+    , handleReturn
+  else
+    User.count
+      email: req.email
+      active:true
+    , handleReturn
+,(req, res, next) ->
+  res.send
+    err: req.err
+    data: req.data
+    email: req.email
+
+
+# Normal Login
+app.post '/login', (req, res, next) ->
+  User.authenticate req.body.email, req.body.password, (err, user) ->
+    req.session.auth = 
+      userId: user._id
+    if err || !user
+      res.send
+        err: err
+    else
+      res.send
+        success: true
+
+# Create the new sign up
+app.post '/createUser', (req,res,next) ->
+  User.count
+    email:req.body.email
+    active:true
+  ,(err,already) ->
+    if already>0
+      res.send
+        err: true
+    else
+      next()
+,(req,res,next) ->
+  user = new User()
+  user.email = req.body.email;
+  user.password_encrypted = encrypted(req.body.password);
+  user.save (err,data) ->
+    res.send
+      success: 'True'
+
+
+###
+  nodemailer.send_mail({
+    sender: 'notices@kickbackcard.com',
+    to: signup.email,
+    subject:'KickbackCard: Beta request for '+signup.name+' received',
+    html: ''
+    +'<p>Hi,</p>'
+    +'<p>Your beta request has been received.  We will contact you in the next 1-2 business days.  Thank you for your interest in Kickback Card and we look forward to your participation.</p>'
+    +'<p>Below is your vendor information that was submitted.</p>'
+    +'<h3>'+signup.name+'</h3>'
+    +'<div>'
+      +'<div><b>Name:</b> '+signup.name+'</div>'
+      +'<div>'+signup.address+'</div>'
+      +'<div>'+signup.contact+'</div>'
+      +'<div>'+signup.site_url+'</div>'
+      +'<div>'+signup.yelp_url+'</div>'
+      +'<div>'+signup.hours+'</div>'
+      +'<div><b>Deal:</b> Buy '+signup.buy_qty+' '+signup.buy_item+' get '+signup.get_item+'</div>'
+      +'<div><b>Email Registered:</b> '+signup.email+'</div>'
+    +'</div>',
+    body:'New Beta Request: '+signup.email
+  },function(err, data){
+
+  });
+###
+
+
 # Home Page
 app.get '/', (req, res) ->
   res.render 'index'
