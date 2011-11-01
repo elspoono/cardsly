@@ -706,7 +706,7 @@
                       loadingClose();
                       if (data.err) {
                         return loadAlert({
-                          content: 'Our apologies. A server error occurred.'
+                          content: data.err
                         });
                       } else {
                         return successfulLogin();
@@ -748,7 +748,7 @@
                 } else {
                   $t.removeClass('valid').addClass('error');
                   return $t.showTooltip({
-                    message: '' + data.email + ' already has an account. Try signing in please?'
+                    message: '' + data.email + ' is in use. Try signing in with a social login?'
                   });
                 }
               }

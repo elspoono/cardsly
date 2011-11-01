@@ -132,20 +132,23 @@ UserSchema = new Schema
 
 # User Authentication
 UserSchema.static 'authenticate', (email, password, next) ->
-  this.find
-    email: email
-    active:true
-  , (err,data) ->
-    if err
-      next 'Database Error'
-    else
-      if data.length > 0
-        if compareEncrypted password, data[0].password_encrypted
-          next null, data[0]
-        else
-          next 'Password incorrect.'
+  if !email || !password || email == '' || password == ''
+    next 'Please enter an email address and password'
+  else
+    this.find
+      email: email
+      active:true
+    , (err,data) ->
+      if err
+        next 'Database Error'
       else
-        next 'Email not found.'
+        if data.length > 0
+          if compareEncrypted password, data[0].password_encrypted
+            next null, data[0]
+          else
+            next 'Password incorrect for that email address.'
+        else
+          next 'No account found for that email address.'
 
 # Actually build the User Model we just created
 User = mongoose.model 'User', UserSchema
@@ -479,12 +482,12 @@ app.post '/checkEmail', (req, res, next) ->
 # Normal Login
 app.post '/login', (req, res, next) ->
   User.authenticate req.body.email, req.body.password, (err, user) ->
-    req.session.auth = 
-      userId: user._id
     if err || !user
       res.send
         err: err
     else
+      req.session.auth = 
+        userId: user._id
       res.send
         success: true
 
@@ -496,7 +499,7 @@ app.post '/createUser', (req,res,next) ->
   ,(err,already) ->
     if already>0
       res.send
-        err: true
+        err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter?'
     else
       next()
 ,(req,res,next) ->

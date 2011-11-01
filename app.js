@@ -104,24 +104,28 @@
     }
   });
   UserSchema.static('authenticate', function(email, password, next) {
-    return this.find({
-      email: email,
-      active: true
-    }, function(err, data) {
-      if (err) {
-        return next('Database Error');
-      } else {
-        if (data.length > 0) {
-          if (compareEncrypted(password, data[0].password_encrypted)) {
-            return next(null, data[0]);
-          } else {
-            return next('Password incorrect.');
-          }
+    if (!email || !password || email === '' || password === '') {
+      return next('Please enter an email address and password');
+    } else {
+      return this.find({
+        email: email,
+        active: true
+      }, function(err, data) {
+        if (err) {
+          return next('Database Error');
         } else {
-          return next('Email not found.');
+          if (data.length > 0) {
+            if (compareEncrypted(password, data[0].password_encrypted)) {
+              return next(null, data[0]);
+            } else {
+              return next('Password incorrect for that email address.');
+            }
+          } else {
+            return next('No account found for that email address.');
+          }
         }
-      }
-    });
+      });
+    }
   });
   User = mongoose.model('User', UserSchema);
   CardSchema = new Schema({
@@ -404,14 +408,14 @@
   });
   app.post('/login', function(req, res, next) {
     return User.authenticate(req.body.email, req.body.password, function(err, user) {
-      req.session.auth = {
-        userId: user._id
-      };
       if (err || !user) {
         return res.send({
           err: err
         });
       } else {
+        req.session.auth = {
+          userId: user._id
+        };
         return res.send({
           success: true
         });
@@ -425,7 +429,7 @@
     }, function(err, already) {
       if (already > 0) {
         return res.send({
-          err: true
+          err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter?'
         });
       } else {
         return next();
