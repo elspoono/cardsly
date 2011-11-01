@@ -35,19 +35,32 @@ body
         a(href='/')
           img(src='/images/logo.png')
       ul.navigation
-        li
-          a(href='/') Home
-        li
-          a(href='/how-it-works') How it Works
-        li.last.login
-          if user
+        if user && user.role && user.role == 'admin'
+          li
+            a(href='/') Home
+          li
+            a(href='/admin') Edit Templates
+          li.last.login
             a(href='/logout') Logout
-          else
+        else if user
+          li
+            a(href='/') Buy More Cards
+          li
+            a(href='/cards') Admin
+          li.last.login
+            a(href='/logout') Logout
+        else
+          li
+            a(href='/') Home
+          li
+            a(href='/how-it-works') How it Works
+          li.last.login
             a(href='/login') Login
       h1.fittext
         span business cards done easi
         span.alt ly
-      .button.design-button.normal Get Started!
+      if !user
+        .button.design-button.normal Get Started!
       .img-loader
         img(src='/images/buttons/design-click.png')
         img(src='/images/buttons/design-hover.png')

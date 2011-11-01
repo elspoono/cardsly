@@ -1,4 +1,61 @@
+.gallery-select
 .section.first
   .cell-bg
   .cell-content
-    p Admin
+    h3 Template Admin
+    .designer
+      .card
+        ul.content
+          - for (i=0; i<=12; i++)
+            li
+    
+      .options
+        .general
+          ul
+            li
+              label Card Bg
+              input(type='file')
+            li
+              label Web Bg
+              input(type='file')
+        .specific
+      .clear
+    //
+      .card.main.scott-qr-blue
+        img(src='/images/qr.png').qr
+        if session && session.savedInputs
+          ul.content
+            - for(var i=0; i<session.savedInputs.length; i++)
+              input(class='nth-'+i,value=session.savedInputs[i])
+        else
+          ul.content.defaults
+            input.nth-0(value='John Stamos')
+            input.nth-1(value='Uncle Jesse')
+            input.nth-2(value='555.555.5555')
+            input.nth-3(value='john@stamos.com')
+            input.nth-4
+            input.nth-5
+            input.nth-6
+            input.nth-7
+            input.nth-8
+            input.nth-9
+            input.nth-10
+            input.nth-11
+    .category.active
+      h4 Professional
+      ul.gallery
+        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
+          li.card(class=i)
+            img(src='/images/qr.png').qr
+            ul.content
+              - for (i=0; i<=12; i++)
+                li
+    .category
+      h4 Professional
+      ul.gallery
+        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
+          li.card(class=i)
+            img(src='/images/qr.png').qr
+            ul.content
+              - for (i=0; i<=12; i++)
+                li

@@ -107,16 +107,18 @@
     if (!email || !password || email === '' || password === '') {
       return next('Please enter an email address and password');
     } else {
-      return this.find({
+      return User.findOne({
         email: email,
         active: true
-      }, function(err, data) {
+      }, function(err, foundUser) {
         if (err) {
           return next('Database Error');
         } else {
-          if (data.length > 0) {
-            if (!data[0].password_encrypted || compareEncrypted(password, data[0].password_encrypted)) {
-              return next(null, data[0]);
+          if (foundUser) {
+            if (!foundUser.password_encrypted) {
+              return next('That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.');
+            } else if (compareEncrypted(password, foundUser.password_encrypted)) {
+              return next(null, foundUser);
             } else {
               return next('Password incorrect for that email address.');
             }
@@ -171,6 +173,7 @@
   });
   Message = mongoose.model('Message', MessageSchema);
   TemplateSchema = new Schema({
+    category: String,
     date_added: {
       type: Date,
       "default": Date.now

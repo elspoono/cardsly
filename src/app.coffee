@@ -135,18 +135,18 @@ UserSchema.static 'authenticate', (email, password, next) ->
   if !email || !password || email == '' || password == ''
     next 'Please enter an email address and password'
   else
-    User.find
+    User.findOne
       email: email
       active:true
-    , (err,data) ->
+    , (err,foundUser) ->
       if err
         next 'Database Error'
       else
-        if data.length > 0
-          if !data[0].password_encrypted
-            next 'That is a social account, please login with the social.'
-          else compareEncrypted password, data[0].password_encrypted
-            next null, data[0]
+        if foundUser
+          if !foundUser.password_encrypted
+            next 'That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.'
+          else if compareEncrypted password, foundUser.password_encrypted
+            next null, foundUser
           else
             next 'Password incorrect for that email address.'
         else
@@ -200,6 +200,7 @@ Message = mongoose.model 'Message', MessageSchema
 
 # Templates
 TemplateSchema = new Schema
+  category: String
   date_added:
     type: Date
     default: Date.now
@@ -208,7 +209,7 @@ TemplateSchema = new Schema
     default: true
 Template = mongoose.model 'Template', TemplateSchema
 
-# Template Themes
+# Theme OF a template
 ThemeSchema = new Schema
   template_id: Number
   thumb_image_id: Number
