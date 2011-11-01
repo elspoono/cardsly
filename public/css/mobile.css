@@ -83,6 +83,17 @@ header .design-button {
   width: 273px;
   height: 185px;
 }
+.slides .container .content .fourth {
+  margin-top: 15px;
+}
+.slides .container .content .fourth img {
+  width: 252px;
+  height: 141px;
+}
+.slides .container .content .fourth .commercial iframe {
+  width: 230px;
+  height: 157px;
+}
 .card.main {
   -webkit-transform: scale(0.7, 0.7);
   -moz-transform: scale(0.7, 0.7);

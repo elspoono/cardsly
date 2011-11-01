@@ -761,7 +761,7 @@ $ ->
 
   # Define Margin
   newMargin = 0
-  maxSlides = 3
+  maxSlides = $('.slides li').length
   marginIncrement = 620
   maxSlides--
 
