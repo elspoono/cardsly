@@ -636,6 +636,16 @@ header .navigation li a {
   top: 0;
   left: -200px;
 }
+.designer .card {
+  width: 420px;
+  height: 240px;
+  float: left;
+}
+.designer .options {
+  float: right;
+  height: 240px;
+  width: 330px;
+}
 .card-title {
   text-align: center;
   font-size: 12.6px;
