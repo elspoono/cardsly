@@ -452,7 +452,10 @@ $ ->
 
   # Successful Login Function
   successfulLogin = ->
-    $('.signins').fadeOut 1000
+    $s = $ '.signins' 
+    $s.fadeOut 500, ->
+      $s.html 'You are now logged in. Please continue.'
+      $s.fadeIn 1000
     $('.login a').attr('href','/logout').html 'Logout'
 
   # Window and Main Card to use later

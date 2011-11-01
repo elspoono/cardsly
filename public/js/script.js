@@ -496,7 +496,12 @@
   $(function() {
     var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
     successfulLogin = function() {
-      $('.signins').fadeOut(1000);
+      var $s;
+      $s = $('.signins');
+      $s.fadeOut(500, function() {
+        $s.html('You are now logged in. Please continue.');
+        return $s.fadeIn(1000);
+      });
       return $('.login a').attr('href', '/logout').html('Logout');
     };
     $win = $(window);
