@@ -135,7 +135,7 @@ UserSchema.static 'authenticate', (email, password, next) ->
   if !email || !password || email == '' || password == ''
     next 'Please enter an email address and password'
   else
-    this.find
+    User.find
       email: email
       active:true
     , (err,data) ->
@@ -143,7 +143,9 @@ UserSchema.static 'authenticate', (email, password, next) ->
         next 'Database Error'
       else
         if data.length > 0
-          if !data[0].password_encrypted || compareEncrypted password, data[0].password_encrypted
+          if !data[0].password_encrypted
+            next 'That is a social account, please login with the social.'
+          else compareEncrypted password, data[0].password_encrypted
             next null, data[0]
           else
             next 'Password incorrect for that email address.'
