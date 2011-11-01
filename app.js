@@ -114,7 +114,7 @@
         if (err) {
           return next('Database Error');
         } else {
-          if (foundUser.length > 0) {
+          if (foundUser) {
             if (!foundUser.password_encrypted) {
               return next('That is a social account, please login with the social.');
             } else if (compareEncrypted(password, foundUser.password_encrypted)) {
