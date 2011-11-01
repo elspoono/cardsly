@@ -621,8 +621,13 @@
         buttons: [
           {
             label: 'Create New',
-            action: function(close) {
-              return close();
+            action: function(formClose) {
+              formClose();
+              return loadLoading({}, function(loadingClose) {
+                return setTimeout(function() {
+                  return loadingClose();
+                }, 1000);
+              });
             }
           }
         ],

@@ -133,6 +133,7 @@ input {
 .buttons .button {
   display: block;
   float: right;
+  text-align: center;
 }
 header {
   position: relative;
@@ -325,7 +326,7 @@ header .navigation li a {
   background-image: -o-linear-gradient(top, #56a3da, #2470a6);
 /* Opera 11.10+ */
   background-image: linear-gradient(top, #56a3da, #2470a6);
-  width: 140px;
+  width: 180px;
   text-align: center;
   padding: 8px 15px;
   -webkit-border-radius: 10px;

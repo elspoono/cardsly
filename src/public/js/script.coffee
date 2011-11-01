@@ -562,8 +562,14 @@ $ ->
       content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input class="password"></p></p><p>Repeat Password:<br><input class="password"></p></div>'
       buttons: [
         label: 'Create New'
-        action: (close) ->
-          close()
+        action: (formClose) ->
+          formClose()
+          loadLoading {}, (loadingClose) ->
+            setTimeout ->
+              
+              loadingClose()
+              
+            , 1000
       ]
       height: 340
       width: 400
