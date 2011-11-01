@@ -144,7 +144,7 @@ UserSchema.static 'authenticate', (email, password, next) ->
       else
         if foundUser
           if !foundUser.password_encrypted
-            next 'That is a social account, please login with the social.'
+            next 'That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.'
           else if compareEncrypted password, foundUser.password_encrypted
             next null, foundUser
           else

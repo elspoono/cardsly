@@ -116,7 +116,7 @@
         } else {
           if (foundUser) {
             if (!foundUser.password_encrypted) {
-              return next('That is a social account, please login with the social.');
+              return next('That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.');
             } else if (compareEncrypted(password, foundUser.password_encrypted)) {
               return next(null, foundUser);
             } else {
