@@ -662,7 +662,7 @@ header .navigation li a {
   font-size: 12.6px;
   line-height: 1.5em;
 }
-.card.main {
+. ain {
   width: 420px;
   height: 240px;
   display: block;
@@ -673,11 +673,11 @@ header .navigation li a {
   font-size: 16.8px;
   line-height: 1.5em;
 }
-.card.main .content {
+. ain .content {
   padding: 30px 20px;
   margin-top: -144px;
 }
-.card.main .qr {
+. ain .qr {
   height: 80px;
   width: 80px;
   margin-left: 320px;

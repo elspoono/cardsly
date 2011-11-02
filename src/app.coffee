@@ -393,8 +393,10 @@ app.configure ->
   app.use express.methodOverride()
   app.use express.cookieParser()
   app.use express.session
-    secret: conf.sessionSecret
-    store: sessionStore #
+    secret: 'how now brown cow bow wow'
+    store: sessionStore
+    cookie:
+      maxAge: 86400000 * 14
   app.use express.static(__dirname + conf.dir.public)
   app.use everyauth.middleware()
 
