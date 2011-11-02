@@ -12,6 +12,8 @@ $display-font-family = 'Maven Pro', sans-serif
  * Color Definitions
  *
  ***********************************/
+
+ // These list the default colors that we are using on the website
 $c-light = #EEEEEE
 $c-mid-cool = #AAAAAA
 $c-dark-cool = #111111
@@ -24,6 +26,7 @@ $c-bg-light = #908575 //#006E9F
 $c-logo-light = #f05a23 //#f37b4f
 $c-logo-alt = #56A3DA
 
+//This one is mainly used on the top small nav bar and is the darkest on the site
 $c-extra-dark = #3a322f
 
 $c-go = #23f067
@@ -141,6 +144,7 @@ gradient(color1=$c-background,color2=$c-background)
 
 
 // Base Tag Definitions
+// This is changing our heading style defintions
 h1, h2, h3
   font-weight normal
   font-family $display-font-family
@@ -230,12 +234,14 @@ input
 
 // Header
 
+// Small nav is the small black bar at the top of the site that is used for logging in and other account actions.
 .small-nav
   position absolute
   top 0
   left 0
   width 100%
   background $c-extra-dark
+  //This changes the style of the objects that reside within the small nav object
   li
     relative-size(.6)
     padding 0px 10px
@@ -250,6 +256,7 @@ input
     position relative
     line-height 27px
     padding-right 0
+//This is the the gear icon in the small nav menu.
     .gear
       height 28px
       float right
@@ -257,8 +264,10 @@ input
       img
         float right
         margin 4px 10px 0 10px
+//This controls what happens when the gear button or name is clicked in the small nav.
   .account-link.hover,.account-link.click
     background lighten($c-extra-dark,10)
+//These are the style properties of the account drop down menu that appear when you click the gear or the name.
   .account-menu
     display none
     position absolute
@@ -272,11 +281,14 @@ input
     border-bottom 1px solid $c-extra-dark
     background lighten($c-extra-dark,10)
     border-radius-bottom-left-only(5px)
+    //This is the styling of the elements that are in that drop down menu.
     li
       border-top 1px solid $c-extra-dark
       text-align right
       padding-right 38px
       float none
+
+// This is the header which contains the logo and the navigation buttons that are to the right of it.
 .header
   position relative
   z-index 50
@@ -300,7 +312,8 @@ input
     .alt
       color $c-logo-alt
     relative-size(1.5)
-    
+  
+//This is the styling of the buttons that are too the right of the logo that are contained within the header.
   .navigation
     font-family $display-font-family
     gradient($c-bg-light,$c-bg-dark)
@@ -318,6 +331,7 @@ input
       //padding 7px 30px
       padding 7px 29px
       border-radius(10px)
+//This is the background of the header
 .header-back
   gradient($c-bg-light,$c-bg-dark)
   width 50%
@@ -326,9 +340,7 @@ input
   height 46px
   position absolute
 
-
-
-
+// This is the list of cards that are being chosen by the user.
 // Sections
 .card-list
   th,td
