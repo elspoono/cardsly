@@ -650,12 +650,23 @@ header .navigation li a {
   overflow: hidden;
 }
 .designer .options li label {
-  float: left;
+  display: block;
+  margin-top: 10px;
 }
 .designer .options li input {
   font-size: 12.6px;
   line-height: 1.5em;
+  margin-right: 10px;
   float: left;
+}
+.designer .options .field input {
+  width: 40px;
+}
+.designer .options .field .label {
+  float: left;
+  margin: 6px 3px 0 0;
+  font-size: 10.5px;
+  line-height: 1.5em;
 }
 .card-title {
   text-align: center;

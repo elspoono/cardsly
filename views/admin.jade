@@ -12,13 +12,23 @@
       .options
         .general
           ul
-            li
-              label Card Bg
+            li.image
+              label Card Image
               input(type='file')
-            li
-              label Web Bg
-              input
-              input
+            li.gradient
+              label Web Gradient
+              input(placeholder='#000000')
+              input(placeholder='#FFFFFF')
+            li.field
+              label Field Position/Size
+              label.label Height: 
+              input.height(placeholder='10%',title='height')
+              label.label Width: 
+              input.width(placeholder='90%',title='width')
+              label.label X: 
+              input.x(placeholder='10%',title='X')
+              label.label Y: 
+              input.y(placeholder='40%',title='Y')
         .specific
       .clear
     //
