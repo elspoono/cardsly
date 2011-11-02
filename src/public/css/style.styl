@@ -513,21 +513,25 @@ input
 //
 .designer
   .card
-    width 420px
-    height 240px
+    width 525px
+    height 300px
+    display block
     float left
     cursor default
     overflow hidden
     .line
       border-bottom 1px solid $c-dark-warm
       height 20px
-      font-size 20px
-      line-height 20px
+      width 350px
+      display block
+      position absolute
+      white-space nowrap
+      overflow hidden
 
   .options
     float right
-    height 240px
-    width 330px
+    height 300px
+    width 240px
     li
       overflow hidden
       label
@@ -537,12 +541,14 @@ input
         relative-size(.6)
         margin-right 10px
         float left
+        width 100px
     .field
       input
-        width 40px
+        width 60px
       .label
+        width 40px
         float left
-        margin 6px 3px 0 0
+        margin 7px 0 6px 0
         relative-size(.5)
 
 

@@ -444,6 +444,10 @@ actions, like saving stuff, and checking stuff, from ajax
 
 ###
 
+app.post '/loadImage', (req, res) ->
+  res.send
+    success: true
+
 app.post '/saveForm', (req, res) ->
   ###
   TODO

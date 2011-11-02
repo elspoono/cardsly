@@ -493,8 +493,13 @@
       });
     });
   };
+  /*
+  
+  
+  
+  */
   $(function() {
-    var $gs, $mc, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    var $dForm, $designer, $gs, $lines, $mc, $upload, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design-button').click(function() {
       if (path !== '/') {
@@ -510,6 +515,14 @@
       document.location.href = '#';
       $('.design-button').click();
     }
+    $designer = $('.designer .card');
+    $lines = $designer.find('.line');
+    $lines.draggable().resizable().fitText();
+    $dForm = $('.designer form');
+    $upload = $dForm.find('[type=file]');
+    $upload.change(function() {
+      return $dForm.submit();
+    });
     successfulLogin = function() {
       var $s;
       if (path === '/login') {
