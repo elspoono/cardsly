@@ -223,7 +223,28 @@ input
 
 
 // Header
-header
+
+.smallnav
+  position absolute
+  top 0
+  left 0
+  width 100%
+  background #3a322f
+  li
+    relative-size(.6)
+    margin 0px 10px
+    float right
+  .gearbutton
+    position relative
+    margin-top 3px
+  .adminpage
+    color $c-bg-light
+    position relative
+    text-decoration none
+    margin-top 3px
+
+
+.header
   position relative
   z-index 50
   margin 80px 0 0 50px
@@ -246,6 +267,7 @@ header
     .alt
       color $c-logo-alt
     relative-size(1.5)
+    
   .navigation
     font-family $display-font-family
     gradient($c-bg-light,$c-bg-dark)
