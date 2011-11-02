@@ -447,7 +447,15 @@ $.fn.box_rotate = (options) ->
       '-ms-transform':'rotate('+degrees+'deg)'
       'filter:progid':'DXImageTransform.Microsoft.BasicImage(rotation='+rotate+')'
 
-  
+
+
+
+###
+
+
+
+###
+
 $ ->
 
   # Path we'll use a few places, it's just the page we're on now, yeah?
@@ -470,7 +478,22 @@ $ ->
   if path == '/#design-button'
     document.location.href = '#'
     $('.design-button').click()
+
+
+
+
+
+  #
+  # Card Designer
+  $designer = $ '.designer .card'
+  $lines = $designer.find '.line'
+  $lines.draggable().resizable().fitText()
   
+  $dForm = $ '.designer form'
+  $upload = $dForm.find '[type=file]'
+  $upload.change ->
+    $dForm.submit()
+
   #
   # Successful Login Function
   successfulLogin = ->

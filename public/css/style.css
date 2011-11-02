@@ -637,8 +637,9 @@ header .navigation li a {
   left: -200px;
 }
 .designer .card {
-  width: 420px;
-  height: 240px;
+  width: 525px;
+  height: 300px;
+  display: block;
   float: left;
   cursor: default;
   overflow: hidden;
@@ -646,13 +647,16 @@ header .navigation li a {
 .designer .card .line {
   border-bottom: 1px solid #333;
   height: 20px;
-  font-size: 20px;
-  line-height: 20px;
+  width: 350px;
+  display: block;
+  position: absolute;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .designer .options {
   float: right;
-  height: 240px;
-  width: 330px;
+  height: 300px;
+  width: 240px;
 }
 .designer .options li {
   overflow: hidden;
@@ -666,13 +670,15 @@ header .navigation li a {
   line-height: 1.5em;
   margin-right: 10px;
   float: left;
+  width: 100px;
 }
 .designer .options .field input {
-  width: 40px;
+  width: 60px;
 }
 .designer .options .field .label {
+  width: 40px;
   float: left;
-  margin: 6px 3px 0 0;
+  margin: 7px 0 6px 0;
   font-size: 10.5px;
   line-height: 1.5em;
 }

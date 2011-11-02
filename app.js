@@ -371,6 +371,11 @@
   actions, like saving stuff, and checking stuff, from ajax
   
   */
+  app.post('/loadImage', function(req, res) {
+    return res.send({
+      success: true
+    });
+  });
   app.post('/saveForm', function(req, res) {
     /*
       TODO
