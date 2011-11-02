@@ -487,17 +487,41 @@ header
       left -200px
 
 //
-// Business Cards in TEMPLATE DESIGNER
+// Business Cards in TEMPLATE DESIGNER in Admin
 //
 .designer
   .card
     width 420px
     height 240px
     float left
+    cursor default
+    overflow hidden
+    .line
+      border-bottom 1px solid $c-dark-warm
+      height 20px
+      font-size 20px
+      line-height 20px
+
   .options
     float right
     height 240px
     width 330px
+    li
+      overflow hidden
+      label
+        display block
+        margin-top 10px
+      input
+        relative-size(.6)
+        margin-right 10px
+        float left
+    .field
+      input
+        width 40px
+      .label
+        float left
+        margin 6px 3px 0 0
+        relative-size(.5)
 
 
 //

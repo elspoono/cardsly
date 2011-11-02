@@ -5,19 +5,37 @@
     h3 Template Admin
     .designer
       .card
+        .qr
         ul.content
-          - for (i=0; i<=12; i++)
-            li
-    
+          - for(var i=0; i<12; i++)
+            .line(class='nth-'+i) Line 
+              =i
       .options
         .general
           ul
-            li
-              label Card Bg
+            li.category
+              label Category / Theme
+              input(placeholder='Professional')
+              select
+                option Theme 1
+                option Theme 2
+            li.image
+              label Card Image
               input(type='file')
-            li
-              label Web Bg
-              input(type='file')
+            li.gradient
+              label Web Gradient
+              input(placeholder='#000000')
+              input(placeholder='#FFFFFF')
+            li.field
+              label Field Position/Size
+              label.label Height: 
+              input.height(placeholder='10%',title='height')
+              label.label Width: 
+              input.width(placeholder='90%',title='width')
+              label.label X: 
+              input.x(placeholder='10%',title='X')
+              label.label Y: 
+              input.y(placeholder='40%',title='Y')
         .specific
       .clear
     //
