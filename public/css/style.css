@@ -164,6 +164,7 @@ input {
   font-size: 12.6px;
   line-height: 1.5em;
   margin: 0px 10px;
+  line-height: 27px;
   float: right;
 }
 .smallnav .gearbutton {
@@ -174,7 +175,6 @@ input {
   color: #908575;
   position: relative;
   text-decoration: none;
-  margin-top: 3px;
 }
 .header {
   position: relative;
@@ -242,7 +242,7 @@ input {
   margin: 0;
   float: left;
   border-right: 1px solid #d8cfc5;
-  padding: 7px 30px;
+  padding: 7px 29px;
   -webkit-border-radius: 14px;
   -moz-border-radius: 14px;
   border-radius: 14px;
