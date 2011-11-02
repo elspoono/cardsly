@@ -7,8 +7,11 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, geo, handleGoodResponse, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, url, util;
+  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, formidable, geo, handleGoodResponse, http, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
   express = require("express");
+  formidable = require('formidable');
+  http = require('http');
+  sys = require('sys');
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
   im = require('imagemagick');
@@ -371,7 +374,14 @@
   actions, like saving stuff, and checking stuff, from ajax
   
   */
-  app.post('/loadImage', function(req, res) {
+  app.post('/uploadImage', function(req, res) {
+    var form;
+    form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files) {
+      console.log('STACK: ', err.stack);
+      console.log('FIELDS: ', fields);
+      return console.log('FILES: ', files);
+    });
     return res.send({
       success: true
     });

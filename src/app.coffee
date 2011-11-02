@@ -12,6 +12,9 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
 express = require "express"
+formidable = require 'formidable'
+http = require 'http'
+sys = require 'sys'
 app = module.exports = express.createServer()
 # Module requires
 conf = require './lib/conf'
@@ -444,7 +447,12 @@ actions, like saving stuff, and checking stuff, from ajax
 
 ###
 
-app.post '/loadImage', (req, res) ->
+app.post '/uploadImage', (req, res) ->
+  form = new formidable.IncomingForm()
+  form.parse req, (err, fields, files) ->
+    console.log 'STACK: ', err.stack
+    console.log 'FIELDS: ', fields
+    console.log 'FILES: ', files
   res.send
     success: true
 
