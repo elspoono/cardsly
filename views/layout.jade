@@ -36,11 +36,28 @@ head
 body
   #container
     header
-      ul.smallnav
-        li 
-          img.gearbutton(src='/images/buttons/gear3.png')
+      ul.small-nav
+        if user
+          li.account-link
+            a(href='/profile')
+              if user.name
+                =user.name
+              else if user.email
+                =user.email
+              .gear
+                img(src='/images/buttons/gear.png')
+            ul.account-menu
+              li
+                a(href='/profile') Profile
+              li
+                a(href='/logout') Logout
+        else
+          li
+             a(href='/login') Login
         li
-           a.adminpage(href='/') Nick Smith
+           a(href='/about') About
+        li
+           a(href='/blog') Blog
       .header
         .logo
           a(href='/')
@@ -49,28 +66,18 @@ body
         ul.navigation
           if user && user.role && user.role == 'admin'
             li
-              a(href='/') Home
-            li
               a(href='/admin') Edit Templates
-            li.last.login
-              a(href='/logout') Logout
           else if user
             li
-              a(href='/') Buy More Cards
+              a(href='/') Buy Cards
             li
-              a(href='/cards') Admin
-            li.last.login
-              a(href='/logout') Logout
+              a(href='/cards') Edit Cards
           else
             li
               a(href='/') Home
             li
               a(href='/how-it-works') How it Works
-            li
-              a(href='/blog') Blog
-            li.last.login
-              a(href='/login') Login
-        h1.fittext
+        h1
           span business cards done easi
           span.alt ly
         if !user
@@ -84,7 +91,7 @@ body
     footer.footer
       .container
         .above
-          | contact us, we respond
+          | Contact us, we respond.
         ul
           li
             a(href="mailto:help@cards.ly")
@@ -99,8 +106,6 @@ body
           a(href='mailto:help@cards.ly') help@cards.ly
           |  &nbsp;|&nbsp; 
           a(href='tel:+14804288000') 480.428.8000
-          |  &nbsp;|&nbsp; 
-          a(href='/about') about
   //script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js')
   script(src='/js/libs/jquery-1.6.2.min.js')
   script(src='/js/libs/jquery-ui-1.8.16.min.js')

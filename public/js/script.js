@@ -496,10 +496,39 @@
   /*
   
   
+  THIS IS WHERE REAL CODE STARTS
+  
+  The 
+  $ ->
+  
+    Means everything under him (like me, indented here)
+    WILL be done on document ready event.
+  
+  
   
   */
   $(function() {
-    var $dForm, $designer, $gs, $lines, $mc, $upload, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    /*
+      Profile MENU in the TOP RIGHT
+      Thing that shows a drop down
+      */
+    var $a, $dForm, $designer, $gs, $lines, $mc, $upload, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    $a = $('.account-link');
+    $a.hover(function() {
+      return $a.addClass('hover');
+    }, function() {
+      return $a.removeClass('hover');
+    });
+    $a.click(function() {
+      $('.account-menu').show();
+      $a.addClass('click');
+      return false;
+    });
+    /*
+      Multiple
+      Lines Of
+      Comments
+      */
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design-button').click(function() {
       if (path !== '/') {
@@ -845,7 +874,6 @@
       }
     });
     $gs.bind('activeMoved', function() {
-      var $a;
       $a = $('.card.active');
       return $gs.css({
         left: $a.offset().left - 10,
@@ -872,7 +900,7 @@
       # Home Page Stuff
       */
     $('.category h4').click(function() {
-      var $a, $c, $g, $t;
+      var $c, $g, $t;
       $t = $(this);
       $c = $t.closest('.category');
       $g = $c.find('.gallery');

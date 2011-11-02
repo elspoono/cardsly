@@ -453,10 +453,49 @@ $.fn.box_rotate = (options) ->
 ###
 
 
+THIS IS WHERE REAL CODE STARTS
+
+The 
+$ ->
+
+  Means everything under him (like me, indented here)
+  WILL be done on document ready event.
+
+
 
 ###
 
 $ ->
+
+
+
+  ###
+  Profile MENU in the TOP RIGHT
+  Thing that shows a drop down
+  ###
+  $a = $ '.account-link'
+  $a.hover ->
+    $a.addClass 'hover'
+  , ->
+    $a.removeClass 'hover'
+  $a.click ->
+    $('.account-menu').show()
+    $a.addClass 'click'
+    false
+
+
+
+  # One Line Comment
+
+  ###
+  Multiple
+  Lines Of
+  Comments
+  ###
+
+
+
+
 
   # Path we'll use a few places, it's just the page we're on now, yeah?
   path = document.location.href.replace /http:\/\/[^\/]*/ig, ''

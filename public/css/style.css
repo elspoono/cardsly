@@ -153,28 +153,65 @@ input {
   float: right;
   text-align: center;
 }
-.smallnav {
+.small-nav {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   background: #3a322f;
 }
-.smallnav li {
+.small-nav li {
   font-size: 12.6px;
   line-height: 1.5em;
-  margin: 0px 10px;
+  padding: 0px 10px;
   line-height: 27px;
   float: right;
 }
-.smallnav .gearbutton {
-  position: relative;
-  margin-top: 3px;
-}
-.smallnav .adminpage {
+.small-nav li a {
   color: #908575;
   position: relative;
   text-decoration: none;
+}
+.small-nav .account-link {
+  cursor: pointer;
+  position: relative;
+  line-height: 27px;
+  padding-right: 0;
+}
+.small-nav .account-link .gear {
+  height: 28px;
+  float: right;
+  overflow: hidden;
+}
+.small-nav .account-link .gear img {
+  float: right;
+  margin: 4px 10px 0 10px;
+}
+.small-nav .account-link.hover,
+.small-nav .account-link.click {
+  background: #564a46;
+}
+.small-nav .account-menu {
+  display: none;
+  position: absolute;
+  z-index: 500;
+  padding: 0;
+  top: 27px;
+  right: 0;
+  width: 100%;
+  padding-right: 0;
+  border-left: 1px solid #3a322f;
+  border-bottom: 1px solid #3a322f;
+  background: #564a46;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+}
+.small-nav .account-menu li {
+  border-top: 1px solid #3a322f;
+  text-align: right;
+  padding-right: 38px;
+  float: none;
 }
 .header {
   position: relative;
@@ -195,7 +232,7 @@ input {
   height: 46px;
 }
 .header .logo img {
-  margin: -45px 0 0 -50px;
+  margin: -45px 0 50px -50px;
   float: left;
   position: relative;
   z-index: 50;
@@ -208,7 +245,7 @@ input {
 }
 .header h1 {
   position: absolute;
-  top: 75px;
+  top: 65px;
   color: #f05a23;
   font-size: 31.5px;
   line-height: 1.5em;
@@ -232,9 +269,9 @@ input {
   background-image: linear-gradient(top, #908575, #524641);
   float: right;
   margin: 0;
-  -webkit-border-radius: 15.75px;
-  -moz-border-radius: 15.75px;
-  border-radius: 15.75px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .header .navigation li {
   font-size: 21px;
@@ -243,9 +280,9 @@ input {
   float: left;
   border-right: 1px solid #d8cfc5;
   padding: 7px 29px;
-  -webkit-border-radius: 14px;
-  -moz-border-radius: 14px;
-  border-radius: 14px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .header .navigation li a {
   text-decoration: none;

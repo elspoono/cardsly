@@ -9,16 +9,18 @@
  * LIBRARY FUNCTIONS
  *
  ********************************/
-header h1 {
-  top: -80px;
-  left: -45px;
+.header h1 {
   font-size: 16.8px;
   line-height: 1.5em;
   line-height: 1.2em;
   width: 120px;
 }
-header .design-button {
-  top: -80px;
+.header .design-button {
+margin-top
+  width: 120px;
+  font-size: 16.8px;
+  line-height: 1.5em;
+  height: 25px;
 }
 .section {
   padding: 15px;
@@ -116,10 +118,10 @@ header .design-button {
 .text-fields li {
   margin: 10px 15px;
 }
-header .navigation li {
+.header .navigation li {
   padding: 3px 15px;
 }
-header .navigation li a {
+.header .navigation li a {
   font-size: 16.8px;
   line-height: 1.5em;
 }
