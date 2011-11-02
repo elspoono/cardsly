@@ -5,16 +5,20 @@
     h3 Template Admin
     .designer
       .card
+        .qr
         ul.content
-          - for (i=0; i<=12; i++)
-            li
-    
+          - for(var i=0; i<12; i++)
+            .line(class='nth-'+i) Line 
+              =i
       .options
         .general
           ul
             li.category
-              label Category
+              label Category / Theme
               input(placeholder='Professional')
+              select
+                option Theme 1
+                option Theme 2
             li.image
               label Card Image
               input(type='file')

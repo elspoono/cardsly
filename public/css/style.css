@@ -641,6 +641,13 @@ header .navigation li a {
   height: 240px;
   float: left;
   cursor: default;
+  overflow: hidden;
+}
+.designer .card .line {
+  border-bottom: 1px solid #333;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
 }
 .designer .options {
   float: right;
