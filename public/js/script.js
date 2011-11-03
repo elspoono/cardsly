@@ -512,18 +512,36 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $dForm, $designer, $gs, $lines, $mc, $upload, $win, advanceSlide, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    var $a, $am, $body, $dForm, $designer, $gs, $lines, $mc, $upload, $win, advanceSlide, closeMenu, expandMenu, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
     $a = $('.account-link');
-    $a.hover(function() {
-      return $a.addClass('hover');
+    $am = $a.find('.account-menu');
+    $body = $(document);
+    $('.small-nav li').hover(function() {
+      return $(this).addClass('hover');
     }, function() {
-      return $a.removeClass('hover');
+      return $(this).removeClass('hover');
     });
-    $a.click(function() {
-      $('.account-menu').show();
-      $a.addClass('click');
+    closeMenu = function(e) {
+      var $t;
+      $t = $(e.target);
+      if ($t.closest('.account-link').length) {
+        $a = $t.closest('li').find('a');
+        document.location.href = $a.attr('href');
+      } else {
+        $a.removeClass('click');
+        $am.slideUp();
+        $a.one('click', expandMenu);
+        $body.unbind('click', closeMenu);
+      }
       return false;
-    });
+    };
+    expandMenu = function() {
+      $am.slideDown();
+      $a.addClass('click');
+      $body.bind('click', closeMenu);
+      return false;
+    };
+    $a.one('click', expandMenu);
     /*
       Multiple
       Lines Of

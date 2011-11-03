@@ -474,14 +474,30 @@ $ ->
   Thing that shows a drop down
   ###
   $a = $ '.account-link'
-  $a.hover ->
-    $a.addClass 'hover'
+  $am = $a.find '.account-menu'
+  $body = $(document)
+  $('.small-nav li').hover ->
+    $(this).addClass 'hover'
   , ->
-    $a.removeClass 'hover'
-  $a.click ->
-    $('.account-menu').show()
-    $a.addClass 'click'
+    $(this).removeClass 'hover'
+  closeMenu = (e) ->
+    $t = $ e.target
+    if $t.closest('.account-link').length
+      $a = $t.closest('li').find 'a'
+      document.location.href = $a.attr 'href'
+    else
+      $a.removeClass 'click'
+      $am.slideUp()
+      $a.one 'click', expandMenu
+      $body.unbind 'click', closeMenu
     false
+  expandMenu = ->
+    $am.slideDown()
+    $a.addClass 'click'
+    $body.bind 'click', closeMenu
+    false
+  $a.one 'click', expandMenu
+
 
 
 

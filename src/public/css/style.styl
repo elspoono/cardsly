@@ -13,7 +13,7 @@ $display-font-family = 'Maven Pro', sans-serif
  *
  ***********************************/
 
- // These list the default colors that we are using on the website
+// These list the default colors that we are using on the website
 $c-light = #EEEEEE
 $c-mid-cool = #AAAAAA
 $c-dark-cool = #111111
@@ -256,7 +256,7 @@ input
     position relative
     line-height 27px
     padding-right 0
-//This is the the gear icon in the small nav menu.
+    //This is the the gear icon in the small nav menu.
     .gear
       height 28px
       float right
@@ -264,10 +264,10 @@ input
       img
         float right
         margin 4px 10px 0 10px
-//This controls what happens when the gear button or name is clicked in the small nav.
-  .account-link.hover,.account-link.click
+  //This controls what happens when any item is hovered or clicked the small nav.
+  .hover,.click
     background lighten($c-extra-dark,10)
-//These are the style properties of the account drop down menu that appear when you click the gear or the name.
+  //These are the style properties of the account drop down menu that appear when you click the gear or the name.
   .account-menu
     display none
     position absolute
@@ -287,6 +287,9 @@ input
       text-align right
       padding-right 38px
       float none
+    //Submenu hovers and clicks
+    .hover,.click
+      background $c-extra-dark
 
 // This is the header which contains the logo and the navigation buttons that are to the right of it.
 .header
@@ -313,7 +316,7 @@ input
       color $c-logo-alt
     relative-size(1.5)
   
-//This is the styling of the buttons that are too the right of the logo that are contained within the header.
+  //This is the styling of the buttons that are too the right of the logo that are contained within the header.
   .navigation
     font-family $display-font-family
     gradient($c-bg-light,$c-bg-dark)
