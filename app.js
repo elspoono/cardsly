@@ -201,6 +201,7 @@
     theme_id: Number,
     order_id: Number,
     font_size: Number,
+    width: Number,
     x: Number,
     y: Number
   });

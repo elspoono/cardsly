@@ -535,14 +535,86 @@ $ ->
     $('.design-button').click()
 
 
+  ###
+  
+  All the stuff for the admin template designer
+  is probably going to be in this section right here.
 
+  ok.
 
-
+  ###
+  #
+  #
+  $fieldH = $ '.field input.height'
+  $fieldW = $ '.field input.width'
+  $fieldX = $ '.field input.x'
+  $fieldY = $ '.field input.y'
+  #
+  # Default Template for Card Designer
+  template = 
+    category: 'Professional'
+    themes: (
+      qr_size: 45
+      qr_x: 70
+      qr_y: 40
+      positions: (
+        font_size:7/j
+        width: 50
+        x:5
+        y:5+i/(j+1)*10
+      ) for i in [0..5+j*6]
+    ) for j in [0..1]
   #
   # Card Designer
   $designer = $ '.designer .card'
+  dh = $designer.height()
+  dw = $designer.width()
+  #
+  # The individual lines
   $lines = $designer.find '.line'
-  $lines.draggable().resizable().fitText()
+  updateStats = (e, ui) ->
+    $fieldY.val Math.round(ui.position.top / dh * 10000) / 100 + '%'
+    $fieldX.val Math.round(ui.position.left / dw * 10000) / 100 + '%'
+    if ui.size
+      $fieldH.val Math.round(ui.size.height / dh * 10000) / 100 + '%'
+      $fieldW.val Math.round(ui.size.width / dw * 10000) / 100 + '%'
+  $lines.draggable
+    drag: updateStats
+    grid: [5,5]
+    containment: '.designer .card'
+  $lines.resizable
+    resize: updateStats
+    grid: 5
+  $lines.fitText()
+  #
+  # 
+  $qr = $designer.find '.qr'
+  $qr.draggable
+    drag: updateStats
+    grid: [5,5]
+    containment: '.designer .card'
+  $qr.resizable
+    resize: updateStats
+    grid: 5
+    containment: '.designer .card'
+    aspectRatio: 1
+  #
+  $lines.hide()
+  for pos,i in template.themes[0].positions
+    $li = $lines.eq i
+    $li.show().css
+      top: pos.y/100 * dh
+      left: pos.x/100 * dw
+      width: (pos.width/100 * dw) + 'px'
+      fontSize: (pos.font_size/100 * dh) + 'px'
+      lineHeight: (pos.font_size/100 * dh) + 'px'
+  $qr.css
+    top: template.themes[0].qr_y/100 * dh
+    left: template.themes[0].qr_x/100 * dw
+    height: template.themes[0].qr_size/100 * dh
+    width: template.themes[0].qr_size/100 * dh
+    
+
   
   $dForm = $ '.designer form'
   $upload = $dForm.find '[type=file]'
