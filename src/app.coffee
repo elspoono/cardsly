@@ -11,10 +11,12 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
-express = require "express"
-formidable = require 'formidable'
+express = require 'express'
+form = require 'connect-form'
 http = require 'http'
+knox = require 'knox'
 sys = require 'sys'
+fs = require 'fs'
 app = module.exports = express.createServer()
 # Module requires
 conf = require './lib/conf'
@@ -307,7 +309,6 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
           promise.fulfill createdUser
   promise
 
-
 ###
 
 Create the Everyauth Accessing the user function
@@ -373,6 +374,20 @@ everyauth.debug = true
 
 
 
+###
+
+Knox - AMAZON S3 Connector
+
+Add the api keys and such
+
+###
+
+knoxClient = knox.createClient
+  key: 'AKIAI2CJEBPY77CQ32AA'
+  secret: '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'
+  bucket: 'cardsly'
+
+
 
 
 
@@ -393,7 +408,9 @@ app.configure ->
     user: false
     session: false
   app.use express.bodyParser()
-
+  app.use form
+    keepExtensions: true
+    uploadDir: __dirname + '/uploads/'
   app.use express.methodOverride()
   app.use express.cookieParser()
   app.use express.session
@@ -447,15 +464,29 @@ POST PAGES
 actions, like saving stuff, and checking stuff, from ajax
 
 ###
-
 app.post '/uploadImage', (req, res) ->
-  form = new formidable.IncomingForm()
-  form.parse req, (err, fields, files) ->
-    console.log 'STACK: ', err.stack
-    console.log 'FIELDS: ', fields
-    console.log 'FILES: ', files
-  res.send
-    success: true
+  req.form.complete (err, fields, files) ->
+    if err
+      res.send
+        err: err
+    else
+      shortPath = files.myFile.path.replace /.*uploads/ig, ''
+      ext = shortPath.replace /.*\./ig, ''
+      fs.readFile files.myFile.path, (err, buff) ->
+        req = knoxClient.put shortPath,
+          'Content-Length': buff.length
+          'Content-Type' : 'image/'+ext
+        req.on 'response', (res) ->
+          console.log 'STATUS: ', res.statusCode
+          console.log 'URL: ', req.url
+        req.end buff
+        fs.unlink files.myFile.path, (err) ->
+          if err
+            res.send
+              err: err
+          else
+            res.send
+              success: true
 
 app.post '/saveForm', (req, res) ->
   ###
@@ -476,9 +507,9 @@ app.post '/checkEmail', (req, res, next) ->
   params = req.body || {}
   req.email = params.email || ''
   req.email = req.email.toLowerCase()
-  handleReturn = (err, data) ->
+  handleReturn = (err, count) ->
     req.err = err
-    req.data = data
+    req.count = count
     next()
   if params.id
     User.count
@@ -493,7 +524,7 @@ app.post '/checkEmail', (req, res, next) ->
 ,(req, res, next) ->
   res.send
     err: req.err
-    data: req.data
+    count: req.count
     email: req.email
 
 

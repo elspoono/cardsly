@@ -815,15 +815,15 @@ $ ->
             url: '/checkEmail'
             data:
               email: $t.val()
-            success: (data) ->
-              if data.data==0
+            success: (fullResponseObject) ->
+              if fullResponseObject.count==0
                 $t.removeClass('error').addClass 'valid'
                 $t.showTooltip
-                  message: data.email+' is good'
+                  message: fullResponseObject.email+' is good'
               else
                 $t.removeClass('valid').addClass 'error'
                 $t.showTooltip
-                  message:''+data.email+' is in use. Try signing in with a social login.'
+                  message:''+fullResponseObject.email+' is in use. Try signing in with a social login.'
         else
           $t.removeClass('valid').addClass('error').showTooltip
             message: 'Is that an email?'

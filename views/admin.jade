@@ -22,7 +22,7 @@
           li.image
             label Card Image
             form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
-              input(type='file')
+              input(type='file',name='image')
             .img-loader
               iframe(name='hiddenFrame')
           li.gradient

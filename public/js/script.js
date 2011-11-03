@@ -889,16 +889,16 @@
               data: {
                 email: $t.val()
               },
-              success: function(data) {
-                if (data.data === 0) {
+              success: function(fullResponseObject) {
+                if (fullResponseObject.count === 0) {
                   $t.removeClass('error').addClass('valid');
                   return $t.showTooltip({
-                    message: data.email + ' is good'
+                    message: fullResponseObject.email + ' is good'
                   });
                 } else {
                   $t.removeClass('valid').addClass('error');
                   return $t.showTooltip({
-                    message: '' + data.email + ' is in use. Try signing in with a social login.'
+                    message: '' + fullResponseObject.email + ' is in use. Try signing in with a social login.'
                   });
                 }
               }
