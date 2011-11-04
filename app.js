@@ -393,10 +393,10 @@
   
   */
   app.post('/uploadImage', function(req, res) {
-    req.form.on('progress', function(bytesReceived, bytesExpected) {
-      return console.log((bytesReceived / bytesExpected * 100) | 0);
-    });
-    return req.form.complete(function(err, fields, files) {
+    /*
+      req.form.on 'progress', (bytesReceived, bytesExpected) ->
+        console.log (bytesReceived / bytesExpected * 100) | 0
+      */    return req.form.complete(function(err, fields, files) {
       var ext, path, shortPath;
       if (err) {
         return res.send({

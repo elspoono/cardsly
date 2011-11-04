@@ -466,9 +466,10 @@ actions, like saving stuff, and checking stuff, from ajax
 
 app.post '/uploadImage', (req, res) ->
   
-
+  ###
   req.form.on 'progress', (bytesReceived, bytesExpected) ->
     console.log (bytesReceived / bytesExpected * 100) | 0
+  ###
 
   req.form.complete (err, fields, files) ->
     if err
