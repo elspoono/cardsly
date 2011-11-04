@@ -394,35 +394,42 @@
   */
   app.post('/uploadImage', function(req, res) {
     req.form.on('progress', function(bytesReceived, bytesExpected) {
-      return console.log(bytesReceived / bytesExpected * 100 | 0);
+      return console.log((bytesReceived / bytesExpected * 100) | 0);
     });
     return req.form.complete(function(err, fields, files) {
+      var ext, path, shortPath;
       if (err) {
         return res.send({
           err: err
         });
       } else {
         console.log('FILES: ', files);
-        return console.log('FIELDS: ', fields);
-        /*
-              shortPath = files.myFile.path.replace /.*uploads/ig, ''
-              ext = shortPath.replace /.*\./ig, ''
-              fs.readFile files.myFile.path, (err, buff) ->
-                req = knoxClient.put shortPath,
-                  'Content-Length': buff.length
-                  'Content-Type' : 'image/'+ext
-                req.on 'response', (res) ->
-                  console.log 'STATUS: ', res.statusCode
-                  console.log 'URL: ', req.url
-                req.end buff
-                fs.unlink files.myFile.path, (err) ->
-                  if err
-                    res.send
-                      err: err
-                  else
-                    res.send
-                      success: true
-              */
+        console.log('FIELDS: ', fields);
+        path = files.image.path;
+        shortPath = path.replace(/.*uploads/ig, '');
+        ext = shortPath.replace(/.*\./ig, '');
+        return fs.readFile(path, function(err, buff) {
+          req = knoxClient.put(shortPath, {
+            'Content-Length': buff.length,
+            'Content-Type': 'image/' + ext
+          });
+          req.on('response', function(res) {
+            console.log('STATUS: ', res.statusCode);
+            return console.log('URL: ', req.url);
+          });
+          req.end(buff);
+          return fs.unlink(path, function(err) {
+            if (err) {
+              return res.send({
+                err: err
+              });
+            } else {
+              return res.send({
+                success: true
+              });
+            }
+          });
+        });
       }
     });
   });

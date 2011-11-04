@@ -468,7 +468,8 @@ app.post '/uploadImage', (req, res) ->
   
 
   req.form.on 'progress', (bytesReceived, bytesExpected) ->
-    console.log bytesReceived / bytesExpected * 100 | 0
+    console.log (bytesReceived / bytesExpected * 100) | 0
+
   req.form.complete (err, fields, files) ->
     if err
       res.send
@@ -476,10 +477,10 @@ app.post '/uploadImage', (req, res) ->
     else
       console.log 'FILES: ', files
       console.log 'FIELDS: ', fields
-      ###
-      shortPath = files.myFile.path.replace /.*uploads/ig, ''
+      path = files.image.path
+      shortPath = path.replace /.*uploads/ig, ''
       ext = shortPath.replace /.*\./ig, ''
-      fs.readFile files.myFile.path, (err, buff) ->
+      fs.readFile path, (err, buff) ->
         req = knoxClient.put shortPath,
           'Content-Length': buff.length
           'Content-Type' : 'image/'+ext
@@ -487,14 +488,13 @@ app.post '/uploadImage', (req, res) ->
           console.log 'STATUS: ', res.statusCode
           console.log 'URL: ', req.url
         req.end buff
-        fs.unlink files.myFile.path, (err) ->
+        fs.unlink path, (err) ->
           if err
             res.send
               err: err
           else
             res.send
               success: true
-      ###
 
 app.post '/saveForm', (req, res) ->
   ###
