@@ -9,8 +9,8 @@
   */
   var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
   express = require('express');
-  form = require('connect-form');
   http = require('http');
+  form = require('connect-form');
   knox = require('knox');
   sys = require('sys');
   fs = require('fs');
@@ -349,11 +349,10 @@
       user: false,
       session: false
     });
-    app.use(express.bodyParser());
     app.use(form({
-      keepExtensions: true,
-      uploadDir: __dirname + '/uploads/'
+      keepExtensions: true
     }));
+    app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
     app.use(express.session({
@@ -394,37 +393,36 @@
   
   */
   app.post('/uploadImage', function(req, res) {
+    req.form.on('progress', function(bytesReceived, bytesExpected) {
+      return console.log(bytesReceived / bytesExpected * 100 | 0);
+    });
     return req.form.complete(function(err, fields, files) {
-      var ext, shortPath;
       if (err) {
         return res.send({
           err: err
         });
       } else {
-        shortPath = files.myFile.path.replace(/.*uploads/ig, '');
-        ext = shortPath.replace(/.*\./ig, '');
-        return fs.readFile(files.myFile.path, function(err, buff) {
-          req = knoxClient.put(shortPath, {
-            'Content-Length': buff.length,
-            'Content-Type': 'image/' + ext
-          });
-          req.on('response', function(res) {
-            console.log('STATUS: ', res.statusCode);
-            return console.log('URL: ', req.url);
-          });
-          req.end(buff);
-          return fs.unlink(files.myFile.path, function(err) {
-            if (err) {
-              return res.send({
-                err: err
-              });
-            } else {
-              return res.send({
-                success: true
-              });
-            }
-          });
-        });
+        console.log('FILES: ', files);
+        return console.log('FIELDS: ', fields);
+        /*
+              shortPath = files.myFile.path.replace /.*uploads/ig, ''
+              ext = shortPath.replace /.*\./ig, ''
+              fs.readFile files.myFile.path, (err, buff) ->
+                req = knoxClient.put shortPath,
+                  'Content-Length': buff.length
+                  'Content-Type' : 'image/'+ext
+                req.on 'response', (res) ->
+                  console.log 'STATUS: ', res.statusCode
+                  console.log 'URL: ', req.url
+                req.end buff
+                fs.unlink files.myFile.path, (err) ->
+                  if err
+                    res.send
+                      err: err
+                  else
+                    res.send
+                      success: true
+              */
       }
     });
   });

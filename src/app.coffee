@@ -12,8 +12,8 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
 express = require 'express'
-form = require 'connect-form'
 http = require 'http'
+form = require 'connect-form'
 knox = require 'knox'
 sys = require 'sys'
 fs = require 'fs'
@@ -407,10 +407,9 @@ app.configure ->
     scripts: []
     user: false
     session: false
-  app.use express.bodyParser()
   app.use form
     keepExtensions: true
-    uploadDir: __dirname + '/uploads/'
+  app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
   app.use express.session
@@ -464,12 +463,20 @@ POST PAGES
 actions, like saving stuff, and checking stuff, from ajax
 
 ###
+
 app.post '/uploadImage', (req, res) ->
+  
+
+  req.form.on 'progress', (bytesReceived, bytesExpected) ->
+    console.log bytesReceived / bytesExpected * 100 | 0
   req.form.complete (err, fields, files) ->
     if err
       res.send
         err: err
     else
+      console.log 'FILES: ', files
+      console.log 'FIELDS: ', fields
+      ###
       shortPath = files.myFile.path.replace /.*uploads/ig, ''
       ext = shortPath.replace /.*\./ig, ''
       fs.readFile files.myFile.path, (err, buff) ->
@@ -487,6 +494,7 @@ app.post '/uploadImage', (req, res) ->
           else
             res.send
               success: true
+      ###
 
 app.post '/saveForm', (req, res) ->
   ###
