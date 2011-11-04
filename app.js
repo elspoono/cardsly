@@ -7,11 +7,13 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, formidable, geo, handleGoodResponse, http, im, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
-  express = require("express");
-  formidable = require('formidable');
+  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
+  express = require('express');
   http = require('http');
+  form = require('connect-form');
+  knox = require('knox');
   sys = require('sys');
+  fs = require('fs');
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
   im = require('imagemagick');
@@ -326,6 +328,18 @@
   everyauth.googlehybrid.redirectPath '/success'
   */
   everyauth.debug = true;
+  /*
+  
+  Knox - AMAZON S3 Connector
+  
+  Add the api keys and such
+  
+  */
+  knoxClient = knox.createClient({
+    key: 'AKIAI2CJEBPY77CQ32AA',
+    secret: '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',
+    bucket: 'cardsly'
+  });
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
@@ -335,6 +349,9 @@
       user: false,
       session: false
     });
+    app.use(form({
+      keepExtensions: true
+    }));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
@@ -376,15 +393,70 @@
   
   */
   app.post('/uploadImage', function(req, res) {
-    var form;
-    form = new formidable.IncomingForm();
-    form.parse(req, function(err, fields, files) {
-      console.log('STACK: ', err.stack);
-      console.log('FIELDS: ', fields);
-      return console.log('FILES: ', files);
-    });
-    return res.send({
-      success: true
+    return req.form.complete(function(err, fields, files) {
+      var ext, fileName, path, size, sizes, _fn, _i, _len;
+      if (err) {
+        return res.send({
+          err: err
+        });
+      } else {
+        path = files.image.path;
+        fileName = path.replace(/.*tmp\//ig, '');
+        ext = fileName.replace(/.*\./ig, '');
+        sizes = ['158x90', '525x300'];
+        _fn = function(size) {
+          return im.convert([path, '-filter', 'Quadratic', '-resize', size, '/tmp/' + size + fileName], function(err, smallImg, stderr) {
+            if (err) {
+              return console.log('ERR:', err);
+            } else {
+              return fs.readFile('/tmp/' + size + fileName, function(err, buff) {
+                var knoxReq;
+                if (err) {
+                  return console.log('ERR:', err);
+                } else {
+                  knoxReq = knoxClient.put('/' + size + '/' + fileName, {
+                    'Content-Length': buff.length,
+                    'Content-Type': 'image/' + ext
+                  });
+                  knoxReq.on('response', function(res) {
+                    if (res.statusCode !== 200) {
+                      console.log('ERR', res);
+                    }
+                    return console.log(knoxReq.url);
+                  });
+                  knoxReq.end(buff);
+                  return fs.unlink('/tmp/' + size + fileName, function(err) {
+                    if (err) {
+                      return console.log('ERR:', err);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        };
+        for (_i = 0, _len = sizes.length; _i < _len; _i++) {
+          size = sizes[_i];
+          _fn(size);
+        }
+        fs.readFile(path, function(err, buff) {
+          var knoxReq;
+          knoxReq = knoxClient.put('/raw/' + fileName, {
+            'Content-Length': buff.length,
+            'Content-Type': 'image/' + ext
+          });
+          knoxReq.on('response', function(res) {
+            if (res.statusCode !== 200) {
+              console.log('ERR', res);
+            }
+            return console.log(knoxReq.url);
+          });
+          return knoxReq.end(buff);
+        });
+        return res.send({
+          success: true
+        });
+      }
     });
   });
   app.post('/saveForm', function(req, res) {
@@ -405,9 +477,9 @@
     params = req.body || {};
     req.email = params.email || '';
     req.email = req.email.toLowerCase();
-    handleReturn = function(err, data) {
+    handleReturn = function(err, count) {
       req.err = err;
-      req.data = data;
+      req.count = count;
       return next();
     };
     if (params.id) {
@@ -424,7 +496,7 @@
   }, function(req, res, next) {
     return res.send({
       err: req.err,
-      data: req.data,
+      count: req.count,
       email: req.email
     });
   });

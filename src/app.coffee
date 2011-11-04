@@ -11,10 +11,12 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
-express = require "express"
-formidable = require 'formidable'
+express = require 'express'
 http = require 'http'
+form = require 'connect-form'
+knox = require 'knox'
 sys = require 'sys'
+fs = require 'fs'
 app = module.exports = express.createServer()
 # Module requires
 conf = require './lib/conf'
@@ -307,7 +309,6 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
           promise.fulfill createdUser
   promise
 
-
 ###
 
 Create the Everyauth Accessing the user function
@@ -373,6 +374,20 @@ everyauth.debug = true
 
 
 
+###
+
+Knox - AMAZON S3 Connector
+
+Add the api keys and such
+
+###
+
+knoxClient = knox.createClient
+  key: 'AKIAI2CJEBPY77CQ32AA'
+  secret: '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'
+  bucket: 'cardsly'
+
+
 
 
 
@@ -392,8 +407,9 @@ app.configure ->
     scripts: []
     user: false
     session: false
+  app.use form
+    keepExtensions: true
   app.use express.bodyParser()
-
   app.use express.methodOverride()
   app.use express.cookieParser()
   app.use express.session
@@ -449,13 +465,70 @@ actions, like saving stuff, and checking stuff, from ajax
 ###
 
 app.post '/uploadImage', (req, res) ->
-  form = new formidable.IncomingForm()
-  form.parse req, (err, fields, files) ->
-    console.log 'STACK: ', err.stack
-    console.log 'FIELDS: ', fields
-    console.log 'FILES: ', files
-  res.send
-    success: true
+  
+  # Wait for the upload of the large file to finish before doing anything
+  req.form.complete (err, fields, files) ->
+    if err
+      res.send
+        err: err
+    else
+    
+      # Find the file we just created
+      path = files.image.path
+      # Identify it's filname
+      fileName = path.replace /.*tmp\//ig, ''
+      # And it's extension
+      ext = fileName.replace /.*\./ig, ''
+
+      # Define the sizes we will resize too
+      sizes = [
+        '158x90'
+        '525x300'
+      ]
+      for size in sizes
+        do (size) ->
+          # Resize it with ImageMagick
+          im.convert [
+            path
+            '-filter','Quadratic'
+            '-resize',size
+            '/tmp/'+size+fileName
+          ], (err, smallImg, stderr) ->
+            if err
+              console.log 'ERR:', err
+            else
+              # Read the resized File with node FS libary
+              fs.readFile '/tmp/'+size+fileName, (err, buff) ->
+                if err
+                  console.log 'ERR:', err
+                else
+                  # Send that new file to Amazon to be saved!
+                  knoxReq = knoxClient.put '/'+size+'/'+fileName,
+                    'Content-Length': buff.length
+                    'Content-Type' : 'image/'+ext
+                  knoxReq.on 'response', (res) ->
+                    console.log 'ERR', res if res.statusCode != 200
+                    console.log knoxReq.url
+                  knoxReq.end buff
+                  # Finally, delete that temporary resized file. Keep shit clean.
+                  fs.unlink '/tmp/'+size+fileName, (err) ->
+                    if err
+                        console.log 'ERR:', err
+      
+      # Read the raw File
+      fs.readFile path, (err, buff) ->
+        # Send that raw file to Amazon to be saved!
+        knoxReq = knoxClient.put '/raw/'+fileName,
+          'Content-Length': buff.length
+          'Content-Type' : 'image/'+ext
+        knoxReq.on 'response', (res) ->
+          console.log 'ERR', res if res.statusCode != 200
+          console.log knoxReq.url
+        knoxReq.end buff
+
+      # Always send the response instantly, letting the client know the server did get the file
+      res.send
+        success: true
 
 app.post '/saveForm', (req, res) ->
   ###
@@ -476,9 +549,9 @@ app.post '/checkEmail', (req, res, next) ->
   params = req.body || {}
   req.email = params.email || ''
   req.email = req.email.toLowerCase()
-  handleReturn = (err, data) ->
+  handleReturn = (err, count) ->
     req.err = err
-    req.data = data
+    req.count = count
     next()
   if params.id
     User.count
@@ -493,7 +566,7 @@ app.post '/checkEmail', (req, res, next) ->
 ,(req, res, next) ->
   res.send
     err: req.err
-    data: req.data
+    count: req.count
     email: req.email
 
 
