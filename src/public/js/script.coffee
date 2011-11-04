@@ -124,7 +124,11 @@ loadModal = (options, next) ->
   ###
   if settings.buttons
     for i in settings.buttons
-      thisButton = $ '<input type="button" class="button normal" value="'+i.label+'" class="submit">'
+      thisButton = $ '<input type="button" class="button" value="'+i.label+'" class="submit">'
+      if i.class
+        thisButton.addClass i.class
+      else
+        thisButton.addClass 'normal'
       thisButton.click () ->
         i.action myNext
       buttons.append thisButton
@@ -624,10 +628,30 @@ $ ->
     $upload.change ->
       $dForm.submit()
     
-    ###
-    $('.designer .buttons .save').click ->
-      loadAlert
-    ###
+    
+    
+    $('.designer .buttons .delete').click ->
+      loadModal
+        content: '<p>Are you sure you want to permanently delete this template?</p>'
+        height: 160
+        width: 440
+        buttons: [{
+          label: 'Delete'
+          action: (closeFunc) ->
+            ###
+            TODO: Make this delete the template
+
+            So send to the server to delete the template we're on here ...
+
+            ###
+            closeFunc()
+          },{
+          class: 'gray'
+          label: 'Cancel'
+          action: (closeFunc) ->
+            closeFunc()
+          }
+        ]
     
   #
   # Successful Login Function

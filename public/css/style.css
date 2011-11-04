@@ -145,6 +145,10 @@ input {
   left: 0;
   overflow: hidden;
 }
+.window .button {
+  margin-left: 15px;
+  margin-top: 30px;
+}
 .create-form input {
   width: 100%;
 }
@@ -395,19 +399,8 @@ input {
 .button {
   cursor: pointer;
 }
-.button.normal {
-  background-color: #56a3da;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
-/* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #56a3da, #2470a6);
-/* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #56a3da, #2470a6);
-/* FF3.6 */
-  background-image: -ms-linear-gradient(top, #56a3da, #2470a6);
-/* IE10 */
-  background-image: -o-linear-gradient(top, #56a3da, #2470a6);
-/* Opera 11.10+ */
-  background-image: linear-gradient(top, #56a3da, #2470a6);
+.normal,
+.gray {
   width: 180px;
   text-align: center;
   padding: 8px 15px;
@@ -422,6 +415,67 @@ input {
   line-height: 1.5em;
   color: #eee;
   border: 0;
+}
+.normal.click,
+.gray.click {
+  padding: 10px 12px 6px 18px;
+}
+.button.gray {
+  background-color: #aaa;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#777));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #aaa, #777);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #aaa, #777);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #aaa, #777);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #aaa, #777);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #aaa, #777);
+}
+.button.normal.gray {
+  color: #c3c3c3;
+  background-color: #c3c3c3;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#c3c3c3), to(#909090));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #c3c3c3, #909090);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #c3c3c3, #909090);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #c3c3c3, #909090);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #c3c3c3, #909090);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #c3c3c3, #909090);
+}
+.button.gray.click {
+  background-color: #909090;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#909090), to(#c3c3c3));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #909090, #c3c3c3);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #909090, #c3c3c3);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #909090, #c3c3c3);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #909090, #c3c3c3);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #909090, #c3c3c3);
+}
+.button.normal {
+  background-color: #56a3da;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #56a3da, #2470a6);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #56a3da, #2470a6);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #56a3da, #2470a6);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #56a3da, #2470a6);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #56a3da, #2470a6);
 }
 .button.normal.hover {
   color: #fff;
@@ -439,7 +493,6 @@ input {
   background-image: linear-gradient(top, #80bae3, #2d8cd0);
 }
 .button.normal.click {
-  padding: 10px 12px 6px 18px;
   background-color: #2d8cd0;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#2d8cd0), to(#80bae3));
 /* Saf4+, Chrome */
@@ -1320,7 +1373,7 @@ input
   -ms-transform: rotate(270deg);
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
-  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = 'auto expand' );
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
   zoom: 1;
   font-size: 21px;
   line-height: 1.5em;

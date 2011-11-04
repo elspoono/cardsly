@@ -144,7 +144,12 @@
       _ref = settings.buttons;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
-        thisButton = $('<input type="button" class="button normal" value="' + i.label + '" class="submit">');
+        thisButton = $('<input type="button" class="button" value="' + i.label + '" class="submit">');
+        if (i["class"]) {
+          thisButton.addClass(i["class"]);
+        } else {
+          thisButton.addClass('normal');
+        }
         thisButton.click(function() {
           return i.action(myNext);
         });
@@ -663,10 +668,32 @@
       $upload.change(function() {
         return $dForm.submit();
       });
-      /*
-          $('.designer .buttons .save').click ->
-            loadAlert
-          */
+      $('.designer .buttons .delete').click(function() {
+        return loadModal({
+          content: '<p>Are you sure you want to permanently delete this template?</p>',
+          height: 160,
+          width: 440,
+          buttons: [
+            {
+              label: 'Delete',
+              action: function(closeFunc) {
+                /*
+                            TODO: Make this delete the template
+                
+                            So send to the server to delete the template we're on here ...
+                
+                            */                return closeFunc();
+              }
+            }, {
+              "class": 'gray',
+              label: 'Cancel',
+              action: function(closeFunc) {
+                return closeFunc();
+              }
+            }
+          ]
+        });
+      });
     }
     successfulLogin = function() {
       var $s;
