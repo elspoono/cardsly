@@ -739,11 +739,11 @@ input {
   width: 240px;
 }
 .designer .options li {
+  margin-bottom: 10px;
   overflow: hidden;
 }
 .designer .options li label {
   display: block;
-  margin-top: 10px;
 }
 .designer .options li input {
   font-size: 12.6px;
@@ -751,6 +751,13 @@ input {
   margin-right: 10px;
   float: left;
   width: 100px;
+}
+.designer .options .buttons .button {
+  height: 20px;
+  width: 80px;
+  margin: 0 10px 10px 0;
+  font-size: 12.6px;
+  line-height: 1.5em;
 }
 .designer .options .field input {
   width: 60px;

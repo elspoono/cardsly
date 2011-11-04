@@ -570,96 +570,104 @@
       ok.
     
       */
-    $fieldH = $('.field input.height');
-    $fieldW = $('.field input.width');
-    $fieldX = $('.field input.x');
-    $fieldY = $('.field input.y');
-    template = {
-      category: 'Professional',
-      themes: (function() {
-        var _results;
-        _results = [];
-        for (j = 0; j <= 1; j++) {
-          _results.push({
-            qr_size: 45,
-            qr_x: 70,
-            qr_y: 40,
-            positions: (function() {
-              var _ref, _results2;
-              _results2 = [];
-              for (i = 0, _ref = 5 + j * 6; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
-                _results2.push({
-                  font_size: 7 / j,
-                  width: 50,
-                  x: 5,
-                  y: 5 + i / (j + 1) * 10
-                });
-              }
-              return _results2;
-            })()
-          });
+    if (path === '/admin') {
+      $fieldH = $('.field input.height');
+      $fieldW = $('.field input.width');
+      $fieldX = $('.field input.x');
+      $fieldY = $('.field input.y');
+      template = {
+        category: 'Professional',
+        themes: (function() {
+          var _results;
+          _results = [];
+          for (j = 0; j <= 1; j++) {
+            _results.push({
+              qr_size: 45,
+              qr_x: 70,
+              qr_y: 40,
+              positions: (function() {
+                var _ref, _results2;
+                _results2 = [];
+                for (i = 0, _ref = 5 + j * 6; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+                  _results2.push({
+                    font_size: 7 / j,
+                    width: 50,
+                    x: 5,
+                    y: 5 + i / (j + 1) * 10
+                  });
+                }
+                return _results2;
+              })()
+            });
+          }
+          return _results;
+        })()
+      };
+      $designer = $('.designer .card');
+      dh = $designer.height();
+      dw = $designer.width();
+      $lines = $designer.find('.line');
+      updateStats = function(e, ui) {
+        $fieldY.val(Math.round(ui.position.top / dh * 10000) / 100 + '%');
+        $fieldX.val(Math.round(ui.position.left / dw * 10000) / 100 + '%');
+        if (ui.size) {
+          $fieldH.val(Math.round(ui.size.height / dh * 10000) / 100 + '%');
+          return $fieldW.val(Math.round(ui.size.width / dw * 10000) / 100 + '%');
         }
-        return _results;
-      })()
-    };
-    $designer = $('.designer .card');
-    dh = $designer.height();
-    dw = $designer.width();
-    $lines = $designer.find('.line');
-    updateStats = function(e, ui) {
-      $fieldY.val(Math.round(ui.position.top / dh * 10000) / 100 + '%');
-      $fieldX.val(Math.round(ui.position.left / dw * 10000) / 100 + '%');
-      if (ui.size) {
-        $fieldH.val(Math.round(ui.size.height / dh * 10000) / 100 + '%');
-        return $fieldW.val(Math.round(ui.size.width / dw * 10000) / 100 + '%');
-      }
-    };
-    $lines.draggable({
-      drag: updateStats,
-      grid: [5, 5],
-      containment: '.designer .card'
-    });
-    $lines.resizable({
-      resize: updateStats,
-      grid: 5
-    });
-    $lines.fitText();
-    $qr = $designer.find('.qr');
-    $qr.draggable({
-      drag: updateStats,
-      grid: [5, 5],
-      containment: '.designer .card'
-    });
-    $qr.resizable({
-      resize: updateStats,
-      grid: 5,
-      containment: '.designer .card',
-      aspectRatio: 1
-    });
-    $lines.hide();
-    _ref = template.themes[0].positions;
-    for (i = 0, _len = _ref.length; i < _len; i++) {
-      pos = _ref[i];
-      $li = $lines.eq(i);
-      $li.show().css({
-        top: pos.y / 100 * dh,
-        left: pos.x / 100 * dw,
-        width: (pos.width / 100 * dw) + 'px',
-        fontSize: (pos.font_size / 100 * dh) + 'px',
-        lineHeight: (pos.font_size / 100 * dh) + 'px'
+      };
+      $lines.draggable({
+        drag: updateStats,
+        grid: [5, 5],
+        containment: '.designer .card'
       });
+      $lines.resizable({
+        resize: updateStats,
+        grid: 5,
+        handles: 'n, e, s, w'
+      });
+      $lines.fitText();
+      $qr = $designer.find('.qr');
+      $qr.draggable({
+        drag: updateStats,
+        grid: [5, 5],
+        containment: '.designer .card'
+      });
+      $qr.resizable({
+        resize: updateStats,
+        grid: 5,
+        containment: '.designer .card',
+        handles: 'n, e, s, w',
+        aspectRatio: 1
+      });
+      $lines.hide();
+      _ref = template.themes[0].positions;
+      for (i = 0, _len = _ref.length; i < _len; i++) {
+        pos = _ref[i];
+        $li = $lines.eq(i);
+        $li.show().css({
+          top: pos.y / 100 * dh,
+          left: pos.x / 100 * dw,
+          width: (pos.width / 100 * dw) + 'px',
+          fontSize: (pos.font_size / 100 * dh) + 'px',
+          lineHeight: (pos.font_size / 100 * dh) + 'px'
+        });
+      }
+      $qr.css({
+        top: template.themes[0].qr_y / 100 * dh,
+        left: template.themes[0].qr_x / 100 * dw,
+        height: template.themes[0].qr_size / 100 * dh,
+        width: template.themes[0].qr_size / 100 * dh
+      });
+      $dForm = $('.designer form');
+      $upload = $dForm.find('[type=file]');
+      $upload.change(function() {
+        return $dForm.submit();
+      });
+      /*
+          $('.designer .buttons .save').click ->
+            loadAlert
+          */
     }
-    $qr.css({
-      top: template.themes[0].qr_y / 100 * dh,
-      left: template.themes[0].qr_x / 100 * dw,
-      height: template.themes[0].qr_size / 100 * dh,
-      width: template.themes[0].qr_size / 100 * dh
-    });
-    $dForm = $('.designer form');
-    $upload = $dForm.find('[type=file]');
-    $upload.change(function() {
-      return $dForm.submit();
-    });
     successfulLogin = function() {
       var $s;
       if (path === '/login') {
