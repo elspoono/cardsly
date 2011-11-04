@@ -941,31 +941,44 @@
       });
       return false;
     });
-    /*
-      Feedback button and menu
-      */
-    /*
-      $('.feedback').click () ->
-        loadModal
-          content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
-          buttons: [
-            label: 'Create New'
-            action: (formClose) ->
-              email = $ '.email'
-              password = $ '.password'
-              password2 = $ '.password2'
-        false
-    
-      */
     $('.feedback a').click(function() {
       loadModal({
-        content: '<div class="create-form"><p>Feedback:<br><input class="email"></p></div>',
+        content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here">',
+        width: 400,
+        height: 300,
         buttons: [
           {
             label: 'Send Feedback',
             action: function(formClose) {
-              var feedback;
-              return feedback = $('.feedback');
+              var $feedback, feedbackContent;
+              $feedback = $('.feedback-text');
+              feedbackContent = $feedback.val();
+              formClose();
+              return loadLoading({}, function(loadingClose) {
+                return $.ajax({
+                  url: '/sendFeedback',
+                  data: feedbackContent,
+                  success: function(data) {
+                    loadingClose();
+                    if (data.err) {
+                      return loadAlert({
+                        content: data.err
+                      });
+                    } else {
+                      return successfulFeedback()(function() {
+                        $s.html('Feedback Sent');
+                        return $s.fadeIn(100000);
+                      });
+                    }
+                  },
+                  error: function(err) {
+                    loadingClose();
+                    return loadAlert({
+                      content: 'Our apologies. A server error occurred, feedback could not be sent.'
+                    });
+                  }
+                }, 1000);
+              });
             }
           }
         ]

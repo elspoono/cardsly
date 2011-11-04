@@ -444,6 +444,31 @@
       }
     });
   });
+  app.post('/sendFeedback', function(req, res, next) {
+    res.send;
+    ({
+      succesfulFeedback: 'This worked!'
+    });
+    return next();
+  });
+  /*  
+  User.count
+    email:req.body.email
+    active:true
+  ,(err,already) ->
+    if already>0
+      res.send
+        err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
+    else
+      next()
+  ,(req,res,next) ->
+  user = new User()
+  user.email = req.body.email;
+  user.password_encrypted = encrypted(req.body.password);
+  user.save (err,data) ->
+    res.send
+      success: 'True'    
+  */
   app.post('/createUser', function(req, res, next) {
     return User.count({
       email: req.body.email,

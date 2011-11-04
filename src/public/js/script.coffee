@@ -850,30 +850,40 @@ $ ->
             message:'Passwords should match please.'
       ,1000
     false
-  ###
-  Feedback button and menu
-  ###
-  ###
-  $('.feedback').click () ->
-    loadModal
-      content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
-      buttons: [
-        label: 'Create New'
-        action: (formClose) ->
-          email = $ '.email'
-          password = $ '.password'
-          password2 = $ '.password2'
-    false
-
-  ###
+ 
   $('.feedback a').click () ->
     loadModal
-      content: '<div class="create-form"><p>Feedback:<br><input class="email"></p></div>'
+      content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here">'
+      width: 400
+      height: 300
       buttons: [
         label: 'Send Feedback'
         action: (formClose) ->
-          feedback = $ '.feedback'
-      ]
+          $feedback = $ '.feedback-text'
+          #send the text to the server
+          feedbackContent= $feedback.val()
+          #Close the window
+          formClose()
+          loadLoading {}, (loadingClose) ->
+            $.ajax
+              url: '/sendFeedback'
+              data:
+                feedbackContent
+              success: (data) ->
+                loadingClose()
+                if data.err
+                  loadAlert
+                    content: data.err
+                else
+                  successfulFeedback() ->
+                    $s.html 'Feedback Sent'
+                    $s.fadeIn 100000
+              error: (err) ->
+                loadingClose()
+                loadAlert
+                  content: 'Our apologies. A server error occurred, feedback could not be sent.'
+            , 1000
+      ] 
     false
 
 

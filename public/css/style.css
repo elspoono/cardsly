@@ -1280,6 +1280,17 @@ label .subtitle {
 .slides .container .content .fourth .commercial {
   margin-top: 30px;
 }
+.feedback-form {
+input
+  margin: 15px auto;
+  float: none;
+  text-align: center;
+  display: block;
+  width: 50%;
+}
+.feedback-text {
+  font-size: 14px;
+}
 .feedback {
   top: 40%;
   right: -35px;
