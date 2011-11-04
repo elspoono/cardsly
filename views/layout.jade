@@ -35,7 +35,7 @@ head
 body
   #container
     header
-                                //This is the small navigation bar at the top of the page.
+                            //This is the small navigation bar at the top of the page.
       ul.small-nav
         if user
           li.account-link
@@ -88,6 +88,8 @@ body
       .header-back
     #main(role='main')
       != body
+    .feedback
+        a.button.feedback(href='#') Feedback
     footer.footer
       .container
         .above
