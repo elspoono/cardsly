@@ -406,7 +406,7 @@
         console.log('FILES: ', files);
         console.log('FIELDS: ', fields);
         path = files.image.path;
-        shortPath = path.replace(/.*uploads/ig, '');
+        shortPath = path.replace(/.*tmp/ig, '');
         ext = shortPath.replace(/.*\./ig, '');
         return fs.readFile(path, function(err, buff) {
           req = knoxClient.put(shortPath, {

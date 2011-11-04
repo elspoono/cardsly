@@ -478,7 +478,7 @@ app.post '/uploadImage', (req, res) ->
       console.log 'FILES: ', files
       console.log 'FIELDS: ', fields
       path = files.image.path
-      shortPath = path.replace /.*uploads/ig, ''
+      shortPath = path.replace /.*tmp/ig, ''
       ext = shortPath.replace /.*\./ig, ''
       fs.readFile path, (err, buff) ->
         req = knoxClient.put shortPath,
