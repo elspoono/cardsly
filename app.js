@@ -409,8 +409,23 @@
         im.convert([path, '-filter', 'Quadratic', '-resize', '200x114', '/tmp/200x114' + fileName], function(err, smallImg, stderr) {
           console.log('PATH: ', path);
           if (err) {
-            return console.log('ERR:', err);
+            console.log('ERR:', err);
           }
+          return fs.readFile('/tmp/200x114' + fileName, function(err, buff) {
+            req = knoxClient.put('/200x114/' + fileName, {
+              'Content-Length': buff.length,
+              'Content-Type': 'image/' + ext
+            });
+            req.on('response', function(res) {
+              return console.log('URL: ', req.url);
+            });
+            req.end(buff);
+            return fs.unlink('/tmp/200x114' + fileName, function(err) {
+              if (err) {
+                return console.log('ERR:', err);
+              }
+            });
+          });
         });
         return res.send({
           success: true
@@ -418,14 +433,14 @@
         /*
               Save to Amazon
               fs.readFile path, (err, buff) ->
-                req = knoxClient.put shortPath,
+                req = knoxClient.put fileName,
                   'Content-Length': buff.length
                   'Content-Type' : 'image/'+ext
                 req.on 'response', (res) ->
                   console.log 'STATUS: ', res.statusCode
                   console.log 'URL: ', req.url
                 req.end buff
-                fs.unlink '/'+fileName, (err) ->
+                fs.unlink path, (err) ->
                   if err
                     res.send
                       err: err

@@ -483,7 +483,7 @@ app.post '/uploadImage', (req, res) ->
       fileName = path.replace /.*tmp\//ig, ''
       ext = fileName.replace /.*\./ig, ''
 
-      # Resize it
+      # Resize it with ImageMagick
       im.convert [
         path
         '-filter','Quadratic'
@@ -493,19 +493,34 @@ app.post '/uploadImage', (req, res) ->
         console.log 'PATH: ', path
         if err
           console.log 'ERR:', err
+        # Read the resized File with node FS libary
+        fs.readFile '/tmp/200x114'+fileName, (err, buff) ->
+          # Send that new file to Amazon to be saved!
+          req = knoxClient.put '/200x114/'+fileName,
+            'Content-Length': buff.length
+            'Content-Type' : 'image/'+ext
+          req.on 'response', (res) ->
+            console.log 'URL: ', req.url
+          req.end buff
+          # Finally, delete that temporary resized file. Keep shit clean.
+          fs.unlink '/tmp/200x114'+fileName, (err) ->
+            if err
+              console.log 'ERR:', err
+
+      # Always send the response instantly, letting the client know the server did get the file
       res.send
         success: true
       ###
       Save to Amazon
       fs.readFile path, (err, buff) ->
-        req = knoxClient.put shortPath,
+        req = knoxClient.put fileName,
           'Content-Length': buff.length
           'Content-Type' : 'image/'+ext
         req.on 'response', (res) ->
           console.log 'STATUS: ', res.statusCode
           console.log 'URL: ', req.url
         req.end buff
-        fs.unlink '/'+fileName, (err) ->
+        fs.unlink path, (err) ->
           if err
             res.send
               err: err
