@@ -397,39 +397,42 @@
       req.form.on 'progress', (bytesReceived, bytesExpected) ->
         console.log (bytesReceived / bytesExpected * 100) | 0
       */    return req.form.complete(function(err, fields, files) {
-      var ext, path, shortPath;
+      var ext, fileName, path;
       if (err) {
         return res.send({
           err: err
         });
       } else {
-        console.log('FILES: ', files);
-        console.log('FIELDS: ', fields);
         path = files.image.path;
-        shortPath = path.replace(/.*tmp/ig, '');
-        ext = shortPath.replace(/.*\./ig, '');
-        return fs.readFile(path, function(err, buff) {
-          req = knoxClient.put(shortPath, {
-            'Content-Length': buff.length,
-            'Content-Type': 'image/' + ext
-          });
-          req.on('response', function(res) {
-            console.log('STATUS: ', res.statusCode);
-            return console.log('URL: ', req.url);
-          });
-          req.end(buff);
-          return fs.unlink(path, function(err) {
-            if (err) {
-              return res.send({
-                err: err
-              });
-            } else {
-              return res.send({
-                success: true
-              });
-            }
-          });
+        fileName = path.replace(/.*tmp\//ig, '');
+        ext = fileName.replace(/.*\./ig, '');
+        im.convert([path, '-filter', 'Quadratic', '-resize', '200x114', '/tmp/200x114' + fileName], function(err, smallImg, stderr) {
+          console.log('PATH: ', path);
+          if (err) {
+            return console.log('ERR:', err);
+          }
         });
+        return res.send({
+          success: true
+        });
+        /*
+              Save to Amazon
+              fs.readFile path, (err, buff) ->
+                req = knoxClient.put shortPath,
+                  'Content-Length': buff.length
+                  'Content-Type' : 'image/'+ext
+                req.on 'response', (res) ->
+                  console.log 'STATUS: ', res.statusCode
+                  console.log 'URL: ', req.url
+                req.end buff
+                fs.unlink '/'+fileName, (err) ->
+                  if err
+                    res.send
+                      err: err
+                  else
+                    res.send
+                      success: true
+              */
       }
     });
   });

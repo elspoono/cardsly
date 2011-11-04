@@ -476,11 +476,27 @@ app.post '/uploadImage', (req, res) ->
       res.send
         err: err
     else
-      console.log 'FILES: ', files
-      console.log 'FIELDS: ', fields
+
+      
+
       path = files.image.path
-      shortPath = path.replace /.*tmp/ig, ''
-      ext = shortPath.replace /.*\./ig, ''
+      fileName = path.replace /.*tmp\//ig, ''
+      ext = fileName.replace /.*\./ig, ''
+
+      # Resize it
+      im.convert [
+        path
+        '-filter','Quadratic'
+        '-resize','200x114'
+        '/tmp/200x114'+fileName
+      ], (err, smallImg, stderr) ->
+        console.log 'PATH: ', path
+        if err
+          console.log 'ERR:', err
+      res.send
+        success: true
+      ###
+      Save to Amazon
       fs.readFile path, (err, buff) ->
         req = knoxClient.put shortPath,
           'Content-Length': buff.length
@@ -489,13 +505,14 @@ app.post '/uploadImage', (req, res) ->
           console.log 'STATUS: ', res.statusCode
           console.log 'URL: ', req.url
         req.end buff
-        fs.unlink path, (err) ->
+        fs.unlink '/'+fileName, (err) ->
           if err
             res.send
               err: err
           else
             res.send
               success: true
+      ###
 
 app.post '/saveForm', (req, res) ->
   ###
