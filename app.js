@@ -393,11 +393,8 @@
   
   */
   app.post('/uploadImage', function(req, res) {
-    /*
-      req.form.on 'progress', (bytesReceived, bytesExpected) ->
-        console.log (bytesReceived / bytesExpected * 100) | 0
-      */    return req.form.complete(function(err, fields, files) {
-      var ext, fileName, path;
+    return req.form.complete(function(err, fields, files) {
+      var ext, fileName, path, size, sizes, _fn, _i, _len;
       if (err) {
         return res.send({
           err: err
@@ -406,48 +403,59 @@
         path = files.image.path;
         fileName = path.replace(/.*tmp\//ig, '');
         ext = fileName.replace(/.*\./ig, '');
-        im.convert([path, '-filter', 'Quadratic', '-resize', '200x114', '/tmp/200x114' + fileName], function(err, smallImg, stderr) {
-          console.log('PATH: ', path);
-          if (err) {
-            console.log('ERR:', err);
-          }
-          return fs.readFile('/tmp/200x114' + fileName, function(err, buff) {
-            req = knoxClient.put('/200x114/' + fileName, {
-              'Content-Length': buff.length,
-              'Content-Type': 'image/' + ext
-            });
-            req.on('response', function(res) {
-              return console.log('URL: ', req.url);
-            });
-            req.end(buff);
-            return fs.unlink('/tmp/200x114' + fileName, function(err) {
-              if (err) {
-                return console.log('ERR:', err);
-              }
-            });
+        sizes = ['158x90', '525x300'];
+        _fn = function(size) {
+          return im.convert([path, '-filter', 'Quadratic', '-resize', size, '/tmp/' + size + fileName], function(err, smallImg, stderr) {
+            if (err) {
+              return console.log('ERR:', err);
+            } else {
+              return fs.readFile('/tmp/' + size + fileName, function(err, buff) {
+                var knoxReq;
+                if (err) {
+                  return console.log('ERR:', err);
+                } else {
+                  knoxReq = knoxClient.put('/' + size + '/' + fileName, {
+                    'Content-Length': buff.length,
+                    'Content-Type': 'image/' + ext
+                  });
+                  knoxReq.on('response', function(res) {
+                    if (res.statusCode !== 200) {
+                      console.log('ERR', res);
+                    }
+                    return console.log(knoxReq.url);
+                  });
+                  knoxReq.end(buff);
+                  return fs.unlink('/tmp/' + size + fileName, function(err) {
+                    if (err) {
+                      return console.log('ERR:', err);
+                    }
+                  });
+                }
+              });
+            }
           });
+        };
+        for (_i = 0, _len = sizes.length; _i < _len; _i++) {
+          size = sizes[_i];
+          _fn(size);
+        }
+        fs.readFile(path, function(err, buff) {
+          var knoxReq;
+          knoxReq = knoxClient.put('/raw/' + fileName, {
+            'Content-Length': buff.length,
+            'Content-Type': 'image/' + ext
+          });
+          knoxReq.on('response', function(res) {
+            if (res.statusCode !== 200) {
+              console.log('ERR', res);
+            }
+            return console.log(knoxReq.url);
+          });
+          return knoxReq.end(buff);
         });
         return res.send({
           success: true
         });
-        /*
-              Save to Amazon
-              fs.readFile path, (err, buff) ->
-                req = knoxClient.put fileName,
-                  'Content-Length': buff.length
-                  'Content-Type' : 'image/'+ext
-                req.on 'response', (res) ->
-                  console.log 'STATUS: ', res.statusCode
-                  console.log 'URL: ', req.url
-                req.end buff
-                fs.unlink path, (err) ->
-                  if err
-                    res.send
-                      err: err
-                  else
-                    res.send
-                      success: true
-              */
       }
     });
   });

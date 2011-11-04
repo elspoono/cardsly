@@ -466,68 +466,69 @@ actions, like saving stuff, and checking stuff, from ajax
 
 app.post '/uploadImage', (req, res) ->
   
-  ###
-  req.form.on 'progress', (bytesReceived, bytesExpected) ->
-    console.log (bytesReceived / bytesExpected * 100) | 0
-  ###
-
+  # Wait for the upload of the large file to finish before doing anything
   req.form.complete (err, fields, files) ->
     if err
       res.send
         err: err
     else
-
-      
-
+    
+      # Find the file we just created
       path = files.image.path
+      # Identify it's filname
       fileName = path.replace /.*tmp\//ig, ''
+      # And it's extension
       ext = fileName.replace /.*\./ig, ''
 
-      # Resize it with ImageMagick
-      im.convert [
-        path
-        '-filter','Quadratic'
-        '-resize','200x114'
-        '/tmp/200x114'+fileName
-      ], (err, smallImg, stderr) ->
-        console.log 'PATH: ', path
-        if err
-          console.log 'ERR:', err
-        # Read the resized File with node FS libary
-        fs.readFile '/tmp/200x114'+fileName, (err, buff) ->
-          # Send that new file to Amazon to be saved!
-          req = knoxClient.put '/200x114/'+fileName,
-            'Content-Length': buff.length
-            'Content-Type' : 'image/'+ext
-          req.on 'response', (res) ->
-            console.log 'URL: ', req.url
-          req.end buff
-          # Finally, delete that temporary resized file. Keep shit clean.
-          fs.unlink '/tmp/200x114'+fileName, (err) ->
+      # Define the sizes we will resize too
+      sizes = [
+        '158x90'
+        '525x300'
+      ]
+      for size in sizes
+        do (size) ->
+          # Resize it with ImageMagick
+          im.convert [
+            path
+            '-filter','Quadratic'
+            '-resize',size
+            '/tmp/'+size+fileName
+          ], (err, smallImg, stderr) ->
             if err
               console.log 'ERR:', err
+            else
+              # Read the resized File with node FS libary
+              fs.readFile '/tmp/'+size+fileName, (err, buff) ->
+                if err
+                  console.log 'ERR:', err
+                else
+                  # Send that new file to Amazon to be saved!
+                  knoxReq = knoxClient.put '/'+size+'/'+fileName,
+                    'Content-Length': buff.length
+                    'Content-Type' : 'image/'+ext
+                  knoxReq.on 'response', (res) ->
+                    console.log 'ERR', res if res.statusCode != 200
+                    console.log knoxReq.url
+                  knoxReq.end buff
+                  # Finally, delete that temporary resized file. Keep shit clean.
+                  fs.unlink '/tmp/'+size+fileName, (err) ->
+                    if err
+                        console.log 'ERR:', err
+      
+      # Read the raw File
+      fs.readFile path, (err, buff) ->
+        # Send that raw file to Amazon to be saved!
+        knoxReq = knoxClient.put '/raw/'+fileName,
+          'Content-Length': buff.length
+          'Content-Type' : 'image/'+ext
+        knoxReq.on 'response', (res) ->
+          console.log 'ERR', res if res.statusCode != 200
+          console.log knoxReq.url
+        knoxReq.end buff
 
       # Always send the response instantly, letting the client know the server did get the file
       res.send
         success: true
-      ###
-      Save to Amazon
-      fs.readFile path, (err, buff) ->
-        req = knoxClient.put fileName,
-          'Content-Length': buff.length
-          'Content-Type' : 'image/'+ext
-        req.on 'response', (res) ->
-          console.log 'STATUS: ', res.statusCode
-          console.log 'URL: ', req.url
-        req.end buff
-        fs.unlink path, (err) ->
-          if err
-            res.send
-              err: err
-          else
-            res.send
-              success: true
-      ###
 
 app.post '/saveForm', (req, res) ->
   ###
