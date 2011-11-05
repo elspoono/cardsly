@@ -221,6 +221,9 @@ input
   padding 30px
   absolute()
   overflow hidden
+  .button
+    margin-left 15px
+    margin-top 30px
 // Create Login Form
 .create-form
   input
@@ -406,9 +409,8 @@ input
 .button
   cursor pointer
 
-// Generic Styles
-.button.normal
-  gradient($c-logo-alt,darken($c-logo-alt,20))
+// Gray and Normal Buttons Basic Properties
+.normal,.gray
   width 180px
   text-align center
   padding 8px 15px
@@ -418,11 +420,28 @@ input
   relative-size(1.2)
   color $c-light
   border 0
+  
+// Shift on click (so it looks like it's pressing down, I think ... :)
+.normal.click,.gray.click
+  padding 10px 12px 6px 18px
+
+// GRAY BUTTONS, YAY!!
+.button.gray
+  gradient($c-mid-cool,darken($c-mid-cool,20))
+.button.normal.gray
+  color lighten($c-mid-cool,10)
+  gradient(lighten($c-mid-cool,10),darken($c-mid-cool,10))
+.button.gray.click
+  gradient(darken($c-mid-cool,10),lighten($c-mid-cool,10))
+  
+
+// Various shades of blue for various states of button clickiness
+.button.normal
+  gradient($c-logo-alt,darken($c-logo-alt,20))
 .button.normal.hover
   color lighten($c-light,10)
   gradient(lighten($c-logo-alt,10),darken($c-logo-alt,10))
 .button.normal.click
-  padding 10px 12px 6px 18px
   gradient(darken($c-logo-alt,10),lighten($c-logo-alt,10))
   
 // Checkout Button
