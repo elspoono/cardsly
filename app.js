@@ -517,30 +517,18 @@
     });
   });
   app.post('/sendFeedback', function(req, res, next) {
-    res.send;
-    ({
+    res.send({
       succesfulFeedback: 'This worked!'
     });
-    return next();
+    return nodemailer.send_mail({
+      sender: req.body.email,
+      to: 'support@cards.ly',
+      subject: 'Test Email',
+      html: 'gragarhgahs'
+    }, function(err, data) {
+      return console.log('ERR Feedback Email did not send:', req.body.email, req.body.content);
+    });
   });
-  /*  
-  User.count
-    email:req.body.email
-    active:true
-  ,(err,already) ->
-    if already>0
-      res.send
-        err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
-    else
-      next()
-  ,(req,res,next) ->
-  user = new User()
-  user.email = req.body.email;
-  user.password_encrypted = encrypted(req.body.password);
-  user.save (err,data) ->
-    res.send
-      success: 'True'    
-  */
   app.post('/createUser', function(req, res, next) {
     return User.count({
       email: req.body.email,

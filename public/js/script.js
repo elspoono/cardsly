@@ -951,21 +951,21 @@
     });
     $('.feedback a').click(function() {
       loadModal({
-        content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here">',
+        content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
         width: 400,
         height: 300,
         buttons: [
           {
             label: 'Send Feedback',
             action: function(formClose) {
-              var $feedback, feedbackContent;
-              $feedback = $('.feedback-text');
-              feedbackContent = $feedback.val();
               formClose();
               return loadLoading({}, function(loadingClose) {
                 return $.ajax({
                   url: '/sendFeedback',
-                  data: feedbackContent,
+                  data: {
+                    content: $('.feedback-text').val(),
+                    email: $('.emailNotUser').val()
+                  },
                   success: function(data) {
                     loadingClose();
                     if (data.err) {
