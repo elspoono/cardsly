@@ -590,8 +590,9 @@ app.post '/sendFeedback', (req,res,next) ->
   nodemailer.send_mail
     sender: req.body.email
     to: 'support@cards.ly'
-    subject:'Feedback email from: ' + req.body.email
-    html: 'This is some feedback' + req.body.content
+    cc: 'help@cards.ly'
+    subject:'Feedback email from:' + req.body.email
+    html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
   , (err, data) ->
     if err
       console.log 'ERR Feedback Email did not send:', err, req.body.email, req.body.content
