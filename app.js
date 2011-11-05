@@ -526,7 +526,7 @@
       subject: 'Feedback email from: ' + req.body.email,
       html: 'This is some feedback' + req.body.content
     }, function(err, data) {
-      return console.log('ERR Feedback Email did not send:', req.body.email, req.body.content);
+      return console.log('ERR Feedback Email did not send:', err, req.body.email, req.body.content);
     });
   });
   app.post('/createUser', function(req, res, next) {
