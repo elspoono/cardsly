@@ -7,7 +7,7 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Image, ImageSchema, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Template, TemplateSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
+  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Style, StyleSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
   express = require('express');
   http = require('http');
   form = require('connect-form');
@@ -139,7 +139,7 @@
     user_id: Number,
     print_id: Number,
     path: String,
-    template_id: Number,
+    theme_id: Number,
     date_added: {
       type: Date,
       "default": Date.now
@@ -150,23 +150,10 @@
     }
   });
   Card = mongoose.model('Card', CardSchema);
-  ImageSchema = new Schema({
-    height: Number,
-    width: Number,
-    buffer: String,
-    date_added: {
-      type: Date,
-      "default": Date.now
-    },
-    active: {
-      type: Boolean,
-      "default": true
-    }
-  });
-  Image = mongoose.model('Image', ImageSchema);
   MessageSchema = new Schema({
     include_contact: Boolean,
     content: String,
+    s3_id: String,
     date_added: {
       type: Date,
       "default": Date.now
@@ -177,7 +164,7 @@
     }
   });
   Message = mongoose.model('Message', MessageSchema);
-  TemplateSchema = new Schema({
+  ThemeSchema = new Schema({
     category: String,
     date_added: {
       type: Date,
@@ -188,19 +175,17 @@
       "default": true
     }
   });
-  Template = mongoose.model('Template', TemplateSchema);
-  ThemeSchema = new Schema({
-    template_id: Number,
-    thumb_image_id: Number,
-    preview_image_id: Number,
-    big_image_id: Number,
+  Theme = mongoose.model('Theme', ThemeSchema);
+  StyleSchema = new Schema({
+    theme_id: Number,
+    s3_id: String,
     qr_size: Number,
     qr_x: Number,
     qr_y: Number
   });
-  Theme = mongoose.model('Theme', ThemeSchema);
+  Style = mongoose.model('Style', StyleSchema);
   PositionSchema = new Schema({
-    theme_id: Number,
+    style_id: Number,
     order_id: Number,
     font_size: Number,
     width: Number,
@@ -457,6 +442,12 @@
           success: true
         });
       }
+    });
+  });
+  app.post('/saveTheme', function(req, res) {
+    req.session.theme = req.body.theme;
+    return res.send({
+      success: true
     });
   });
   app.post('/saveForm', function(req, res) {

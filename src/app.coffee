@@ -166,7 +166,7 @@ CardSchema = new Schema
   user_id: Number
   print_id: Number
   path: String
-  template_id: Number
+  theme_id: Number
   date_added:
     type: Date
     default: Date.now
@@ -175,24 +175,11 @@ CardSchema = new Schema
     default: true
 Card = mongoose.model 'Card', CardSchema
 
-
-# Images
-ImageSchema = new Schema
-  height: Number
-  width: Number
-  buffer: String
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-Image = mongoose.model 'Image', ImageSchema
-
 # Messages
 MessageSchema = new Schema
   include_contact: Boolean
   content: String
+  s3_id: String
   date_added:
     type: Date
     default: Date.now
@@ -203,8 +190,8 @@ Message = mongoose.model 'Message', MessageSchema
 
 
 
-# Templates
-TemplateSchema = new Schema
+# Themes
+ThemeSchema = new Schema
   category: String
   date_added:
     type: Date
@@ -212,28 +199,28 @@ TemplateSchema = new Schema
   active:
     type: Boolean
     default: true
-Template = mongoose.model 'Template', TemplateSchema
+Theme = mongoose.model 'Theme', ThemeSchema
 
-# Theme OF a template
-ThemeSchema = new Schema
-  template_id: Number
-  thumb_image_id: Number
-  preview_image_id: Number
-  big_image_id: Number
+# Style of a Theme
+StyleSchema = new Schema
+  theme_id: Number
+  s3_id: String
   qr_size: Number
   qr_x: Number
   qr_y: Number
-Theme = mongoose.model 'Theme', ThemeSchema
+Style = mongoose.model 'Style', StyleSchema
 
-# TemplateTheme Field Positions
+# Style Field Positions
 PositionSchema = new Schema
-  theme_id: Number
+  style_id: Number
   order_id: Number
   font_size: Number
   width: Number
   x: Number
   y: Number
 Position = mongoose.model 'Position', PositionSchema
+
+
 
 # Views (for stats)
 ViewSchema = new Schema
@@ -529,6 +516,11 @@ app.post '/uploadImage', (req, res) ->
       # Always send the response instantly, letting the client know the server did get the file
       res.send
         success: true
+
+app.post '/saveTheme', (req, res) ->
+  req.session.theme = req.body.theme
+  res.send
+    success: true
 
 app.post '/saveForm', (req, res) ->
   ###
