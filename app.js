@@ -515,10 +515,13 @@
     return nodemailer.send_mail({
       sender: req.body.email,
       to: 'support@cards.ly',
-      subject: 'Test Email',
-      html: 'gragarhgahs'
+      cc: 'help@cards.ly',
+      subject: 'Feedback email from:' + req.body.email,
+      html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
     }, function(err, data) {
-      return console.log('ERR Feedback Email did not send:', req.body.email, req.body.content);
+      if (err) {
+        return console.log('ERR Feedback Email did not send:', err, req.body.email, req.body.content);
+      }
     });
   });
   app.post('/createUser', function(req, res, next) {
