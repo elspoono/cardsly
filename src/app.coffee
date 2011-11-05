@@ -518,7 +518,18 @@ app.post '/uploadImage', (req, res) ->
         success: true
 
 app.post '/saveTheme', (req, res) ->
+  
+  # Based on which parameters they send, save them all in the session
+
   req.session.theme = req.body.theme
+
+  # if they hit the save button too (another parameter will indicate this)
+  
+  # then make sure we save it to whatever template
+  # (save the session.theme I mean)
+
+  # (or create a new one, if it's 0 or empty or whatever)
+
   res.send
     success: true
 
@@ -530,6 +541,7 @@ app.post '/saveForm', (req, res) ->
   Like on browser close.
   It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
   Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
+
   ###
   req.session.savedInputs = req.body.inputs.split '`~`'
   res.send
