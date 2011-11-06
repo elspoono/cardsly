@@ -929,7 +929,7 @@ $ ->
   # Checkout button action, default error for now.
   $('.checkout').click () ->
     loadAlert
-      content: '<p>Our apologies - we are still in development.<p>Please check back <span style="text-decoration:line-through;">next week</span> later this week.<p>(November 5th 2011)'
+      content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
   #
   # The floaty guy behind the gallery selection
