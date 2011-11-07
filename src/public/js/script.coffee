@@ -1,24 +1,3 @@
-JSON.stringify = JSON.stringify || (obj) ->
-  t = typeof obj
-  if t != "object" || obj == null
-    if t == "string"
-      obj = '"'+obj+'"'
-    String obj
-  else
-    n = []
-    v = []
-    json = []
-    arr = obj && obj.constructor == Array
-    for n,v in obj
-      t = typeof v
-      if t == "string"
-        v = '"'+v+'"'
-      else if t == "object" && v != null
-        v = JSON.stringify v
-      json.push (if arr then "" else '"' + n + '":') + String v
-    (if arr then "[" else "{") + String(json) + (if arr then "]" else "}")
-
-
 ###
  * 
  * Set settings / defaults
@@ -566,96 +545,62 @@ $ ->
   ok.
 
   ###
+  #
+  # Only an admin page, do this stuff
   if path == '/admin'
 
+    # Grab all the guys we're going to use
     $designer = $ '.designer'
     #
-    #
-    $fieldH = $ '.field input.height'
-    $fieldW = $ '.field input.width'
-    $fieldX = $ '.field input.x'
-    $fieldY = $ '.field input.y'
-    #
-    # Default Template for Card Designer
-    template = 
-      category: 'Professional'
-      themes: (
-        qr_size: 45
-        qr_x: 70
-        qr_y: 40
-        positions: (
-          font_size:7/j
-          width: 50
-          x:5
-          y:5+i/(j+1)*10
-        ) for i in [0..5+j*6]
-      ) for j in [0..1]
-    #
-    # Card Designer
     $card = $designer.find '.card'
-    dh = $card.height()
-    dw = $card.width()
-    #
-    # The individual lines
+    $qr = $card.find '.qr'
     $lines = $card.find '.line'
-    updateStats = (e, ui) ->
-      $fieldY.val Math.round(ui.position.top / dh * 10000) / 100 + '%'
-      $fieldX.val Math.round(ui.position.left / dw * 10000) / 100 + '%'
-      if ui.size
-        $fieldH.val Math.round(ui.size.height / dh * 10000) / 100 + '%'
-        $fieldW.val Math.round(ui.size.width / dw * 10000) / 100 + '%'
+    #
+    $cat = $designer.find '.category-field input'
+    #
+    $color1 = $designer.find '.color1'
+    $color2 = $designer.find '.color2'
+    #
+    $dForm = $designer.find 'form'
+    $upload = $dForm.find '[type=file]'
+    #
+    # Set some constants
+    dh = $card.outerHeight()
+    dw = $card.outerWidth()
+    active_theme = false
+    #
+    #
+    # QRs and Lines are hidden By default
+    $qr.hide()
+    $lines.hide()
+    #
+    # The draggind and dropping functions for lines
     $lines.draggable
-      drag: updateStats
       grid: [5,5]
       containment: '.designer .card'
     $lines.resizable
-      resize: updateStats
       grid: 5
-      handles: 'n, e, s, w'
+      handles: 'n, e, s, w, se'
     $lines.fitText()
     #
-    # 
-    $qr = $card.find '.qr'
+    # Dragging and dropping functions for the qr code
     $qr.draggable
-      drag: updateStats
       grid: [5,5]
       containment: '.designer .card'
     $qr.resizable
-      resize: updateStats
       grid: 5
       containment: '.designer .card'
-      handles: 'n, e, s, w'
+      handles: 'n, e, s, w, ne, nw, se, sw'
       aspectRatio: 1
     #
-    # Hidden By Default
-    $qr.hide()
-    $lines.hide()
 
-    # An Actual Load Event
-    ###
-    for pos,i in template.themes[0].positions
-      $li = $lines.eq i
-      $li.show().css
-        top: pos.y/100 * dh
-        left: pos.x/100 * dw
-        width: (pos.width/100 * dw) + 'px'
-        fontSize: (pos.font_size/100 * dh) + 'px'
-        lineHeight: (pos.font_size/100 * dh) + 'px'
-    $qr.css
-      top: template.themes[0].qr_y/100 * dh
-      left: template.themes[0].qr_x/100 * dw
-      height: template.themes[0].qr_size/100 * dh
-      width: template.themes[0].qr_size/100 * dh
-    ###
-
-    
-    $dForm = $designer.find 'form'
-    $upload = $dForm.find '[type=file]'
+    #
+    # On upload selection, submit that form
     $upload.change ->
       $dForm.submit()
-    
-    activeTheme = false
 
+    #
+    # 6 and 12 selectors in the thumbnails
     $('.theme-1,.theme-2').click ->
       $t = $ this
       $c = $t.closest '.card'
@@ -669,15 +614,54 @@ $ ->
       # always return false to prevent href from going anywhere
       false
 
-    executeSave = (next) ->
-      data =
-        theme:
-          category: $designer.find('.category input').val()
-          styles: []
-      
-
-
-      # loop through lines and add them to data also
+    #
+    # Helper Function for getting the position in percentage from an elements top, left, height and width
+    getPosition = ($t) ->
+      # Get it's CSS Values
+      height = parseInt $t.height()
+      width = parseInt $t.width()
+      left = parseInt $t.css 'left'
+      top = parseInt $t.css 'top'
+      #
+      # Stop me if something went wrong :)
+      if isNaN(height) or isNaN(width) or isNaN(top) or isNaN(left)
+         return false
+      #
+      # Calculate a percentage and send it
+      result = 
+        h: Math.round(height / dh * 10000) / 100
+        w: Math.round(width / dw * 10000) / 100
+        x: Math.round(left / dw * 10000) / 100
+        y: Math.round(top / dh * 10000) / 100
+    #
+    # Do the actual save.
+    #
+    # It should be noted, that in most cases, this just means saving into the session
+    # Only on save button click does it pass an extra parameter to save it to a record in the database
+    execute_save = (next) ->
+      theme =
+        _id: active_theme._id
+        category: $cat.val()
+        positions: []
+        color1: $color1.val()
+        color2: $color2.val()
+        s3_id: active_theme.s3_id
+      #
+      # Get the position of the qr
+      theme.positions.push getPosition $qr
+      #
+      # Get the position of each line
+      $lines.each ->
+        $t = $ this
+        pos = getPosition $t
+        if pos
+          theme.positions.push pos
+      #
+      # Set the parameters
+      parameters =
+        theme: theme
+        do_save: if next then true else false
+      #
       $.ajax
         url: '/saveTheme'
         #
@@ -686,7 +670,7 @@ $ ->
         # interwebs to our server.
         #
         # (and correspondingly, the server does a JSON parse of the raw body instead of it's usual parsing.)
-        data: JSON.stringify data
+        data: JSON.stringify parameters
         success: (serverResponse) ->
           if !serverResponse.success
             $designer.find('.save').showTooltip
@@ -697,34 +681,109 @@ $ ->
             message: 'Error saving.'
           if next then next()
 
+
+    #
+    # A global page timer for the automatic save event.
     pageTimer = 0
     setPageTimer = ->
       clearTimeout pageTimer
       pageTimer = setTimeout ->
-        executeSave()
-      , 500
+        execute_save()
+      , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
 
-    $designer.find('.category input').keyup setPageTimer
-    
+    #
+    # Set that timer on the right events for the right things
+    $cat.keyup setPageTimer
+    $color1.keyup setPageTimer
+    $color2.keyup setPageTimer
+
+    $.s3_result = (s3_id) ->
+      if not noTheme() and s3_id
+        active_theme.s3_id = s3_id
+        $card.css
+          background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
+      else
+        loadAlert
+          content: 'I had trouble saving that image, please try again later.'
+
+    #
+    # Function that is called to verify a theme is selected, warns if not.
     noTheme = ->
-      if !activeTheme
+      if !active_theme
         loadAlert
           content: 'Please create or select a theme first'
         true
       else
         false
 
+    #
+    # Default Template for Card Designer
+    default_theme = 
+      category: ''
+      color1: 'FFFFFF'
+      color2: '000000'
+      s3_id: ''
+      positions: [
+        h: 45
+        w: 45
+        x: 70
+        y: 40
+      ]
+    for i in [0..5]
+      default_theme.positions.push
+        h: 7
+        w: 50
+        x: 5
+        y: 5+i*10
+    #
+    # The general load theme function
+    # It's for putting a theme into the designer for editing
+    loadTheme = (theme) ->
+      active_theme = theme
+      qr = theme.positions.shift()
+      $qr.show().css
+        top: qr.y/100 * dh
+        left: qr.x/100 * dw
+        height: qr.h/100 * dh
+        width: qr.w/100 * dh
+      for pos,i in theme.positions
+        $li = $lines.eq i
+        $li.show().css
+          top: pos.y/100 * dh
+          left: pos.x/100 * dw
+          width: (pos.w/100 * dw) + 'px'
+          fontSize: (pos.h/100 * dh) + 'px'
+          lineHeight: (pos.h/100 * dh) + 'px'
+      theme.positions.unshift qr
+      $cat.val theme.category
+      $color1.val theme.color1
+      $color2.val theme.color2
+    #
+    # The add new button
+    $('.add-new').click ->
+      loadTheme(default_theme)
+
+      # Oh wait, this doesn't happen until save, eh?
+      ###
+      $new_li = $ '<li class="card" />'
+      $('.category[category=""] .gallery').append $new_li
+      $new_li.click()
+      ###
+
+
+    #
+    # On save click
     $designer.find('.buttons .save').click ->
-      if noTheme()
-        return false
+      # Make sure we have something selected.
+      if noTheme() then return false
       
       loadLoading {}, (closeLoading) ->
-        executeSave ->
+        execute_save ->
           closeLoading()
-        
+    #
+    # On delete click
     $designer.find('.buttons .delete').click ->
-      if noTheme()
-        return false
+      if noTheme() then return false
       loadModal
         content: '<p>Are you sure you want to permanently delete this template?</p>'
         height: 160
@@ -1031,7 +1090,7 @@ $ ->
   $gs.css
     left: -220
     top: 0
-  $('.gallery .card').click () ->
+  $('.gallery .card').live 'click', () ->
     $t = $ this
     $('.card').removeClass 'active'
     $t.addClass('active')

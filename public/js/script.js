@@ -1,31 +1,4 @@
 (function() {
-  var $window, dateFormat, loadAlert, loadConfirm, loadLoading, loadModal, usualDelay;
-  JSON.stringify = JSON.stringify || function(obj) {
-    var arr, json, n, t, v, _len;
-    t = typeof obj;
-    if (t !== "object" || obj === null) {
-      if (t === "string") {
-        obj = '"' + obj + '"';
-      }
-      return String(obj);
-    } else {
-      n = [];
-      v = [];
-      json = [];
-      arr = obj && obj.constructor === Array;
-      for (v = 0, _len = obj.length; v < _len; v++) {
-        n = obj[v];
-        t = typeof v;
-        if (t === "string") {
-          v = '"' + v + '"';
-        } else if (t === "object" && v !== null) {
-          v = JSON.stringify(v);
-        }
-        json.push((arr ? "" : '"' + n + '":') + String(v));
-      }
-      return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-    }
-  };
   /*
    * 
    * Set settings / defaults
@@ -34,6 +7,7 @@
    * some constants
    * 
   */
+  var $window, dateFormat, loadAlert, loadConfirm, loadLoading, loadModal, usualDelay;
   $.ajaxSetup({
     type: 'POST'
   });
@@ -543,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $card, $dForm, $designer, $fieldH, $fieldW, $fieldX, $fieldY, $gs, $lines, $mc, $qr, $upload, $win, activeTheme, advanceSlide, closeMenu, dh, dw, executeSave, expandMenu, hasHidden, i, item_name, j, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, successfulLogin, template, timer, updateCards, updateStats, winH, _i, _len;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, closeMenu, default_theme, dh, dw, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, successfulLogin, timer, updateCards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -603,97 +577,41 @@
       */
     if (path === '/admin') {
       $designer = $('.designer');
-      $fieldH = $('.field input.height');
-      $fieldW = $('.field input.width');
-      $fieldX = $('.field input.x');
-      $fieldY = $('.field input.y');
-      template = {
-        category: 'Professional',
-        themes: (function() {
-          var _results;
-          _results = [];
-          for (j = 0; j <= 1; j++) {
-            _results.push({
-              qr_size: 45,
-              qr_x: 70,
-              qr_y: 40,
-              positions: (function() {
-                var _ref, _results2;
-                _results2 = [];
-                for (i = 0, _ref = 5 + j * 6; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
-                  _results2.push({
-                    font_size: 7 / j,
-                    width: 50,
-                    x: 5,
-                    y: 5 + i / (j + 1) * 10
-                  });
-                }
-                return _results2;
-              })()
-            });
-          }
-          return _results;
-        })()
-      };
       $card = $designer.find('.card');
-      dh = $card.height();
-      dw = $card.width();
+      $qr = $card.find('.qr');
       $lines = $card.find('.line');
-      updateStats = function(e, ui) {
-        $fieldY.val(Math.round(ui.position.top / dh * 10000) / 100 + '%');
-        $fieldX.val(Math.round(ui.position.left / dw * 10000) / 100 + '%');
-        if (ui.size) {
-          $fieldH.val(Math.round(ui.size.height / dh * 10000) / 100 + '%');
-          return $fieldW.val(Math.round(ui.size.width / dw * 10000) / 100 + '%');
-        }
-      };
+      $cat = $designer.find('.category-field input');
+      $color1 = $designer.find('.color1');
+      $color2 = $designer.find('.color2');
+      $dForm = $designer.find('form');
+      $upload = $dForm.find('[type=file]');
+      dh = $card.outerHeight();
+      dw = $card.outerWidth();
+      active_theme = false;
+      $qr.hide();
+      $lines.hide();
       $lines.draggable({
-        drag: updateStats,
         grid: [5, 5],
         containment: '.designer .card'
       });
       $lines.resizable({
-        resize: updateStats,
         grid: 5,
-        handles: 'n, e, s, w'
+        handles: 'n, e, s, w, se'
       });
       $lines.fitText();
-      $qr = $card.find('.qr');
       $qr.draggable({
-        drag: updateStats,
         grid: [5, 5],
         containment: '.designer .card'
       });
       $qr.resizable({
-        resize: updateStats,
         grid: 5,
         containment: '.designer .card',
-        handles: 'n, e, s, w',
+        handles: 'n, e, s, w, ne, nw, se, sw',
         aspectRatio: 1
       });
-      $qr.hide();
-      $lines.hide();
-      /*
-          for pos,i in template.themes[0].positions
-            $li = $lines.eq i
-            $li.show().css
-              top: pos.y/100 * dh
-              left: pos.x/100 * dw
-              width: (pos.width/100 * dw) + 'px'
-              fontSize: (pos.font_size/100 * dh) + 'px'
-              lineHeight: (pos.font_size/100 * dh) + 'px'
-          $qr.css
-            top: template.themes[0].qr_y/100 * dh
-            left: template.themes[0].qr_x/100 * dw
-            height: template.themes[0].qr_size/100 * dh
-            width: template.themes[0].qr_size/100 * dh
-          */
-      $dForm = $designer.find('form');
-      $upload = $dForm.find('[type=file]');
       $upload.change(function() {
         return $dForm.submit();
       });
-      activeTheme = false;
       $('.theme-1,.theme-2').click(function() {
         var $c, $t;
         $t = $(this);
@@ -703,17 +621,48 @@
         $t.addClass('active');
         return false;
       });
-      executeSave = function(next) {
-        var data;
-        data = {
-          theme: {
-            category: $designer.find('.category input').val(),
-            styles: []
+      getPosition = function($t) {
+        var height, left, result, top, width;
+        height = parseInt($t.height());
+        width = parseInt($t.width());
+        left = parseInt($t.css('left'));
+        top = parseInt($t.css('top'));
+        if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
+          return false;
+        }
+        return result = {
+          h: Math.round(height / dh * 10000) / 100,
+          w: Math.round(width / dw * 10000) / 100,
+          x: Math.round(left / dw * 10000) / 100,
+          y: Math.round(top / dh * 10000) / 100
+        };
+      };
+      execute_save = function(next) {
+        var parameters, theme;
+        theme = {
+          _id: active_theme._id,
+          category: $cat.val(),
+          positions: [],
+          color1: $color1.val(),
+          color2: $color2.val(),
+          s3_id: active_theme.s3_id
+        };
+        theme.positions.push(getPosition($qr));
+        $lines.each(function() {
+          var $t, pos;
+          $t = $(this);
+          pos = getPosition($t);
+          if (pos) {
+            return theme.positions.push(pos);
           }
+        });
+        parameters = {
+          theme: theme,
+          do_save: next ? true : false
         };
         return $.ajax({
           url: '/saveTheme',
-          data: JSON.stringify(data),
+          data: JSON.stringify(parameters),
           success: function(serverResponse) {
             if (!serverResponse.success) {
               $designer.find('.save').showTooltip({
@@ -738,12 +687,26 @@
       setPageTimer = function() {
         clearTimeout(pageTimer);
         return pageTimer = setTimeout(function() {
-          return executeSave();
+          return execute_save();
         }, 500);
       };
-      $designer.find('.category input').keyup(setPageTimer);
+      $cat.keyup(setPageTimer);
+      $color1.keyup(setPageTimer);
+      $color2.keyup(setPageTimer);
+      $.s3_result = function(s3_id) {
+        if (!noTheme() && s3_id) {
+          active_theme.s3_id = s3_id;
+          return $card.css({
+            background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
+          });
+        } else {
+          return loadAlert({
+            content: 'I had trouble saving that image, please try again later.'
+          });
+        }
+      };
       noTheme = function() {
-        if (!activeTheme) {
+        if (!active_theme) {
           loadAlert({
             content: 'Please create or select a theme first'
           });
@@ -752,12 +715,69 @@
           return false;
         }
       };
+      default_theme = {
+        category: '',
+        color1: 'FFFFFF',
+        color2: '000000',
+        s3_id: '',
+        positions: [
+          {
+            h: 45,
+            w: 45,
+            x: 70,
+            y: 40
+          }
+        ]
+      };
+      for (i = 0; i <= 5; i++) {
+        default_theme.positions.push({
+          h: 7,
+          w: 50,
+          x: 5,
+          y: 5 + i * 10
+        });
+      }
+      loadTheme = function(theme) {
+        var $li, i, pos, qr, _len, _ref;
+        active_theme = theme;
+        qr = theme.positions.shift();
+        $qr.show().css({
+          top: qr.y / 100 * dh,
+          left: qr.x / 100 * dw,
+          height: qr.h / 100 * dh,
+          width: qr.w / 100 * dh
+        });
+        _ref = theme.positions;
+        for (i = 0, _len = _ref.length; i < _len; i++) {
+          pos = _ref[i];
+          $li = $lines.eq(i);
+          $li.show().css({
+            top: pos.y / 100 * dh,
+            left: pos.x / 100 * dw,
+            width: (pos.w / 100 * dw) + 'px',
+            fontSize: (pos.h / 100 * dh) + 'px',
+            lineHeight: (pos.h / 100 * dh) + 'px'
+          });
+        }
+        theme.positions.unshift(qr);
+        $cat.val(theme.category);
+        $color1.val(theme.color1);
+        return $color2.val(theme.color2);
+      };
+      $('.add-new').click(function() {
+        return loadTheme(default_theme);
+        /*
+              $new_li = $ '<li class="card" />'
+              $('.category[category=""] .gallery').append $new_li
+              $new_li.click()
+              */
+      });
       $designer.find('.buttons .save').click(function() {
         if (noTheme()) {
           return false;
         }
         return loadLoading({}, function(closeLoading) {
-          return executeSave(function() {
+          return execute_save(function() {
             return closeLoading();
           });
         });
@@ -1132,7 +1152,7 @@
       left: -220,
       top: 0
     });
-    $('.gallery .card').click(function() {
+    $('.gallery .card').live('click', function() {
       var $findClass, $t, className;
       $t = $(this);
       $('.card').removeClass('active');

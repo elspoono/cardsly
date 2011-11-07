@@ -209,21 +209,34 @@ ThemeSchema = new Schema
   active:
     type: Boolean
     default: true
-  theme_id: Number
+  theme_group_id: Number
   color1: String
   color2: String
   s3_id: String
-  qr_size: Number
-  qr_x: Number
-  qr_y: Number
 Theme = mongoose.model 'Theme', ThemeSchema
+
+###
+You may sometimes ask yourself:
+"Where is the QR code's position?"
+
+It's in the position schema.
+"Wait, won't that mean it's mixed up?"
+
+No, it's always the first position.
+
+Always.
+
+For now.
+###
 
 # Style Field Positions
 PositionSchema = new Schema
-  style_id: Number
+  theme_id: Number
   order_id: Number
-  font_size: Number
-  width: Number
+  color: String
+  font_family: String
+  h: Number
+  w: Number
   x: Number
   y: Number
 Position = mongoose.model 'Position', PositionSchema
@@ -501,9 +514,14 @@ app.post '/uploadImage', (req, res) ->
                   knoxReq = knoxClient.put '/'+size+'/'+fileName,
                     'Content-Length': buff.length
                     'Content-Type' : 'image/'+ext
-                  knoxReq.on 'response', (res) ->
-                    console.log 'ERR', res if res.statusCode != 200
-                    console.log knoxReq.url
+                  knoxReq.on 'response', (awsRes) ->
+                    console.log 'ERR', awsRes if awsRes.statusCode != 200
+                    # Only send this response once we get the 525x300 that we need
+                    if size is '525x300'
+                      if awsRes.statusCode is 200
+                        res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
+                      else
+                        res.send '<script>parent.window.$.s3_result(false);</script>'
                   knoxReq.end buff
                   # Finally, delete that temporary resized file. Keep shit clean.
                   fs.unlink '/tmp/'+size+fileName, (err) ->
@@ -521,10 +539,6 @@ app.post '/uploadImage', (req, res) ->
           console.log knoxReq.url
         knoxReq.end buff
 
-      # Always send the response instantly, letting the client know the server did get the file
-      res.send
-        success: true
-
 app.post '/saveTheme', (req, res) ->
   params = JSON.parse req.rawBody
   # Did the data come across?
@@ -532,7 +546,7 @@ app.post '/saveTheme', (req, res) ->
 
   # Based on which parameters they send, save them all in the session
 
-  req.session.theme = req.body.theme
+  req.session.theme = params.theme
 
   # if they hit the save button too (another parameter will indicate this)
   

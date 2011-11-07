@@ -185,20 +185,32 @@
       type: Boolean,
       "default": true
     },
-    theme_id: Number,
+    theme_group_id: Number,
     color1: String,
     color2: String,
-    s3_id: String,
-    qr_size: Number,
-    qr_x: Number,
-    qr_y: Number
+    s3_id: String
   });
   Theme = mongoose.model('Theme', ThemeSchema);
+  /*
+  You may sometimes ask yourself:
+  "Where is the QR code's position?"
+  
+  It's in the position schema.
+  "Wait, won't that mean it's mixed up?"
+  
+  No, it's always the first position.
+  
+  Always.
+  
+  For now.
+  */
   PositionSchema = new Schema({
-    style_id: Number,
+    theme_id: Number,
     order_id: Number,
-    font_size: Number,
-    width: Number,
+    color: String,
+    font_family: String,
+    h: Number,
+    w: Number,
     x: Number,
     y: Number
   });
@@ -413,11 +425,17 @@
                     'Content-Length': buff.length,
                     'Content-Type': 'image/' + ext
                   });
-                  knoxReq.on('response', function(res) {
-                    if (res.statusCode !== 200) {
-                      console.log('ERR', res);
+                  knoxReq.on('response', function(awsRes) {
+                    if (awsRes.statusCode !== 200) {
+                      console.log('ERR', awsRes);
                     }
-                    return console.log(knoxReq.url);
+                    if (size === '525x300') {
+                      if (awsRes.statusCode === 200) {
+                        return res.send('<script>parent.window.$.s3_result(\'' + fileName + '\');</script>');
+                      } else {
+                        return res.send('<script>parent.window.$.s3_result(false);</script>');
+                      }
+                    }
                   });
                   knoxReq.end(buff);
                   return fs.unlink('/tmp/' + size + fileName, function(err) {
@@ -434,7 +452,7 @@
           size = sizes[_i];
           _fn(size);
         }
-        fs.readFile(path, function(err, buff) {
+        return fs.readFile(path, function(err, buff) {
           var knoxReq;
           knoxReq = knoxClient.put('/raw/' + fileName, {
             'Content-Length': buff.length,
@@ -448,9 +466,6 @@
           });
           return knoxReq.end(buff);
         });
-        return res.send({
-          success: true
-        });
       }
     });
   });
@@ -458,7 +473,7 @@
     var params;
     params = JSON.parse(req.rawBody);
     console.log(util.inspect(params));
-    req.session.theme = req.body.theme;
+    req.session.theme = params.theme;
     return res.send({
       success: true
     });
