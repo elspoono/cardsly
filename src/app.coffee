@@ -720,7 +720,13 @@ app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
   res.render 'how-it-works'
     user: req.user
     session: req.session
-    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks
+    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
+  
+# Account Page
+app.get '/account', (req, res) ->
+  res.render 'account'
+    user: req.user
+    session: req.session
 
 
 

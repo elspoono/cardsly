@@ -642,6 +642,12 @@
       whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks
     });
   });
+  app.get('/account', function(req, res) {
+    return res.render('account', {
+      user: req.user,
+      session: req.session
+    });
+  });
   app.get('/error', function(req, res) {
     return res.render('error');
   });
