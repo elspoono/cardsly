@@ -7,7 +7,7 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Style, StyleSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
+  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
   express = require('express');
   http = require('http');
   form = require('connect-form');
@@ -164,7 +164,7 @@
     }
   });
   Message = mongoose.model('Message', MessageSchema);
-  ThemeSchema = new Schema({
+  ThemeGroupSchema = new Schema({
     category: String,
     date_added: {
       type: Date,
@@ -175,20 +175,42 @@
       "default": true
     }
   });
-  Theme = mongoose.model('Theme', ThemeSchema);
-  StyleSchema = new Schema({
-    theme_id: Number,
-    s3_id: String,
-    qr_size: Number,
-    qr_x: Number,
-    qr_y: Number
+  ThemeGroup = mongoose.model('ThemeGroup', ThemeGroupSchema);
+  ThemeSchema = new Schema({
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    },
+    theme_group_id: Number,
+    color1: String,
+    color2: String,
+    s3_id: String
   });
-  Style = mongoose.model('Style', StyleSchema);
+  Theme = mongoose.model('Theme', ThemeSchema);
+  /*
+  You may sometimes ask yourself:
+  "Where is the QR code's position?"
+  
+  It's in the position schema.
+  "Wait, won't that mean it's mixed up?"
+  
+  No, it's always the first position.
+  
+  Always.
+  
+  For now.
+  */
   PositionSchema = new Schema({
-    style_id: Number,
+    theme_id: Number,
     order_id: Number,
-    font_size: Number,
-    width: Number,
+    color: String,
+    font_family: String,
+    h: Number,
+    w: Number,
     x: Number,
     y: Number
   });
@@ -403,11 +425,17 @@
                     'Content-Length': buff.length,
                     'Content-Type': 'image/' + ext
                   });
-                  knoxReq.on('response', function(res) {
-                    if (res.statusCode !== 200) {
-                      console.log('ERR', res);
+                  knoxReq.on('response', function(awsRes) {
+                    if (awsRes.statusCode !== 200) {
+                      console.log('ERR', awsRes);
                     }
-                    return console.log(knoxReq.url);
+                    if (size === '525x300') {
+                      if (awsRes.statusCode === 200) {
+                        return res.send('<script>parent.window.$.s3_result(\'' + fileName + '\');</script>');
+                      } else {
+                        return res.send('<script>parent.window.$.s3_result(false);</script>');
+                      }
+                    }
                   });
                   knoxReq.end(buff);
                   return fs.unlink('/tmp/' + size + fileName, function(err) {
@@ -424,7 +452,7 @@
           size = sizes[_i];
           _fn(size);
         }
-        fs.readFile(path, function(err, buff) {
+        return fs.readFile(path, function(err, buff) {
           var knoxReq;
           knoxReq = knoxClient.put('/raw/' + fileName, {
             'Content-Length': buff.length,
@@ -438,14 +466,14 @@
           });
           return knoxReq.end(buff);
         });
-        return res.send({
-          success: true
-        });
       }
     });
   });
   app.post('/saveTheme', function(req, res) {
-    req.session.theme = req.body.theme;
+    var params;
+    params = JSON.parse(req.rawBody);
+    console.log(util.inspect(params));
+    req.session.theme = params.theme;
     return res.send({
       success: true
     });

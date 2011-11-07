@@ -517,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $dForm, $designer, $fieldH, $fieldW, $fieldX, $fieldY, $gs, $li, $lines, $mc, $qr, $upload, $win, advanceSlide, closeMenu, dh, dw, expandMenu, hasHidden, i, item_name, j, marginIncrement, maxSlides, monitorForComplete, newMargin, path, pos, successfulLogin, template, timer, updateCards, updateStats, winH, _i, _len, _len2, _ref;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -576,99 +576,328 @@
     
       */
     if (path === '/admin') {
-      $fieldH = $('.field input.height');
-      $fieldW = $('.field input.width');
-      $fieldX = $('.field input.x');
-      $fieldY = $('.field input.y');
-      template = {
-        category: 'Professional',
-        themes: (function() {
-          var _results;
-          _results = [];
-          for (j = 0; j <= 1; j++) {
-            _results.push({
-              qr_size: 45,
-              qr_x: 70,
-              qr_y: 40,
-              positions: (function() {
-                var _ref, _results2;
-                _results2 = [];
-                for (i = 0, _ref = 5 + j * 6; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
-                  _results2.push({
-                    font_size: 7 / j,
-                    width: 50,
-                    x: 5,
-                    y: 5 + i / (j + 1) * 10
-                  });
-                }
-                return _results2;
-              })()
-            });
+      $designer = $('.designer');
+      $card = $designer.find('.card');
+      $qr = $card.find('.qr');
+      $lines = $card.find('.line');
+      $body = $(document);
+      $cat = $designer.find('.category-field input');
+      $color1 = $designer.find('.color1');
+      $color2 = $designer.find('.color2');
+      $fonts = $designer.find('.font-style');
+      $font_color = $fonts.find('.color');
+      $font_family = $fonts.find('.font-family');
+      $dForm = $designer.find('form');
+      $upload = $dForm.find('[type=file]');
+      card_height = $card.outerHeight();
+      card_width = $card.outerWidth();
+      card_inner_height = $card.height();
+      card_inner_width = $card.width();
+      active_theme = false;
+      $qr.hide();
+      $lines.hide();
+      shiftAmount = 1;
+      $body.keydown(function(e) {
+        var $active_item, bottom_bound, c, new_left, new_top, top_bound;
+        $active_item = $card.find('.active');
+        c = e.keyCode;
+        if ($active_item.length && !$font_color.is(':focus') && !$font_family.is(':focus')) {
+          if (e.keyCode === 16) {
+            shiftAmount = 10;
           }
-          return _results;
-        })()
-      };
-      $designer = $('.designer .card');
-      dh = $designer.height();
-      dw = $designer.width();
-      $lines = $designer.find('.line');
-      updateStats = function(e, ui) {
-        $fieldY.val(Math.round(ui.position.top / dh * 10000) / 100 + '%');
-        $fieldX.val(Math.round(ui.position.left / dw * 10000) / 100 + '%');
-        if (ui.size) {
-          $fieldH.val(Math.round(ui.size.height / dh * 10000) / 100 + '%');
-          return $fieldW.val(Math.round(ui.size.width / dw * 10000) / 100 + '%');
+          if (c === 38 || c === 40) {
+            new_top = parseInt($active_item.css('top'));
+            if (c === 38) {
+              new_top -= shiftAmount;
+            }
+            if (c === 40) {
+              new_top += shiftAmount;
+            }
+            top_bound = (card_height - card_inner_height) / 2;
+            bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
+            if (new_top < top_bound) {
+              new_top = top_bound;
+            }
+            if (new_top > bottom_bound) {
+              new_top = bottom_bound;
+            }
+            $active_item.css('top', new_top);
+          }
+          if (c === 37 || c === 39) {
+            new_left = parseInt($active_item.css('left'));
+            if (c === 37) {
+              new_left -= shiftAmount;
+            }
+            if (c === 39) {
+              new_left += shiftAmount;
+            }
+            top_bound = (card_width - card_inner_width) / 2;
+            bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
+            if (new_left < top_bound) {
+              new_left = top_bound;
+            }
+            if (new_left > bottom_bound) {
+              new_left = bottom_bound;
+            }
+            $active_item.css('left', new_left);
+          }
+          if (c === 38 || c === 40 || c === 39 || c === 37) {
+            return false;
+          }
         }
+      });
+      $body.keyup(function(e) {
+        if (e.keyCode === 16) {
+          return shiftAmount = 1;
+        }
+      });
+      $font_color.keyup(function() {
+        var $active_item, $t, index;
+        $t = $(this);
+        $active_item = $card.find('.active');
+        index = $active_item.prevAll().length;
+        $active_item.css({
+          color: '#' + $t.val()
+        });
+        return active_theme.positions[index + 1].color = $t.val();
+      });
+      unfocus_highlight = function(e) {
+        var $t;
+        $t = $(e.target);
+        if ($t.hasClass('font-style') || $t.closest('.font-style').length || $t.hasClass('line') || $t.hasClass('qr') || $t.closest('.line').length || $t.closest('.qr').length) {
+          true;
+        } else {
+          $card.find('.active').removeClass('active');
+          $body.unbind('click', unfocus_highlight);
+          $fonts.hide();
+        }
+        return false;
       };
+      $lines.mousedown(function() {
+        var $pa, $t, index;
+        $t = $(this);
+        $pa = $card.find('.active');
+        $pa.removeClass('active');
+        $t.addClass('active');
+        $body.bind('click', unfocus_highlight);
+        index = $t.prevAll().length;
+        $fonts.show();
+        return $font_color.val(active_theme.positions[index + 1].color);
+      });
+      $qr.mousedown(function() {
+        var $pa, $t;
+        $t = $(this);
+        $pa = $card.find('.active');
+        $pa.removeClass('active');
+        $t.addClass('active');
+        $body.bind('click', unfocus_highlight);
+        return $fonts.hide();
+      });
       $lines.draggable({
-        drag: updateStats,
-        grid: [5, 5],
+        grid: [10, 10],
         containment: '.designer .card'
       });
       $lines.resizable({
-        resize: updateStats,
-        grid: 5,
-        handles: 'n, e, s, w'
+        grid: 10,
+        handles: 'n, e, s, w, se',
+        resize: function(e, ui) {
+          return $(ui.element).css({
+            'font-size': ui.size.height + 'px',
+            'line-height': ui.size.height + 'px'
+          });
+        }
       });
-      $lines.fitText();
-      $qr = $designer.find('.qr');
       $qr.draggable({
-        drag: updateStats,
         grid: [5, 5],
         containment: '.designer .card'
       });
       $qr.resizable({
-        resize: updateStats,
         grid: 5,
         containment: '.designer .card',
-        handles: 'n, e, s, w',
+        handles: 'n, e, s, w, ne, nw, se, sw',
         aspectRatio: 1
       });
-      $lines.hide();
-      _ref = template.themes[0].positions;
-      for (i = 0, _len = _ref.length; i < _len; i++) {
-        pos = _ref[i];
-        $li = $lines.eq(i);
-        $li.show().css({
-          top: pos.y / 100 * dh,
-          left: pos.x / 100 * dw,
-          width: (pos.width / 100 * dw) + 'px',
-          fontSize: (pos.font_size / 100 * dh) + 'px',
-          lineHeight: (pos.font_size / 100 * dh) + 'px'
-        });
-      }
-      $qr.css({
-        top: template.themes[0].qr_y / 100 * dh,
-        left: template.themes[0].qr_x / 100 * dw,
-        height: template.themes[0].qr_size / 100 * dh,
-        width: template.themes[0].qr_size / 100 * dh
-      });
-      $dForm = $('.designer form');
-      $upload = $dForm.find('[type=file]');
       $upload.change(function() {
         return $dForm.submit();
       });
-      $('.designer .buttons .delete').click(function() {
+      $('.theme-1,.theme-2').click(function() {
+        var $c, $t;
+        $t = $(this);
+        $c = $t.closest('.card');
+        $c.click();
+        $('.theme-1,.theme-2').removeClass('active');
+        $t.addClass('active');
+        return false;
+      });
+      getPosition = function($t) {
+        var height, left, result, top, width;
+        height = parseInt($t.height());
+        width = parseInt($t.width());
+        left = parseInt($t.css('left'));
+        top = parseInt($t.css('top'));
+        if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
+          return false;
+        }
+        return result = {
+          h: Math.round(height / card_height * 10000) / 100,
+          w: Math.round(width / card_width * 10000) / 100,
+          x: Math.round(left / card_width * 10000) / 100,
+          y: Math.round(top / card_height * 10000) / 100
+        };
+      };
+      execute_save = function(next) {
+        var parameters, theme;
+        theme = {
+          _id: active_theme._id,
+          category: $cat.val(),
+          positions: [],
+          color1: $color1.val(),
+          color2: $color2.val(),
+          s3_id: active_theme.s3_id
+        };
+        theme.positions.push(getPosition($qr));
+        $lines.each(function() {
+          var $t, pos;
+          $t = $(this);
+          pos = getPosition($t);
+          if (pos) {
+            return theme.positions.push(pos);
+          }
+        });
+        parameters = {
+          theme: theme,
+          do_save: next ? true : false
+        };
+        return $.ajax({
+          url: '/saveTheme',
+          data: JSON.stringify(parameters),
+          success: function(serverResponse) {
+            if (!serverResponse.success) {
+              $designer.find('.save').showTooltip({
+                message: 'Error saving.'
+              });
+            }
+            if (next) {
+              return next();
+            }
+          },
+          error: function() {
+            $designer.find('.save').showTooltip({
+              message: 'Error saving.'
+            });
+            if (next) {
+              return next();
+            }
+          }
+        });
+      };
+      pageTimer = 0;
+      setPageTimer = function() {
+        clearTimeout(pageTimer);
+        return pageTimer = setTimeout(function() {
+          return execute_save();
+        }, 500);
+      };
+      $cat.keyup(setPageTimer);
+      $color1.keyup(setPageTimer);
+      $color2.keyup(setPageTimer);
+      $.s3_result = function(s3_id) {
+        if (!noTheme() && s3_id) {
+          active_theme.s3_id = s3_id;
+          return $card.css({
+            background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
+          });
+        } else {
+          return loadAlert({
+            content: 'I had trouble saving that image, please try again later.'
+          });
+        }
+      };
+      noTheme = function() {
+        if (!active_theme) {
+          loadAlert({
+            content: 'Please create or select a theme first'
+          });
+          return true;
+        } else {
+          return false;
+        }
+      };
+      default_theme = {
+        category: '',
+        color1: 'FFFFFF',
+        color2: '000000',
+        s3_id: '',
+        positions: [
+          {
+            h: 45,
+            w: 45,
+            x: 70,
+            y: 40
+          }
+        ]
+      };
+      for (i = 0; i <= 5; i++) {
+        default_theme.positions.push({
+          color: '000000',
+          font_family: 'Arial',
+          h: 7,
+          w: 50,
+          x: 5,
+          y: 5 + i * 10
+        });
+      }
+      loadTheme = function(theme) {
+        var $li, i, pos, qr, _len, _ref;
+        active_theme = theme;
+        qr = theme.positions.shift();
+        $qr.show().css({
+          top: qr.y / 100 * card_height,
+          left: qr.x / 100 * card_width,
+          height: qr.h / 100 * card_height,
+          width: qr.w / 100 * card_height
+        });
+        _ref = theme.positions;
+        for (i = 0, _len = _ref.length; i < _len; i++) {
+          pos = _ref[i];
+          $li = $lines.eq(i);
+          $li.show().css({
+            top: pos.y / 100 * card_height,
+            left: pos.x / 100 * card_width,
+            width: (pos.w / 100 * card_width) + 'px',
+            fontSize: (pos.h / 100 * card_height) + 'px',
+            lineHeight: (pos.h / 100 * card_height) + 'px',
+            fontFamily: pos.font_family,
+            color: '#' + pos.color
+          });
+        }
+        theme.positions.unshift(qr);
+        $cat.val(theme.category);
+        $color1.val(theme.color1);
+        return $color2.val(theme.color2);
+      };
+      $('.add-new').click(function() {
+        return loadTheme(default_theme);
+        /*
+              $new_li = $ '<li class="card" />'
+              $('.category[category=""] .gallery').append $new_li
+              $new_li.click()
+              */
+      });
+      $designer.find('.buttons .save').click(function() {
+        if (noTheme()) {
+          return false;
+        }
+        return loadLoading({}, function(closeLoading) {
+          return execute_save(function() {
+            return closeLoading();
+          });
+        });
+      });
+      $designer.find('.buttons .delete').click(function() {
+        if (noTheme()) {
+          return false;
+        }
         return loadModal({
           content: '<p>Are you sure you want to permanently delete this template?</p>',
           height: 160,
@@ -723,14 +952,14 @@
         });
       }
     });
-    for (_i = 0, _len2 = hasHidden.length; _i < _len2; _i++) {
+    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
       i = hasHidden[_i];
       i.$this.hide();
     }
     /*
       Update Cards
     
-      Function used a few places below
+      This is used each time we need to update all the cards on the home page with the new content that's typed in.
       */
     updateCards = function(rowNumber, value) {
       return $('.card .content').each(function() {
@@ -738,7 +967,7 @@
       });
     };
     $win.scroll(function() {
-      var i, newWinH, timeLapse, _j, _len3, _results;
+      var i, newWinH, timeLapse, _j, _len2, _results;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.length) {
         if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
@@ -753,9 +982,9 @@
             v = $t.val();
             $t.val('');
             timers = (function() {
-              var _ref2, _results;
+              var _ref, _results;
               _results = [];
-              for (j = 0, _ref2 = v.length; 0 <= _ref2 ? j <= _ref2 : j >= _ref2; 0 <= _ref2 ? j++ : j--) {
+              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
                 _results.push((function(j) {
                   var timer;
                   timer = setTimeout(function() {
@@ -771,10 +1000,10 @@
               return _results;
             })();
             $t.bind('clearMe', function() {
-              var i, _j, _len3;
+              var i, _j, _len2;
               console.log($t.data('cleared'));
               if (!$t.data('cleared')) {
-                for (_j = 0, _len3 = timers.length; _j < _len3; _j++) {
+                for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
                   i = timers[_j];
                   clearTimeout(i);
                 }
@@ -790,7 +1019,7 @@
         }
       }
       _results = [];
-      for (_j = 0, _len3 = hasHidden.length; _j < _len3; _j++) {
+      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
         i = hasHidden[_j];
         _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
       }
@@ -1042,7 +1271,7 @@
       left: -220,
       top: 0
     });
-    $('.gallery .card').click(function() {
+    $('.gallery .card').live('click', function() {
       var $findClass, $t, className;
       $t = $(this);
       $('.card').removeClass('active');

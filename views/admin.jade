@@ -2,7 +2,7 @@
 .section.first
   .cell-bg
   .cell-content
-    h3 Template Admin
+    h3 Theme Admin
     .designer
       .card
         .qr
@@ -13,12 +13,9 @@
               =i+1
       .options
         ul
-          li.category
-            label Category / Theme
+          li.category-field
+            label Category
             input(placeholder='Professional')
-            select
-              option Theme 1
-              option Theme 2
           li.image
             label Card Image
             form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
@@ -27,42 +24,27 @@
               iframe(name='hiddenFrame')
           li.gradient
             label Web Gradient
-            input(placeholder='#000000')
-            input(placeholder='#FFFFFF')
-          li.field
-            label Field Position/Size
-            label.label Height: 
-            input.height(placeholder='10%',title='height')
-            label.label Width: 
-            input.width(placeholder='90%',title='width')
-            label.label X: 
-            input.x(placeholder='10%',title='X')
-            label.label Y: 
-            input.y(placeholder='40%',title='Y')
+            span.pre #
+            input.color1(placeholder='000000')
+            span.pre #
+            input.color2(placeholder='FFFFFF')
           li.buttons
             .button.normal.save Save
             .button.gray.delete Delete
+          li.font-style
+            label Font
+            span.pre #
+            input.color(placeholder='000000')
+            select.font-family
+              option
+              option Luckiest Guy
+              option Arial
       .clear
-    .category.active
-      h4 New Category +
+    .category.active(category='')
+      h4 (No Category)
       ul.gallery
-        li.card New Card +
-  //
-    .category.active
-      h4 Professional
-      ul.gallery
-        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
-          li.card(class=i)
-            img(src='/images/qr.png').qr
-            ul.content
-              - for (i=0; i<=12; i++)
-                li
-    .category
-      h4 Professional
-      ul.gallery
-        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
-          li.card(class=i)
-            img(src='/images/qr.png').qr
-            ul.content
-              - for (i=0; i<=12; i++)
-                li
+        //
+          li.card
+            a(href='#').theme-1.active 6
+            a(href='#').theme-2 12
+    .button.gray.add-new Add New
