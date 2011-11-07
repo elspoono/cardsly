@@ -190,8 +190,8 @@ Message = mongoose.model 'Message', MessageSchema
 
 
 
-# Themes
-ThemeSchema = new Schema
+# Groups of Themes
+ThemeGroupSchema = new Schema
   category: String
   date_added:
     type: Date
@@ -199,16 +199,24 @@ ThemeSchema = new Schema
   active:
     type: Boolean
     default: true
-Theme = mongoose.model 'Theme', ThemeSchema
+ThemeGroup = mongoose.model 'ThemeGroup', ThemeGroupSchema
 
-# Style of a Theme
-StyleSchema = new Schema
+# Themes
+ThemeSchema = new Schema
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
   theme_id: Number
+  color1: String
+  color2: String
   s3_id: String
   qr_size: Number
   qr_x: Number
   qr_y: Number
-Style = mongoose.model 'Style', StyleSchema
+Theme = mongoose.model 'Theme', ThemeSchema
 
 # Style Field Positions
 PositionSchema = new Schema
@@ -518,14 +526,17 @@ app.post '/uploadImage', (req, res) ->
         success: true
 
 app.post '/saveTheme', (req, res) ->
-  
+  params = JSON.parse req.rawBody
+  # Did the data come across?
+  console.log util.inspect params
+
   # Based on which parameters they send, save them all in the session
 
   req.session.theme = req.body.theme
 
   # if they hit the save button too (another parameter will indicate this)
   
-  # then make sure we save it to whatever template
+  # then make sure we save it to whatever theme
   # (save the session.theme I mean)
 
   # (or create a new one, if it's 0 or empty or whatever)

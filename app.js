@@ -7,7 +7,7 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Style, StyleSchema, Theme, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
+  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
   express = require('express');
   http = require('http');
   form = require('connect-form');
@@ -164,7 +164,7 @@
     }
   });
   Message = mongoose.model('Message', MessageSchema);
-  ThemeSchema = new Schema({
+  ThemeGroupSchema = new Schema({
     category: String,
     date_added: {
       type: Date,
@@ -175,15 +175,25 @@
       "default": true
     }
   });
-  Theme = mongoose.model('Theme', ThemeSchema);
-  StyleSchema = new Schema({
+  ThemeGroup = mongoose.model('ThemeGroup', ThemeGroupSchema);
+  ThemeSchema = new Schema({
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    },
     theme_id: Number,
+    color1: String,
+    color2: String,
     s3_id: String,
     qr_size: Number,
     qr_x: Number,
     qr_y: Number
   });
-  Style = mongoose.model('Style', StyleSchema);
+  Theme = mongoose.model('Theme', ThemeSchema);
   PositionSchema = new Schema({
     style_id: Number,
     order_id: Number,
@@ -445,6 +455,9 @@
     });
   });
   app.post('/saveTheme', function(req, res) {
+    var params;
+    params = JSON.parse(req.rawBody);
+    console.log(util.inspect(params));
     req.session.theme = req.body.theme;
     return res.send({
       success: true

@@ -1,3 +1,22 @@
+JSON.stringify = JSON.stringify || (obj) ->
+  t = typeof obj
+  if t != "object" || obj == null
+    if t == "string"
+      obj = '"'+obj+'"'
+    String obj
+  else
+    n = []
+    v = []
+    json = []
+    arr = obj && obj.constructor == Array
+    for n,v in obj
+      t = typeof v
+      if t == "string"
+        v = '"'+v+'"'
+      else if t == "object" && v != null
+        v = JSON.stringify v
+      json.push (if arr then "" else '"' + n + '":') + String v
+    (if arr then "[" else "{") + String(json) + (if arr then "]" else "}")
 
 
 ###
@@ -548,6 +567,8 @@ $ ->
 
   ###
   if path == '/admin'
+
+    $designer = $ '.designer'
     #
     #
     $fieldH = $ '.field input.height'
@@ -571,12 +592,12 @@ $ ->
       ) for j in [0..1]
     #
     # Card Designer
-    $designer = $ '.designer .card'
-    dh = $designer.height()
-    dw = $designer.width()
+    $card = $designer.find '.card'
+    dh = $card.height()
+    dw = $card.width()
     #
     # The individual lines
-    $lines = $designer.find '.line'
+    $lines = $card.find '.line'
     updateStats = (e, ui) ->
       $fieldY.val Math.round(ui.position.top / dh * 10000) / 100 + '%'
       $fieldX.val Math.round(ui.position.left / dw * 10000) / 100 + '%'
@@ -594,7 +615,7 @@ $ ->
     $lines.fitText()
     #
     # 
-    $qr = $designer.find '.qr'
+    $qr = $card.find '.qr'
     $qr.draggable
       drag: updateStats
       grid: [5,5]
@@ -606,7 +627,12 @@ $ ->
       handles: 'n, e, s, w'
       aspectRatio: 1
     #
+    # Hidden By Default
+    $qr.hide()
     $lines.hide()
+
+    # An Actual Load Event
+    ###
     for pos,i in template.themes[0].positions
       $li = $lines.eq i
       $li.show().css
@@ -620,17 +646,85 @@ $ ->
       left: template.themes[0].qr_x/100 * dw
       height: template.themes[0].qr_size/100 * dh
       width: template.themes[0].qr_size/100 * dh
-      
+    ###
 
     
-    $dForm = $ '.designer form'
+    $dForm = $designer.find 'form'
     $upload = $dForm.find '[type=file]'
     $upload.change ->
       $dForm.submit()
     
+    activeTheme = false
+
+    $('.theme-1,.theme-2').click ->
+      $t = $ this
+      $c = $t.closest '.card'
+
+      $c.click()
+
+      # Actual Switch the classes
+      $('.theme-1,.theme-2').removeClass 'active'
+      $t.addClass 'active'
+
+      # always return false to prevent href from going anywhere
+      false
+
+    executeSave = (next) ->
+      data =
+        theme:
+          category: $designer.find('.category input').val()
+          styles: []
+      
+
+
+      # loop through lines and add them to data also
+      $.ajax
+        url: '/saveTheme'
+        #
+        # jQuery's default data parser does well with simple objects, but with complex ones it doesn't do quite what we need.
+        # So in this case, we need to stringify first, doing our own conversion to a string to transmit across the 
+        # interwebs to our server.
+        #
+        # (and correspondingly, the server does a JSON parse of the raw body instead of it's usual parsing.)
+        data: JSON.stringify data
+        success: (serverResponse) ->
+          if !serverResponse.success
+            $designer.find('.save').showTooltip
+              message: 'Error saving.'
+          if next then next()
+        error: ->
+          $designer.find('.save').showTooltip
+            message: 'Error saving.'
+          if next then next()
+
+    pageTimer = 0
+    setPageTimer = ->
+      clearTimeout pageTimer
+      pageTimer = setTimeout ->
+        executeSave()
+      , 500
+
+    $designer.find('.category input').keyup setPageTimer
     
-    
-    $('.designer .buttons .delete').click ->
+    noTheme = ->
+      if !activeTheme
+        loadAlert
+          content: 'Please create or select a theme first'
+        true
+      else
+        false
+
+    $designer.find('.buttons .save').click ->
+      if noTheme()
+        return false
+      
+      loadLoading {}, (closeLoading) ->
+        executeSave ->
+          closeLoading()
+        
+    $designer.find('.buttons .delete').click ->
+      if noTheme()
+        return false
       loadModal
         content: '<p>Are you sure you want to permanently delete this template?</p>'
         height: 160

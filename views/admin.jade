@@ -2,7 +2,7 @@
 .section.first
   .cell-bg
   .cell-content
-    h3 Template Admin
+    h3 Theme Admin
     .designer
       .card
         .qr
@@ -14,11 +14,8 @@
       .options
         ul
           li.category
-            label Category / Theme
+            label Category
             input(placeholder='Professional')
-            select
-              option Theme 1
-              option Theme 2
           li.image
             label Card Image
             form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
@@ -27,8 +24,8 @@
               iframe(name='hiddenFrame')
           li.gradient
             label Web Gradient
-            input(placeholder='#000000')
-            input(placeholder='#FFFFFF')
+            input.color1(placeholder='#000000')
+            input.color2(placeholder='#FFFFFF')
           li.field
             label Field Position/Size
             label.label Height: 
@@ -44,25 +41,10 @@
             .button.gray.delete Delete
       .clear
     .category.active
-      h4 New Category +
+      h4 (No Category)
       ul.gallery
-        li.card New Card +
-  //
-    .category.active
-      h4 Professional
-      ul.gallery
-        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
-          li.card(class=i)
-            img(src='/images/qr.png').qr
-            ul.content
-              - for (i=0; i<=12; i++)
-                li
-    .category
-      h4 Professional
-      ul.gallery
-        - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
-          li.card(class=i)
-            img(src='/images/qr.png').qr
-            ul.content
-              - for (i=0; i<=12; i++)
-                li
+        //
+          li.card
+            a(href='#').theme-1.active 6
+            a(href='#').theme-2 12
+    .button.gray.create Add New

@@ -1,4 +1,31 @@
 (function() {
+  var $window, dateFormat, loadAlert, loadConfirm, loadLoading, loadModal, usualDelay;
+  JSON.stringify = JSON.stringify || function(obj) {
+    var arr, json, n, t, v, _len;
+    t = typeof obj;
+    if (t !== "object" || obj === null) {
+      if (t === "string") {
+        obj = '"' + obj + '"';
+      }
+      return String(obj);
+    } else {
+      n = [];
+      v = [];
+      json = [];
+      arr = obj && obj.constructor === Array;
+      for (v = 0, _len = obj.length; v < _len; v++) {
+        n = obj[v];
+        t = typeof v;
+        if (t === "string") {
+          v = '"' + v + '"';
+        } else if (t === "object" && v !== null) {
+          v = JSON.stringify(v);
+        }
+        json.push((arr ? "" : '"' + n + '":') + String(v));
+      }
+      return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+    }
+  };
   /*
    * 
    * Set settings / defaults
@@ -7,7 +34,6 @@
    * some constants
    * 
   */
-  var $window, dateFormat, loadAlert, loadConfirm, loadLoading, loadModal, usualDelay;
   $.ajaxSetup({
     type: 'POST'
   });
@@ -517,7 +543,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $dForm, $designer, $fieldH, $fieldW, $fieldX, $fieldY, $gs, $li, $lines, $mc, $qr, $upload, $win, advanceSlide, closeMenu, dh, dw, expandMenu, hasHidden, i, item_name, j, marginIncrement, maxSlides, monitorForComplete, newMargin, path, pos, successfulLogin, template, timer, updateCards, updateStats, winH, _i, _len, _len2, _ref;
+    var $a, $am, $body, $card, $dForm, $designer, $fieldH, $fieldW, $fieldX, $fieldY, $gs, $lines, $mc, $qr, $upload, $win, activeTheme, advanceSlide, closeMenu, dh, dw, executeSave, expandMenu, hasHidden, i, item_name, j, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, successfulLogin, template, timer, updateCards, updateStats, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -576,6 +602,7 @@
     
       */
     if (path === '/admin') {
+      $designer = $('.designer');
       $fieldH = $('.field input.height');
       $fieldW = $('.field input.width');
       $fieldX = $('.field input.x');
@@ -608,10 +635,10 @@
           return _results;
         })()
       };
-      $designer = $('.designer .card');
-      dh = $designer.height();
-      dw = $designer.width();
-      $lines = $designer.find('.line');
+      $card = $designer.find('.card');
+      dh = $card.height();
+      dw = $card.width();
+      $lines = $card.find('.line');
       updateStats = function(e, ui) {
         $fieldY.val(Math.round(ui.position.top / dh * 10000) / 100 + '%');
         $fieldX.val(Math.round(ui.position.left / dw * 10000) / 100 + '%');
@@ -631,7 +658,7 @@
         handles: 'n, e, s, w'
       });
       $lines.fitText();
-      $qr = $designer.find('.qr');
+      $qr = $card.find('.qr');
       $qr.draggable({
         drag: updateStats,
         grid: [5, 5],
@@ -644,31 +671,101 @@
         handles: 'n, e, s, w',
         aspectRatio: 1
       });
+      $qr.hide();
       $lines.hide();
-      _ref = template.themes[0].positions;
-      for (i = 0, _len = _ref.length; i < _len; i++) {
-        pos = _ref[i];
-        $li = $lines.eq(i);
-        $li.show().css({
-          top: pos.y / 100 * dh,
-          left: pos.x / 100 * dw,
-          width: (pos.width / 100 * dw) + 'px',
-          fontSize: (pos.font_size / 100 * dh) + 'px',
-          lineHeight: (pos.font_size / 100 * dh) + 'px'
-        });
-      }
-      $qr.css({
-        top: template.themes[0].qr_y / 100 * dh,
-        left: template.themes[0].qr_x / 100 * dw,
-        height: template.themes[0].qr_size / 100 * dh,
-        width: template.themes[0].qr_size / 100 * dh
-      });
-      $dForm = $('.designer form');
+      /*
+          for pos,i in template.themes[0].positions
+            $li = $lines.eq i
+            $li.show().css
+              top: pos.y/100 * dh
+              left: pos.x/100 * dw
+              width: (pos.width/100 * dw) + 'px'
+              fontSize: (pos.font_size/100 * dh) + 'px'
+              lineHeight: (pos.font_size/100 * dh) + 'px'
+          $qr.css
+            top: template.themes[0].qr_y/100 * dh
+            left: template.themes[0].qr_x/100 * dw
+            height: template.themes[0].qr_size/100 * dh
+            width: template.themes[0].qr_size/100 * dh
+          */
+      $dForm = $designer.find('form');
       $upload = $dForm.find('[type=file]');
       $upload.change(function() {
         return $dForm.submit();
       });
-      $('.designer .buttons .delete').click(function() {
+      activeTheme = false;
+      $('.theme-1,.theme-2').click(function() {
+        var $c, $t;
+        $t = $(this);
+        $c = $t.closest('.card');
+        $c.click();
+        $('.theme-1,.theme-2').removeClass('active');
+        $t.addClass('active');
+        return false;
+      });
+      executeSave = function(next) {
+        var data;
+        data = {
+          theme: {
+            category: $designer.find('.category input').val(),
+            styles: []
+          }
+        };
+        return $.ajax({
+          url: '/saveTheme',
+          data: JSON.stringify(data),
+          success: function(serverResponse) {
+            if (!serverResponse.success) {
+              $designer.find('.save').showTooltip({
+                message: 'Error saving.'
+              });
+            }
+            if (next) {
+              return next();
+            }
+          },
+          error: function() {
+            $designer.find('.save').showTooltip({
+              message: 'Error saving.'
+            });
+            if (next) {
+              return next();
+            }
+          }
+        });
+      };
+      pageTimer = 0;
+      setPageTimer = function() {
+        clearTimeout(pageTimer);
+        return pageTimer = setTimeout(function() {
+          return executeSave();
+        }, 500);
+      };
+      $designer.find('.category input').keyup(setPageTimer);
+      noTheme = function() {
+        if (!activeTheme) {
+          loadAlert({
+            content: 'Please create or select a theme first'
+          });
+          return true;
+        } else {
+          return false;
+        }
+      };
+      $designer.find('.buttons .save').click(function() {
+        if (noTheme()) {
+          return false;
+        }
+        return loadLoading({}, function(closeLoading) {
+          return executeSave(function() {
+            return closeLoading();
+          });
+        });
+      });
+      $designer.find('.buttons .delete').click(function() {
+        if (noTheme()) {
+          return false;
+        }
         return loadModal({
           content: '<p>Are you sure you want to permanently delete this template?</p>',
           height: 160,
@@ -723,7 +820,7 @@
         });
       }
     });
-    for (_i = 0, _len2 = hasHidden.length; _i < _len2; _i++) {
+    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
       i = hasHidden[_i];
       i.$this.hide();
     }
@@ -738,7 +835,7 @@
       });
     };
     $win.scroll(function() {
-      var i, newWinH, timeLapse, _j, _len3, _results;
+      var i, newWinH, timeLapse, _j, _len2, _results;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.length) {
         if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
@@ -753,9 +850,9 @@
             v = $t.val();
             $t.val('');
             timers = (function() {
-              var _ref2, _results;
+              var _ref, _results;
               _results = [];
-              for (j = 0, _ref2 = v.length; 0 <= _ref2 ? j <= _ref2 : j >= _ref2; 0 <= _ref2 ? j++ : j--) {
+              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
                 _results.push((function(j) {
                   var timer;
                   timer = setTimeout(function() {
@@ -771,10 +868,10 @@
               return _results;
             })();
             $t.bind('clearMe', function() {
-              var i, _j, _len3;
+              var i, _j, _len2;
               console.log($t.data('cleared'));
               if (!$t.data('cleared')) {
-                for (_j = 0, _len3 = timers.length; _j < _len3; _j++) {
+                for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
                   i = timers[_j];
                   clearTimeout(i);
                 }
@@ -790,7 +887,7 @@
         }
       }
       _results = [];
-      for (_j = 0, _len3 = hasHidden.length; _j < _len3; _j++) {
+      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
         i = hasHidden[_j];
         _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
       }
