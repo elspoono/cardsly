@@ -1384,6 +1384,10 @@ input
   color: #eee;
   text-decoration: none;
 }
+.shipping_table {
+  font-size: 20px;
+  text-decoration: none;
+}
 .footer {
   font-size: 12.6px;
   line-height: 1.5em;

@@ -1020,6 +1020,13 @@
       });
       return false;
     });
+    $('#show_activity').change()(function() {
+      var e;
+      $('activity_container ul').hide('slow');
+      e = '#' + $(':selected', $(this)).attr('name');
+      return $(e).show('slow');
+    });
+    $('#activity_container ul').hide();
     /*
       Shopping Cart Stuff
       */
