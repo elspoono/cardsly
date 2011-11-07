@@ -43,9 +43,15 @@
   .cell-content 
     h1 Card Chart
     select
-        option Number of Cards Scanned
+        option(name="") Number of Cards Scanned
         option Number of cards set to default
         option Number of scans in last 30 days
+    .card_chart
+      ul
+        li
+          .unfilled
+            .filled
+    
       
 .section
   .cell-bg
@@ -56,8 +62,8 @@
         option(name="recent_cards") Recent Cards
         option(name="recent_changes") Recent Changes
         option(name="recent_scans") Recent Scans
-    .div(id="activity_container")
-      .ul(id="recent_cards")
+    div(id="activity_container")
+      ul(id="recent_cards")
         li
           .recent_card_table
             table(border="5")
@@ -76,7 +82,7 @@
                 td 11-26-2011
                 td
                  a(href='reportproblem') Report a Problem    
-      .ul(id="recent_changes")
+      ul(id="recent_changes")
         li
           .recent_changes_table
             table(border="5")
@@ -95,7 +101,7 @@
                 td 11-26-2011
                 td
                  a(href='reportproblem') Report a Problem
-      .ul(id="recent_scans")
+      ul(id="recent_scans")
         li
           .recent_scans_table
             table(border="5")

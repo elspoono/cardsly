@@ -20,6 +20,7 @@ $c-dark-cool = #111111
 $c-mid-warm = #FFFFFF
 $c-dark-warm = #333333
 $c-black = #000000
+$c-blue = #3ea9f5
 
 $c-bg-dark = #524641 //#006E9F
 $c-bg-light = #908575 //#006E9F
@@ -1087,7 +1088,27 @@ label
 .shipping_table
   font-size 20px
   text-decoration none
-  
+.card_chart
+  .unfilled
+    border-radius(5px)
+    position relative
+    left 0px
+    top 0px
+    height 200px
+    width 250px
+    z-index 300
+    background $c-light
+    display block
+    .filled
+      position relative
+      border-radius(5px)
+      padding 0px
+      top 0px
+      height 200px
+      width 200px
+      z-index 400
+      background $c-blue
+      display block
   
 
 
