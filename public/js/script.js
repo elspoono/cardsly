@@ -1249,9 +1249,9 @@
       });
       return false;
     });
-    $('#show_activity').change()(function() {
+    $('#show_activity').change(function() {
       var e;
-      $('activity_container ul').hide('slow');
+      $('#activity_container ul').hide('slow');
       e = '#' + $(':selected', $(this)).attr('name');
       return $(e).show('slow');
     });
