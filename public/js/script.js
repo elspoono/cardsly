@@ -517,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, closeMenu, default_theme, dh, dw, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, successfulLogin, timer, updateCards, winH, _i, _len;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -580,25 +580,133 @@
       $card = $designer.find('.card');
       $qr = $card.find('.qr');
       $lines = $card.find('.line');
+      $body = $(document);
       $cat = $designer.find('.category-field input');
       $color1 = $designer.find('.color1');
       $color2 = $designer.find('.color2');
+      $fonts = $designer.find('.font-style');
+      $font_color = $fonts.find('.color');
+      $font_family = $fonts.find('.font-family');
       $dForm = $designer.find('form');
       $upload = $dForm.find('[type=file]');
-      dh = $card.outerHeight();
-      dw = $card.outerWidth();
+      card_height = $card.outerHeight();
+      card_width = $card.outerWidth();
+      card_inner_height = $card.height();
+      card_inner_width = $card.width();
       active_theme = false;
       $qr.hide();
       $lines.hide();
+      shiftAmount = 1;
+      $body.keydown(function(e) {
+        var $active_item, bottom_bound, c, new_left, new_top, top_bound;
+        $active_item = $card.find('.active');
+        c = e.keyCode;
+        if ($active_item.length && !$font_color.is(':focus') && !$font_family.is(':focus')) {
+          if (e.keyCode === 16) {
+            shiftAmount = 10;
+          }
+          if (c === 38 || c === 40) {
+            new_top = parseInt($active_item.css('top'));
+            if (c === 38) {
+              new_top -= shiftAmount;
+            }
+            if (c === 40) {
+              new_top += shiftAmount;
+            }
+            top_bound = (card_height - card_inner_height) / 2;
+            bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
+            if (new_top < top_bound) {
+              new_top = top_bound;
+            }
+            if (new_top > bottom_bound) {
+              new_top = bottom_bound;
+            }
+            $active_item.css('top', new_top);
+          }
+          if (c === 37 || c === 39) {
+            new_left = parseInt($active_item.css('left'));
+            if (c === 37) {
+              new_left -= shiftAmount;
+            }
+            if (c === 39) {
+              new_left += shiftAmount;
+            }
+            top_bound = (card_width - card_inner_width) / 2;
+            bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
+            if (new_left < top_bound) {
+              new_left = top_bound;
+            }
+            if (new_left > bottom_bound) {
+              new_left = bottom_bound;
+            }
+            $active_item.css('left', new_left);
+          }
+          if (c === 38 || c === 40 || c === 39 || c === 37) {
+            return false;
+          }
+        }
+      });
+      $body.keyup(function(e) {
+        if (e.keyCode === 16) {
+          return shiftAmount = 1;
+        }
+      });
+      $font_color.keyup(function() {
+        var $active_item, $t, index;
+        $t = $(this);
+        $active_item = $card.find('.active');
+        index = $active_item.prevAll().length;
+        $active_item.css({
+          color: '#' + $t.val()
+        });
+        return active_theme.positions[index + 1].color = $t.val();
+      });
+      unfocus_highlight = function(e) {
+        var $t;
+        $t = $(e.target);
+        if ($t.hasClass('font-style') || $t.closest('.font-style').length || $t.hasClass('line') || $t.hasClass('qr') || $t.closest('.line').length || $t.closest('.qr').length) {
+          true;
+        } else {
+          $card.find('.active').removeClass('active');
+          $body.unbind('click', unfocus_highlight);
+          $fonts.hide();
+        }
+        return false;
+      };
+      $lines.mousedown(function() {
+        var $pa, $t, index;
+        $t = $(this);
+        $pa = $card.find('.active');
+        $pa.removeClass('active');
+        $t.addClass('active');
+        $body.bind('click', unfocus_highlight);
+        index = $t.prevAll().length;
+        $fonts.show();
+        return $font_color.val(active_theme.positions[index + 1].color);
+      });
+      $qr.mousedown(function() {
+        var $pa, $t;
+        $t = $(this);
+        $pa = $card.find('.active');
+        $pa.removeClass('active');
+        $t.addClass('active');
+        $body.bind('click', unfocus_highlight);
+        return $fonts.hide();
+      });
       $lines.draggable({
-        grid: [5, 5],
+        grid: [10, 10],
         containment: '.designer .card'
       });
       $lines.resizable({
-        grid: 5,
-        handles: 'n, e, s, w, se'
+        grid: 10,
+        handles: 'n, e, s, w, se',
+        resize: function(e, ui) {
+          return $(ui.element).css({
+            'font-size': ui.size.height + 'px',
+            'line-height': ui.size.height + 'px'
+          });
+        }
       });
-      $lines.fitText();
       $qr.draggable({
         grid: [5, 5],
         containment: '.designer .card'
@@ -631,10 +739,10 @@
           return false;
         }
         return result = {
-          h: Math.round(height / dh * 10000) / 100,
-          w: Math.round(width / dw * 10000) / 100,
-          x: Math.round(left / dw * 10000) / 100,
-          y: Math.round(top / dh * 10000) / 100
+          h: Math.round(height / card_height * 10000) / 100,
+          w: Math.round(width / card_width * 10000) / 100,
+          x: Math.round(left / card_width * 10000) / 100,
+          y: Math.round(top / card_height * 10000) / 100
         };
       };
       execute_save = function(next) {
@@ -731,6 +839,8 @@
       };
       for (i = 0; i <= 5; i++) {
         default_theme.positions.push({
+          color: '000000',
+          font_family: 'Arial',
           h: 7,
           w: 50,
           x: 5,
@@ -742,21 +852,23 @@
         active_theme = theme;
         qr = theme.positions.shift();
         $qr.show().css({
-          top: qr.y / 100 * dh,
-          left: qr.x / 100 * dw,
-          height: qr.h / 100 * dh,
-          width: qr.w / 100 * dh
+          top: qr.y / 100 * card_height,
+          left: qr.x / 100 * card_width,
+          height: qr.h / 100 * card_height,
+          width: qr.w / 100 * card_height
         });
         _ref = theme.positions;
         for (i = 0, _len = _ref.length; i < _len; i++) {
           pos = _ref[i];
           $li = $lines.eq(i);
           $li.show().css({
-            top: pos.y / 100 * dh,
-            left: pos.x / 100 * dw,
-            width: (pos.w / 100 * dw) + 'px',
-            fontSize: (pos.h / 100 * dh) + 'px',
-            lineHeight: (pos.h / 100 * dh) + 'px'
+            top: pos.y / 100 * card_height,
+            left: pos.x / 100 * card_width,
+            width: (pos.w / 100 * card_width) + 'px',
+            fontSize: (pos.h / 100 * card_height) + 'px',
+            lineHeight: (pos.h / 100 * card_height) + 'px',
+            fontFamily: pos.font_family,
+            color: '#' + pos.color
           });
         }
         theme.positions.unshift(qr);
@@ -847,7 +959,7 @@
     /*
       Update Cards
     
-      Function used a few places below
+      This is used each time we need to update all the cards on the home page with the new content that's typed in.
       */
     updateCards = function(rowNumber, value) {
       return $('.card .content').each(function() {

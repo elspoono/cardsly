@@ -555,18 +555,25 @@ $ ->
     $card = $designer.find '.card'
     $qr = $card.find '.qr'
     $lines = $card.find '.line'
+    $body = $ document
     #
     $cat = $designer.find '.category-field input'
     #
     $color1 = $designer.find '.color1'
     $color2 = $designer.find '.color2'
     #
+    $fonts = $designer.find '.font-style'
+    $font_color = $fonts.find '.color'
+    $font_family = $fonts.find '.font-family'
+    #
     $dForm = $designer.find 'form'
     $upload = $dForm.find '[type=file]'
     #
     # Set some constants
-    dh = $card.outerHeight()
-    dw = $card.outerWidth()
+    card_height = $card.outerHeight()
+    card_width = $card.outerWidth()
+    card_inner_height = $card.height()
+    card_inner_width = $card.width()
     active_theme = false
     #
     #
@@ -574,14 +581,126 @@ $ ->
     $qr.hide()
     $lines.hide()
     #
-    # The draggind and dropping functions for lines
+    # Key up and down events for active lines
+    shiftAmount = 1
+    $body.keydown (e) ->
+      $active_item = $card.find '.active'
+      c = e.keyCode
+      #
+      # Only if we have a live one, do we do anything with this
+      if $active_item.length and not $font_color.is(':focus') and not $font_family.is(':focus')
+        #
+        # Modify the amount we shift when the shift key is pressed :D
+        # (apparently I like using confusing variable names, ha)
+        if e.keyCode is 16 then shiftAmount = 10
+        #
+        # Up and Down Events
+        if c is 38 or c is 40
+          #
+          # Find out how far the user asked to move
+          new_top = parseInt($active_item.css('top'))
+          if c is 38 then new_top -= shiftAmount
+          if c is 40 then new_top += shiftAmount
+          #
+          # Find out our boundary
+          top_bound = (card_height - card_inner_height)/2
+          bottom_bound = top_bound + card_inner_height - $active_item.outerHeight()
+          #
+          # And then of course, "bound" it
+          # We want to move clear to the max, so we still do it
+          if new_top < top_bound then new_top = top_bound
+          if new_top > bottom_bound then new_top = bottom_bound
+          #
+          # Then set it
+          $active_item.css 'top', new_top
+        #
+        # Left and Right
+        if c is 37 or c is 39
+          #
+          # Find out how far the user asked to move
+          new_left = parseInt($active_item.css('left'))
+          if c is 37 then new_left -= shiftAmount
+          if c is 39 then new_left += shiftAmount
+          #
+          # Find out our boundary
+          top_bound = (card_width - card_inner_width)/2
+          bottom_bound = top_bound + card_inner_width - $active_item.outerWidth()
+          #
+          # And then of course, "bound" it
+          # We want to move clear to the max, so we still do it
+          if new_left < top_bound then new_left = top_bound
+          if new_left > bottom_bound then new_left = bottom_bound
+          #
+          # Then set it
+          $active_item.css 'left', new_left
+        #
+        # Always return false on the arrow key presses
+        if c is 38 or c is 40 or c is 39 or c is 37 then return false
+    $body.keyup (e) ->
+      if e.keyCode is 16 then shiftAmount = 1
+    #
+    # Changing font color on key presses
+    $font_color.keyup ->
+      $t = $ this
+      $active_item = $card.find('.active')
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      #
+      # Update it all
+      $active_item.css
+        color: '#'+$t.val()
+      active_theme.positions[index+1].color = $t.val()
+    #
+    # Helper function for highlighting going away
+    unfocus_highlight = (e) ->
+      $t = $ e.target
+      if $t.hasClass('font-style') or $t.closest('.font-style').length or $t.hasClass('line') or $t.hasClass('qr') or $t.closest('.line').length or $t.closest('.qr').length
+        true
+      else
+        $card.find('.active').removeClass 'active'
+        $body.unbind 'click', unfocus_highlight
+        $fonts.hide()
+      false
+    #
+    # Highlighting and making a line the active one
+    $lines.mousedown ->
+      #
+      # Set it up and make it active
+      $t = $ this
+      $pa = $card.find '.active'
+      $pa.removeClass 'active'
+      $t.addClass 'active'
+      #
+      # Allow body clicks to unfocus it
+      $body.bind 'click', unfocus_highlight
+      #
+      # Find it's index relative to it's peers
+      index = $t.prevAll().length
+      $fonts.show()
+      $font_color.val active_theme.positions[index+1].color
+    #
+    # Highlighting and making a line the active one
+    $qr.mousedown ->
+      $t = $ this
+      $pa = $card.find '.active'
+      $pa.removeClass 'active'
+      $t.addClass 'active'
+      $body.bind 'click', unfocus_highlight
+      $fonts.hide()
+
+    #
+    # The dragging and dropping functions for lines
     $lines.draggable
-      grid: [5,5]
+      grid: [10,10]
       containment: '.designer .card'
     $lines.resizable
-      grid: 5
+      grid: 10
       handles: 'n, e, s, w, se'
-    $lines.fitText()
+      resize: (e, ui) ->
+        $(ui.element).css
+          'font-size': ui.size.height + 'px'
+          'line-height': ui.size.height + 'px'
     #
     # Dragging and dropping functions for the qr code
     $qr.draggable
@@ -629,10 +748,10 @@ $ ->
       #
       # Calculate a percentage and send it
       result = 
-        h: Math.round(height / dh * 10000) / 100
-        w: Math.round(width / dw * 10000) / 100
-        x: Math.round(left / dw * 10000) / 100
-        y: Math.round(top / dh * 10000) / 100
+        h: Math.round(height / card_height * 10000) / 100
+        w: Math.round(width / card_width * 10000) / 100
+        x: Math.round(left / card_width * 10000) / 100
+        y: Math.round(top / card_height * 10000) / 100
     #
     # Do the actual save.
     #
@@ -731,6 +850,8 @@ $ ->
       ]
     for i in [0..5]
       default_theme.positions.push
+        color: '000000'
+        font_family: 'Arial'
         h: 7
         w: 50
         x: 5
@@ -742,18 +863,20 @@ $ ->
       active_theme = theme
       qr = theme.positions.shift()
       $qr.show().css
-        top: qr.y/100 * dh
-        left: qr.x/100 * dw
-        height: qr.h/100 * dh
-        width: qr.w/100 * dh
+        top: qr.y/100 * card_height
+        left: qr.x/100 * card_width
+        height: qr.h/100 * card_height
+        width: qr.w/100 * card_height
       for pos,i in theme.positions
         $li = $lines.eq i
         $li.show().css
-          top: pos.y/100 * dh
-          left: pos.x/100 * dw
-          width: (pos.w/100 * dw) + 'px'
-          fontSize: (pos.h/100 * dh) + 'px'
-          lineHeight: (pos.h/100 * dh) + 'px'
+          top: pos.y/100 * card_height
+          left: pos.x/100 * card_width
+          width: (pos.w/100 * card_width) + 'px'
+          fontSize: (pos.h/100 * card_height) + 'px'
+          lineHeight: (pos.h/100 * card_height) + 'px'
+          fontFamily: pos.font_family
+          color: '#'+pos.color
       theme.positions.unshift qr
       $cat.val theme.category
       $color1.val theme.color1
@@ -841,7 +964,7 @@ $ ->
   ###
   Update Cards
 
-  Function used a few places below
+  This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
   updateCards = (rowNumber, value) ->
     $('.card .content').each -> $(this).find('li:eq('+rowNumber+')').html value

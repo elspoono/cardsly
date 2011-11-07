@@ -768,6 +768,7 @@ input {
   padding: 0;
 }
 .designer .card .qr {
+  border: 1px solid transparent;
   display: block;
   position: absolute;
   height: 60px;
@@ -779,13 +780,17 @@ input {
   height: 100%;
 }
 .designer .card .line {
-  border-bottom: 1px solid #333;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #908575;
   height: 20px;
   width: 350px;
   display: block;
   position: absolute;
   white-space: nowrap;
   overflow: hidden;
+}
+.designer .card .active {
+  border: 1px solid #56a3da;
 }
 .designer .options {
   float: right;
@@ -799,7 +804,8 @@ input {
 .designer .options li label {
   display: block;
 }
-.designer .options li input {
+.designer .options li input,
+.designer .options li select {
   font-size: 12.6px;
   line-height: 1.5em;
   margin-right: 10px;
@@ -807,18 +813,28 @@ input {
   width: 180px;
 }
 .designer .options li .color1,
-.designer .options li .color2 {
-  width: 90px;
+.designer .options li .color2,
+.designer .options li .color {
+  width: 70px;
+}
+.designer .options li .font-family {
+  width: 130px;
 }
 .designer .options li .pre {
   line-height: 30px;
   float: left;
   display: block;
 }
+.designer .options .font-style {
+  display: none;
+  border: 1px solid #56a3da;
+  padding: 5px;
+  margin: -5px;
+}
 .designer .options .buttons .button {
   height: 20px;
   width: 80px;
-  margin: 30px 10px 10px 0;
+  margin: 10px 10px 10px 0;
   font-size: 12.6px;
   line-height: 1.5em;
 }
