@@ -825,11 +825,16 @@ input {
   float: left;
   display: block;
 }
+.designer .options .gradient,
+.designer .options .font-style {
+  background: #524641;
+  background: rgba(82,70,65,0.30);
+  border: 2px solid #908575;
+  padding: 5px;
+  margin: 5px -5px;
+}
 .designer .options .font-style {
   display: none;
-  border: 1px solid #56a3da;
-  padding: 5px;
-  margin: -5px;
 }
 .designer .options .buttons .button {
   height: 20px;

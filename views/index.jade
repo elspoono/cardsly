@@ -104,51 +104,7 @@
 .section
   .cell-bg
   .cell-content
-
-    .img-loader
-      img(src='/images/buttons/google-click.png')
-      img(src='/images/buttons/google-hover.png')
-      img(src='/images/buttons/facebook-click.png')
-      img(src='/images/buttons/facebook-hover.png')
-      img(src='/images/buttons/linkedin-click.png')
-      img(src='/images/buttons/linkedin-hover.png')
-      img(src='/images/buttons/twitter-click.png')
-      img(src='/images/buttons/twitter-hover.png')
-      img(src='/images/buttons/new-click.png')
-      img(src='/images/buttons/new-hover.png')
-
     h3 Step 2 : Purchase
-    .signins
-      if user
-        p.subtitle I see you've already signed in.
-        p
-          | Welcome back 
-          =user.name
-          =user.email
-      else
-        p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
-          .socials
-            p
-              | I want to sign in to 
-              span.cardsly cards
-                span.alt .ly
-              | &nbsp;with:
-            a.button.twitter(href='/auth/twitter')
-              span Twitter
-            a.button.facebook(href='/auth/facebook')
-              span Facebook
-            a.button.linkedin(href='/auth/linkedin')
-              span LinkedIn
-            a.button.google(href='/auth/google')
-              span Google
-            .clear
-            p -or-
-          .local
-            a.button.new(href='#')
-              span Create a username and password
-              span.subtitle username and password
-            .clear
-      
     .order-details
       ul.radio-text-fields.left.quantity
         li
@@ -197,6 +153,50 @@
           input.state(placeholder='State')
           .subtitle U.S. Addresses only right now
       .clear
+
+    .img-loader
+      img(src='/images/buttons/google-click.png')
+      img(src='/images/buttons/google-hover.png')
+      img(src='/images/buttons/facebook-click.png')
+      img(src='/images/buttons/facebook-hover.png')
+      img(src='/images/buttons/linkedin-click.png')
+      img(src='/images/buttons/linkedin-hover.png')
+      img(src='/images/buttons/twitter-click.png')
+      img(src='/images/buttons/twitter-hover.png')
+      img(src='/images/buttons/new-click.png')
+      img(src='/images/buttons/new-hover.png')
+
+    .signins
+      if user
+        p.subtitle I see you've already signed in.
+        p
+          | Welcome back 
+          =user.name
+          =user.email
+      else
+        p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
+          .socials
+            p
+              | I want to sign in to 
+              span.cardsly cards
+                span.alt .ly
+              | &nbsp;with:
+            a.button.twitter(href='/auth/twitter')
+              span Twitter
+            a.button.facebook(href='/auth/facebook')
+              span Facebook
+            a.button.linkedin(href='/auth/linkedin')
+              span LinkedIn
+            a.button.google(href='/auth/google')
+              span Google
+            .clear
+            p -or-
+          .local
+            a.button.new(href='#')
+              span Create a username and password
+              span.subtitle username and password
+            .clear
+      
     .order-total
       .title It costs this much
       .price $10

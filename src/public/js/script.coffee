@@ -549,6 +549,7 @@ $ ->
   # Only an admin page, do this stuff
   if path == '/admin'
 
+
     # Grab all the guys we're going to use
     $designer = $ '.designer'
     #
@@ -576,6 +577,34 @@ $ ->
     card_inner_width = $card.width()
     active_theme = false
     #
+    #
+    ###
+    GOOGLE FONTS
+
+    1. Load them
+    2. Make their common names available
+
+    ###
+
+    # Loading Them
+    ###
+    google.load "webfont", "1"
+    google.setOnLoadCallback ->
+      WebFont.load google:
+        families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
+    ###
+
+    # Common Names
+    font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM Fell English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+
+    ###
+    END GOOGLE FONTS
+    ###
+    #
+    # Load in those font families
+    $font_family.find('option').remove()
+    for fam in font_families
+      $font_family.append '<option value="' + fam + '">' + fam + '</option>'
     #
     # QRs and Lines are hidden By default
     $qr.hide()
@@ -660,7 +689,7 @@ $ ->
       else
         $card.find('.active').removeClass 'active'
         $body.unbind 'click', unfocus_highlight
-        $fonts.hide()
+        $fonts.stop(true,false).slideUp()
       false
     #
     # Highlighting and making a line the active one
@@ -677,8 +706,9 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $t.prevAll().length
-      $fonts.show()
+      $fonts.stop(true,false).slideDown()
       $font_color.val active_theme.positions[index+1].color
+      $font_family.find('option[value="' + active_theme.positions[index+1].font_family + '"]').attr 'selected', 'selected'
     #
     # Highlighting and making a line the active one
     $qr.mousedown ->
@@ -687,13 +717,30 @@ $ ->
       $pa.removeClass 'active'
       $t.addClass 'active'
       $body.bind 'click', unfocus_highlight
-      $fonts.hide()
+      $fonts.stop(true,false).slideUp()
+
+    #
+    # A global page timer for the automatic save event.
+    pageTimer = 0
+    setPageTimer = ->
+      clearTimeout pageTimer
+      pageTimer = setTimeout ->
+        execute_save()
+      , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
+
+    #
+    # Set that timer on the right events for the right things
+    $cat.keyup setPageTimer
+    $font_color.keyup setPageTimer
+    $color1.keyup setPageTimer
+    $color2.keyup setPageTimer
 
     #
     # The dragging and dropping functions for lines
     $lines.draggable
       grid: [10,10]
       containment: '.designer .card'
+      stop: setPageTimer
     $lines.resizable
       grid: 10
       handles: 'n, e, s, w, se'
@@ -701,16 +748,19 @@ $ ->
         $(ui.element).css
           'font-size': ui.size.height + 'px'
           'line-height': ui.size.height + 'px'
+      stop: setPageTimer
     #
     # Dragging and dropping functions for the qr code
     $qr.draggable
       grid: [5,5]
       containment: '.designer .card'
+      stop: setPageTimer
     $qr.resizable
       grid: 5
       containment: '.designer .card'
       handles: 'n, e, s, w, ne, nw, se, sw'
       aspectRatio: 1
+      stop: setPageTimer
     #
 
     #
@@ -802,20 +852,7 @@ $ ->
 
 
     #
-    # A global page timer for the automatic save event.
-    pageTimer = 0
-    setPageTimer = ->
-      clearTimeout pageTimer
-      pageTimer = setTimeout ->
-        execute_save()
-      , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
-
-    #
-    # Set that timer on the right events for the right things
-    $cat.keyup setPageTimer
-    $color1.keyup setPageTimer
-    $color2.keyup setPageTimer
-
+    # This catches the script parent.window call sent from app.coffee on the s3 form submit
     $.s3_result = (s3_id) ->
       if not noTheme() and s3_id
         active_theme.s3_id = s3_id
@@ -851,7 +888,7 @@ $ ->
     for i in [0..5]
       default_theme.positions.push
         color: '000000'
-        font_family: 'Arial'
+        font_family: 'Vast Shadow'
         h: 7
         w: 50
         x: 5
