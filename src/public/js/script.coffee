@@ -1196,7 +1196,21 @@ $ ->
       ,1000
     false
  
-  $('.feedback a').click () ->
+  $feedback_a = $ '.feedback a'
+  $feedback_a.mouseover () ->
+    $feedback = $ '.feedback'
+    $feedback.stop(true,false).animate
+      right: '-37px'
+      ,250
+  $feedback_a.mouseout () ->
+    $feedback = $ '.feedback'
+    $feedback.stop(true,false).animate
+      right: '-45px'
+      ,250
+
+      
+    
+  $feedback_a.click () ->
     loadModal
       content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
       width: 400
@@ -1228,12 +1242,20 @@ $ ->
             , 1000
       ] 
     false
+  # This is the code that makes the dropdown menu changes which chart is displayed on the account page
 
   $('#show_activity').change () ->
     $('#activity_container ul').hide('slow')
     e='#' + $(':selected', $(this)).attr 'name'
     $(e).show('slow')
   $('#activity_container ul').hide()
+
+  #This is the code to make which card chart is dispaled based on the dropdown menu
+  $('#show_card_chart').change () ->
+    $('#chart_container ul').hide('slow')
+    e='#' + $(':selected', $(this)).attr 'name'
+    $(e).show('slow')
+  $('#chart_container ul').hide()
 
          
   ###
