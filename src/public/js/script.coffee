@@ -1394,3 +1394,11 @@ $ ->
       advanceSlide()
     , 6500
   , 3000
+
+
+  $slides = $ '.slides'
+  $slides.animate
+    'padding-left':'301px'
+
+
+    

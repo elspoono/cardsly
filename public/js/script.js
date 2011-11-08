@@ -517,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $feedback_a, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $feedback_a, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $slides, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -1442,7 +1442,7 @@
       newMargin -= -marginIncrement;
       return advanceSlide();
     });
-    return timer = setTimeout(function() {
+    timer = setTimeout(function() {
       marginIncrement = $('.slides').width();
       newMargin -= marginIncrement;
       advanceSlide();
@@ -1453,5 +1453,9 @@
         return advanceSlide();
       }, 6500);
     }, 3000);
+    $slides = $('.slides');
+    return $slides.animate({
+      'padding-left': '301px'
+    });
   });
 }).call(this);

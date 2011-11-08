@@ -1549,3 +1549,30 @@ input
   float: left;
   margin: 30px;
 }
+.phone-frame {
+  height: 542px;
+  width: 276px;
+  margin: 0 287px;
+  display: block;
+}
+.slides,
+.phone-frame {
+  position: absolute;
+}
+.container-slides {
+  overflow: hidden;
+  width: 850px;
+  height: 562px;
+  position: relative;
+}
+.slides {
+  padding-top: 96px;
+  width: 9000px;
+}
+.slides li {
+  padding: 0 10px;
+  float: left;
+}
+.phone-frame {
+  z-index: 300;
+}
