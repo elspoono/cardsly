@@ -42,22 +42,38 @@
   .cell-bg
   .cell-content 
     h1 Card Chart
-    select
-        option(name="") Number of Cards Scanned
-        option Number of cards set to default
-        option Number of scans in last 30 days
-    .card_chart
-      ul
+    .chart_dropdown
+      select(id="show_card_chart")
+        option(name="cards_scanned") Number of Cards Scanned
+        option(name="cards_default") Number of cards set to default
+        option(name="cards_scans_30days") Number of scans in last 30 days
+    div(id="chart_container")
+      ul(id="cards_scanned")
         li
-          .unfilled
-            .filled
-    
-      
+          .chart_scanned
+            ul
+              li
+                .unfilled_scanned
+                  .filled_scanned
+      ul(id="cards_default")
+        li
+          .chart_default
+            ul
+              li
+                .unfilled_default
+                  .filled_default
+      ul(id="cards_scans_30days")
+        li
+          .chart_scans_30days
+            ul
+              li
+                .unfilled_scans_30days
+                  .filled_scans_30days
 .section
   .cell-bg
   .cell-content
+    h1 Recent Activity
     .activity_dropdown
-      h1 Recent Activity
       select(id="show_activity")
         option(name="recent_cards") Recent Cards
         option(name="recent_changes") Recent Changes

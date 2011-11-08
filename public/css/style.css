@@ -1394,13 +1394,13 @@ input
 }
 .feedback {
   top: 40%;
-  right: -35px;
+  right: -45px;
   cursor: pointer;
   position: fixed;
   z-index: 500;
 }
 .feedback a {
-  width: 100px;
+  width: 110px;
   height: 40px;
   line-height: 40px;
   text-align: center;
@@ -1425,7 +1425,7 @@ input
   font-size: 20px;
   text-decoration: none;
 }
-.card_chart .unfilled {
+.chart_scanned .unfilled_scanned {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -1438,7 +1438,7 @@ input
   background: #eee;
   display: block;
 }
-.card_chart .unfilled .filled {
+.chart_scanned .unfilled_scanned .filled_scanned {
   position: relative;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -1449,6 +1449,58 @@ input
   width: 200px;
   z-index: 400;
   background: #3ea9f5;
+  display: block;
+}
+.chart_default .unfilled_default {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  height: 200px;
+  width: 250px;
+  z-index: 300;
+  background: #eee;
+  display: block;
+}
+.chart_default .unfilled_default .filled_default {
+  position: relative;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0px;
+  top: 0px;
+  height: 200px;
+  width: 200px;
+  z-index: 400;
+  background: #e3007b;
+  display: block;
+}
+.chart_scans_30days .unfilled_scans_30days {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  height: 200px;
+  width: 250px;
+  z-index: 300;
+  background: #eee;
+  display: block;
+}
+.chart_scans_30days .unfilled_scans_30days .filled_scans_30days {
+  position: relative;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0px;
+  top: 0px;
+  height: 200px;
+  width: 200px;
+  z-index: 400;
+  background: #e3007b;
   display: block;
 }
 .footer {

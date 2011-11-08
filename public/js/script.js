@@ -517,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $feedback_a, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -1205,7 +1205,22 @@
       });
       return false;
     });
-    $('.feedback a').click(function() {
+    $feedback_a = $('.feedback a');
+    $feedback_a.mouseover(function() {
+      var $feedback;
+      $feedback = $('.feedback');
+      return $feedback.stop(true, false).animate({
+        right: '-37px'
+      }, 250);
+    });
+    $feedback_a.mouseout(function() {
+      var $feedback;
+      $feedback = $('.feedback');
+      return $feedback.stop(true, false).animate({
+        right: '-45px'
+      }, 250);
+    });
+    $feedback_a.click(function() {
       loadModal({
         content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
         width: 400,
@@ -1256,6 +1271,13 @@
       return $(e).show('slow');
     });
     $('#activity_container ul').hide();
+    $('#show_card_chart').change(function() {
+      var e;
+      $('#chart_container ul').hide('slow');
+      e = '#' + $(':selected', $(this)).attr('name');
+      return $(e).show('slow');
+    });
+    $('#chart_container ul').hide();
     /*
       Shopping Cart Stuff
       */
