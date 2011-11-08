@@ -1426,6 +1426,36 @@ input
   color: #eee;
   text-decoration: none;
 }
+.shipping_table {
+  font-size: 20px;
+  text-decoration: none;
+}
+.card_chart .unfilled {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  height: 200px;
+  width: 250px;
+  z-index: 300;
+  background: #eee;
+  display: block;
+}
+.card_chart .unfilled .filled {
+  position: relative;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0px;
+  top: 0px;
+  height: 200px;
+  width: 200px;
+  z-index: 400;
+  background: #3ea9f5;
+  display: block;
+}
 .footer {
   font-size: 12.6px;
   line-height: 1.5em;
@@ -1471,4 +1501,31 @@ input
 .sam {
   float: left;
   margin: 30px;
+}
+.phone-frame {
+  height: 542px;
+  width: 276px;
+  margin: 0 287px;
+  display: block;
+}
+.slides,
+.phone-frame {
+  position: absolute;
+}
+.container-slides {
+  overflow: hidden;
+  width: 850px;
+  height: 562px;
+  position: relative;
+}
+.slides {
+  padding-top: 96px;
+  width: 9000px;
+}
+.slides li {
+  padding: 0 10px;
+  float: left;
+}
+.phone-frame {
+  z-index: 300;
 }

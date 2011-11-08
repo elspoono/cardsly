@@ -1229,7 +1229,11 @@ $ ->
       ] 
     false
 
-
+  $('#show_activity').change () ->
+    $('#activity_container ul').hide('slow')
+    e='#' + $(':selected', $(this)).attr 'name'
+    $(e).show('slow')
+  $('#activity_container ul').hide()
 
          
   ###
@@ -1405,3 +1409,11 @@ $ ->
       advanceSlide()
     , 6500
   , 3000
+
+
+  $slides = $ '.slides'
+  $slides.animate
+    'padding-left':'301px'
+
+
+    
