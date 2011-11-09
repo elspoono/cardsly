@@ -8,11 +8,12 @@
         .qr
           img(src='/images/qr.png')
         ul.content
+          - lines = ['Jimbo bo Jim','Banker Extraordinaire','Cool Cats Cucumbers','57 Bakers, Edwarstonville ','555.555.5555','New York','','h','i','j','l','m']
           - for(var i=0; i<12; i++)
-            .line(class='nth-'+i) line number  
-              =i+1
+            .line(class='nth-'+i)
+              =lines[i]
       .options
-        ul
+        ul.not-font-style
           li.category-field
             label Category
             input(placeholder='Professional')
@@ -28,14 +29,16 @@
             input.color1(placeholder='000000')
             span.pre #
             input.color2(placeholder='FFFFFF')
+        ul
           li.font-style
             label Font
             span.pre #
             input.color(placeholder='000000')
-            select.font-family
+            select.font-family(size='10')
               option
               option Luckiest Guy
               option Arial
+        ul
           li.buttons
             .button.normal.save Save
             .button.gray.delete Delete
