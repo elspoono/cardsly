@@ -1605,3 +1605,14 @@ input
 .phone-frame {
   z-index: 300;
 }
+.internet_explorer_error_page {
+  font-size: 16px;
+}
+.browsers {
+  overflow: hidden;
+  margin: 0 auto;
+}
+.browsers li {
+  padding: 30px 15px 15px 38px;
+  float: left;
+}

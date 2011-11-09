@@ -758,12 +758,22 @@ app.get '/account', (req, res) ->
     user: req.user
     session: req.session
 
+
+# Splash Page
+app.get '/splash', (req, res) -> 
+  res.render 'splash'
+    user: req.user
+    session: req.session
+    layout: 'layout_landing_page'
+
+
+
 # Change_Password Page
 app.get '/change_password', (req, res) ->
   res.render 'change_password'
     user: req.user
     session: req.session
-
+    
 
 
 # Generic Error handler page itself
