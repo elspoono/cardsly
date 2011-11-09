@@ -727,6 +727,8 @@ app.get '/admin', securedAdminPage, (req, res) ->
     user: req.user
     session: req.session
     scripts:[
+      '/js/libs/colorpicker/js/colorpicker.js'
+      '/js/libs/qrcode.js'
       '/js/admin.js'
     ]
 

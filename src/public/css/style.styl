@@ -610,6 +610,10 @@ input
       padding 0
     // QR Code Image
     .qr
+      .border
+        background $c-light
+        height 100%
+        width 100%
       border 1px solid transparent
       img
         width 100%
@@ -619,6 +623,15 @@ input
       height 60px
       width 60px
       margin 0
+      table
+        padding 5%
+        width 100%
+        height 100%
+        td
+          height 1px
+          width 1px
+        .dark
+          background $c-black
     //These are the text fields that are being manipulated in the admin
     .line
       border 1px solid transparent

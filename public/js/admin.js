@@ -7,7 +7,7 @@
   ok.
   
   */  $(function() {
-    var $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, set_page_timer, shift_amount, unfocus_highlight, update_family, _i, _len;
+    var $body, $card, $cat, $color1, $color2, $dForm, $designer, $div, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $table, $td, $tr, $upload, active_theme, c, card_height, card_inner_height, card_inner_width, card_width, count, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, r, set_page_timer, shift_amount, unfocus_highlight, update_family, _i, _len, _ref, _ref2;
     $designer = $('.designer');
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
@@ -52,42 +52,29 @@
     }
     $qr.hide();
     $lines.hide();
-    /*
-      ht = 500
-      wd = 500
-      console.log wd, ht
-      $qr.html '<canvas class="canvas" />'
-      elem = $qr.find('.canvas')[0]
-      qrc = elem.getContext("2d")
-      qrc.canvas.width = wd
-      qrc.canvas.height = ht
-      d = document
-      ecclevel = 1
-      qf = genframe('http://cards.ly/fdasfs')
-      qrc.lineWidth = 4
-      console.log width
-      i = undefined
-      j = undefined
-      px = wd
-      px = ht  if ht < wd
-      px /= width + 10
-      px = Math.round(px - 0.5)
-      console.log px
-      qrc.clearRect 0, 0, wd, ht
-      qrc.fillStyle = "#fff"
-      qrc.fillRect 0, 0, px * (width + 8), px * (width + 8)
-      qrc.fillStyle = "#000"
-      i = 0
-      while i < width
-        j = 0
-        while j < width
-          qrc.fillRect px * (i + 4), px * (j + 4), px, px  if qf[j * width + i]
-          j++
-        i++
-      */
+    qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
+    qrcode.addData('http://cards.ly');
+    qrcode.make();
+    count = qrcode.getModuleCount();
+    $div = $('<div class="border" />');
+    $table = $('<table cellpadding=0 cellspacing=0 />');
+    $div.append($table);
+    for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
+      $tr = $('<tr />');
+      for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
+        $td = $('<td />');
+        if (qrcode.isDark(r, c)) {
+          $td.addClass('dark');
+        }
+        $tr.append($td);
+      }
+      $table.append($tr);
+    }
+    $qr.find('img').remove();
+    $qr.append($table);
     shift_amount = 1;
     $body.keydown(function(e) {
-      var $active_item, bottom_bound, c, new_left, new_top, top_bound;
+      var $active_item, bottom_bound, new_left, new_top, top_bound;
       $active_item = $card.find('.active');
       c = e.keyCode;
       if ($active_item.length) {
@@ -325,14 +312,14 @@
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
         });
       } else {
-        return loadAlert({
+        return $.load_alert({
           content: 'I had trouble saving that image, please try again later.'
         });
       }
     };
     no_theme = function() {
       if (!active_theme) {
-        loadAlert({
+        $.load_alert({
           content: 'Please create or select a theme first'
         });
         return true;
@@ -365,7 +352,7 @@
       });
     }
     load_theme = function(theme) {
-      var $li, i, pos, qr, _len2, _ref;
+      var $li, i, pos, qr, _len2, _ref3;
       active_theme = theme;
       qr = theme.positions.shift();
       $qr.show().css({
@@ -374,9 +361,9 @@
         height: qr.h / 100 * card_height,
         width: qr.w / 100 * card_height
       });
-      _ref = theme.positions;
-      for (i = 0, _len2 = _ref.length; i < _len2; i++) {
-        pos = _ref[i];
+      _ref3 = theme.positions;
+      for (i = 0, _len2 = _ref3.length; i < _len2; i++) {
+        pos = _ref3[i];
         $li = $lines.eq(i);
         $li.show().css({
           top: pos.y / 100 * card_height,
@@ -405,9 +392,9 @@
       if (no_theme()) {
         return false;
       }
-      return loadLoading({}, function(closeLoading) {
+      return $.load_loading({}, function(close_loading) {
         return execute_save(function() {
-          return closeLoading();
+          return close_loading();
         });
       });
     });
@@ -415,26 +402,26 @@
       if (no_theme()) {
         return false;
       }
-      return loadModal({
+      return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
         width: 440,
         buttons: [
           {
             label: 'Delete',
-            action: function(closeFunc) {
+            action: function(close_func) {
               /*
                         TODO: Make this delete the template
               
                         So send to the server to delete the template we're on here ...
               
-                        */              return closeFunc();
+                        */              return close_func();
             }
           }, {
             "class": 'gray',
             label: 'Cancel',
-            action: function(closeFunc) {
-              return closeFunc();
+            action: function(close_func) {
+              return close_func();
             }
           }
         ]

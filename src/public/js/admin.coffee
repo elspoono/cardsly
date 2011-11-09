@@ -72,39 +72,24 @@ $ ->
 
   #
   # QR Code
-  ###
-  ht = 500
-  wd = 500
-  console.log wd, ht
-  $qr.html '<canvas class="canvas" />'
-  elem = $qr.find('.canvas')[0]
-  qrc = elem.getContext("2d")
-  qrc.canvas.width = wd
-  qrc.canvas.height = ht
-  d = document
-  ecclevel = 1
-  qf = genframe('http://cards.ly/fdasfs')
-  qrc.lineWidth = 4
-  console.log width
-  i = undefined
-  j = undefined
-  px = wd
-  px = ht  if ht < wd
-  px /= width + 10
-  px = Math.round(px - 0.5)
-  console.log px
-  qrc.clearRect 0, 0, wd, ht
-  qrc.fillStyle = "#fff"
-  qrc.fillRect 0, 0, px * (width + 8), px * (width + 8)
-  qrc.fillStyle = "#000"
-  i = 0
-  while i < width
-    j = 0
-    while j < width
-      qrc.fillRect px * (i + 4), px * (j + 4), px, px  if qf[j * width + i]
-      j++
-    i++
-  ###
+  qrcode = new QRCode -1, QRErrorCorrectLevel.H
+  qrcode.addData 'http://cards.ly'
+  qrcode.make()
+
+  count = qrcode.getModuleCount()
+  $div = $ '<div class="border" />'
+  $table = $ '<table cellpadding=0 cellspacing=0 />'
+  $div.append $table
+  for r in [0..count-1]
+    $tr = $ '<tr />'
+    for c in [0..count-1]
+      $td = $ '<td />'
+      $td.addClass('dark') if qrcode.isDark(r,c)
+      $tr.append $td
+    $table.append $tr
+  
+  $qr.find('img').remove()
+  $qr.append $table
   
   #
   # Key up and down events for active lines
@@ -384,14 +369,14 @@ $ ->
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
     else
-      loadAlert
+      $.load_alert
         content: 'I had trouble saving that image, please try again later.'
 
   #
   # Function that is called to verify a theme is selected, warns if not.
   no_theme = ->
     if !active_theme
-      loadAlert
+      $.load_alert
         content: 'Please create or select a theme first'
       true
     else
@@ -462,32 +447,32 @@ $ ->
     # Make sure we have something selected.
     if no_theme() then return false
     
-    loadLoading {}, (closeLoading) ->
+    $.load_loading {}, (close_loading) ->
       execute_save ->
-        closeLoading()
+        close_loading()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
     if no_theme() then return false
-    loadModal
+    $.load_modal
       content: '<p>Are you sure you want to permanently delete this template?</p>'
       height: 160
       width: 440
       buttons: [{
         label: 'Delete'
-        action: (closeFunc) ->
+        action: (close_func) ->
           ###
           TODO: Make this delete the template
 
           So send to the server to delete the template we're on here ...
 
           ###
-          closeFunc()
+          close_func()
         },{
         class: 'gray'
         label: 'Cancel'
-        action: (closeFunc) ->
-          closeFunc()
+        action: (close_func) ->
+          close_func()
         }
       ]
   
