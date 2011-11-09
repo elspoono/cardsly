@@ -578,6 +578,14 @@ input
       left -200px
 
 //
+// Generic for colorpicker
+//
+.colorpicker
+  z-index 500
+.colorpicker_hex
+  display none
+
+//
 // Business Cards in TEMPLATE DESIGNER in Admin
 //
 .designer
@@ -634,17 +642,16 @@ input
         width 180px
       .color1,.color2,.color
         width 70px
+      .color
+        float none
       .font-family
-        width 130px
+        float none
+        display block
+        width 180px
       .pre
         line-height 30px
         float left
         display block
-    .gradient,.font-style
-      alpha-bg($c-bg-dark,.3)
-      border 2px solid $c-bg-light
-      padding 5px
-      margin 5px -5px
     .font-style
       display none
     .buttons
