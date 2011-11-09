@@ -4,24 +4,28 @@
   .cell-content 
     h1 Your Account
     h2 Account Information
-    .address
-      b Nick Smith
-      p 123 W Broadway
-      p Tempe, AZ 85281
-      a(href='/edit') Update
-    .email
-      p email@email.com
-      a(href='/edit') Update
-    .payment
-      p Visa: ***************1111
-      a(href='/edit') Update
+    .account_information
+      .address
+        b Nick Smith
+        p 123 W Broadway
+        p Tempe, AZ 85281
+        a(href='/edit') Update
+      .email
+        p email@email.com
+        a(href='/edit') Update
+      .payment
+        p Visa: ***************1111
+        a(href='/edit') Update
+      .password_text
+        p Password : ************
+        a(href='/change_password') Change
       
 .section
   .cell-bg
   .cell-content 
     h1 Shipping Activity
     .shipping_table
-      table(border="5")
+      table(border="2")
         tr
           td 100 Cards
           td 11-6-2011

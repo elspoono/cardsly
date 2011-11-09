@@ -224,16 +224,23 @@ input
   overflow hidden
   .button
     margin-left 15px
+    width auto
     margin-top 30px
 // Create Login Form
 .create-form
   input
     width 100%
+//This is the main styling of a buttons that are blue.
 .buttons
   .button
     display block
     float right
     text-align center
+  .large_button
+    display block
+    float right
+    text-align center
+    width 225px
 
 
 // Header
@@ -1051,18 +1058,16 @@ label
           margin-top 30px
 
 //Feedback Button
+input value=["Send Feedback"]
 .feedback-form
   input
   margin 15px auto
-  float none
-  text-align center
-  display block
-  width 50%
 .feedback-text
   font-size 14px
+  width 350px
 .emailNotUser
   font-size 12px
-  width 300px
+  width 350px
 .feedback
   top 40%
   right -45px
@@ -1085,9 +1090,13 @@ label
     text-decoration none
 
 //Account Page
+.account_information
+  
 .shipping_table
   font-size 20px
   text-decoration none
+  
+//Various Card Charts
 .chart_scanned
   .unfilled_scanned
     border-radius(5px)
