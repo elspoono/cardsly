@@ -517,7 +517,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $feedback_a, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $slides, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _len;
+    var $a, $am, $body, $card, $cat, $color1, $color2, $dForm, $designer, $feedback_a, $font_color, $font_family, $fonts, $gs, $lines, $mc, $qr, $slides, $upload, $win, active_theme, advanceSlide, card_height, card_inner_height, card_inner_width, card_width, closeMenu, default_theme, execute_save, expandMenu, fam, font_families, getPosition, hasHidden, i, item_name, loadTheme, marginIncrement, maxSlides, monitorForComplete, newMargin, noTheme, pageTimer, path, setPageTimer, shiftAmount, successfulLogin, timer, unfocus_highlight, updateCards, winH, _i, _j, _len, _len2;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -594,6 +594,28 @@
       card_inner_height = $card.height();
       card_inner_width = $card.width();
       active_theme = false;
+      /*
+          GOOGLE FONTS
+      
+          1. Load them
+          2. Make their common names available
+      
+          */
+      /*
+          google.load "webfont", "1"
+          google.setOnLoadCallback ->
+            WebFont.load google:
+              families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
+          */
+      font_families = ['Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'IM Fell English SC', 'Julee', 'Syncopate', 'Gravitas One', 'Quicksand', 'Vast Shadow', 'Smokum', 'Ovo', 'Amatic SC', 'Rancho', 'Poly', 'Chivo', 'Prata', 'Abril Fatface', 'Ultra', 'Love Ya Like A Sister', 'Carter One', 'Luckiest Guy', 'Gruppo', 'Slackey'].sort();
+      /*
+          END GOOGLE FONTS
+          */
+      $font_family.find('option').remove();
+      for (_i = 0, _len = font_families.length; _i < _len; _i++) {
+        fam = font_families[_i];
+        $font_family.append('<option value="' + fam + '">' + fam + '</option>');
+      }
       $qr.hide();
       $lines.hide();
       shiftAmount = 1;
@@ -669,7 +691,7 @@
         } else {
           $card.find('.active').removeClass('active');
           $body.unbind('click', unfocus_highlight);
-          $fonts.hide();
+          $fonts.stop(true, false).slideUp();
         }
         return false;
       };
@@ -681,8 +703,9 @@
         $t.addClass('active');
         $body.bind('click', unfocus_highlight);
         index = $t.prevAll().length;
-        $fonts.show();
-        return $font_color.val(active_theme.positions[index + 1].color);
+        $fonts.stop(true, false).slideDown();
+        $font_color.val(active_theme.positions[index + 1].color);
+        return $font_family.find('option[value="' + active_theme.positions[index + 1].font_family + '"]').attr('selected', 'selected');
       });
       $qr.mousedown(function() {
         var $pa, $t;
@@ -691,11 +714,23 @@
         $pa.removeClass('active');
         $t.addClass('active');
         $body.bind('click', unfocus_highlight);
-        return $fonts.hide();
+        return $fonts.stop(true, false).slideUp();
       });
+      pageTimer = 0;
+      setPageTimer = function() {
+        clearTimeout(pageTimer);
+        return pageTimer = setTimeout(function() {
+          return execute_save();
+        }, 500);
+      };
+      $cat.keyup(setPageTimer);
+      $font_color.keyup(setPageTimer);
+      $color1.keyup(setPageTimer);
+      $color2.keyup(setPageTimer);
       $lines.draggable({
         grid: [10, 10],
-        containment: '.designer .card'
+        containment: '.designer .card',
+        stop: setPageTimer
       });
       $lines.resizable({
         grid: 10,
@@ -705,17 +740,20 @@
             'font-size': ui.size.height + 'px',
             'line-height': ui.size.height + 'px'
           });
-        }
+        },
+        stop: setPageTimer
       });
       $qr.draggable({
         grid: [5, 5],
-        containment: '.designer .card'
+        containment: '.designer .card',
+        stop: setPageTimer
       });
       $qr.resizable({
         grid: 5,
         containment: '.designer .card',
         handles: 'n, e, s, w, ne, nw, se, sw',
-        aspectRatio: 1
+        aspectRatio: 1,
+        stop: setPageTimer
       });
       $upload.change(function() {
         return $dForm.submit();
@@ -791,16 +829,6 @@
           }
         });
       };
-      pageTimer = 0;
-      setPageTimer = function() {
-        clearTimeout(pageTimer);
-        return pageTimer = setTimeout(function() {
-          return execute_save();
-        }, 500);
-      };
-      $cat.keyup(setPageTimer);
-      $color1.keyup(setPageTimer);
-      $color2.keyup(setPageTimer);
       $.s3_result = function(s3_id) {
         if (!noTheme() && s3_id) {
           active_theme.s3_id = s3_id;
@@ -840,7 +868,7 @@
       for (i = 0; i <= 5; i++) {
         default_theme.positions.push({
           color: '000000',
-          font_family: 'Arial',
+          font_family: 'Vast Shadow',
           h: 7,
           w: 50,
           x: 5,
@@ -848,7 +876,7 @@
         });
       }
       loadTheme = function(theme) {
-        var $li, i, pos, qr, _len, _ref;
+        var $li, i, pos, qr, _len2, _ref;
         active_theme = theme;
         qr = theme.positions.shift();
         $qr.show().css({
@@ -858,7 +886,7 @@
           width: qr.w / 100 * card_height
         });
         _ref = theme.positions;
-        for (i = 0, _len = _ref.length; i < _len; i++) {
+        for (i = 0, _len2 = _ref.length; i < _len2; i++) {
           pos = _ref[i];
           $li = $lines.eq(i);
           $li.show().css({
@@ -952,8 +980,8 @@
         });
       }
     });
-    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
-      i = hasHidden[_i];
+    for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
+      i = hasHidden[_j];
       i.$this.hide();
     }
     /*
@@ -967,7 +995,7 @@
       });
     };
     $win.scroll(function() {
-      var i, newWinH, timeLapse, _j, _len2, _results;
+      var i, newWinH, timeLapse, _k, _len3, _results;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.length) {
         if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
@@ -1000,11 +1028,11 @@
               return _results;
             })();
             $t.bind('clearMe', function() {
-              var i, _j, _len2;
+              var i, _k, _len3;
               console.log($t.data('cleared'));
               if (!$t.data('cleared')) {
-                for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
-                  i = timers[_j];
+                for (_k = 0, _len3 = timers.length; _k < _len3; _k++) {
+                  i = timers[_k];
                   clearTimeout(i);
                 }
                 $t.val('');
@@ -1019,8 +1047,8 @@
         }
       }
       _results = [];
-      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
-        i = hasHidden[_j];
+      for (_k = 0, _len3 = hasHidden.length; _k < _len3; _k++) {
+        i = hasHidden[_k];
         _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
       }
       return _results;
