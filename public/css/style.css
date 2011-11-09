@@ -1517,6 +1517,9 @@ input
   background: #e3007b;
   display: block;
 }
+.current_password .old_password {
+  left: 50px;
+}
 .footer {
   font-size: 12.6px;
   line-height: 1.5em;
