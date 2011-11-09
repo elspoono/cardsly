@@ -69,7 +69,7 @@
       $table.append($tr);
     }
     $qr.find('img').remove();
-    $qr.append($table);
+    $qr.append($div);
     shift_amount = 1;
     $body.keydown(function(e) {
       var $active_item, bottom_bound, new_left, new_top, top_bound;

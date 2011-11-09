@@ -89,7 +89,7 @@ $ ->
     $table.append $tr
   
   $qr.find('img').remove()
-  $qr.append $table
+  $qr.append $div
   
   #
   # Key up and down events for active lines
