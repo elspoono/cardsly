@@ -735,7 +735,8 @@
   app.get('/admin', securedAdminPage, function(req, res) {
     return res.render('admin', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      scripts: ['/js/admin.js']
     });
   });
 

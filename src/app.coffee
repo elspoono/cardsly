@@ -726,6 +726,9 @@ app.get '/admin', securedAdminPage, (req, res) ->
   res.render 'admin'
     user: req.user
     session: req.session
+    scripts:[
+      '/js/admin.js'
+    ]
 
 # login page
 app.get '/login', (req, res) ->

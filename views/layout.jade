@@ -124,6 +124,10 @@ body
   //script(src='/js/libs/jquery.fixTouch.js')
   script(src='/js/plugins.js')
   script(src='/js/script.js')
+  - if(script)
+    script(src='/javascripts/'+script+'.js')
+  - for(var i in scripts)
+    script(src=scripts[i])
   script
     var _sf_async_config={uid:30481,domain:"cards.ly"};
     (function(){
