@@ -736,7 +736,7 @@
     return res.render('admin', {
       user: req.user,
       session: req.session,
-      scripts: ['/js/admin.js']
+      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/admin.js']
     });
   });
 

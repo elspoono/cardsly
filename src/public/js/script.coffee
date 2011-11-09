@@ -64,7 +64,7 @@ $.fn.show_tooltip = (options) ->
    * 
    * 
 ###
-load_modal = (options, next) ->
+$.load_modal = (options, next) ->
 
   scrollbar_width = $.scrollbar_width()
   modal = $('<div class="modal" />')
@@ -196,11 +196,11 @@ load_modal = (options, next) ->
  * 
  * Modal Handling Functions
  * 
- * Load Loading (Subclass of load_modal)
+ * Load Loading (Subclass of $.load_modal)
  * 
  * 
 ###
-load_loading = (options, next) ->
+$.load_loading = (options, next) ->
   options = options || {}
   modified_options =
     content: 'Loading ... '
@@ -209,17 +209,17 @@ load_loading = (options, next) ->
 
   for i,v of options
     modified_options[i] = options[i]
-  load_modal modified_options, next
+  $.load_modal modified_options, next
 
 ###
  * 
  * Modal Handling Functions
  * 
- * Load Confirm (Subclass of load_modal)
+ * Load Confirm (Subclass of $.load_modal)
  * like javascript confirm()
  * 
 ###
-load_confirm = (options, next) ->
+$.load_confirm = (options, next) ->
   options = options || {}
   modified_options =
     content: 'Confirm'
@@ -227,17 +227,17 @@ load_confirm = (options, next) ->
     width: 300
   for i,v of options
     modified_options[i] = options[i]
-  load_modal modified_options, next
+  $.load_modal modified_options, next
 
 ###
  * 
  * Modal Handling Functions
  * 
- * Load Alert (Subclass of load_modal)
+ * Load Alert (Subclass of $.load_modal)
  * like javascript alert()
  * 
 ###
-load_alert = (options, next) ->
+$.load_alert = (options, next) ->
   options = options || {}
   next = next || () ->
   if typeof(options) == 'string'
@@ -253,7 +253,7 @@ load_alert = (options, next) ->
     width: 300
   for i,v of options
     modified_options[i] = options[i]
-  load_modal modified_options, next
+  $.load_modal modified_options, next
 
 
 ###
@@ -622,7 +622,7 @@ $ ->
   
   
 
-  #load_alert 'Test', (close) ->
+  #$.load_alert 'Test', (close) ->
     #close()
   
   ###
@@ -658,7 +658,7 @@ $ ->
   #
   #Regular Login
   $('.login-form').submit ->
-    load_loading {}, (loading_close) ->
+    $.load_loading {}, (loading_close) ->
       $.ajax
         url: '/login'
         data:
@@ -667,19 +667,19 @@ $ ->
         success: (data) ->
           loading_close()
           if data.err
-            load_alert
+            $.load_alert
               content: data.err
           else
             successful_login()
         error: (err) ->
           loading_close()
-          load_alert
+          $.load_alert
             content: 'Our apologies. A server error occurred.'
     false
   #
   # New Login Creation
   $('.new').click () ->
-    load_modal
+    $.load_modal
       content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
       buttons: [
         label: 'Create New'
@@ -696,10 +696,10 @@ $ ->
           else if password.val().length<4
             err = 'Password should be a little longer, at least 4 characters.'
           if err
-            load_alert {content:err}
+            $.load_alert {content:err}
           else
             form_close()
-            load_loading {}, (loading_close) ->
+            $.load_loading {}, (loading_close) ->
               $.ajax
                 url: '/createUser'
                 data:
@@ -708,13 +708,13 @@ $ ->
                 success: (data) ->
                   loading_close()
                   if data.err
-                    load_alert
+                    $.load_alert
                       content: data.err
                   else
                     successful_login()
                 error: (err) ->
                   loading_close()
-                  load_alert
+                  $.load_alert
                     content: 'Our apologies. A server error occurred.'
               , 1000
       ]
@@ -782,7 +782,7 @@ $ ->
       
     
   $feedback_a.click () ->
-    load_modal
+    $.load_modal
       content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
       width: 400
       height: 300
@@ -791,7 +791,7 @@ $ ->
         action: (form_close) ->
           #Close the window
           form_close()
-          load_loading {}, (loading_close) ->
+          $.load_loading {}, (loading_close) ->
             $.ajax
               url: '/sendFeedback'
               data:
@@ -800,7 +800,7 @@ $ ->
               success: (data) ->
                 loading_close()
                 if data.err
-                  load_alert
+                  $.load_alert
                     content: data.err
                 else
                   successfulFeedback() ->
@@ -808,7 +808,7 @@ $ ->
                     $s.fadeIn 100000
               error: (err) ->
                 loading_close()
-                load_alert
+                $.load_alert
                   content: 'Our apologies. A server error occurred, feedback could not be sent.'
             , 1000
       ] 
@@ -838,7 +838,7 @@ $ ->
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
-    load_alert
+    $.load_alert
       content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
   #

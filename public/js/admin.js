@@ -295,14 +295,14 @@
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
         });
       } else {
-        return loadAlert({
+        return $.load_alert({
           content: 'I had trouble saving that image, please try again later.'
         });
       }
     };
     no_theme = function() {
       if (!active_theme) {
-        loadAlert({
+        $.load_alert({
           content: 'Please create or select a theme first'
         });
         return true;
@@ -373,33 +373,33 @@
     });
     $designer.find('.buttons .save').click(function() {
       if (no_theme()) return false;
-      return loadLoading({}, function(closeLoading) {
+      return $.load_loading({}, function(close_loading) {
         return execute_save(function() {
-          return closeLoading();
+          return close_loading();
         });
       });
     });
     return $designer.find('.buttons .delete').click(function() {
       if (no_theme()) return false;
-      return loadModal({
+      return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
         width: 440,
         buttons: [
           {
             label: 'Delete',
-            action: function(closeFunc) {
+            action: function(close_func) {
               /*
                         TODO: Make this delete the template
               
                         So send to the server to delete the template we're on here ...
-              */              return closeFunc();
+              */              return close_func();
             }
           }, {
             "class": 'gray',
             label: 'Cancel',
-            action: function(closeFunc) {
-              return closeFunc();
+            action: function(close_func) {
+              return close_func();
             }
           }
         ]

@@ -384,14 +384,14 @@ $ ->
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
     else
-      loadAlert
+      $.load_alert
         content: 'I had trouble saving that image, please try again later.'
 
   #
   # Function that is called to verify a theme is selected, warns if not.
   no_theme = ->
     if !active_theme
-      loadAlert
+      $.load_alert
         content: 'Please create or select a theme first'
       true
     else
@@ -462,32 +462,32 @@ $ ->
     # Make sure we have something selected.
     if no_theme() then return false
     
-    loadLoading {}, (closeLoading) ->
+    $.load_loading {}, (close_loading) ->
       execute_save ->
-        closeLoading()
+        close_loading()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
     if no_theme() then return false
-    loadModal
+    $.load_modal
       content: '<p>Are you sure you want to permanently delete this template?</p>'
       height: 160
       width: 440
       buttons: [{
         label: 'Delete'
-        action: (closeFunc) ->
+        action: (close_func) ->
           ###
           TODO: Make this delete the template
 
           So send to the server to delete the template we're on here ...
 
           ###
-          closeFunc()
+          close_func()
         },{
         class: 'gray'
         label: 'Cancel'
-        action: (closeFunc) ->
-          closeFunc()
+        action: (close_func) ->
+          close_func()
         }
       ]
   

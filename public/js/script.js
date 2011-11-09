@@ -9,7 +9,7 @@
    *
   */
 
-  var $window, date_format, load_alert, load_confirm, load_loading, load_modal, usualDelay;
+  var $window, date_format, usualDelay;
 
   $.ajaxSetup({
     type: 'POST'
@@ -80,7 +80,7 @@
      *
   */
 
-  load_modal = function(options, next) {
+  $.load_modal = function(options, next) {
     var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
     modal = $('<div class="modal" />');
@@ -220,12 +220,12 @@
    * 
    * Modal Handling Functions
    * 
-   * Load Loading (Subclass of load_modal)
+   * Load Loading (Subclass of $.load_modal)
    * 
    *
   */
 
-  load_loading = function(options, next) {
+  $.load_loading = function(options, next) {
     var i, modified_options, v;
     options = options || {};
     modified_options = {
@@ -237,19 +237,19 @@
       v = options[i];
       modified_options[i] = options[i];
     }
-    return load_modal(modified_options, next);
+    return $.load_modal(modified_options, next);
   };
 
   /*
    * 
    * Modal Handling Functions
    * 
-   * Load Confirm (Subclass of load_modal)
+   * Load Confirm (Subclass of $.load_modal)
    * like javascript confirm()
    *
   */
 
-  load_confirm = function(options, next) {
+  $.load_confirm = function(options, next) {
     var i, modified_options, v;
     options = options || {};
     modified_options = {
@@ -261,19 +261,19 @@
       v = options[i];
       modified_options[i] = options[i];
     }
-    return load_modal(modified_options, next);
+    return $.load_modal(modified_options, next);
   };
 
   /*
    * 
    * Modal Handling Functions
    * 
-   * Load Alert (Subclass of load_modal)
+   * Load Alert (Subclass of $.load_modal)
    * like javascript alert()
    *
   */
 
-  load_alert = function(options, next) {
+  $.load_alert = function(options, next) {
     var i, modified_options, v;
     options = options || {};
     next = next || function() {};
@@ -299,7 +299,7 @@
       v = options[i];
       modified_options[i] = options[i];
     }
-    return load_modal(modified_options, next);
+    return $.load_modal(modified_options, next);
   };
 
   /*
@@ -712,7 +712,7 @@
       return false;
     });
     $('.login-form').submit(function() {
-      load_loading({}, function(loading_close) {
+      $.load_loading({}, function(loading_close) {
         return $.ajax({
           url: '/login',
           data: {
@@ -722,7 +722,7 @@
           success: function(data) {
             loading_close();
             if (data.err) {
-              return load_alert({
+              return $.load_alert({
                 content: data.err
               });
             } else {
@@ -731,7 +731,7 @@
           },
           error: function(err) {
             loading_close();
-            return load_alert({
+            return $.load_alert({
               content: 'Our apologies. A server error occurred.'
             });
           }
@@ -740,7 +740,7 @@
       return false;
     });
     $('.new').click(function() {
-      load_modal({
+      $.load_modal({
         content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>',
         buttons: [
           {
@@ -759,12 +759,12 @@
                 err = 'Password should be a little longer, at least 4 characters.';
               }
               if (err) {
-                return load_alert({
+                return $.load_alert({
                   content: err
                 });
               } else {
                 form_close();
-                return load_loading({}, function(loading_close) {
+                return $.load_loading({}, function(loading_close) {
                   return $.ajax({
                     url: '/createUser',
                     data: {
@@ -774,7 +774,7 @@
                     success: function(data) {
                       loading_close();
                       if (data.err) {
-                        return load_alert({
+                        return $.load_alert({
                           content: data.err
                         });
                       } else {
@@ -783,7 +783,7 @@
                     },
                     error: function(err) {
                       loading_close();
-                      return load_alert({
+                      return $.load_alert({
                         content: 'Our apologies. A server error occurred.'
                       });
                     }
@@ -876,7 +876,7 @@
       }, 250);
     });
     $feedback_a.click(function() {
-      load_modal({
+      $.load_modal({
         content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
         width: 400,
         height: 300,
@@ -885,7 +885,7 @@
             label: 'Send Feedback',
             action: function(form_close) {
               form_close();
-              return load_loading({}, function(loading_close) {
+              return $.load_loading({}, function(loading_close) {
                 return $.ajax({
                   url: '/sendFeedback',
                   data: {
@@ -895,7 +895,7 @@
                   success: function(data) {
                     loading_close();
                     if (data.err) {
-                      return load_alert({
+                      return $.load_alert({
                         content: data.err
                       });
                     } else {
@@ -907,7 +907,7 @@
                   },
                   error: function(err) {
                     loading_close();
-                    return load_alert({
+                    return $.load_alert({
                       content: 'Our apologies. A server error occurred, feedback could not be sent.'
                     });
                   }
@@ -938,7 +938,7 @@
     */
     item_name = '100 cards';
     $('.checkout').click(function() {
-      load_alert({
+      $.load_alert({
         content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
       });
       return false;
