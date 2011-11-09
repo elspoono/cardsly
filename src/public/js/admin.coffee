@@ -72,39 +72,24 @@ $ ->
 
   #
   # QR Code
-  ###
-  ht = 500
-  wd = 500
-  console.log wd, ht
-  $qr.html '<canvas class="canvas" />'
-  elem = $qr.find('.canvas')[0]
-  qrc = elem.getContext("2d")
-  qrc.canvas.width = wd
-  qrc.canvas.height = ht
-  d = document
-  ecclevel = 1
-  qf = genframe('http://cards.ly/fdasfs')
-  qrc.lineWidth = 4
-  console.log width
-  i = undefined
-  j = undefined
-  px = wd
-  px = ht  if ht < wd
-  px /= width + 10
-  px = Math.round(px - 0.5)
-  console.log px
-  qrc.clearRect 0, 0, wd, ht
-  qrc.fillStyle = "#fff"
-  qrc.fillRect 0, 0, px * (width + 8), px * (width + 8)
-  qrc.fillStyle = "#000"
-  i = 0
-  while i < width
-    j = 0
-    while j < width
-      qrc.fillRect px * (i + 4), px * (j + 4), px, px  if qf[j * width + i]
-      j++
-    i++
-  ###
+  qrcode = new QRCode -1, QRErrorCorrectLevel.H
+  qrcode.addData 'http://cards.ly'
+  qrcode.make()
+
+  count = qrcode.getModuleCount()
+  $div = $ '<div class="border" />'
+  $table = $ '<table cellpadding=0 cellspacing=0 />'
+  $div.append $table
+  for r in [0..count-1]
+    $tr = $ '<tr />'
+    for c in [0..count-1]
+      $td = $ '<td />'
+      $td.addClass('dark') if qrcode.isDark(r,c)
+      $tr.append $td
+    $table.append $tr
+  
+  $qr.find('img').remove()
+  $qr.append $table
   
   #
   # Key up and down events for active lines
