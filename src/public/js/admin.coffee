@@ -108,7 +108,7 @@ $ ->
   
   #
   # Key up and down events for active lines
-  shiftAmount = 1
+  shift_amount = 1
   $body.keydown (e) ->
     $active_item = $card.find '.active'
     c = e.keyCode
@@ -118,15 +118,15 @@ $ ->
       #
       # Modify the amount we shift when the shift key is pressed :D
       # (apparently I like using confusing variable names, ha)
-      if e.keyCode is 16 then shiftAmount = 10
+      if e.keyCode is 16 then shift_amount = 10
       #
       # Up and Down Events
       if c is 38 or c is 40
         #
         # Find out how far the user asked to move
         new_top = parseInt($active_item.css('top'))
-        if c is 38 then new_top -= shiftAmount
-        if c is 40 then new_top += shiftAmount
+        if c is 38 then new_top -= shift_amount
+        if c is 40 then new_top += shift_amount
         #
         # Find out our boundary
         top_bound = (card_height - card_inner_height)/2
@@ -145,8 +145,8 @@ $ ->
         #
         # Find out how far the user asked to move
         new_left = parseInt($active_item.css('left'))
-        if c is 37 then new_left -= shiftAmount
-        if c is 39 then new_left += shiftAmount
+        if c is 37 then new_left -= shift_amount
+        if c is 39 then new_left += shift_amount
         #
         # Find out our boundary
         top_bound = (card_width - card_inner_width)/2
@@ -163,7 +163,7 @@ $ ->
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
   $body.keyup (e) ->
-    if e.keyCode is 16 then shiftAmount = 1
+    if e.keyCode is 16 then shift_amount = 1
   #
   # Changing font family on select change
   update_family = ->
@@ -246,26 +246,26 @@ $ ->
 
   #
   # A global page timer for the automatic save event.
-  pageTimer = 0
-  setPageTimer = ->
-    clearTimeout pageTimer
-    pageTimer = setTimeout ->
+  page_timer = 0
+  set_page_timer = ->
+    clearTimeout page_timer
+    page_timer = setTimeout ->
       execute_save()
     , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
 
   #
   # Set that timer on the right events for the right things
-  $cat.keyup setPageTimer
-  $font_color.keyup setPageTimer
-  $color1.keyup setPageTimer
-  $color2.keyup setPageTimer
+  $cat.keyup set_page_timer
+  $font_color.keyup set_page_timer
+  $color1.keyup set_page_timer
+  $color2.keyup set_page_timer
 
   #
   # The dragging and dropping functions for lines
   $lines.draggable
     grid: [10,10]
     containment: '.designer .card'
-    stop: setPageTimer
+    stop: set_page_timer
   $lines.resizable
     grid: 10
     handles: 'n, e, s, w, se'
@@ -273,19 +273,19 @@ $ ->
       $(ui.element).css
         'font-size': ui.size.height + 'px'
         'line-height': ui.size.height + 'px'
-    stop: setPageTimer
+    stop: set_page_timer
   #
   # Dragging and dropping functions for the qr code
   $qr.draggable
     grid: [5,5]
     containment: '.designer .card'
-    stop: setPageTimer
+    stop: set_page_timer
   $qr.resizable
     grid: 5
     containment: '.designer .card'
     handles: 'n, e, s, w, ne, nw, se, sw'
     aspectRatio: 1
-    stop: setPageTimer
+    stop: set_page_timer
   #
 
   #
@@ -310,7 +310,7 @@ $ ->
 
   #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
-  getPosition = ($t) ->
+  get_position = ($t) ->
     # Get it's CSS Values
     height = parseInt $t.height()
     width = parseInt $t.width()
@@ -342,12 +342,12 @@ $ ->
       s3_id: active_theme.s3_id
     #
     # Get the position of the qr
-    theme.positions.push getPosition $qr
+    theme.positions.push get_position $qr
     #
     # Get the position of each line
     $lines.each ->
       $t = $ this
-      pos = getPosition $t
+      pos = get_position $t
       if pos
         theme.positions.push pos
     #
@@ -379,7 +379,7 @@ $ ->
   #
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
-    if not noTheme() and s3_id
+    if not no_theme() and s3_id
       active_theme.s3_id = s3_id
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
@@ -389,7 +389,7 @@ $ ->
 
   #
   # Function that is called to verify a theme is selected, warns if not.
-  noTheme = ->
+  no_theme = ->
     if !active_theme
       loadAlert
         content: 'Please create or select a theme first'
@@ -421,7 +421,7 @@ $ ->
   #
   # The general load theme function
   # It's for putting a theme into the designer for editing
-  loadTheme = (theme) ->
+  load_theme = (theme) ->
     active_theme = theme
     qr = theme.positions.shift()
     $qr.show().css
@@ -446,7 +446,7 @@ $ ->
   #
   # The add new button
   $('.add-new').click ->
-    loadTheme(default_theme)
+    load_theme(default_theme)
 
     # Oh wait, this doesn't happen until save, eh?
     ###
@@ -460,7 +460,7 @@ $ ->
   # On save click
   $designer.find('.buttons .save').click ->
     # Make sure we have something selected.
-    if noTheme() then return false
+    if no_theme() then return false
     
     loadLoading {}, (closeLoading) ->
       execute_save ->
@@ -468,7 +468,7 @@ $ ->
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
-    if noTheme() then return false
+    if no_theme() then return false
     loadModal
       content: '<p>Are you sure you want to permanently delete this template?</p>'
       height: 160

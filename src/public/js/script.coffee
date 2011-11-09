@@ -21,7 +21,7 @@ $.fx.speeds._default = 300
  * 
  * 
 ###
-$.fn.showTooltip = (options) ->
+$.fn.show_tooltip = (options) ->
   settings = 
     position: 'below'
   this.each (i) ->
@@ -64,9 +64,9 @@ $.fn.showTooltip = (options) ->
    * 
    * 
 ###
-loadModal = (options, next) ->
+load_modal = (options, next) ->
 
-  scrollbarWidth = $.scrollbarWidth()
+  scrollbar_width = $.scrollbar_width()
   modal = $('<div class="modal" />')
   win = $('<div class="window" />')
   close = $('<div class="close" />')
@@ -80,9 +80,9 @@ loadModal = (options, next) ->
     $.extend settings, options
 
 
-  myNext = () ->
-    $window.unbind 'scroll resize',resizeEvent
-    $window.unbind 'resize',resizeEvent
+  my_next = () ->
+    $window.unbind 'scroll resize',resize_event
+    $window.unbind 'resize',resize_event
     $body.css
       overflow:'inherit'
       'padding-right':0
@@ -123,14 +123,14 @@ loadModal = (options, next) ->
   ###
   if settings.buttons
     for i in settings.buttons
-      thisButton = $ '<input type="button" class="button" value="'+i.label+'" class="submit">'
+      this_button = $ '<input type="button" class="button" value="'+i.label+'" class="submit">'
       if i.class
-        thisButton.addClass i.class
+        this_button.addClass i.class
       else
-        thisButton.addClass 'normal'
-      thisButton.click () ->
-        i.action myNext
-      buttons.append thisButton
+        this_button.addClass 'normal'
+      this_button.click () ->
+        i.action my_next
+      buttons.append this_button
 
   win.append buttons
 
@@ -138,11 +138,11 @@ loadModal = (options, next) ->
 
 
   $body = $('body')
-  resizeEvent = () ->
+  resize_event = () ->
     width = $window.width()
     height = $window.height()
     if width < settings.width || height < win.height()
-      $window.unbind 'scroll resize',resizeEvent
+      $window.unbind 'scroll resize',resize_event
       close.css
         position:'relative'
       win.width(width-60).css
@@ -158,7 +158,7 @@ loadModal = (options, next) ->
     else
       $body.css
         overflow:'hidden'
-        'padding-right':scrollbarWidth
+        'padding-right':scrollbar_width
       win.position
         of:$window
         at:'center center'
@@ -173,10 +173,10 @@ loadModal = (options, next) ->
         my:'right bottom'
         offset:'0 0'
 
-  $window.bind 'resize scroll', resizeEvent
+  $window.bind 'resize scroll', resize_event
 
-  modal.click myNext
-  close.click myNext
+  modal.click my_next
+  close.click my_next
   width = $window.width()
   height = $window.height()
   if width < settings.width || height < win.height()
@@ -189,61 +189,61 @@ loadModal = (options, next) ->
     close.fadeIn()
 
   if next
-    next myNext
-  resizeEvent()
+    next my_next
+  resize_event()
 
 ###
  * 
  * Modal Handling Functions
  * 
- * Load Loading (Subclass of loadmodal)
+ * Load Loading (Subclass of load_modal)
  * 
  * 
 ###
-loadLoading = (options, next) ->
+load_loading = (options, next) ->
   options = options || {}
-  modifiedOptions =
+  modified_options =
     content: 'Loading ... '
     height: 100
     width: 200
 
   for i,v of options
-    modifiedOptions[i] = options[i]
-  loadModal modifiedOptions, next
+    modified_options[i] = options[i]
+  load_modal modified_options, next
 
 ###
  * 
  * Modal Handling Functions
  * 
- * Load Confirm (Subclass of loadmodal)
+ * Load Confirm (Subclass of load_modal)
  * like javascript confirm()
  * 
 ###
-loadConfirm = (options, next) ->
+load_confirm = (options, next) ->
   options = options || {}
-  modifiedOptions =
+  modified_options =
     content: 'Confirm'
     height: 80
     width: 300
   for i,v of options
-    modifiedOptions[i] = options[i]
-  loadModal modifiedOptions, next
+    modified_options[i] = options[i]
+  load_modal modified_options, next
 
 ###
  * 
  * Modal Handling Functions
  * 
- * Load Alert (Subclass of loadmodal)
+ * Load Alert (Subclass of load_modal)
  * like javascript alert()
  * 
 ###
-loadAlert = (options, next) ->
+load_alert = (options, next) ->
   options = options || {}
   next = next || () ->
   if typeof(options) == 'string'
     options = 
       content:options
-  modifiedOptions =
+  modified_options =
     content: 'Alert'
     buttons: [
       action: (close) -> close()
@@ -252,8 +252,8 @@ loadAlert = (options, next) ->
     height: 80
     width: 300
   for i,v of options
-    modifiedOptions[i] = options[i]
-  loadModal modifiedOptions, next
+    modified_options[i] = options[i]
+  load_modal modified_options, next
 
 
 ###
@@ -263,8 +263,8 @@ loadAlert = (options, next) ->
  * Licensed under LGPL v3.0
  * http:#www.gnu.org/licenses/lgpl-3.0.txt
 ###
-$.scrollbarWidth = () ->
-  if !$._scrollbarWidth
+$.scrollbar_width = () ->
+  if !$._scrollbar_width
     $body = $ 'body'
     w = $body.css('overflow', 'hidden').width()
     $body.css('overflow','scroll')
@@ -272,8 +272,8 @@ $.scrollbarWidth = () ->
     if !w
       w = $body.width() - $body[0].clientWidth
     $body.css 'overflow',''
-    $._scrollbarWidth = w
-  $._scrollbarWidth
+    $._scrollbar_width = w
+  $._scrollbar_width
 
 
 ###
@@ -288,10 +288,10 @@ $.scrollbarWidth = () ->
  * Accepts a date, a mask, or a date and a mask.
  * Returns a formatted version of the given date.
  * The date defaults to the current date/time.
- * The mask defaults to dateFormat.masks.default.
+ * The mask defaults to date_format.masks.default.
 ###
 
-class dateFormat
+class date_format
 
   token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g
   timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g
@@ -304,7 +304,7 @@ class dateFormat
     val
 
   format: (date, mask, utc) ->
-    dF = dateFormat.prototype
+    dF = date_format.prototype
 
     # You can't provide utc if you skip other args (use the "UTC:" mask prefix)
     if arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)
@@ -390,7 +390,7 @@ class dateFormat
 
 # For convenience...
 Date::format = (mask, utc) ->
-  a = new dateFormat
+  a = new date_format
   a.format(this, mask, utc)
 
 
@@ -483,7 +483,7 @@ $ ->
     $(this).addClass 'hover'
   , ->
     $(this).removeClass 'hover'
-  closeMenu = (e) ->
+  close_menu = (e) ->
     $t = $ e.target
     if $t.closest('.account-link').length
       $a = $t.closest('li').find 'a'
@@ -491,15 +491,15 @@ $ ->
     else
       $a.removeClass 'click'
       $am.slideUp()
-      $a.one 'click', expandMenu
-      $body.unbind 'click', closeMenu
+      $a.one 'click', expand_menu
+      $body.unbind 'click', close_menu
     false
-  expandMenu = ->
+  expand_menu = ->
     $am.slideDown()
     $a.addClass 'click'
-    $body.bind 'click', closeMenu
+    $body.bind 'click', close_menu
     false
-  $a.one 'click', expandMenu
+  $a.one 'click', expand_menu
 
 
 
@@ -539,7 +539,7 @@ $ ->
 
   #
   # Successful Login Function
-  successfulLogin = ->
+  successful_login = ->
     if path == '/login'
       document.location.href = '/admin'
     else
@@ -554,18 +554,18 @@ $ ->
   $win = $ window
   $mc = $ '.main.card'
 
-  # Set up the hasHidden array with all of non visible sections
+  # Set up the has_hidden array with all of non visible sections
   winH = $win.height()+$win.scrollTop()
-  hasHidden = []
+  has_hidden = []
   $('.section-to-hide').each ->
     $this = $(this)
     thisT = $this.offset().top
     if(winH<thisT)
-      hasHidden.push
+      has_hidden.push
         $this: $this
         thisT: thisT
   # Hide them
-  for i in hasHidden
+  for i in has_hidden
     i.$this.hide()
   
 
@@ -574,7 +574,7 @@ $ ->
 
   This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
-  updateCards = (rowNumber, value) ->
+  update_cards = (rowNumber, value) ->
     $('.card .content').each -> $(this).find('li:eq('+rowNumber+')').html value
 
 
@@ -587,9 +587,9 @@ $ ->
       # If the main card bottom is now visible
       if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
         $mc.data 'didLoad', true
-        timeLapse = 0
+        time_lapse = 0
         $('.main.card').find('input').each (rowNumber) ->
-          updateCards rowNumber, this.value
+          update_cards rowNumber, this.value
         $('.main.card .defaults').find('input').each (rowNumber) ->
           $t = $ this
           v = $t.val()
@@ -599,9 +599,9 @@ $ ->
               timer = setTimeout ->
                 v_substring = v.substr 0,j
                 $t.val v_substring
-                updateCards rowNumber, v_substring
-              ,timeLapse*70
-              timeLapse++
+                update_cards rowNumber, v_substring
+              ,time_lapse*70
+              time_lapse++
               timer
           $t.bind 'clearMe', ->
             console.log $t.data 'cleared'
@@ -609,20 +609,20 @@ $ ->
               for i in timers
                 clearTimeout i
               $t.val ''
-              updateCards rowNumber, ''
+              update_cards rowNumber, ''
               $t.data 'cleared', true
           $t.bind 'focus', ->
             $t.trigger 'clearMe'
 
 
     # Show any hidden sections
-    for i in hasHidden
+    for i in has_hidden
       if i.thisT-50 < newWinH
         i.$this.fadeIn(2000)
   
   
 
-  #loadAlert 'Test', (close) ->
+  #load_alert 'Test', (close) ->
     #close()
   
   ###
@@ -631,59 +631,59 @@ $ ->
   #
   #
   # Watch the popup windows every 200ms for when they set a cookie
-  monitorForComplete = (openedWindow) ->
+  monitor_for_complete = (opened_window) ->
     $.cookie 'success-login', null
     checkTimer = setInterval ->
       if $.cookie 'success-login'
-        successfulLogin()
+        successful_login()
         $.cookie 'success-login', null
         window.focus()
-        openedWindow.close()
+        opened_window.close()
     ,200
   #
   # Specific Socials Setup
   $('.google').click () ->
-    monitorForComplete window.open 'auth/google', 'auth', 'height=350,width=600'
+    monitor_for_complete window.open 'auth/google', 'auth', 'height=350,width=600'
     false
   $('.twitter').click () ->
-    monitorForComplete window.open 'auth/twitter', 'auth', 'height=400,width=500'
+    monitor_for_complete window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
   $('.facebook').click () ->
-    monitorForComplete window.open 'auth/facebook', 'auth', 'height=400,width=900'
+    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=900'
     false
   $('.linkedin').click () ->
-    monitorForComplete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
+    monitor_for_complete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
   #
   #
   #Regular Login
   $('.login-form').submit ->
-    loadLoading {}, (loadingClose) ->
+    load_loading {}, (loading_close) ->
       $.ajax
         url: '/login'
         data:
           email: $('.email-login').val()
           password: $('.password-login').val()
         success: (data) ->
-          loadingClose()
+          loading_close()
           if data.err
-            loadAlert
+            load_alert
               content: data.err
           else
-            successfulLogin()
+            successful_login()
         error: (err) ->
-          loadingClose()
-          loadAlert
+          loading_close()
+          load_alert
             content: 'Our apologies. A server error occurred.'
     false
   #
   # New Login Creation
   $('.new').click () ->
-    loadModal
+    load_modal
       content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
       buttons: [
         label: 'Create New'
-        action: (formClose) ->
+        action: (form_close) ->
           email = $ '.email'
           password = $ '.password'
           password2 = $ '.password2'
@@ -696,25 +696,25 @@ $ ->
           else if password.val().length<4
             err = 'Password should be a little longer, at least 4 characters.'
           if err
-            loadAlert {content:err}
+            load_alert {content:err}
           else
-            formClose()
-            loadLoading {}, (loadingClose) ->
+            form_close()
+            load_loading {}, (loading_close) ->
               $.ajax
                 url: '/createUser'
                 data:
                   email: email.val()
                   password: password.val()
                 success: (data) ->
-                  loadingClose()
+                  loading_close()
                   if data.err
-                    loadAlert
+                    load_alert
                       content: data.err
                   else
-                    successfulLogin()
+                    successful_login()
                 error: (err) ->
-                  loadingClose()
-                  loadAlert
+                  loading_close()
+                  load_alert
                     content: 'Our apologies. A server error occurred.'
               , 1000
       ]
@@ -731,17 +731,17 @@ $ ->
             url: '/checkEmail'
             data:
               email: $t.val()
-            success: (fullResponseObject) ->
-              if fullResponseObject.count==0
+            success: (full_responsE) ->
+              if full_responsE.count==0
                 $t.removeClass('error').addClass 'valid'
-                $t.showTooltip
-                  message: fullResponseObject.email+' is good'
+                $t.show_tooltip
+                  message: full_responsE.email+' is good'
               else
                 $t.removeClass('valid').addClass 'error'
-                $t.showTooltip
-                  message:''+fullResponseObject.email+' is in use. Try signing in with a social login.'
+                $t.show_tooltip
+                  message:''+full_responsE.email+' is in use. Try signing in with a social login.'
         else
-          $t.removeClass('valid').addClass('error').showTooltip
+          $t.removeClass('valid').addClass('error').show_tooltip
             message: 'Is that an email?'
       ,1000
     $('.password').data('timer',0).keyup ->
@@ -751,7 +751,7 @@ $ ->
         if $t.val().length >= 4
           $t.removeClass('error').addClass 'valid'
         else
-          $t.removeClass('valid').addClass('error').showTooltip
+          $t.removeClass('valid').addClass('error').show_tooltip
             message: 'Just '+(6-$t.val().length)+' more characters please.'
       ,1000
     $('.password2').data('timer',0).keyup ->
@@ -762,7 +762,7 @@ $ ->
           $t.removeClass('error').addClass 'valid'
           $('.step-4').fadeTo 300, 1
         else
-          $t.removeClass('valid').addClass('error').showTooltip
+          $t.removeClass('valid').addClass('error').show_tooltip
             message:'Passwords should match please.'
       ,1000
     false
@@ -782,33 +782,33 @@ $ ->
       
     
   $feedback_a.click () ->
-    loadModal
+    load_modal
       content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
       width: 400
       height: 300
       buttons: [
         label: 'Send Feedback'
-        action: (formClose) ->
+        action: (form_close) ->
           #Close the window
-          formClose()
-          loadLoading {}, (loadingClose) ->
+          form_close()
+          load_loading {}, (loading_close) ->
             $.ajax
               url: '/sendFeedback'
               data:
                 content: $('.feedback-text').val()
                 email: $('.emailNotUser').val()
               success: (data) ->
-                loadingClose()
+                loading_close()
                 if data.err
-                  loadAlert
+                  load_alert
                     content: data.err
                 else
                   successfulFeedback() ->
                     $s.html 'Feedback Sent'
                     $s.fadeIn 100000
               error: (err) ->
-                loadingClose()
-                loadAlert
+                loading_close()
+                load_alert
                   content: 'Our apologies. A server error occurred, feedback could not be sent.'
             , 1000
       ] 
@@ -838,7 +838,7 @@ $ ->
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
-    loadAlert
+    load_alert
       content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
   #
@@ -851,11 +851,11 @@ $ ->
     $t = $ this
     $('.card').removeClass 'active'
     $t.addClass('active')
-    $findClass = $t.clone()
-    className = $findClass.removeClass('card')[0].className
-    $findClass.remove()
+    $find_class = $t.clone()
+    class_name = $find_class.removeClass('card')[0].class_name
+    $find_class.remove()
     $('.main').attr
-      class: 'card main '+className
+      class: 'card main '+class_name
     if $gs.offset().top == $t.offset().top-10
       $gs.animate
         left: $t.offset().left-10
@@ -889,10 +889,10 @@ $ ->
     $(this).removeClass 'click'
 
   # Define Margin
-  newMargin = 0
-  maxSlides = $('.slides li').length
-  marginIncrement = 620
-  maxSlides--
+  new_margin = 0
+  max_slides = $('.slides li').length
+  margin_increment = 620
+  max_slides--
 
   ###
   # Home Page Stuff
@@ -920,7 +920,7 @@ $ ->
     $t = $ this
     $t.data 'timer', 0
     $t.keyup -> 
-      updateCards i, this.value
+      update_cards i, this.value
       clearTimeout $t.data 'timer'
       $t.data 'timer',
         setTimeout ->
@@ -932,12 +932,12 @@ $ ->
           # on it so that we can use a comma character and escape anything.
           # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
           ###
-          arrayOfInputValues = $.makeArray $('.card.main input').map -> this.value
-          console.log arrayOfInputValues
+          array_oF_inpUt_values = $.makeArray $('.card.main input').map -> this.value
+          console.log array_oF_inpUt_values
           $.ajax
             url: '/saveForm'
             data:
-              inputs: arrayOfInputValues.join('`~`')
+              inputs: array_oF_inpUt_values.join('`~`')
           false
         ,1000
       false
@@ -968,38 +968,38 @@ $ ->
     false
 
   # each advance of the slide
-  advanceSlide = ->
-    if newMargin < maxSlides * -marginIncrement
-      newMargin=0
-    else if newMargin > 0
-      newMargin = maxSlides * -marginIncrement
+  advance_slide = ->
+    if new_margin < max_slides * -margin_increment
+      new_margin=0
+    else if new_margin > 0
+      new_margin = max_slides * -margin_increment
 
     $('.slides .content').stop(true,false).animate
-      'margin-left': newMargin
+      'margin-left': new_margin
     , 400
 
   # click events
   $('.slides .arrow-right').click ->
-    marginIncrement = $('.slides').width()
+    margin_increment = $('.slides').width()
     clearTimeout(timer)
-    newMargin -= marginIncrement
-    advanceSlide()
+    new_margin -= margin_increment
+    advance_slide()
   $('.slides .arrow-left').click ->
-    marginIncrement = $('.slides').width()
+    margin_increment = $('.slides').width()
     clearTimeout(timer)
-    newMargin -= -marginIncrement
-    advanceSlide()
+    new_margin -= -margin_increment
+    advance_slide()
 
   # The timer that starts and then repeats (cancelled on click)
   timer = setTimeout ->
-    marginIncrement = $('.slides').width()
-    newMargin -= marginIncrement
-    advanceSlide()
+    margin_increment = $('.slides').width()
+    new_margin -= margin_increment
+    advance_slide()
     clearTimeout(timer)
     timer = setInterval ->
-      marginIncrement = $('.slides').width()
-      newMargin -= marginIncrement
-      advanceSlide()
+      margin_increment = $('.slides').width()
+      new_margin -= margin_increment
+      advance_slide()
     , 6500
   , 3000
 

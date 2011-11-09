@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, default_theme, execute_save, fam, font_families, getPosition, i, loadTheme, noTheme, pageTimer, setPageTimer, shiftAmount, unfocus_highlight, update_family, _i, _len;
+    var $body, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, set_page_timer, shift_amount, unfocus_highlight, update_family, _i, _len;
     $designer = $('.designer');
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
@@ -85,17 +85,17 @@
           j++
         i++
     */
-    shiftAmount = 1;
+    shift_amount = 1;
     $body.keydown(function(e) {
       var $active_item, bottom_bound, c, new_left, new_top, top_bound;
       $active_item = $card.find('.active');
       c = e.keyCode;
       if ($active_item.length) {
-        if (e.keyCode === 16) shiftAmount = 10;
+        if (e.keyCode === 16) shift_amount = 10;
         if (c === 38 || c === 40) {
           new_top = parseInt($active_item.css('top'));
-          if (c === 38) new_top -= shiftAmount;
-          if (c === 40) new_top += shiftAmount;
+          if (c === 38) new_top -= shift_amount;
+          if (c === 40) new_top += shift_amount;
           top_bound = (card_height - card_inner_height) / 2;
           bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
           if (new_top < top_bound) new_top = top_bound;
@@ -104,8 +104,8 @@
         }
         if (c === 37 || c === 39) {
           new_left = parseInt($active_item.css('left'));
-          if (c === 37) new_left -= shiftAmount;
-          if (c === 39) new_left += shiftAmount;
+          if (c === 37) new_left -= shift_amount;
+          if (c === 39) new_left += shift_amount;
           top_bound = (card_width - card_inner_width) / 2;
           bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
           if (new_left < top_bound) new_left = top_bound;
@@ -116,7 +116,7 @@
       }
     });
     $body.keyup(function(e) {
-      if (e.keyCode === 16) return shiftAmount = 1;
+      if (e.keyCode === 16) return shift_amount = 1;
     });
     update_family = function() {
       var $active_item, $t, index;
@@ -183,21 +183,21 @@
       $fonts.stop(true, false).slideUp();
       return $notfonts.stop(true, false).slideDown();
     });
-    pageTimer = 0;
-    setPageTimer = function() {
-      clearTimeout(pageTimer);
-      return pageTimer = setTimeout(function() {
+    page_timer = 0;
+    set_page_timer = function() {
+      clearTimeout(page_timer);
+      return page_timer = setTimeout(function() {
         return execute_save();
       }, 500);
     };
-    $cat.keyup(setPageTimer);
-    $font_color.keyup(setPageTimer);
-    $color1.keyup(setPageTimer);
-    $color2.keyup(setPageTimer);
+    $cat.keyup(set_page_timer);
+    $font_color.keyup(set_page_timer);
+    $color1.keyup(set_page_timer);
+    $color2.keyup(set_page_timer);
     $lines.draggable({
       grid: [10, 10],
       containment: '.designer .card',
-      stop: setPageTimer
+      stop: set_page_timer
     });
     $lines.resizable({
       grid: 10,
@@ -208,19 +208,19 @@
           'line-height': ui.size.height + 'px'
         });
       },
-      stop: setPageTimer
+      stop: set_page_timer
     });
     $qr.draggable({
       grid: [5, 5],
       containment: '.designer .card',
-      stop: setPageTimer
+      stop: set_page_timer
     });
     $qr.resizable({
       grid: 5,
       containment: '.designer .card',
       handles: 'n, e, s, w, ne, nw, se, sw',
       aspectRatio: 1,
-      stop: setPageTimer
+      stop: set_page_timer
     });
     $upload.change(function() {
       return $dForm.submit();
@@ -234,7 +234,7 @@
       $t.addClass('active');
       return false;
     });
-    getPosition = function($t) {
+    get_position = function($t) {
       var height, left, result, top, width;
       height = parseInt($t.height());
       width = parseInt($t.width());
@@ -258,11 +258,11 @@
         color2: $color2.val(),
         s3_id: active_theme.s3_id
       };
-      theme.positions.push(getPosition($qr));
+      theme.positions.push(get_position($qr));
       $lines.each(function() {
         var $t, pos;
         $t = $(this);
-        pos = getPosition($t);
+        pos = get_position($t);
         if (pos) return theme.positions.push(pos);
       });
       parameters = {
@@ -289,7 +289,7 @@
       });
     };
     $.s3_result = function(s3_id) {
-      if (!noTheme() && s3_id) {
+      if (!no_theme() && s3_id) {
         active_theme.s3_id = s3_id;
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
@@ -300,7 +300,7 @@
         });
       }
     };
-    noTheme = function() {
+    no_theme = function() {
       if (!active_theme) {
         loadAlert({
           content: 'Please create or select a theme first'
@@ -334,7 +334,7 @@
         y: 5 + i * 10
       });
     }
-    loadTheme = function(theme) {
+    load_theme = function(theme) {
       var $li, i, pos, qr, _len2, _ref;
       active_theme = theme;
       qr = theme.positions.shift();
@@ -364,7 +364,7 @@
       return $color2.val(theme.color2);
     };
     $('.add-new').click(function() {
-      return loadTheme(default_theme);
+      return load_theme(default_theme);
       /*
           $new_li = $ '<li class="card" />'
           $('.category[category=""] .gallery').append $new_li
@@ -372,7 +372,7 @@
       */
     });
     $designer.find('.buttons .save').click(function() {
-      if (noTheme()) return false;
+      if (no_theme()) return false;
       return loadLoading({}, function(closeLoading) {
         return execute_save(function() {
           return closeLoading();
@@ -380,7 +380,7 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (noTheme()) return false;
+      if (no_theme()) return false;
       return loadModal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,

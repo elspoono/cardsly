@@ -9,7 +9,7 @@
    *
   */
 
-  var $window, dateFormat, loadAlert, loadConfirm, loadLoading, loadModal, usualDelay;
+  var $window, date_format, load_alert, load_confirm, load_loading, load_modal, usualDelay;
 
   $.ajaxSetup({
     type: 'POST'
@@ -30,7 +30,7 @@
    *
   */
 
-  $.fn.showTooltip = function(options) {
+  $.fn.show_tooltip = function(options) {
     var settings;
     settings = {
       position: 'below'
@@ -80,9 +80,9 @@
      *
   */
 
-  loadModal = function(options, next) {
-    var $body, buttons, close, height, i, modal, myNext, resizeEvent, scrollbarWidth, settings, thisButton, width, win, _i, _len, _ref;
-    scrollbarWidth = $.scrollbarWidth();
+  load_modal = function(options, next) {
+    var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
+    scrollbar_width = $.scrollbar_width();
     modal = $('<div class="modal" />');
     win = $('<div class="window" />');
     close = $('<div class="close" />');
@@ -92,9 +92,9 @@
       closeText: 'close'
     };
     if (options) $.extend(settings, options);
-    myNext = function() {
-      $window.unbind('scroll resize', resizeEvent);
-      $window.unbind('resize', resizeEvent);
+    my_next = function() {
+      $window.unbind('scroll resize', resize_event);
+      $window.unbind('resize', resize_event);
       $body.css({
         overflow: 'inherit',
         'padding-right': 0
@@ -139,27 +139,27 @@
       _ref = settings.buttons;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
-        thisButton = $('<input type="button" class="button" value="' + i.label + '" class="submit">');
+        this_button = $('<input type="button" class="button" value="' + i.label + '" class="submit">');
         if (i["class"]) {
-          thisButton.addClass(i["class"]);
+          this_button.addClass(i["class"]);
         } else {
-          thisButton.addClass('normal');
+          this_button.addClass('normal');
         }
-        thisButton.click(function() {
-          return i.action(myNext);
+        this_button.click(function() {
+          return i.action(my_next);
         });
-        buttons.append(thisButton);
+        buttons.append(this_button);
       }
     }
     win.append(buttons);
     $('body').append(modal, close, win);
     $body = $('body');
-    resizeEvent = function() {
+    resize_event = function() {
       var height, top, width;
       width = $window.width();
       height = $window.height();
       if (width < settings.width || height < win.height()) {
-        $window.unbind('scroll resize', resizeEvent);
+        $window.unbind('scroll resize', resize_event);
         close.css({
           position: 'relative'
         });
@@ -178,7 +178,7 @@
       } else {
         $body.css({
           overflow: 'hidden',
-          'padding-right': scrollbarWidth
+          'padding-right': scrollbar_width
         });
         win.position({
           of: $window,
@@ -198,9 +198,9 @@
         });
       }
     };
-    $window.bind('resize scroll', resizeEvent);
-    modal.click(myNext);
-    close.click(myNext);
+    $window.bind('resize scroll', resize_event);
+    modal.click(my_next);
+    close.click(my_next);
     width = $window.width();
     height = $window.height();
     if (width < settings.width || height < win.height()) {
@@ -212,69 +212,69 @@
       win.fadeIn();
       close.fadeIn();
     }
-    if (next) next(myNext);
-    return resizeEvent();
+    if (next) next(my_next);
+    return resize_event();
   };
 
   /*
    * 
    * Modal Handling Functions
    * 
-   * Load Loading (Subclass of loadmodal)
+   * Load Loading (Subclass of load_modal)
    * 
    *
   */
 
-  loadLoading = function(options, next) {
-    var i, modifiedOptions, v;
+  load_loading = function(options, next) {
+    var i, modified_options, v;
     options = options || {};
-    modifiedOptions = {
+    modified_options = {
       content: 'Loading ... ',
       height: 100,
       width: 200
     };
     for (i in options) {
       v = options[i];
-      modifiedOptions[i] = options[i];
+      modified_options[i] = options[i];
     }
-    return loadModal(modifiedOptions, next);
+    return load_modal(modified_options, next);
   };
 
   /*
    * 
    * Modal Handling Functions
    * 
-   * Load Confirm (Subclass of loadmodal)
+   * Load Confirm (Subclass of load_modal)
    * like javascript confirm()
    *
   */
 
-  loadConfirm = function(options, next) {
-    var i, modifiedOptions, v;
+  load_confirm = function(options, next) {
+    var i, modified_options, v;
     options = options || {};
-    modifiedOptions = {
+    modified_options = {
       content: 'Confirm',
       height: 80,
       width: 300
     };
     for (i in options) {
       v = options[i];
-      modifiedOptions[i] = options[i];
+      modified_options[i] = options[i];
     }
-    return loadModal(modifiedOptions, next);
+    return load_modal(modified_options, next);
   };
 
   /*
    * 
    * Modal Handling Functions
    * 
-   * Load Alert (Subclass of loadmodal)
+   * Load Alert (Subclass of load_modal)
    * like javascript alert()
    *
   */
 
-  loadAlert = function(options, next) {
-    var i, modifiedOptions, v;
+  load_alert = function(options, next) {
+    var i, modified_options, v;
     options = options || {};
     next = next || function() {};
     if (typeof options === 'string') {
@@ -282,7 +282,7 @@
         content: options
       };
     }
-    modifiedOptions = {
+    modified_options = {
       content: 'Alert',
       buttons: [
         {
@@ -297,9 +297,9 @@
     };
     for (i in options) {
       v = options[i];
-      modifiedOptions[i] = options[i];
+      modified_options[i] = options[i];
     }
-    return loadModal(modifiedOptions, next);
+    return load_modal(modified_options, next);
   };
 
   /*
@@ -310,18 +310,18 @@
    * http:#www.gnu.org/licenses/lgpl-3.0.txt
   */
 
-  $.scrollbarWidth = function() {
+  $.scrollbar_width = function() {
     var $body, w;
-    if (!$._scrollbarWidth) {
+    if (!$._scrollbar_width) {
       $body = $('body');
       w = $body.css('overflow', 'hidden').width();
       $body.css('overflow', 'scroll');
       w -= $body.width();
       if (!w) w = $body.width() - $body[0].clientWidth;
       $body.css('overflow', '');
-      $._scrollbarWidth = w;
+      $._scrollbar_width = w;
     }
-    return $._scrollbarWidth;
+    return $._scrollbar_width;
   };
 
   /*
@@ -336,13 +336,13 @@
    * Accepts a date, a mask, or a date and a mask.
    * Returns a formatted version of the given date.
    * The date defaults to the current date/time.
-   * The mask defaults to dateFormat.masks.default.
+   * The mask defaults to date_format.masks.default.
   */
 
-  dateFormat = (function() {
+  date_format = (function() {
     var pad, timezone, timezoneClip, token;
 
-    function dateFormat() {}
+    function date_format() {}
 
     token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g;
 
@@ -359,9 +359,9 @@
       return val;
     };
 
-    dateFormat.prototype.format = function(date, mask, utc) {
+    date_format.prototype.format = function(date, mask, utc) {
       var D, H, L, M, d, dF, flags, m, o, s, y, _;
-      dF = dateFormat.prototype;
+      dF = date_format.prototype;
       if (arguments.length === 1 && Object.prototype.toString.call(date) === "[object String]" && !/\d/.test(date)) {
         mask = date;
         date = void 0;
@@ -423,7 +423,7 @@
       });
     };
 
-    dateFormat.prototype.masks = {
+    date_format.prototype.masks = {
       "default": "ddd mmm dd yyyy HH:MM:ss",
       shortDate: "m/d/yy",
       mediumDate: "mmm d, yyyy",
@@ -438,18 +438,18 @@
       isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
     };
 
-    dateFormat.prototype.i18n = {
+    date_format.prototype.i18n = {
       dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
 
-    return dateFormat;
+    return date_format;
 
   })();
 
   Date.prototype.format = function(mask, utc) {
     var a;
-    a = new dateFormat;
+    a = new date_format;
     return a.format(this, mask, utc);
   };
 
@@ -525,7 +525,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
     */
-    var $a, $am, $body, $feedback_a, $gs, $mc, $slides, $win, advanceSlide, closeMenu, expandMenu, hasHidden, i, item_name, marginIncrement, maxSlides, monitorForComplete, newMargin, path, successfulLogin, timer, updateCards, winH, _i, _len;
+    var $a, $am, $body, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
     $a = $('.account-link');
     $am = $a.find('.account-menu');
     $body = $(document);
@@ -534,7 +534,7 @@
     }, function() {
       return $(this).removeClass('hover');
     });
-    closeMenu = function(e) {
+    close_menu = function(e) {
       var $t;
       $t = $(e.target);
       if ($t.closest('.account-link').length) {
@@ -543,18 +543,18 @@
       } else {
         $a.removeClass('click');
         $am.slideUp();
-        $a.one('click', expandMenu);
-        $body.unbind('click', closeMenu);
+        $a.one('click', expand_menu);
+        $body.unbind('click', close_menu);
       }
       return false;
     };
-    expandMenu = function() {
+    expand_menu = function() {
       $am.slideDown();
       $a.addClass('click');
-      $body.bind('click', closeMenu);
+      $body.bind('click', close_menu);
       return false;
     };
-    $a.one('click', expandMenu);
+    $a.one('click', expand_menu);
     /*
       Multiple
       Lines Of
@@ -575,7 +575,7 @@
       document.location.href = '#';
       $('.design-button').click();
     }
-    successfulLogin = function() {
+    successful_login = function() {
       var $s;
       if (path === '/login') {
         return document.location.href = '/admin';
@@ -591,20 +591,20 @@
     $win = $(window);
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
-    hasHidden = [];
+    has_hidden = [];
     $('.section-to-hide').each(function() {
       var $this, thisT;
       $this = $(this);
       thisT = $this.offset().top;
       if (winH < thisT) {
-        return hasHidden.push({
+        return has_hidden.push({
           $this: $this,
           thisT: thisT
         });
       }
     });
-    for (_i = 0, _len = hasHidden.length; _i < _len; _i++) {
-      i = hasHidden[_i];
+    for (_i = 0, _len = has_hidden.length; _i < _len; _i++) {
+      i = has_hidden[_i];
       i.$this.hide();
     }
     /*
@@ -612,20 +612,20 @@
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
     */
-    updateCards = function(rowNumber, value) {
+    update_cards = function(rowNumber, value) {
       return $('.card .content').each(function() {
         return $(this).find('li:eq(' + rowNumber + ')').html(value);
       });
     };
     $win.scroll(function() {
-      var i, newWinH, timeLapse, _j, _len2, _results;
+      var i, newWinH, time_lapse, _j, _len2, _results;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.length) {
         if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
           $mc.data('didLoad', true);
-          timeLapse = 0;
+          time_lapse = 0;
           $('.main.card').find('input').each(function(rowNumber) {
-            return updateCards(rowNumber, this.value);
+            return update_cards(rowNumber, this.value);
           });
           $('.main.card .defaults').find('input').each(function(rowNumber) {
             var $t, j, timers, v;
@@ -642,9 +642,9 @@
                     var v_substring;
                     v_substring = v.substr(0, j);
                     $t.val(v_substring);
-                    return updateCards(rowNumber, v_substring);
-                  }, timeLapse * 70);
-                  timeLapse++;
+                    return update_cards(rowNumber, v_substring);
+                  }, time_lapse * 70);
+                  time_lapse++;
                   return timer;
                 })(j));
               }
@@ -659,7 +659,7 @@
                   clearTimeout(i);
                 }
                 $t.val('');
-                updateCards(rowNumber, '');
+                update_cards(rowNumber, '');
                 return $t.data('cleared', true);
               }
             });
@@ -670,8 +670,8 @@
         }
       }
       _results = [];
-      for (_j = 0, _len2 = hasHidden.length; _j < _len2; _j++) {
-        i = hasHidden[_j];
+      for (_j = 0, _len2 = has_hidden.length; _j < _len2; _j++) {
+        i = has_hidden[_j];
         if (i.thisT - 50 < newWinH) {
           _results.push(i.$this.fadeIn(2000));
         } else {
@@ -683,36 +683,36 @@
     /*
       Login stuff
     */
-    monitorForComplete = function(openedWindow) {
+    monitor_for_complete = function(opened_window) {
       var checkTimer;
       $.cookie('success-login', null);
       return checkTimer = setInterval(function() {
         if ($.cookie('success-login')) {
-          successfulLogin();
+          successful_login();
           $.cookie('success-login', null);
           window.focus();
-          return openedWindow.close();
+          return opened_window.close();
         }
       }, 200);
     };
     $('.google').click(function() {
-      monitorForComplete(window.open('auth/google', 'auth', 'height=350,width=600'));
+      monitor_for_complete(window.open('auth/google', 'auth', 'height=350,width=600'));
       return false;
     });
     $('.twitter').click(function() {
-      monitorForComplete(window.open('auth/twitter', 'auth', 'height=400,width=500'));
+      monitor_for_complete(window.open('auth/twitter', 'auth', 'height=400,width=500'));
       return false;
     });
     $('.facebook').click(function() {
-      monitorForComplete(window.open('auth/facebook', 'auth', 'height=400,width=900'));
+      monitor_for_complete(window.open('auth/facebook', 'auth', 'height=400,width=900'));
       return false;
     });
     $('.linkedin').click(function() {
-      monitorForComplete(window.open('auth/linkedin', 'auth', 'height=300,width=400'));
+      monitor_for_complete(window.open('auth/linkedin', 'auth', 'height=300,width=400'));
       return false;
     });
     $('.login-form').submit(function() {
-      loadLoading({}, function(loadingClose) {
+      load_loading({}, function(loading_close) {
         return $.ajax({
           url: '/login',
           data: {
@@ -720,18 +720,18 @@
             password: $('.password-login').val()
           },
           success: function(data) {
-            loadingClose();
+            loading_close();
             if (data.err) {
-              return loadAlert({
+              return load_alert({
                 content: data.err
               });
             } else {
-              return successfulLogin();
+              return successful_login();
             }
           },
           error: function(err) {
-            loadingClose();
-            return loadAlert({
+            loading_close();
+            return load_alert({
               content: 'Our apologies. A server error occurred.'
             });
           }
@@ -740,12 +740,12 @@
       return false;
     });
     $('.new').click(function() {
-      loadModal({
+      load_modal({
         content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>',
         buttons: [
           {
             label: 'Create New',
-            action: function(formClose) {
+            action: function(form_close) {
               var email, err, password, password2;
               email = $('.email');
               password = $('.password');
@@ -759,12 +759,12 @@
                 err = 'Password should be a little longer, at least 4 characters.';
               }
               if (err) {
-                return loadAlert({
+                return load_alert({
                   content: err
                 });
               } else {
-                formClose();
-                return loadLoading({}, function(loadingClose) {
+                form_close();
+                return load_loading({}, function(loading_close) {
                   return $.ajax({
                     url: '/createUser',
                     data: {
@@ -772,18 +772,18 @@
                       password: password.val()
                     },
                     success: function(data) {
-                      loadingClose();
+                      loading_close();
                       if (data.err) {
-                        return loadAlert({
+                        return load_alert({
                           content: data.err
                         });
                       } else {
-                        return successfulLogin();
+                        return successful_login();
                       }
                     },
                     error: function(err) {
-                      loadingClose();
-                      return loadAlert({
+                      loading_close();
+                      return load_alert({
                         content: 'Our apologies. A server error occurred.'
                       });
                     }
@@ -808,22 +808,22 @@
               data: {
                 email: $t.val()
               },
-              success: function(fullResponseObject) {
-                if (fullResponseObject.count === 0) {
+              success: function(full_responsE) {
+                if (full_responsE.count === 0) {
                   $t.removeClass('error').addClass('valid');
-                  return $t.showTooltip({
-                    message: fullResponseObject.email + ' is good'
+                  return $t.show_tooltip({
+                    message: full_responsE.email + ' is good'
                   });
                 } else {
                   $t.removeClass('valid').addClass('error');
-                  return $t.showTooltip({
-                    message: '' + fullResponseObject.email + ' is in use. Try signing in with a social login.'
+                  return $t.show_tooltip({
+                    message: '' + full_responsE.email + ' is in use. Try signing in with a social login.'
                   });
                 }
               }
             });
           } else {
-            return $t.removeClass('valid').addClass('error').showTooltip({
+            return $t.removeClass('valid').addClass('error').show_tooltip({
               message: 'Is that an email?'
             });
           }
@@ -837,7 +837,7 @@
           if ($t.val().length >= 4) {
             return $t.removeClass('error').addClass('valid');
           } else {
-            return $t.removeClass('valid').addClass('error').showTooltip({
+            return $t.removeClass('valid').addClass('error').show_tooltip({
               message: 'Just ' + (6 - $t.val().length) + ' more characters please.'
             });
           }
@@ -852,7 +852,7 @@
             $t.removeClass('error').addClass('valid');
             return $('.step-4').fadeTo(300, 1);
           } else {
-            return $t.removeClass('valid').addClass('error').showTooltip({
+            return $t.removeClass('valid').addClass('error').show_tooltip({
               message: 'Passwords should match please.'
             });
           }
@@ -876,16 +876,16 @@
       }, 250);
     });
     $feedback_a.click(function() {
-      loadModal({
+      load_modal({
         content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
         width: 400,
         height: 300,
         buttons: [
           {
             label: 'Send Feedback',
-            action: function(formClose) {
-              formClose();
-              return loadLoading({}, function(loadingClose) {
+            action: function(form_close) {
+              form_close();
+              return load_loading({}, function(loading_close) {
                 return $.ajax({
                   url: '/sendFeedback',
                   data: {
@@ -893,9 +893,9 @@
                     email: $('.emailNotUser').val()
                   },
                   success: function(data) {
-                    loadingClose();
+                    loading_close();
                     if (data.err) {
-                      return loadAlert({
+                      return load_alert({
                         content: data.err
                       });
                     } else {
@@ -906,8 +906,8 @@
                     }
                   },
                   error: function(err) {
-                    loadingClose();
-                    return loadAlert({
+                    loading_close();
+                    return load_alert({
                       content: 'Our apologies. A server error occurred, feedback could not be sent.'
                     });
                   }
@@ -938,7 +938,7 @@
     */
     item_name = '100 cards';
     $('.checkout').click(function() {
-      loadAlert({
+      load_alert({
         content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
       });
       return false;
@@ -949,15 +949,15 @@
       top: 0
     });
     $('.gallery .card').live('click', function() {
-      var $findClass, $t, className;
+      var $find_class, $t, class_name;
       $t = $(this);
       $('.card').removeClass('active');
       $t.addClass('active');
-      $findClass = $t.clone();
-      className = $findClass.removeClass('card')[0].className;
-      $findClass.remove();
+      $find_class = $t.clone();
+      class_name = $find_class.removeClass('card')[0].class_name;
+      $find_class.remove();
       $('.main').attr({
-        "class": 'card main ' + className
+        "class": 'card main ' + class_name
       });
       if ($gs.offset().top === $t.offset().top - 10) {
         return $gs.animate({
@@ -992,10 +992,10 @@
     }).live('mouseup', function() {
       return $(this).removeClass('click');
     });
-    newMargin = 0;
-    maxSlides = $('.slides li').length;
-    marginIncrement = 620;
-    maxSlides--;
+    new_margin = 0;
+    max_slides = $('.slides li').length;
+    margin_increment = 620;
+    max_slides--;
     /*
       # Home Page Stuff
     */
@@ -1021,10 +1021,10 @@
       $t = $(this);
       $t.data('timer', 0);
       return $t.keyup(function() {
-        updateCards(i, this.value);
+        update_cards(i, this.value);
         clearTimeout($t.data('timer'));
         $t.data('timer', setTimeout(function() {
-          var arrayOfInputValues;
+          var array_oF_inpUt_values;
           $('.card.main input').each(function() {
             return $(this).trigger('clearMe');
           });
@@ -1035,14 +1035,14 @@
                     # on it so that we can use a comma character and escape anything.
                     # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
           */
-          arrayOfInputValues = $.makeArray($('.card.main input').map(function() {
+          array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
             return this.value;
           }));
-          console.log(arrayOfInputValues);
+          console.log(array_oF_inpUt_values);
           $.ajax({
             url: '/saveForm',
             data: {
-              inputs: arrayOfInputValues.join('`~`')
+              inputs: array_oF_inpUt_values.join('`~`')
             }
           });
           return false;
@@ -1075,37 +1075,37 @@
       $('.main-fields .more').show();
       return false;
     });
-    advanceSlide = function() {
-      if (newMargin < maxSlides * -marginIncrement) {
-        newMargin = 0;
-      } else if (newMargin > 0) {
-        newMargin = maxSlides * -marginIncrement;
+    advance_slide = function() {
+      if (new_margin < max_slides * -margin_increment) {
+        new_margin = 0;
+      } else if (new_margin > 0) {
+        new_margin = max_slides * -margin_increment;
       }
       return $('.slides .content').stop(true, false).animate({
-        'margin-left': newMargin
+        'margin-left': new_margin
       }, 400);
     };
     $('.slides .arrow-right').click(function() {
-      marginIncrement = $('.slides').width();
+      margin_increment = $('.slides').width();
       clearTimeout(timer);
-      newMargin -= marginIncrement;
-      return advanceSlide();
+      new_margin -= margin_increment;
+      return advance_slide();
     });
     $('.slides .arrow-left').click(function() {
-      marginIncrement = $('.slides').width();
+      margin_increment = $('.slides').width();
       clearTimeout(timer);
-      newMargin -= -marginIncrement;
-      return advanceSlide();
+      new_margin -= -margin_increment;
+      return advance_slide();
     });
     timer = setTimeout(function() {
-      marginIncrement = $('.slides').width();
-      newMargin -= marginIncrement;
-      advanceSlide();
+      margin_increment = $('.slides').width();
+      new_margin -= margin_increment;
+      advance_slide();
       clearTimeout(timer);
       return timer = setInterval(function() {
-        marginIncrement = $('.slides').width();
-        newMargin -= marginIncrement;
-        return advanceSlide();
+        margin_increment = $('.slides').width();
+        new_margin -= margin_increment;
+        return advance_slide();
       }, 6500);
     }, 3000);
     $slides = $('.slides');
