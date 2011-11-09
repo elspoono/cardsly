@@ -18,7 +18,7 @@ h1,
 h2,
 h3 {
   font-weight: normal;
-  font-family: "Maven Pro", sans-serif;
+  font-family: 'Maven Pro', sans-serif;
 }
 h1 {
   font-size: 50.4px;
@@ -32,7 +32,7 @@ ul {
 body {
   font-size: 15.75px;
   line-height: 1.5em;
-  font-family: "Ubuntu", sans-serif;
+  font-family: 'Ubuntu', sans-serif;
   background: #cfbea8 url("/images/little_pluses.png");
 }
 input {
@@ -269,7 +269,7 @@ input {
   color: #56a3da;
 }
 .header .navigation {
-  font-family: "Maven Pro", sans-serif;
+  font-family: 'Maven Pro', sans-serif;
   background-color: #908575;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
 /* Saf4+, Chrome */
@@ -729,7 +729,7 @@ input {
   -ms-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
   transform: rotate(-15deg);
-  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = 'auto expand' );
   zoom: 1;
   background: url("/images/card-bg-small/scott-qr-blue.png");
   height: 114px;
@@ -752,7 +752,7 @@ input {
   -ms-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
-  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = 'auto expand' );
   zoom: 1;
 }
 .hand-container-container .hand-container .hand {
@@ -1427,7 +1427,7 @@ input
   -ms-transform: rotate(270deg);
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
-  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = "auto expand" );
+  filter: progid : DXImageTransform . Microsoft . Matrix ( M11 = 0.9914448613738104, M12 = -0.13052619222005157, M21 = 0.13052619222005157, M22 = 0.9914448613738104, sizingMethod = 'auto expand' );
   zoom: 1;
   font-size: 21px;
   line-height: 1.5em;
