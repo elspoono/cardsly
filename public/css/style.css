@@ -760,6 +760,12 @@ input {
   top: 0;
   left: -200px;
 }
+.colorpicker {
+  z-index: 500;
+}
+.colorpicker_hex {
+  display: none;
+}
 .designer .card {
   width: 505px;
   height: 280px;
@@ -824,21 +830,18 @@ input {
 .designer .options li .color {
   width: 70px;
 }
+.designer .options li .color {
+  float: none;
+}
 .designer .options li .font-family {
-  width: 130px;
+  float: none;
+  display: block;
+  width: 180px;
 }
 .designer .options li .pre {
   line-height: 30px;
   float: left;
   display: block;
-}
-.designer .options .gradient,
-.designer .options .font-style {
-  background: #524641;
-  background: rgba(82,70,65,0.30);
-  border: 2px solid #908575;
-  padding: 5px;
-  margin: 5px -5px;
 }
 .designer .options .font-style {
   display: none;
