@@ -753,6 +753,12 @@ app.get '/account', (req, res) ->
     user: req.user
     session: req.session
 
+# Change_Password Page
+app.get '/change_password', (req, res) ->
+  res.render 'change_password'
+    user: req.user
+    session: req.session
+
 
 
 # Generic Error handler page itself

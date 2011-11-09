@@ -147,6 +147,7 @@ input {
 }
 .window .button {
   margin-left: 15px;
+  width: auto;
   margin-top: 30px;
 }
 .create-form input {
@@ -156,6 +157,12 @@ input {
   display: block;
   float: right;
   text-align: center;
+}
+.buttons .large_button {
+  display: block;
+  float: right;
+  text-align: center;
+  width: 225px;
 }
 .small-nav {
   position: absolute;
@@ -1385,20 +1392,18 @@ label .subtitle {
 .slides .container .content .fourth .commercial {
   margin-top: 30px;
 }
+input value=["Send Feedback"],
 .feedback-form {
 input
   margin: 15px auto;
-  float: none;
-  text-align: center;
-  display: block;
-  width: 50%;
 }
 .feedback-text {
   font-size: 14px;
+  width: 350px;
 }
 .emailNotUser {
   font-size: 12px;
-  width: 300px;
+  width: 350px;
 }
 .feedback {
   top: 40%;
@@ -1429,6 +1434,7 @@ input
   color: #eee;
   text-decoration: none;
 }
+.account_information,
 .shipping_table {
   font-size: 20px;
   text-decoration: none;
