@@ -18,15 +18,15 @@ $ ->
   $lines = $card.find '.line'
   $body = $ document
   #
-  $cat = $designer.find '.category-field input'
+  $cat = $designer.find '.category_field input'
   #
   $color1 = $designer.find '.color1'
   $color2 = $designer.find '.color2'
   #
-  $notfonts = $designer.find '.not-font-style'
-  $fonts = $designer.find '.font-style'
+  $notfonts = $designer.find '.not_font_style'
+  $fonts = $designer.find '.font_style'
   $font_color = $fonts.find '.color'
-  $font_family = $fonts.find '.font-family'
+  $font_family = $fonts.find '.font_family'
   #
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
@@ -191,7 +191,7 @@ $ ->
   # Helper function for highlighting going away
   unfocus_highlight = (e) ->
     $t = $ e.target
-    if $t.hasClass('font-style') or $t.closest('.font-style').length or $t.hasClass('line') or $t.hasClass('qr') or $t.closest('.line').length or $t.closest('.qr').length or $t.closest('.colorpicker').length
+    if $t.hasClass('font-style') or $t.closest('.font_style').length or $t.hasClass('line') or $t.hasClass('qr') or $t.closest('.line').length or $t.closest('.qr').length or $t.closest('.colorpicker').length
       $t = null
     else
       $card.find('.active').removeClass 'active'
@@ -267,6 +267,10 @@ $ ->
     stop: set_page_timer
   $qr.resizable
     grid: 5
+    resize: (e, ui) ->
+        $(ui.element).find('table').css
+          height: ui.size.height
+          width: ui.size.width
     containment: '.designer .card'
     handles: 'n, e, s, w, ne, nw, se, sw'
     aspectRatio: 1
@@ -280,14 +284,14 @@ $ ->
 
   #
   # 6 and 12 selectors in the thumbnails
-  $('.theme-1,.theme-2').click ->
+  $('.theme_1,.theme_2').click ->
     $t = $ this
     $c = $t.closest '.card'
 
     $c.click()
 
     # Actual Switch the classes
-    $('.theme-1,.theme-2').removeClass 'active'
+    $('.theme_1,.theme_2').removeClass 'active'
     $t.addClass 'active'
 
     # always return false to prevent href from going anywhere
@@ -430,7 +434,7 @@ $ ->
     $color2.val theme.color2
   #
   # The add new button
-  $('.add-new').click ->
+  $('.add_new').click ->
     load_theme(default_theme)
 
     # Oh wait, this doesn't happen until save, eh?

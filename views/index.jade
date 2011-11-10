@@ -1,11 +1,11 @@
 
-.section.home-first.first
-  .cell-bg
-  .cell-content
-    .container-slides
+.section.home_first.first
+  .cell_bg
+  .cell_content
+    .container_slides
       
 
-      img.phone-frame(src='/images/phone-frame.png')
+      img.phone_frame(src='/images/phone-frame.png')
       ul.slides
         li
           img.1(src='/images/1.png')
@@ -23,14 +23,14 @@
           img.7(src='/images/7.png')
 
     .clear
-.gallery-select
-.design-container
+.gallery_select
+.design_container
   .section
-    .cell-bg
-    .cell-content
+    .cell_bg
+    .cell_content
       h3 Step 1 : Design Your Card
-      p.card-title Enter your details here:
-      .card.main.scott-qr-blue
+      p.card_title Enter your details here:
+      .card.main.scott_qr_blue
         img(src='/images/qr.png').qr
         if session && session.savedInputs
           ul.content
@@ -38,18 +38,18 @@
               input(class='nth-'+i,value=session.savedInputs[i])
         else
           ul.content.defaults
-            input.nth-0(value='John Stamos')
-            input.nth-1(value='Uncle Jesse')
-            input.nth-2(value='555.555.5555')
-            input.nth-3(value='john@stamos.com')
-            input.nth-4
-            input.nth-5
-            input.nth-6
-            input.nth-7
-            input.nth-8
-            input.nth-9
-            input.nth-10
-            input.nth-11
+            input.nth_0(value='John Stamos')
+            input.nth_1(value='Uncle Jesse')
+            input.nth_2(value='555.555.5555')
+            input.nth_3(value='john@stamos.com')
+            input.nth_4
+            input.nth_5
+            input.nth_6
+            input.nth_7
+            input.nth_8
+            input.nth_9
+            input.nth_10
+            input.nth_11
       
       .category.active
         h4 Professional
@@ -81,11 +81,11 @@
                   li
   .clear
 .section
-  .cell-bg
-  .cell-content
+  .cell_bg
+  .cell_content
     h3 Step 2 : Purchase
-    .order-details
-      ul.radio-text-fields.left.quantity
+    .order_details
+      ul.radio_text_fields.left.quantity
         li
           p Quantity:
         li
@@ -104,7 +104,7 @@
           input(type='radio',name='quantity',value='60')
           label 1500 cards for $60
             .subtitle 4 cents per card
-      ul.radio-text-fields.right.shipping_method
+      ul.radio_text_fields.right.shipping_method
         li
           p Speed:
         li
@@ -115,7 +115,7 @@
           input(type='radio',name='shipping_method',value='25')
           label USPS Express Mail for $25
             .subtitle overnight
-      ul.text-fields.shipping.righter
+      ul.text_fields.shipping.righter
         li
           p Shipped To:
         li
@@ -123,7 +123,7 @@
           input.address(placeholder='123 Fake St')
         li
           label Address Line 2
-          input.address-2(placeholder='Apt 2032')
+          input.address_2(placeholder='Apt 2032')
         li
           label City
           input.city(placeholder='Cityville')
@@ -133,7 +133,7 @@
           .subtitle U.S. Addresses only right now
       .clear
 
-    .img-loader
+    .img_loader
       img(src='/images/buttons/google-click.png')
       img(src='/images/buttons/google-hover.png')
       img(src='/images/buttons/facebook-click.png')
@@ -176,7 +176,7 @@
               span.subtitle username and password
             .clear
       
-    .order-total
+    .order_total
       .title It costs this much
       .price $10
       .button.normal.checkout Buy Now

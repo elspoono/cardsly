@@ -1,12 +1,12 @@
 .section
-  .cell-bg
-  .cell-content
+  .cell_bg
+  .cell_content
     p Got It 
       if user
         =user.name
         =user.email
     script
       window.onload = function(){
-        $.cookie('success-login',true);
+        $.cookie('success_login',true);
         window.close();
       }

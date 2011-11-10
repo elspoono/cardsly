@@ -1,7 +1,7 @@
-.gallery-select
+.gallery_select
 .section.first
-  .cell-bg
-  .cell-content
+  .cell_bg
+  .cell_content
     h3 Theme Admin
     .designer
       .card
@@ -13,15 +13,15 @@
             .line(class='nth-'+i)
               =lines[i]
       .options
-        ul.not-font-style
-          li.category-field
+        ul.not_font_style
+          li.category_field
             label Category
             input(placeholder='Professional')
           li.image
             label Card Image
             form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
               input(type='file',name='image')
-            .img-loader
+            .img_loader
               iframe(name='hiddenFrame')
           li.gradient
             label Web Gradient
@@ -30,11 +30,11 @@
             span.pre #
             input.color2(placeholder='FFFFFF')
         ul
-          li.font-style
+          li.font_style
             label Font
             span.pre #
             input.color(placeholder='000000')
-            select.font-family(size='10')
+            select.font_family(size='10')
               option
               option Luckiest Guy
               option Arial
@@ -46,4 +46,4 @@
     .category.active(category='')
       h4 (No Category)
       ul.gallery
-    .button.gray.add-new Add New
+    .button.gray.add_new Add New

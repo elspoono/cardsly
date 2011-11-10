@@ -1,27 +1,35 @@
 (function() {
+
   /*
    * 
    * Set settings / defaults
    * 
    * AJAX defaults
    * some constants
-   * 
+   *
   */
+
   var $window, date_format, usualDelay;
+
   $.ajaxSetup({
     type: 'POST'
   });
+
   usualDelay = 4000;
+
   $window = $(window);
+
   $.fx.speeds._default = 300;
+
   /*
    * 
    * Modal Handling Functions
    * 
    * show tooltip, can be used on any element with jquery
    * 
-   * 
+   *
   */
+
   $.fn.show_tooltip = function(options) {
     var settings;
     settings = {
@@ -29,15 +37,11 @@
     };
     return this.each(function(i) {
       var $t, data, offset, toRemove, tooltip, _i, _len;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       offset = $t.offset();
       data = $t.data('tooltips');
-      if (!data) {
-        data = [];
-      }
+      if (!data) data = [];
       if (settings.message) {
         tooltip = $('<div class="tooltip" />');
         tooltip.html(settings.message);
@@ -57,24 +61,25 @@
         }
         $t.data('tooltips', data);
       } else {
-        tooltip = data[data.length - 1];
+        tooltip = data[data.length_1];
       }
       /*
       
               TODO : Make the animation in a custom slide up / slide down thing with $.animate
-      
-          */
+      */
       return tooltip.stop(true, true).fadeIn().delay(usualDelay).fadeOut();
     });
   };
+
   /*
      * 
      * Modal Handling Functions
      * 
      * Basic load
      * 
-     * 
+     *
   */
+
   $.load_modal = function(options, next) {
     var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
@@ -86,9 +91,7 @@
       height: 235,
       closeText: 'close'
     };
-    if (options) {
-      $.extend(settings, options);
-    }
+    if (options) $.extend(settings, options);
     my_next = function() {
       $window.unbind('scroll resize', resize_event);
       $window.unbind('resize', resize_event);
@@ -104,25 +107,17 @@
       });
       return win.fadeOut(function() {
         win.remove();
-        if ($('.window').length === 0) {
-          return $('#container').show();
-        }
+        if ($('.window').length === 0) return $('#container').show();
       });
     };
-    if (settings.closeText) {
-      close.html(settings.closeText);
-    }
-    if (settings.content) {
-      win.html(settings.content);
-    }
+    if (settings.closeText) close.html(settings.closeText);
+    if (settings.content) win.html(settings.content);
     if (settings.height) {
       win.css({
         'min-height': settings.height
       });
     }
-    if (settings.width) {
-      win.width(settings.width);
-    }
+    if (settings.width) win.width(settings.width);
     buttons = $('<div class="buttons" />');
     /*
       Loop through the buttons passed in.
@@ -139,7 +134,7 @@
           action: function(){ alert('Button 2 clicked')}
         }
       ]
-      */
+    */
     if (settings.buttons) {
       _ref = settings.buttons;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -217,19 +212,19 @@
       win.fadeIn();
       close.fadeIn();
     }
-    if (next) {
-      next(my_next);
-    }
+    if (next) next(my_next);
     return resize_event();
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Loading (Subclass of $.load_modal)
    * 
-   * 
+   *
   */
+
   $.load_loading = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -244,14 +239,16 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Confirm (Subclass of $.load_modal)
    * like javascript confirm()
-   * 
+   *
   */
+
   $.load_confirm = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -266,14 +263,16 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Alert (Subclass of $.load_modal)
    * like javascript alert()
-   * 
+   *
   */
+
   $.load_alert = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -302,6 +301,7 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * jQuery Scrollbar Width v1.0
    * 
@@ -309,6 +309,7 @@
    * Licensed under LGPL v3.0
    * http:#www.gnu.org/licenses/lgpl-3.0.txt
   */
+
   $.scrollbar_width = function() {
     var $body, w;
     if (!$._scrollbar_width) {
@@ -316,14 +317,13 @@
       w = $body.css('overflow', 'hidden').width();
       $body.css('overflow', 'scroll');
       w -= $body.width();
-      if (!w) {
-        w = $body.width() - $body[0].clientWidth;
-      }
+      if (!w) w = $body.width() - $body[0].clientWidth;
       $body.css('overflow', '');
       $._scrollbar_width = w;
     }
     return $._scrollbar_width;
   };
+
   /*
   #http:#stevenlevithan.com/assets/misc/date.format.js
    * Date Format 1.2.3
@@ -338,12 +338,18 @@
    * The date defaults to the current date/time.
    * The mask defaults to date_format.masks.default.
   */
+
   date_format = (function() {
     var pad, timezone, timezoneClip, token;
+
     function date_format() {}
+
     token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g;
+
     timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g;
+
     timezoneClip = /[^-+\dA-Z]/g;
+
     pad = function(val, len) {
       val = String(val);
       len = len || 2;
@@ -352,6 +358,7 @@
       }
       return val;
     };
+
     date_format.prototype.format = function(date, mask, utc) {
       var D, H, L, M, d, dF, flags, m, o, s, y, _;
       dF = date_format.prototype;
@@ -360,9 +367,7 @@
         date = void 0;
       }
       date = date ? new Date(date) : new Date;
-      if (isNaN(date)) {
-        throw SyntaxError("invalid date");
-      }
+      if (isNaN(date)) throw SyntaxError("invalid date");
       mask = String(dF.masks[mask] || mask || dF.masks["default"]);
       if (mask.slice(0, 4) === "UTC:") {
         mask = mask.slice(4);
@@ -417,6 +422,7 @@
         }
       });
     };
+
     date_format.prototype.masks = {
       "default": "ddd mmm dd yyyy HH:MM:ss",
       shortDate: "m/d/yy",
@@ -431,17 +437,22 @@
       isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
       isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
     };
+
     date_format.prototype.i18n = {
       dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
+
     return date_format;
+
   })();
+
   Date.prototype.format = function(mask, utc) {
     var a;
     a = new date_format;
     return a.format(this, mask, utc);
   };
+
   /*
    * jQuery Cookie plugin
    *
@@ -451,13 +462,12 @@
    * http://www.gnu.org/licenses/gpl.html
    *
   */
+
   jQuery.cookie = function(key, value, options) {
     var days, decode, result, t;
     if (arguments.length > 1 && String(value) !== "[object Object]") {
       options = jQuery.extend({}, options);
-      if (value === null || value === void 0) {
-        options.expires = -1;
-      }
+      if (value === null || value === void 0) options.expires = -1;
       if (typeof options.expires === 'number') {
         days = options.expires;
         t = options.expires = new Date();
@@ -476,6 +486,7 @@
       return null;
     }
   };
+
   $.fn.box_rotate = function(options) {
     var settings;
     settings = {
@@ -483,9 +494,7 @@
     };
     return this.each(function(i) {
       var $t, degrees, rotate;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       degrees = settings.degrees;
       rotate = Math.floor((degrees / 360) * 100) / 100;
@@ -498,6 +507,7 @@
       });
     });
   };
+
   /*
   
   
@@ -508,20 +518,18 @@
   
     Means everything under him (like me, indented here)
     WILL be done on document ready event.
-  
-  
-  
   */
+
   $(function() {
     /*
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
-      */
+    */
     var $a, $am, $body, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
-    $a = $('.account-link');
-    $am = $a.find('.account-menu');
+    $a = $('.account_link');
+    $am = $a.find('.account_menu');
     $body = $(document);
-    $('.small-nav li').hover(function() {
+    $('.small_nav li').hover(function() {
       return $(this).addClass('hover');
     }, function() {
       return $(this).removeClass('hover');
@@ -529,7 +537,7 @@
     close_menu = function(e) {
       var $t;
       $t = $(e.target);
-      if ($t.closest('.account-link').length) {
+      if ($t.closest('.account_link').length) {
         $a = $t.closest('li').find('a');
         document.location.href = $a.attr('href');
       } else {
@@ -551,9 +559,9 @@
       Multiple
       Lines Of
       Comments
-      */
+    */
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
-    $('.design-button').click(function() {
+    $('.design_button').click(function() {
       if (path !== '/') {
         document.location.href = '/#design-button';
       } else {
@@ -565,7 +573,7 @@
     });
     if (path === '/#design-button') {
       document.location.href = '#';
-      $('.design-button').click();
+      $('.design_button').click();
     }
     successful_login = function() {
       var $s;
@@ -584,7 +592,7 @@
     $mc = $('.main.card');
     winH = $win.height() + $win.scrollTop();
     has_hidden = [];
-    $('.section-to-hide').each(function() {
+    $('.section_to_hide').each(function() {
       var $this, thisT;
       $this = $(this);
       thisT = $this.offset().top;
@@ -603,7 +611,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-      */
+    */
     update_cards = function(rowNumber, value) {
       return $('.card .content').each(function() {
         return $(this).find('li:eq(' + rowNumber + ')').html(value);
@@ -664,20 +672,24 @@
       _results = [];
       for (_j = 0, _len2 = has_hidden.length; _j < _len2; _j++) {
         i = has_hidden[_j];
-        _results.push(i.thisT - 50 < newWinH ? i.$this.fadeIn(2000) : void 0);
+        if (i.thisT_50 < newWinH) {
+          _results.push(i.$this.fadeIn(2000));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     });
     /*
       Login stuff
-      */
+    */
     monitor_for_complete = function(opened_window) {
       var checkTimer;
-      $.cookie('success-login', null);
+      $.cookie('success_login', null);
       return checkTimer = setInterval(function() {
-        if ($.cookie('success-login')) {
+        if ($.cookie('success_login')) {
           successful_login();
-          $.cookie('success-login', null);
+          $.cookie('success_login', null);
           window.focus();
           return opened_window.close();
         }
@@ -699,13 +711,13 @@
       monitor_for_complete(window.open('auth/linkedin', 'auth', 'height=300,width=400'));
       return false;
     });
-    $('.login-form').submit(function() {
+    $('.login_form').submit(function() {
       $.load_loading({}, function(loading_close) {
         return $.ajax({
           url: '/login',
           data: {
-            email: $('.email-login').val(),
-            password: $('.password-login').val()
+            email: $('.email_login').val(),
+            password: $('.password_login').val()
           },
           success: function(data) {
             loading_close();
@@ -729,7 +741,7 @@
     });
     $('.new').click(function() {
       $.load_modal({
-        content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>',
+        content: '<div class="create_form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>',
         buttons: [
           {
             label: 'Create New',
@@ -838,7 +850,7 @@
         return $t.data('timer', setTimeout(function() {
           if ($t.val() === $('.password').val()) {
             $t.removeClass('error').addClass('valid');
-            return $('.step-4').fadeTo(300, 1);
+            return $('.step_4').fadeTo(300, 1);
           } else {
             return $t.removeClass('valid').addClass('error').show_tooltip({
               message: 'Passwords should match please.'
@@ -883,7 +895,7 @@
     });
     $feedback_a.click(function() {
       $.load_modal({
-        content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
+        content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
         width: 400,
         height: 300,
         buttons: [
@@ -895,7 +907,7 @@
                 return $.ajax({
                   url: '/sendFeedback',
                   data: {
-                    content: $('.feedback-text').val(),
+                    content: $('.feedback_text').val(),
                     email: $('.emailNotUser').val()
                   },
                   success: function(data) {
@@ -941,7 +953,7 @@
     $('#chart_container ul').hide();
     /*
       Shopping Cart Stuff
-      */
+    */
     item_name = '100 cards';
     $('.checkout').click(function() {
       $.load_alert({
@@ -949,7 +961,7 @@
       });
       return false;
     });
-    $gs = $('.gallery-select');
+    $gs = $('.gallery_select');
     $gs.css({
       left: -220,
       top: 0
@@ -965,16 +977,16 @@
       $('.main').attr({
         "class": 'card main ' + class_name
       });
-      if ($gs.offset().top === $t.offset().top - 10) {
+      if ($gs.offset().top === $t.offset().top_10) {
         return $gs.animate({
-          left: $t.offset().left - 10
+          left: $t.offset().left_10
         }, 500);
       } else {
         return $gs.stop(true, false).animate({
-          top: $t.offset().top - 10
+          top: $t.offset().top_10
         }, 500, 'linear', function() {
           return $gs.animate({
-            left: $t.offset().left - 10
+            left: $t.offset().left_10
           }, 500, 'linear');
         });
       }
@@ -982,8 +994,8 @@
     $gs.bind('activeMoved', function() {
       $a = $('.card.active');
       return $gs.css({
-        left: $a.offset().left - 10,
-        top: $a.offset().top - 10
+        left: $a.offset().left_10,
+        top: $a.offset().top_10
       });
     });
     $(window).load(function() {
@@ -1004,7 +1016,7 @@
     max_slides--;
     /*
       # Home Page Stuff
-      */
+    */
     $('.category h4').click(function() {
       var $c, $g, $t;
       $t = $(this);
@@ -1040,7 +1052,7 @@
                     # this.value should have a .replace ',' '\,'
                     # on it so that we can use a comma character and escape anything.
                     # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-                    */
+          */
           array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
             return this.value;
           }));
@@ -1058,27 +1070,27 @@
     });
     /*
       # Button Clicking Stuff
-      */
+    */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
       $s = $('.shipping_method input:checked');
-      return $('.order-total .price').html('$' + ($q.val() * 1 + $s.val() * 1));
+      return $('.order_total .price').html('$' + ($q.val() * 1 + $s.val() * 1));
     });
-    $('.main-fields .more').click(function() {
-      $('.main-fields .alt').slideDown(500, 'linear', function() {
+    $('.main_fields .more').click(function() {
+      $('.main_fields .alt').slideDown(500, 'linear', function() {
         return $('.gallery .card.active').click();
       });
       $(this).hide();
-      $('.main-fields .less').show();
+      $('.main_fields .less').show();
       return false;
     });
-    $('.main-fields .less').hide().click(function() {
-      $('.main-fields .alt').slideUp(500, 'linear', function() {
+    $('.main_fields .less').hide().click(function() {
+      $('.main_fields .alt').slideUp(500, 'linear', function() {
         return $('.gallery .card.active').click();
       });
       $(this).hide();
-      $('.main-fields .more').show();
+      $('.main_fields .more').show();
       return false;
     });
     advance_slide = function() {
@@ -1091,13 +1103,13 @@
         'margin-left': new_margin
       }, 400);
     };
-    $('.slides .arrow-right').click(function() {
+    $('.slides .arrow_right').click(function() {
       margin_increment = $('.slides').width();
       clearTimeout(timer);
       new_margin -= margin_increment;
       return advance_slide();
     });
-    $('.slides .arrow-left').click(function() {
+    $('.slides .arrow_left').click(function() {
       margin_increment = $('.slides').width();
       clearTimeout(timer);
       new_margin -= -margin_increment;
@@ -1119,4 +1131,5 @@
       'padding-left': '301px'
     });
   });
+
 }).call(this);

@@ -48,7 +48,7 @@ $.fn.show_tooltip = (options) ->
         toRemove.remove()
       $t.data 'tooltips', data
     else
-      tooltip = data[data.length-1]
+      tooltip = data[data.length_1]
     ###
 
         TODO : Make the animation in a custom slide up / slide down thing with $.animate
@@ -476,16 +476,16 @@ $ ->
   Profile MENU in the TOP RIGHT
   Thing that shows a drop down
   ###
-  $a = $ '.account-link'
-  $am = $a.find '.account-menu'
+  $a = $ '.account_link'
+  $am = $a.find '.account_menu'
   $body = $(document)
-  $('.small-nav li').hover ->
+  $('.small_nav li').hover ->
     $(this).addClass 'hover'
   , ->
     $(this).removeClass 'hover'
   close_menu = (e) ->
     $t = $ e.target
-    if $t.closest('.account-link').length
+    if $t.closest('.account_link').length
       $a = $t.closest('li').find 'a'
       document.location.href = $a.attr 'href'
     else
@@ -521,7 +521,7 @@ $ ->
 
   #
   # Get Started Button Scroll
-  $('.design-button').click ->
+  $('.design_button').click ->
     if path != '/'
       document.location.href = '/#design-button'
     else
@@ -535,7 +535,7 @@ $ ->
   # And again, on the home page, if we were passed the hash, scroll down!
   if path == '/#design-button'
     document.location.href = '#'
-    $('.design-button').click()
+    $('.design_button').click()
 
   #
   # Successful Login Function
@@ -557,7 +557,7 @@ $ ->
   # Set up the has_hidden array with all of non visible sections
   winH = $win.height()+$win.scrollTop()
   has_hidden = []
-  $('.section-to-hide').each ->
+  $('.section_to_hide').each ->
     $this = $(this)
     thisT = $this.offset().top
     if(winH<thisT)
@@ -617,7 +617,7 @@ $ ->
 
     # Show any hidden sections
     for i in has_hidden
-      if i.thisT-50 < newWinH
+      if i.thisT_50 < newWinH
         i.$this.fadeIn(2000)
   
   
@@ -632,11 +632,11 @@ $ ->
   #
   # Watch the popup windows every 200ms for when they set a cookie
   monitor_for_complete = (opened_window) ->
-    $.cookie 'success-login', null
+    $.cookie 'success_login', null
     checkTimer = setInterval ->
-      if $.cookie 'success-login'
+      if $.cookie 'success_login'
         successful_login()
-        $.cookie 'success-login', null
+        $.cookie 'success_login', null
         window.focus()
         opened_window.close()
     ,200
@@ -657,13 +657,13 @@ $ ->
   #
   #
   #Regular Login
-  $('.login-form').submit ->
+  $('.login_form').submit ->
     $.load_loading {}, (loading_close) ->
       $.ajax
         url: '/login'
         data:
-          email: $('.email-login').val()
-          password: $('.password-login').val()
+          email: $('.email_login').val()
+          password: $('.password_login').val()
         success: (data) ->
           loading_close()
           if data.err
@@ -680,7 +680,7 @@ $ ->
   # New Login Creation
   $('.new').click () ->
     $.load_modal
-      content: '<div class="create-form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
+      content: '<div class="create_form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
       buttons: [
         label: 'Create New'
         action: (form_close) ->
@@ -760,7 +760,7 @@ $ ->
       $t.data 'timer', setTimeout ->
         if $t.val() == $('.password').val()
           $t.removeClass('error').addClass 'valid'
-          $('.step-4').fadeTo 300, 1
+          $('.step_4').fadeTo 300, 1
         else
           $t.removeClass('valid').addClass('error').show_tooltip
             message:'Passwords should match please.'
@@ -801,7 +801,7 @@ $ ->
   #Feedback Button
   $feedback_a.click () ->
     $.load_modal
-      content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
+      content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
       width: 400
       height: 300
       buttons: [
@@ -813,7 +813,7 @@ $ ->
             $.ajax
               url: '/sendFeedback'
               data:
-                content: $('.feedback-text').val()
+                content: $('.feedback_text').val()
                 email: $('.emailNotUser').val()
               success: (data) ->
                 loading_close()
@@ -861,7 +861,7 @@ $ ->
     false
   #
   # The floaty guy behind the gallery selection
-  $gs = $ '.gallery-select'
+  $gs = $ '.gallery_select'
   $gs.css
     left: -220
     top: 0
@@ -874,22 +874,22 @@ $ ->
     $find_class.remove()
     $('.main').attr
       class: 'card main '+class_name
-    if $gs.offset().top == $t.offset().top-10
+    if $gs.offset().top == $t.offset().top_10
       $gs.animate
-        left: $t.offset().left-10
+        left: $t.offset().left_10
       ,500
     else
       $gs.stop(true,false).animate
-        top: $t.offset().top-10
+        top: $t.offset().top_10
       ,500,'linear',() ->
           $gs.animate
-            left: $t.offset().left-10
+            left: $t.offset().left_10
           ,500,'linear'
   $gs.bind 'activeMoved', ->
     $a = $ '.card.active'
     $gs.css
-      left: $a.offset().left-10
-      top: $a.offset().top-10
+      left: $a.offset().left_10
+      top: $a.offset().top_10
   $(window).load () ->
     $('.gallery:first .card:first').click()
   
@@ -968,21 +968,21 @@ $ ->
   $('.quantity input,.shipping_method input').bind 'click change', () ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
-    $('.order-total .price').html '$'+($q.val()*1 + $s.val()*1)
+    $('.order_total .price').html '$'+($q.val()*1 + $s.val()*1)
 
 
   # Show / Hide more fields
-  $('.main-fields .more').click ->
-    $('.main-fields .alt').slideDown 500, 'linear', () ->
+  $('.main_fields .more').click ->
+    $('.main_fields .alt').slideDown 500, 'linear', () ->
       $('.gallery .card.active').click()
     $(this).hide()
-    $('.main-fields .less').show()
+    $('.main_fields .less').show()
     false
-  $('.main-fields .less').hide().click ->
-    $('.main-fields .alt').slideUp 500, 'linear', () ->
+  $('.main_fields .less').hide().click ->
+    $('.main_fields .alt').slideUp 500, 'linear', () ->
       $('.gallery .card.active').click()
     $(this).hide()
-    $('.main-fields .more').show()
+    $('.main_fields .more').show()
     false
 
   # each advance of the slide
@@ -997,12 +997,12 @@ $ ->
     , 400
 
   # click events
-  $('.slides .arrow-right').click ->
+  $('.slides .arrow_right').click ->
     margin_increment = $('.slides').width()
     clearTimeout(timer)
     new_margin -= margin_increment
     advance_slide()
-  $('.slides .arrow-left').click ->
+  $('.slides .arrow_left').click ->
     margin_increment = $('.slides').width()
     clearTimeout(timer)
     new_margin -= -margin_increment

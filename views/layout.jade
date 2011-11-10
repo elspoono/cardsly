@@ -36,10 +36,10 @@ head
 body
   #container
     header
-                            //This is the small navigation bar at the top of the page.
-      ul.small-nav
+      //This is the small navigation bar at the top of the page.
+      ul.small_nav
         if user
-          li.account-link
+          li.account_link
             a(href='/profile')
               if user.name
                 =user.name
@@ -47,7 +47,7 @@ body
                 =user.email
               .gear
                 img(src='/images/buttons/gear.png')
-            ul.account-menu
+            ul.account_menu
               li
                 a(href='/settings') Settings
               li
@@ -82,16 +82,16 @@ body
           span business cards done easi
           span.alt ly
         if !user
-          .button.design-button.normal Get Started!
-        .img-loader
+          .button.design_button.normal Get Started!
+        .img_loader
           img(src='/images/buttons/design-click.png')
           img(src='/images/buttons/design-hover.png')
-      .header-back
+      .header_back
     #main(role='main')
       != body
     .feedback
       a.button.feedback(href='#') Feedback
-    .feedback-form
+    .feedback_form
     footer.footer
       .container
         .above
