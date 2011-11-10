@@ -13,9 +13,10 @@ $window = $ window
 $.fx.speeds._default = 300
 
 # Splash Page Displays Different
-if $.browser.msie
-  console.log parseInt($.browser.version, 6)
-console.log parseInt($.browser.version, 6)
+if $.browser.msie and parseInt($.browser.version, 10)<8
+    document.location.href = '/splash'
+
+
 
 
 ###

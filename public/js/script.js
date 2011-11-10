@@ -14,10 +14,9 @@
   usualDelay = 4000;
   $window = $(window);
   $.fx.speeds._default = 300;
-  if ($.browser.msie) {
-    console.log(parseInt($.browser.version, 6));
+  if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
+    document.location.href = '/splash';
   }
-  console.log(parseInt($.browser.version, 6));
   /*
    * 
    * Modal Handling Functions
