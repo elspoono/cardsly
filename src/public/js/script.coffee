@@ -848,7 +848,8 @@ $ ->
 
 # Splash Page Displays Different
   $('splash_different').browser () ->
-    browser_test = $.browser
+    if  $.browser.msie  
+      alert( parseInt($.browser.version, 10)
 
     
          
