@@ -647,31 +647,7 @@ app.post '/createUser', (req,res,next) ->
       success: 'True'
 
 
-###
-  nodemailer.send_mail({
-    sender: 'notices@kickbackcard.com',
-    to: signup.email,
-    subject:'KickbackCard: Beta request for '+signup.name+' received',
-    html: ''
-    +'<p>Hi,</p>'
-    +'<p>Your beta request has been received.  We will contact you in the next 1-2 business days.  Thank you for your interest in Kickback Card and we look forward to your participation.</p>'
-    +'<p>Below is your vendor information that was submitted.</p>'
-    +'<h3>'+signup.name+'</h3>'
-    +'<div>'
-      +'<div><b>Name:</b> '+signup.name+'</div>'
-      +'<div>'+signup.address+'</div>'
-      +'<div>'+signup.contact+'</div>'
-      +'<div>'+signup.site_url+'</div>'
-      +'<div>'+signup.yelp_url+'</div>'
-      +'<div>'+signup.hours+'</div>'
-      +'<div><b>Deal:</b> Buy '+signup.buy_qty+' '+signup.buy_item+' get '+signup.get_item+'</div>'
-      +'<div><b>Email Registered:</b> '+signup.email+'</div>'
-    +'</div>',
-    body:'New Beta Request: '+signup.email
-  },function(err, data){
 
-  });
-###
 
 
 # Get page helper functions

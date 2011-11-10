@@ -846,6 +846,12 @@ $ ->
     $(e).show('slow')
   $('#chart_container ul').hide()
 
+# Splash Page Displays Different
+  $('splash_different').browser () ->
+    if  $.browser.msie  
+      alert( parseInt($.browser.version, 10)
+
+    
          
   ###
   Shopping Cart Stuff
