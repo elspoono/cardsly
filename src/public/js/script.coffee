@@ -12,6 +12,11 @@ usualDelay = 4000
 $window = $ window 
 $.fx.speeds._default = 300
 
+# Splash Page Displays Different
+if $.browser.msie
+  console.log parseInt($.browser.version, 6)
+console.log parseInt($.browser.version, 6)
+
 
 ###
  * 
@@ -846,10 +851,7 @@ $ ->
     $(e).show('slow')
   $('#chart_container ul').hide()
 
-# Splash Page Displays Different
-  $('splash_different').browser () ->
-    if  $.browser.msie  
-      alert( parseInt($.browser.version, 10)
+
 
     
          

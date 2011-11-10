@@ -14,6 +14,10 @@
   usualDelay = 4000;
   $window = $(window);
   $.fx.speeds._default = 300;
+  if ($.browser.msie) {
+    console.log(parseInt($.browser.version, 6));
+  }
+  console.log(parseInt($.browser.version, 6));
   /*
    * 
    * Modal Handling Functions
@@ -939,10 +943,6 @@
       return $(e).show('slow');
     });
     $('#chart_container ul').hide();
-    $('splash_different').browser(function() {
-      var browser_test;
-      return browser_test = $.browser;
-    });
     /*
       Shopping Cart Stuff
       */
