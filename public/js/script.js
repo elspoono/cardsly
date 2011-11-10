@@ -2046,6 +2046,18 @@
         right: '-45px'
       }, 250);
     });
+    $('.change_password_button').click()(function() {});
+    /*
+      if password.val() != password2.val()
+        err = 'I\'m sorry, I don\'t think those passwords match.'
+      else if password.val().length<4
+        err = 'Password should be a little longer, at least 4 characters.'
+      else if err
+        loadAlert {content:err}
+      else
+        current_password = password.val()
+    
+      */
     $feedback_a.click(function() {
       loadModal({
         content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',

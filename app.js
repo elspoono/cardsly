@@ -676,12 +676,6 @@
       session: req.session
     });
   });
-  app.get('/change_password', function(req, res) {
-    return res.render('change_password', {
-      user: req.user,
-      session: req.session
-    });
-  });
   app.get('/error', function(req, res) {
     return res.render('error');
   });

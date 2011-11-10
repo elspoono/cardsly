@@ -1837,8 +1837,16 @@ $ ->
       right: '-45px'
       ,250
 
-      
+  # Change Password
+  $('.change_password_button').click () ->
+
     
+
+  ###
+
+  
+      
+  #Feedback Button
   $feedback_a.click () ->
     loadModal
       content: '<div class="feedback-form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback-text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
