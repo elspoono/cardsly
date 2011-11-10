@@ -610,25 +610,18 @@ input
       padding 0
     // QR Code Image
     .qr
-      .border
-        background $c_light
-        height 100%
-        width 100%
+      canvas
+        position absolute
+        z-index 351
+      .background
+        background $c_bg_light
+        border_radius(5%)
+        position absolute
+        z-index 350
       border 1px solid transparent
-      img
-        width 100%
-        height 100%
       display block
       position absolute
-      height 60px
-      width 60px
       margin 0
-      table
-        td
-          height 1px
-          width 1px
-        .dark
-          background $c_black
     //These are the text fields that are being manipulated in the admin
     .line
       border 1px solid transparent

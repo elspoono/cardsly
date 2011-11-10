@@ -7,12 +7,12 @@
   
   *****************************************
   */
-  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, sys, url, util;
+  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, url, util;
   express = require('express');
   http = require('http');
   form = require('connect-form');
   knox = require('knox');
-  sys = require('sys');
+  util = require('util');
   fs = require('fs');
   app = module.exports = express.createServer();
   conf = require('./lib/conf');
@@ -623,7 +623,7 @@
     return res.render('admin', {
       user: req.user,
       session: req.session,
-      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/admin.js']
+      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
     });
   });
   app.get('/login', function(req, res) {

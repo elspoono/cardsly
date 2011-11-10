@@ -76,20 +76,28 @@ $ ->
   qrcode.addData 'http://cards.ly'
   qrcode.make()
 
+  # Prep the variables for the canvas
   count = qrcode.getModuleCount()
-  $div = $ '<div class="border" />'
-  $table = $ '<table cellpadding=0 cellspacing=0 />'
-  $div.append $table
+  scale = 3
+  size = count * scale + scale * 2
+
+  $canvas = $ '<canvas height=' + size + ' width=' + size + ' />'
+  $qr.css
+    height: size
+    width: size
+  if typeof G_vmlCanvasManager != 'undefined'
+    G_vmlCanvasManager.initElement $canvas[0]
+  ctx = $canvas[0].getContext "2d"
+  ctx.fillStyle = "rgb(0,0,0)"
+
+  # Actual Drawing of the QR Code
   for r in [0..count-1]
-    $tr = $ '<tr />'
     for c in [0..count-1]
-      $td = $ '<td />'
-      $td.addClass('dark') if qrcode.isDark(r,c)
-      $tr.append $td
-    $table.append $tr
-  
+      ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(r,c)
+
   $qr.find('img').remove()
-  $qr.append $div
+  $qr.append '<div class="background" />'
+  $qr.append $canvas
   
   #
   # Key up and down events for active lines
@@ -268,9 +276,14 @@ $ ->
   $qr.resizable
     grid: 5
     resize: (e, ui) ->
-        $(ui.element).find('table').css
+        $t = $(ui.element)
+        $t.find('canvas').css
           height: ui.size.height
           width: ui.size.width
+        $t.find('.background').css
+          height: ui.size.height
+          width: ui.size.width
+        
     containment: '.designer .card'
     handles: 'n, e, s, w, ne, nw, se, sw'
     aspectRatio: 1
@@ -416,6 +429,12 @@ $ ->
     $qr.show().css
       top: qr.y/100 * card_height
       left: qr.x/100 * card_width
+      height: qr.h/100 * card_height
+      width: qr.w/100 * card_height
+    $qr.find('canvas').css
+      height: qr.h/100 * card_height
+      width: qr.w/100 * card_height
+    $qr.find('.background').css
       height: qr.h/100 * card_height
       width: qr.w/100 * card_height
     for pos,i in theme.positions

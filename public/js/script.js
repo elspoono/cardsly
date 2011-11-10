@@ -14,6 +14,9 @@
   usualDelay = 4000;
   $window = $(window);
   $.fx.speeds._default = 300;
+  if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
+    document.location.href = '/splash';
+  }
   /*
    * 
    * Modal Handling Functions
@@ -863,24 +866,6 @@
         right: '-45px'
       }, 250);
     });
-    $('.change_password_button').click(function() {
-      var current_password, err, password;
-      current_password = $('.current_password');
-      password = $('.password');
-      password = $('.password_retyped');
-      err = false;
-      if (password.val() !== password2.val()) {
-        return err = 'I\'m sorry, I don\'t think those passwords match.';
-      } else if (password.val().length < 4) {
-        return err = 'Password should be a little longer, at least 4 characters.';
-      } else if (err) {
-        return loadAlert({
-          content: err
-        });
-      } else {
-        return current_password = password.val();
-      }
-    });
     $feedback_a.click(function() {
       $.load_modal({
         content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
@@ -925,6 +910,48 @@
       });
       return false;
     });
+    $('.change_password_button').click(function() {
+      var current_password, err, password, password2;
+      current_password = $('.current_password');
+      password = $('.password');
+      password2 = $('.password_retyped');
+      err = false;
+      if (password.val() !== password2.val()) {
+        return err = 'I\'m sorry, I don\'t think those passwords match.';
+      } else if (password.val().length < 4) {
+        return err = 'Password should be a little longer, at least 4 characters.';
+      } else if (err) {
+        return loadAlert({
+          content: err
+        });
+      } else {
+        return current_password = password.val();
+      }
+      /* Timer Stuff 
+      $('.password').data('timer',0).keyup ->
+        $t = $ this
+        clearTimeout $t.data 'timer'
+        $t.data 'timer', setTimeout ->
+          if $t.val().length >= 4
+            $t.removeClass('error').addClass 'valid'
+          else
+            $t.removeClass('valid').addClass('error').show_tooltip
+              message: 'Just '+(6-$t.val().length)+' more characters please.'
+        ,1000
+      $('.password2').data('timer',0).keyup ->
+        $t = $ this
+        clearTimeout $t.data 'timer'
+        $t.data 'timer', setTimeout ->
+          if $t.val() == $('.password').val()
+            $t.removeClass('error').addClass 'valid'
+            $('.step_4').fadeTo 300, 1
+          else
+            $t.removeClass('valid').addClass('error').show_tooltip
+              message:'Passwords should match please.'
+        ,1000
+      false
+      */
+    });
     $('#show_activity').change(function() {
       var e;
       $('#activity_container ul').hide('slow');
@@ -939,10 +966,6 @@
       return $(e).show('slow');
     });
     $('#chart_container ul').hide();
-    $('splash_different').browser(function() {
-      var browser_test;
-      return browser_test = $.browser;
-    });
     /*
       Shopping Cart Stuff
       */

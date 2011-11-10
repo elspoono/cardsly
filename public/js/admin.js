@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $body, $card, $cat, $color1, $color2, $dForm, $designer, $div, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $table, $td, $tr, $upload, active_theme, c, card_height, card_inner_height, card_inner_width, card_width, count, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, r, set_page_timer, shift_amount, unfocus_highlight, update_family, _i, _len, _ref, _ref2;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, c, card_height, card_inner_height, card_inner_width, card_width, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, r, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, _i, _len, _ref, _ref2;
     $designer = $('.designer');
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
@@ -56,20 +56,28 @@
     qrcode.addData('http://cards.ly');
     qrcode.make();
     count = qrcode.getModuleCount();
-    $div = $('<div class="border" />');
-    $table = $('<table cellpadding=0 cellspacing=0 />');
-    $div.append($table);
+    scale = 3;
+    size = count * scale + scale * 2;
+    $canvas = $('<canvas height=' + size + ' width=' + size + ' />');
+    $qr.css({
+      height: size,
+      width: size
+    });
+    if (typeof G_vmlCanvasManager !== 'undefined') {
+      G_vmlCanvasManager.initElement($canvas[0]);
+    }
+    ctx = $canvas[0].getContext("2d");
+    ctx.fillStyle = "rgb(0,0,0)";
     for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
-      $tr = $('<tr />');
       for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-        $td = $('<td />');
-        if (qrcode.isDark(r, c)) $td.addClass('dark');
-        $tr.append($td);
+        if (qrcode.isDark(r, c)) {
+          ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale);
+        }
       }
-      $table.append($tr);
     }
     $qr.find('img').remove();
-    $qr.append($div);
+    $qr.append('<div class="background" />');
+    $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
       var $active_item, bottom_bound, new_left, new_top, top_bound;
@@ -203,7 +211,13 @@
     $qr.resizable({
       grid: 5,
       resize: function(e, ui) {
-        return $(ui.element).find('table').css({
+        var $t;
+        $t = $(ui.element);
+        $t.find('canvas').css({
+          height: ui.size.height,
+          width: ui.size.width
+        });
+        return $t.find('.background').css({
           height: ui.size.height,
           width: ui.size.width
         });
@@ -332,6 +346,14 @@
       $qr.show().css({
         top: qr.y / 100 * card_height,
         left: qr.x / 100 * card_width,
+        height: qr.h / 100 * card_height,
+        width: qr.w / 100 * card_height
+      });
+      $qr.find('canvas').css({
+        height: qr.h / 100 * card_height,
+        width: qr.w / 100 * card_height
+      });
+      $qr.find('.background').css({
         height: qr.h / 100 * card_height,
         width: qr.w / 100 * card_height
       });

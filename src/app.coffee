@@ -15,7 +15,7 @@ express = require 'express'
 http = require 'http'
 form = require 'connect-form'
 knox = require 'knox'
-sys = require 'sys'
+util = require 'util'
 fs = require 'fs'
 app = module.exports = express.createServer()
 # Module requires
@@ -705,6 +705,7 @@ app.get '/admin', securedAdminPage, (req, res) ->
     scripts:[
       '/js/libs/colorpicker/js/colorpicker.js'
       '/js/libs/qrcode.js'
+      '/js/libs/excanvas.compiled.js'
       '/js/admin.js'
     ]
 
