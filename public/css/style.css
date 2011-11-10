@@ -788,9 +788,21 @@ input {
   width: 60px;
   margin: 0;
 }
+.designer .card .qr .border {
+  background: #eee;
+  height: 100%;
+  width: 100%;
+}
 .designer .card .qr img {
   width: 100%;
   height: 100%;
+}
+.designer .card .qr table td {
+  height: 1px;
+  width: 1px;
+}
+.designer .card .qr table .dark {
+  background: #000;
 }
 .designer .card .line {
   border: 1px solid transparent;
@@ -1603,4 +1615,15 @@ input
 }
 .phone-frame {
   z-index: 300;
+}
+.internet_explorer_error_page {
+  font-size: 16px;
+}
+.browsers {
+  overflow: hidden;
+  margin: 0 auto;
+}
+.browsers li {
+  padding: 30px 15px 15px 38px;
+  float: left;
 }

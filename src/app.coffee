@@ -726,6 +726,11 @@ app.get '/admin', securedAdminPage, (req, res) ->
   res.render 'admin'
     user: req.user
     session: req.session
+    scripts:[
+      '/js/libs/colorpicker/js/colorpicker.js'
+      '/js/libs/qrcode.js'
+      '/js/admin.js'
+    ]
 
 # login page
 app.get '/login', (req, res) ->
@@ -753,6 +758,13 @@ app.get '/account', (req, res) ->
     user: req.user
     session: req.session
 
+
+# Splash Page
+app.get '/splash', (req, res) -> 
+  res.render 'splash'
+    user: req.user
+    session: req.session
+    layout: 'layout_landing_page'
 
 
 # Generic Error handler page itself

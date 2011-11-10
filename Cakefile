@@ -1,6 +1,7 @@
 # Module requires
 {spawn, exec} = require 'child_process'
 sys = require 'sys'
+fs = require 'fs'
 
 # ## Helpers
 

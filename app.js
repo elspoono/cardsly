@@ -647,7 +647,8 @@
   app.get('/admin', securedAdminPage, function(req, res) {
     return res.render('admin', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/admin.js']
     });
   });
   app.get('/login', function(req, res) {
@@ -674,6 +675,13 @@
     return res.render('account', {
       user: req.user,
       session: req.session
+    });
+  });
+  app.get('/splash', function(req, res) {
+    return res.render('splash', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing_page'
     });
   });
   app.get('/error', function(req, res) {
