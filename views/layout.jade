@@ -31,9 +31,8 @@ head
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   script
-    var _sf_startpt=(new Date()).getTime();
-  script
-    var WRInitTime=(new Date()).getTime();
+    var _sf_startpt=(new Date()).getTime()
+ 
 body
   #container
     header
@@ -44,10 +43,8 @@ body
             a(href='/profile')
               if user.name
                 =user.name
-              else user.email
+              else if user.email
                 =user.email
-                .hidden_email
-                  =user.email
               .gear
                 img(src='/images/buttons/gear.png')
             ul.account_menu
@@ -152,9 +149,4 @@ body
     }
     _kms('//i.kissmetrics.com/i.js');_kms('//doug1izaerwt3.cloudfront.net/9d1117801d4df63bf079c74f1c957bf5881311a1.1.js');
   script(src='//cdn.optimizely.com/js/13629231.js')
-  script
-    if(document.location.protocol!='https:')
-      document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRc5.js'%20type='text/javascript'%3E%3C/script%3E"));
-  script
-    if(typeof ClickTale=='function') ClickTale(1451,1,"www09");
 | </html>
