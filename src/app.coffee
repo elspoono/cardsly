@@ -747,6 +747,14 @@ app.get '/splash', (req, res) ->
     session: req.session
     layout: 'layout_landing_page'
 
+# Landing page prelaunch
+app.get '/landing-prelaunch', (req, res) -> 
+  res.render 'landing-prelaunch'
+    user: req.user
+    session: req.session
+    layout: 'layout_landing_page'
+
+
 
 # Generic Error handler page itself
 app.get '/error', (req, res) ->
