@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -21,6 +21,7 @@
     $fonts = $designer.find('.font_style');
     $font_color = $fonts.find('.color');
     $font_family = $fonts.find('.font_family');
+    $qrs = $designer.find('.qr_style');
     $dForm = $designer.find('form');
     $upload = $dForm.find('[type=file]');
     card_height = $card.outerHeight();
@@ -28,6 +29,7 @@
     card_inner_height = $card.height();
     card_inner_width = $card.width();
     active_theme = false;
+    shift_pressed = false;
     /*
       GOOGLE FONTS
     
@@ -86,7 +88,6 @@
         }
       };
       ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')';
-      console.log(ctx.fillStyle);
       _results = [];
       for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
         _results.push((function() {
@@ -112,8 +113,11 @@
       var $active_item, bottom_bound, c, new_left, new_top, top_bound;
       $active_item = $card.find('.active');
       c = e.keyCode;
+      if (e.keyCode === 16) {
+        shift_pressed = true;
+        shift_amount = 10;
+      }
       if ($active_item.length) {
-        if (e.keyCode === 16) shift_amount = 10;
         if (c === 38 || c === 40) {
           new_top = parseInt($active_item.css('top'));
           if (c === 38) new_top -= shift_amount;
@@ -138,11 +142,13 @@
       }
     });
     $body.keyup(function(e) {
-      if (e.keyCode === 16) return shift_amount = 1;
+      if (e.keyCode === 16) {
+        shift_amount = 1;
+        return shift_pressed = false;
+      }
     });
     update_family = function() {
       var $active_item, $t, index;
-      console.log(1);
       $t = $(this);
       $active_item = $card.find('.active');
       $active_item.css({
@@ -180,6 +186,16 @@
         return $t.addClass('active');
       }
     };
+    $fonts.find('h4').click(function() {
+      change_tab('.font_style');
+      $lines.first().mousedown();
+      $lines.filter(':visible').addClass('active');
+      return false;
+    });
+    $qrs.find('h4').click(function() {
+      $qr.mousedown();
+      return false;
+    });
     unfocus_highlight = function(e) {
       var $t;
       $t = $(e.target);

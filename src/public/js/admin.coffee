@@ -28,6 +28,8 @@ $ ->
   $font_color = $fonts.find '.color'
   $font_family = $fonts.find '.font_family'
   #
+  $qrs = $designer.find '.qr_style'
+  #
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
   #
@@ -37,6 +39,7 @@ $ ->
   card_inner_height = $card.height()
   card_inner_width = $card.width()
   active_theme = false
+  shift_pressed = false
   #
   #
   ###
@@ -98,7 +101,6 @@ $ ->
 
     ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')'
 
-    console.log ctx.fillStyle
     # Actual Drawing of the QR Code
     for r in [0..count-1]
       for c in [0..count-1]
@@ -115,12 +117,13 @@ $ ->
     $active_item = $card.find '.active'
     c = e.keyCode
     #
+    # Modify the amount we shift when the shift key is pressed
+    if e.keyCode is 16
+      shift_pressed = true
+      shift_amount = 10
+    #
     # Only if we have a live one, do we do anything with this
     if $active_item.length #and not $font_color.is(':focus') and not $font_family.is(':focus')
-      #
-      # Modify the amount we shift when the shift key is pressed :D
-      # (apparently I like using confusing variable names, ha)
-      if e.keyCode is 16 then shift_amount = 10
       #
       # Up and Down Events
       if c is 38 or c is 40
@@ -165,11 +168,12 @@ $ ->
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
   $body.keyup (e) ->
-    if e.keyCode is 16 then shift_amount = 1
+    if e.keyCode is 16
+      shift_amount = 1
+      shift_pressed = false
   #
   # Changing font family on select change
   update_family = ->
-    console.log 1
     $t = $ this
     $active_item = $card.find('.active')
     #
@@ -204,6 +208,7 @@ $ ->
     active_theme.positions[index].color = $t.val()
   #
   #
+  # The ability to drag and select multiple lines
   #
   #
   # Changing "tabs" (different options for editing)
@@ -217,6 +222,21 @@ $ ->
       $t.addClass 'active'
   #
   # 
+  # Changing to the font tab when it's clicked
+  $fonts.find('h4').click ->
+    change_tab '.font_style'
+    $lines.first().mousedown()
+    $lines.filter(':visible').addClass 'active'
+    false
+  #
+  # 
+  # Changing to the QR tab when it's clicked
+  $qrs.find('h4').click -> 
+    $qr.mousedown()
+    false
+  #
+  #
+  #
   #
   # Helper function for highlighting going away
   unfocus_highlight = (e) ->
