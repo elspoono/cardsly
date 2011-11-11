@@ -680,9 +680,10 @@
   */
 
   app.get('/', function(req, res) {
-    return res.render('index', {
+    return res.render('landing-prelaunch', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      layout: 'layout_landing_page'
     });
   });
 
@@ -755,11 +756,10 @@
     });
   });
 
-  app.get('/landing-prelaunch', function(req, res) {
-    return res.render('landing-prelaunch', {
+  app.get('/home', function(req, res) {
+    return res.render('index', {
       user: req.user,
-      session: req.session,
-      layout: 'layout_landing_page'
+      session: req.session
     });
   });
 
