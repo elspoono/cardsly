@@ -755,6 +755,14 @@
     });
   });
 
+  app.get('/landing-prelaunch', function(req, res) {
+    return res.render('landing-prelaunch', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing_page'
+    });
+  });
+
   app.get('/error', function(req, res) {
     return res.render('error');
   });
