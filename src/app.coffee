@@ -640,7 +640,12 @@ app.post '/createUser', (req,res,next) ->
     res.send
       success: 'True'
 
-
+# Change Password
+app.post '/change_password', (req,res,next) ->
+  user.password_encrypted = encrypted(req.body.password);
+  user.save (err,data) ->
+    res.send
+      success: 'True'
 
 
 
@@ -723,7 +728,7 @@ app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
     session: req.session
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
   
-# Account Page
+# Settings Page
 app.get '/settings', securedPage, (req, res) ->
   res.render 'settings'
     user: req.user
