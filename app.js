@@ -188,8 +188,8 @@
     theme_group_id: Number,
     qr_color1: String,
     qr_color2: String,
+    qr_color2_alpha: Number,
     qr_radius: Number,
-    qr_color1_alpha: Number,
     qr_h: Number,
     qr_w: Number,
     qr_x: Number,
@@ -605,9 +605,10 @@
   
   */
   app.get('/', function(req, res) {
-    return res.render('index', {
+    return res.render('landing-prelaunch', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      layout: 'layout_landing_page'
     });
   });
   app.get('/success', function(req, res) {
@@ -668,6 +669,12 @@
       user: req.user,
       session: req.session,
       layout: 'layout_landing_page'
+    });
+  });
+  app.get('/home', function(req, res) {
+    return res.render('index', {
+      user: req.user,
+      session: req.session
     });
   });
   app.get('/error', function(req, res) {
