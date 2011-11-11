@@ -496,12 +496,12 @@ $ ->
       document.location.href = $a.attr 'href'
     else
       $a.removeClass 'click'
-      $am.slideUp()
+      $am.slideUp(150)
       $a.one 'click', expand_menu
       $body.unbind 'click', close_menu
     false
   expand_menu = ->
-    $am.slideDown()
+    $am.slideDown(150)
     $a.addClass 'click'
     $body.bind 'click', close_menu
     false
