@@ -178,25 +178,13 @@ $ ->
       shift_pressed = false
   #
 
-  ###############
-  # Changing font family on select change
-  #
-  update_family = ->
-    $t = $ this
-    $active_item = $card.find('.active')
-    #
-    # Update it all
-    $active_item.css
-      'font-family': $t.val()
-    #
-    # Find it's index relative to it's peers
-    index = $active_item.prevAll().length
-    active_theme.positions[index].font_family = $t.val()
-  #
-  $font_family.change update_family
-  #
-  ##############
-
+  # ***************************************************************
+  # *
+  # *
+  # * All of the options making them do functional things
+  # *
+  # *
+  # *
 
   ##############
   # Colors pickers for ... ... .... ... picking colors.
@@ -268,6 +256,50 @@ $ ->
   #
   #
   ##############
+
+
+  ###############
+  # Changing font family on select change
+  #
+  update_family = ->
+    $t = $ this
+    $active_item = $card.find('.active')
+    #
+    # Update it all
+    $active_item.css
+      'font-family': $t.val()
+    #
+    # Find it's index relative to it's peers
+    index = $active_item.prevAll().length
+    active_theme.positions[index].font_family = $t.val()
+  #
+  $font_family.change update_family
+  #
+  ##############
+
+
+
+  ###############
+  # Changing QR Extras
+  #
+  $qr_color2_alpha.change ->
+    $t = $ this
+    $qr_bg.fadeTo 0, $t.val()
+  #
+  $qr_radius.change ->
+    $t = $ this
+    $qr_bg.css
+      'border-radius': $t.val() + 'px'
+  #
+  ##############
+
+  # *
+  # *
+  # * END
+  # *
+  # *
+  # *
+  # ***************************************************************
 
   ##############
   #
