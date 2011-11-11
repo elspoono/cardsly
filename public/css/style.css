@@ -764,6 +764,9 @@ input {
 .colorpicker_submit {
   display: none;
 }
+.designer {
+  margin-bottom: 60px;
+}
 .designer .card {
   width: 505px;
   height: 280px;
@@ -813,8 +816,26 @@ input {
   position: relative;
 }
 .designer .options h4 {
-  margin: 0;
-  border-bottom: 5px solid #524641;
+  margin: 0 -10px 5px -10px;
+  cursor: pointer;
+  background-color: #908575;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#908575), to(#524641));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #908575, #524641);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #908575, #524641);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #908575, #524641);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #908575, #524641);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #908575, #524641);
+  color: #d8cfc5;
+  padding: 5px 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border-bottom: 1px solid #524641;
 }
 .designer .options li {
   margin-bottom: 10px;
@@ -833,9 +854,8 @@ input {
 }
 .designer .options ul {
   display: none;
-  position: absolute;
 }
-.designer .options .active {
+.designer .options .active ul {
   display: block;
 }
 .designer .options .category_field input,
@@ -849,10 +869,6 @@ input {
   float: none;
   display: block;
   width: 180px;
-  display: block;
-}
-.designer .options .buttons {
-  bottom: -10px;
   display: block;
 }
 .designer .options .buttons .button {

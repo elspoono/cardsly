@@ -596,6 +596,7 @@ input
 // Business Cards in TEMPLATE DESIGNER in Admin
 //
 .designer
+  margin-bottom 60px
   .card
     width 505px
     height 280px
@@ -641,8 +642,13 @@ input
     width 240px
     position relative
     h4
-      margin 0
-      border-bottom 5px solid $c_bg_dark
+      margin 0 -10px 5px -10px
+      cursor pointer
+      gradient($c_bg_light,$c_bg_dark)
+      color $c_a_nav
+      padding 5px 10px
+      border_radius(5px)
+      border-bottom 1px solid $c_bg_dark
     li
       margin-bottom 10px
       overflow hidden
@@ -655,8 +661,7 @@ input
       width 70px
     ul
       display none
-      position absolute
-    .active
+    .active ul
       display block
     .category_field,.image
       input
@@ -669,8 +674,6 @@ input
       width 180px
       display block
     .buttons
-      bottom -10px
-      display block
       .button
         height 20px
         width 80px

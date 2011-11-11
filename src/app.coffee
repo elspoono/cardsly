@@ -537,6 +537,7 @@ app.post '/saveTheme', (req, res) ->
   params = JSON.parse req.rawBody
   # Did the data come across?
   console.log util.inspect params
+  console.log util.inspect params.theme.positions
 
   # Based on which parameters they send, save them all in the session
 

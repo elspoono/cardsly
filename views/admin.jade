@@ -13,42 +13,48 @@
             .line(class='nth-'+i)
               =lines[i]
       .options
-        ul.defaults.active
-          li
-            h4 Card
-          li.category_field
-            label Category
-            input(placeholder='Professional')
-          li.image
-            label Background
-            form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
-              input(type='file',name='image')
-            .img_loader
-              iframe(name='hiddenFrame')
-          li.gradient
-            label Website Colors
-            input.color1(placeholder='000000')
-            input.color2(placeholder='FFFFFF')
-        ul.font_style
-          li
-            h4 Font
-          li
-            input.color(placeholder='000000')
-            select.font_family(size='10')
-              option
-              option Luckiest Guy
-              option Arial
-        ul.qr_style
-          li
-            h4 QR
-          li
-            label Colors
-            input.qr_color1(placeholder='000000')
-            input.qr_color2(placeholder='FFFFFF')
-        ul.buttons
-          li
-            .button.normal.save Save
-            .button.gray.delete Delete
+        .tab.defaults.active
+          h4 Card
+          ul
+            li.category_field
+              label Category
+              input(placeholder='Professional')
+            li.image
+              label Background
+              form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
+                input(type='file',name='image')
+              .img_loader
+                iframe(name='hiddenFrame')
+            li.gradient
+              label Website Colors
+              input.color1(placeholder='000000')
+              input.color2(placeholder='FFFFFF')
+        .tab.font_style
+          h4 Font
+          ul
+            li
+              input.color(placeholder='000000')
+            li
+              select.font_family(size='8')
+                option
+                option Luckiest Guy
+                option Arial
+        .tab.qr_style
+          h4 QR
+          ul
+            li
+              label Colors
+              input.qr_color1(placeholder='000000')
+              input.qr_color2(placeholder='FFFFFF')
+            li
+              label Corners
+              select
+                - for(var i=0; i<=20; i++)
+                  option(value=i)
+                    =i
+        .buttons
+          .button.normal.save Save
+          .button.gray.delete Delete
       .clear
     .category.active(category='')
       h4 (No Category)

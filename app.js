@@ -544,6 +544,7 @@
     var params;
     params = JSON.parse(req.rawBody);
     console.log(util.inspect(params));
+    console.log(util.inspect(params.theme.positions));
     req.session.theme = params.theme;
     return res.send({
       success: true

@@ -210,8 +210,11 @@ $ ->
   change_tab = (tab_class) ->
     $t = $options.find tab_class
     $a = $options.find '.active'
-    $a.stop(true,true).fadeOut().removeClass 'active'
-    $t.stop(true,true).fadeIn().addClass 'active'
+    if $t[0] != $a[0]
+      $a.find('ul').stop(true,true).slideUp()
+      $a.removeClass 'active'
+      $t.find('ul').stop(true,true).slideDown()
+      $t.addClass 'active'
   #
   # 
   #
@@ -239,10 +242,13 @@ $ ->
     $body.bind 'click', unfocus_highlight
     #
     # Find it's index relative to it's peers
-    index = $t.prevAll().length
-    $font_color.val active_theme.positions[index].color
-    $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]').attr 'selected', 'selected'
     change_tab '.font_style'
+    index = $t.prevAll().length
+    $font_family[0].selectedIndex = null
+    $font_color.val active_theme.positions[index].color
+    $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
+    $font_family.focus()
+    $selected.focus().attr 'selected', 'selected'
   #
   # Highlighting and making a line the active one
   $qr.mousedown ->
@@ -355,16 +361,23 @@ $ ->
   # It should be noted, that in most cases, this just means saving into the session
   # Only on save button click does it pass an extra parameter to save it to a record in the database
   execute_save = (next) ->
+    #
+    # Get the position of the qr
+    qr = get_position $qr
+    #
+    # Set the theme start
     theme =
       _id: active_theme._id
       category: $cat.val()
+      qr_x: qr.x
+      qr_y: qr.y
+      qr_h: qr.h
+      qr_w: qr.w
       positions: []
       color1: $color1.val()
       color2: $color2.val()
       s3_id: active_theme.s3_id
     #
-    # Get the position of the qr
-    theme.positions.push get_position $qr
     #
     # Get the position of each line
     $lines.each ->
@@ -431,9 +444,9 @@ $ ->
     qr_color2: '000066'
     qr_radius: 5
     qr_h: 50
-    qr_w: 50
-    qr_x: 65
-    qr_y: 40
+    qr_w: 28.57
+    qr_x: 68.76
+    qr_y: 43.33
     positions: []
   for i in [0..5]
     default_theme.positions.push
@@ -441,7 +454,7 @@ $ ->
       font_family: 'Vast Shadow'
       h: 7
       w: 60
-      x: 5
+      x: 3.05
       y: 5+i*10
   #
   # The general load theme function
@@ -452,14 +465,14 @@ $ ->
       top: theme.qr_y/100 * card_height
       left: theme.qr_x/100 * card_width
       height: theme.qr_h/100 * card_height
-      width: theme.qr_w/100 * card_height
+      width: theme.qr_h/100 * card_height
     $qr.find('canvas').css
       height: theme.qr_h/100 * card_height
-      width: theme.qr_w/100 * card_height
+      width: theme.qr_h/100 * card_height
     $qr.find('.background').css
       'border-radius': theme.qr_radius+'px'
       height: theme.qr_h/100 * card_height
-      width: theme.qr_w/100 * card_height
+      width: theme.qr_h/100 * card_height
       background: '#'+theme.qr_color1
     update_qr_color theme.qr_color2
     for pos,i in theme.positions
