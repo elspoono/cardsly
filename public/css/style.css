@@ -355,7 +355,7 @@ input {
   float: right;
 }
 .section.first {
-  margin: 126px 0 94.5px 0;
+  margin-top: 126px;
 }
 .cell_content {
   z-index: 150;
@@ -1177,8 +1177,9 @@ input {
   display: none;
 }
 .form_narrow {
-  max-width: 480px;
-  float: left;
+  width: 480px;
+  margin: 30px auto;
+  display: block;
 }
 .form_narrow p {
   text-align: center;
