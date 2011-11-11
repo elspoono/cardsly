@@ -16,6 +16,7 @@ $ ->
   $options = $designer.find '.options'
   $card = $designer.find '.card'
   $qr = $card.find '.qr'
+  $qr_bg = $qr.find('.background')
   $lines = $card.find '.line'
   $body = $ document
   #
@@ -31,6 +32,8 @@ $ ->
   $qrs = $designer.find '.qr_style'
   $qr_color1 = $qrs.find '.qr_color1'
   $qr_color2 = $qrs.find '.qr_color2'
+  $qr_radius = $qrs.find '.qr_radius'
+  $qr_color2_alpha = $qrs.find '.qr_color2_alpha'
   #
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
@@ -106,10 +109,8 @@ $ ->
     # Actual Drawing of the QR Code
     for r in [0..count-1]
       for c in [0..count-1]
-        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(r,c)
+        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
   
-  $qr.find('img').remove()
-  $qr.append '<div class="background" />'
   $qr.append $canvas
   
   #
@@ -206,15 +207,42 @@ $ ->
       $font_color.val hex
       $font_color.keyup()
   #
-  $font_color.ColorPicker
+  $color1.ColorPicker
     livePreview: true
     onChange: (hsb, hex, rgb) ->
-      $font_color.val hex
-      $font_color.keyup()
+      $color1.val hex
+      $color1.keyup()
+  $color2.ColorPicker
+    livePreview: true
+    onChange: (hsb, hex, rgb) ->
+      $color2.val hex
+      $color2.keyup()
+  #
+  $qr_color1.ColorPicker
+    livePreview: true
+    onChange: (hsb, hex, rgb) ->
+      $qr_color1.val hex
+      $qr_color1.keyup()
+  $qr_color2.ColorPicker
+    livePreview: true
+    onChange: (hsb, hex, rgb) ->
+      $qr_color2.val hex
+      $qr_color2.keyup()
+  set_color = ->
+    $t = $ this
+    $t.ColorPickerSetColor $t.val()
+  $font_color.focus set_color
+  $color1.focus set_color
+  $color2.focus set_color
+  $qr_color1.focus set_color
+  $qr_color2.focus set_color
   #
   ###############
 
   #############
+  #
+  # Actual triggers from those color pickers to do real stuff
+  #
   # Changing font color on key presses
   $font_color.keyup ->
     $t = $ this
@@ -228,9 +256,22 @@ $ ->
     index = $active_item.prevAll().length
     active_theme.positions[index].color = $t.val()
   #
+  # Changing QR Color on key presses
+  $qr_color1.keyup ->
+    $t = $ this
+    update_qr_color $t.val()
   #
-  # The ability to drag and select multiple lines
+  $qr_color2.keyup ->
+    $t = $ this
+    $qr_bg.css
+      background: '#'+$t.val()
   #
+  #
+  ##############
+
+  ##############
+  #
+  # Changing Tabs
   #
   # Changing "tabs" (different options for editing)
   change_tab = (tab_class) ->
@@ -256,13 +297,17 @@ $ ->
     $qr.mousedown()
     false
   #
+  #####################
+
+
+  ####################
   #
-  #
+  # Highlighting helper functions
   #
   # Helper function for highlighting going away
   unfocus_highlight = (e) ->
     $t = $ e.target
-    if $t.hasClass('font-style') or $t.closest('.font_style').length or $t.hasClass('line') or $t.hasClass('qr') or $t.closest('.line').length or $t.closest('.qr').length or $t.closest('.colorpicker').length
+    if $t.hasClass('font_style') or $t.closest('.font_style').length or $t.hasClass('qr_style') or $t.closest('.qr_style').length or $t.hasClass('line') or $t.hasClass('qr') or $t.closest('.line').length or $t.closest('.qr').length or $t.closest('.colorpicker').length
       $t = null
     else
       $card.find('.active').removeClass 'active'
@@ -298,7 +343,11 @@ $ ->
     $t.addClass 'active'
     $body.bind 'click', unfocus_highlight
     change_tab '.qr_style'
+  #
+  #
+  ####################
 
+  ####################
   #
   # A global page timer for the automatic save event.
   page_timer = 0
@@ -312,8 +361,10 @@ $ ->
   # Set that timer on the right events for the right things
   $cat.keyup set_page_timer
   $font_color.keyup set_page_timer
-  $color1.keyup set_page_timer
-  $color2.keyup set_page_timer
+  $color1.keyup set_page_timer#
+  #
+  ######################
+
 
   #
   # The dragging and dropping functions for lines
@@ -323,7 +374,7 @@ $ ->
     stop: set_page_timer
   $lines.resizable
     grid: 10
-    handles: 'n, e, s, w, se'
+    handles: 'e, s, se'
     resize: (e, ui) ->
       $t = $(ui.element)
       h = $t.height()
@@ -351,7 +402,7 @@ $ ->
           width: w
         
     containment: '.designer .card'
-    handles: 'n, e, s, w, ne, nw, se, sw'
+    handles: 'se'
     aspectRatio: 1
     stop: set_page_timer
   #
@@ -479,10 +530,10 @@ $ ->
     color1: 'FFFFFF'
     color2: '000000'
     s3_id: ''
-    qr_color1_alpha: .5
-    qr_color1: 'FFFFFF'
-    qr_color2: '000066'
-    qr_radius: 5
+    qr_color1: '000066'
+    qr_color2: 'FFFFFF'
+    qr_color2_alpha: .9
+    qr_radius: 10
     qr_h: 50
     qr_w: 28.57
     qr_x: 68.76
@@ -509,12 +560,13 @@ $ ->
     $qr.find('canvas').css
       height: theme.qr_h/100 * card_height
       width: theme.qr_h/100 * card_height
-    $qr.find('.background').css
+    $qr_bg.css
       'border-radius': theme.qr_radius+'px'
       height: theme.qr_h/100 * card_height
       width: theme.qr_h/100 * card_height
-      background: '#'+theme.qr_color1
-    update_qr_color theme.qr_color2
+      background: '#'+theme.qr_color2
+    $qr_bg.fadeTo 0, theme.qr_color2_alpha
+    update_qr_color theme.qr_color1
     for pos,i in theme.positions
       $li = $lines.eq i
       $li.show().css
@@ -528,6 +580,10 @@ $ ->
     $cat.val theme.category
     $color1.val theme.color1
     $color2.val theme.color2
+    $qr_color1.val theme.qr_color1
+    $qr_color2.val theme.qr_color2
+    $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
+    $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
   #
   # The add new button
   $('.add_new').click ->

@@ -212,8 +212,8 @@ ThemeSchema = new Schema
   theme_group_id: Number
   qr_color1: String
   qr_color2: String
+  qr_color2_alpha: Number
   qr_radius: Number
-  qr_color1_alpha: Number
   qr_h: Number
   qr_w: Number
   qr_x: Number
@@ -672,9 +672,10 @@ like the home page and about page and stuff
 
 # Home Page
 app.get '/', (req, res) ->
-  res.render 'index'
+  res.render 'landing-prelaunch'
     user: req.user
     session: req.session
+    layout: 'layout_landing_page'
 
 # Success Page
 #
@@ -748,11 +749,10 @@ app.get '/splash', (req, res) ->
     layout: 'layout_landing_page'
 
 # Landing page prelaunch
-app.get '/landing-prelaunch', (req, res) -> 
-  res.render 'landing-prelaunch'
+app.get '/home', (req, res) -> 
+  res.render 'index'
     user: req.user
     session: req.session
-    layout: 'layout_landing_page'
 
 
 

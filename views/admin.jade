@@ -6,7 +6,7 @@
     .designer
       .card
         .qr
-          img(src='/images/qr.png')
+          .background
         ul.content
           - lines = ['Jimbo jo Jiming','Banker Extraordinaire','Cool Cats Cucumbers','57 Bakers, Edwarstonville ','555.555.5555','New York','','h','i','j','l','m']
           - for(var i=0; i<12; i++)
@@ -48,15 +48,15 @@
               input.qr_color2(placeholder='FFFFFF')
             li
               label Opacity
-              select
+              select.qr_color2_alpha
                 - for(var i=0; i<=100; i++)
-                  option(value=i,selected=(i==100)?'selected':false)
+                  option(value=i/100)
                     =i
             li
-              label Style
-              select
-                option square
-                option round
+              label Border Style
+              select.qr_radius
+                option(value=0) square
+                option(value=10) round
         .buttons
           .button.normal.save Save
           .button.gray.delete Delete
