@@ -32,6 +32,8 @@ $ ->
   $qrs = $designer.find '.qr_style'
   $qr_color1 = $qrs.find '.qr_color1'
   $qr_color2 = $qrs.find '.qr_color2'
+  $qr_radius = $qrs.find '.qr_radius'
+  $qr_color2_alpha = $qrs.find '.qr_color2_alpha'
   #
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
@@ -580,6 +582,8 @@ $ ->
     $color2.val theme.color2
     $qr_color1.val theme.qr_color1
     $qr_color2.val theme.qr_color2
+    $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
+    $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
   #
   # The add new button
   $('.add_new').click ->

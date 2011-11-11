@@ -7,7 +7,7 @@
   ok.
   
   */  $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_color, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_color, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -24,6 +24,8 @@
     $qrs = $designer.find('.qr_style');
     $qr_color1 = $qrs.find('.qr_color1');
     $qr_color2 = $qrs.find('.qr_color2');
+    $qr_radius = $qrs.find('.qr_radius');
+    $qr_color2_alpha = $qrs.find('.qr_color2_alpha');
     $dForm = $designer.find('form');
     $upload = $dForm.find('[type=file]');
     card_height = $card.outerHeight();
@@ -519,7 +521,9 @@
       $color1.val(theme.color1);
       $color2.val(theme.color2);
       $qr_color1.val(theme.qr_color1);
-      return $qr_color2.val(theme.qr_color2);
+      $qr_color2.val(theme.qr_color2);
+      $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr('selected', 'selected');
+      return $qr_radius.find('[value=' + theme.qr_radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
       return load_theme(default_theme);

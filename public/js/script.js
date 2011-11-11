@@ -92,6 +92,7 @@
     if (options) {
       $.extend(settings, options);
     }
+    $('iframe').css('visibility', 'hidden');
     my_next = function() {
       $window.unbind('scroll resize', resize_event);
       $window.unbind('resize', resize_event);
@@ -107,6 +108,7 @@
       });
       return win.fadeOut(function() {
         win.remove();
+        $('iframe').css('visibility', '');
         if ($('.window').length === 0) {
           return $('#container').show();
         }

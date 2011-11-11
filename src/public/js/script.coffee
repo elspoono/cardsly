@@ -86,6 +86,8 @@ $.load_modal = (options, next) ->
     $.extend settings, options
 
 
+  $('iframe').css 'visibility', 'hidden'
+
   my_next = () ->
     $window.unbind 'scroll resize',resize_event
     $window.unbind 'resize',resize_event
@@ -96,6 +98,7 @@ $.load_modal = (options, next) ->
     close.fadeOut () -> close.remove()
     win.fadeOut () ->
       win.remove()
+      $('iframe').css 'visibility', ''
       if($('.window').length==0)
         $('#container').show()
 

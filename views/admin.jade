@@ -48,15 +48,15 @@
               input.qr_color2(placeholder='FFFFFF')
             li
               label Opacity
-              select
+              select.qr_color2_alpha
                 - for(var i=0; i<=100; i++)
-                  option(value=i,selected=(i==100)?'selected':false)
+                  option(value=i/100)
                     =i
             li
-              label Style
-              select
-                option square
-                option round
+              label Border Style
+              select.qr_radius
+                option(value=0) square
+                option(value=10) round
         .buttons
           .button.normal.save Save
           .button.gray.delete Delete
