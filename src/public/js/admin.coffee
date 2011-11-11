@@ -29,6 +29,8 @@ $ ->
   $font_family = $fonts.find '.font_family'
   #
   $qrs = $designer.find '.qr_style'
+  $qr_color1 = $qrs.find '.qr_color1'
+  $qr_color2 = $qrs.find '.qr_color2'
   #
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
@@ -114,7 +116,7 @@ $ ->
   # Key up and down events for active lines
   shift_amount = 1
   $body.keydown (e) ->
-    $active_item = $card.find '.active'
+    $active_items = $card.find '.active'
     c = e.keyCode
     #
     # Modify the amount we shift when the shift key is pressed
@@ -123,47 +125,49 @@ $ ->
       shift_amount = 10
     #
     # Only if we have a live one, do we do anything with this
-    if $active_item.length and not $font_family.is(':focus') #and not $font_color.is(':focus')
-      #
-      # Up and Down Events
-      if c is 38 or c is 40
+    if $active_items.length and not $font_family.is(':focus') #and not $font_color.is(':focus')
+      $active_items.each ->
+        $active_item = $ this
         #
-        # Find out how far the user asked to move
-        new_top = parseInt($active_item.css('top'))
-        if c is 38 then new_top -= shift_amount
-        if c is 40 then new_top += shift_amount
+        # Up and Down Events
+        if c is 38 or c is 40
+          #
+          # Find out how far the user asked to move
+          new_top = parseInt($active_item.css('top'))
+          if c is 38 then new_top -= shift_amount
+          if c is 40 then new_top += shift_amount
+          #
+          # Find out our boundary
+          top_bound = (card_height - card_inner_height)/2
+          bottom_bound = top_bound + card_inner_height - $active_item.outerHeight()
+          #
+          # And then of course, "bound" it
+          # We want to move clear to the max, so we still do it
+          if new_top < top_bound then new_top = top_bound
+          if new_top > bottom_bound then new_top = bottom_bound
+          #
+          # Then set it
+          $active_item.css 'top', new_top
         #
-        # Find out our boundary
-        top_bound = (card_height - card_inner_height)/2
-        bottom_bound = top_bound + card_inner_height - $active_item.outerHeight()
-        #
-        # And then of course, "bound" it
-        # We want to move clear to the max, so we still do it
-        if new_top < top_bound then new_top = top_bound
-        if new_top > bottom_bound then new_top = bottom_bound
-        #
-        # Then set it
-        $active_item.css 'top', new_top
-      #
-      # Left and Right
-      if c is 37 or c is 39
-        #
-        # Find out how far the user asked to move
-        new_left = parseInt($active_item.css('left'))
-        if c is 37 then new_left -= shift_amount
-        if c is 39 then new_left += shift_amount
-        #
-        # Find out our boundary
-        top_bound = (card_width - card_inner_width)/2
-        bottom_bound = top_bound + card_inner_width - $active_item.outerWidth()
-        #
-        # And then of course, "bound" it
-        # We want to move clear to the max, so we still do it
-        if new_left < top_bound then new_left = top_bound
-        if new_left > bottom_bound then new_left = bottom_bound
-        #
-        # Then set it
-        $active_item.css 'left', new_left
+        # Left and Right
+        if c is 37 or c is 39
+          #
+          # Find out how far the user asked to move
+          new_left = parseInt($active_item.css('left'))
+          if c is 37 then new_left -= shift_amount
+          if c is 39 then new_left += shift_amount
+          #
+          # Find out our boundary
+          top_bound = (card_width - card_inner_width)/2
+          bottom_bound = top_bound + card_inner_width - $active_item.outerWidth()
+          #
+          # And then of course, "bound" it
+          # We want to move clear to the max, so we still do it
+          if new_left < top_bound then new_left = top_bound
+          if new_left > bottom_bound then new_left = bottom_bound
+          #
+          # Then set it
+          $active_item.css 'left', new_left
       #
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
@@ -172,7 +176,10 @@ $ ->
       shift_amount = 1
       shift_pressed = false
   #
+
+  ###############
   # Changing font family on select change
+  #
   update_family = ->
     $t = $ this
     $active_item = $card.find('.active')
@@ -187,6 +194,11 @@ $ ->
   #
   $font_family.change update_family
   #
+  ##############
+
+
+  ##############
+  # Colors pickers for ... ... .... ... picking colors.
   #
   $font_color.ColorPicker
     livePreview: true
@@ -194,6 +206,15 @@ $ ->
       $font_color.val hex
       $font_color.keyup()
   #
+  $font_color.ColorPicker
+    livePreview: true
+    onChange: (hsb, hex, rgb) ->
+      $font_color.val hex
+      $font_color.keyup()
+  #
+  ###############
+
+  #############
   # Changing font color on key presses
   $font_color.keyup ->
     $t = $ this

@@ -47,6 +47,12 @@
               input.qr_color1(placeholder='000000')
               input.qr_color2(placeholder='FFFFFF')
             li
+              label Opacity
+              select
+                - for(var i=0; i<=100; i++)
+                  option(value=i,selected=(i==100)?'selected':false)
+                    =i
+            li
               label Style
               select
                 option square

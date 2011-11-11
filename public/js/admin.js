@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_color1, $qr_color2, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -22,6 +22,8 @@
     $font_color = $fonts.find('.color');
     $font_family = $fonts.find('.font_family');
     $qrs = $designer.find('.qr_style');
+    $qr_color1 = $qrs.find('.qr_color1');
+    $qr_color2 = $qrs.find('.qr_color2');
     $dForm = $designer.find('form');
     $upload = $dForm.find('[type=file]');
     card_height = $card.outerHeight();
@@ -110,34 +112,38 @@
     $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
-      var $active_item, bottom_bound, c, new_left, new_top, top_bound;
-      $active_item = $card.find('.active');
+      var $active_items, c;
+      $active_items = $card.find('.active');
       c = e.keyCode;
       if (e.keyCode === 16) {
         shift_pressed = true;
         shift_amount = 10;
       }
-      if ($active_item.length && !$font_family.is(':focus')) {
-        if (c === 38 || c === 40) {
-          new_top = parseInt($active_item.css('top'));
-          if (c === 38) new_top -= shift_amount;
-          if (c === 40) new_top += shift_amount;
-          top_bound = (card_height - card_inner_height) / 2;
-          bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-          if (new_top < top_bound) new_top = top_bound;
-          if (new_top > bottom_bound) new_top = bottom_bound;
-          $active_item.css('top', new_top);
-        }
-        if (c === 37 || c === 39) {
-          new_left = parseInt($active_item.css('left'));
-          if (c === 37) new_left -= shift_amount;
-          if (c === 39) new_left += shift_amount;
-          top_bound = (card_width - card_inner_width) / 2;
-          bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-          if (new_left < top_bound) new_left = top_bound;
-          if (new_left > bottom_bound) new_left = bottom_bound;
-          $active_item.css('left', new_left);
-        }
+      if ($active_items.length && !$font_family.is(':focus')) {
+        $active_items.each(function() {
+          var $active_item, bottom_bound, new_left, new_top, top_bound;
+          $active_item = $(this);
+          if (c === 38 || c === 40) {
+            new_top = parseInt($active_item.css('top'));
+            if (c === 38) new_top -= shift_amount;
+            if (c === 40) new_top += shift_amount;
+            top_bound = (card_height - card_inner_height) / 2;
+            bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
+            if (new_top < top_bound) new_top = top_bound;
+            if (new_top > bottom_bound) new_top = bottom_bound;
+            $active_item.css('top', new_top);
+          }
+          if (c === 37 || c === 39) {
+            new_left = parseInt($active_item.css('left'));
+            if (c === 37) new_left -= shift_amount;
+            if (c === 39) new_left += shift_amount;
+            top_bound = (card_width - card_inner_width) / 2;
+            bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
+            if (new_left < top_bound) new_left = top_bound;
+            if (new_left > bottom_bound) new_left = bottom_bound;
+            return $active_item.css('left', new_left);
+          }
+        });
         if (c === 38 || c === 40 || c === 39 || c === 37) return false;
       }
     });
@@ -158,6 +164,13 @@
       return active_theme.positions[index].font_family = $t.val();
     };
     $font_family.change(update_family);
+    $font_color.ColorPicker({
+      livePreview: true,
+      onChange: function(hsb, hex, rgb) {
+        $font_color.val(hex);
+        return $font_color.keyup();
+      }
+    });
     $font_color.ColorPicker({
       livePreview: true,
       onChange: function(hsb, hex, rgb) {
