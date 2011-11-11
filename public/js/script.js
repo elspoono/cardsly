@@ -522,7 +522,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
+    var $a, $am, $body, $change_password, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -912,47 +912,9 @@
       });
       return false;
     });
-    $('.change_password_button').click(function() {
-      var current_password, err, password, password2;
-      current_password = $('.current_password');
-      password = $('.password');
-      password2 = $('.password2');
-      err = false;
-      if (password.val() !== password2.val()) {
-        return err = 'I\'m sorry, I don\'t think those passwords match.';
-      } else if (password.val().length < 4) {
-        return err = 'Password should be a little longer, at least 4 characters.';
-      } else if (err) {
-        return loadAlert({
-          content: err
-        });
-      } else {
-        return current_password = password.val();
-      }
-      /* Timer Stuff 
-      $('.password').data('timer',0).keyup ->
-        $t = $ this
-        clearTimeout $t.data 'timer'
-        $t.data 'timer', setTimeout ->
-          if $t.val().length >= 4
-            $t.removeClass('error').addClass 'valid'
-          else
-            $t.removeClass('valid').addClass('error').show_tooltip
-              message: 'Just '+(6-$t.val().length)+' more characters please.'
-        ,1000
-      $('.password2').data('timer',0).keyup ->
-        $t = $ this
-        clearTimeout $t.data 'timer'
-        $t.data 'timer', setTimeout ->
-          if $t.val() == $('.password').val()
-            $t.removeClass('error').addClass 'valid'
-            $('.step_4').fadeTo 300, 1
-          else
-            $t.removeClass('valid').addClass('error').show_tooltip
-              message:'Passwords should match please.'
-        ,1000
-      false
-      */
+    $change_password = $('.change_password input');
+    $change_password.click(function() {
+      return console.log(1);
     });
     $('#show_activity').change(function() {
       var e;

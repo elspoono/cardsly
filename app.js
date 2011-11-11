@@ -571,6 +571,14 @@
       });
     });
   });
+  app.post('/change_password', function(req, res, next) {
+    user.password_encrypted = encrypted(req.body.password);
+    return user.save(function(err, data) {
+      return res.send({
+        success: 'True'
+      });
+    });
+  });
   securedAdminPage = function(req, res, next) {
     if (req.user && req.user.role === 'admin') {
       return next();

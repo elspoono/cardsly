@@ -823,47 +823,11 @@ $ ->
     false
 
   # Change Password
-  $('.change_password_button').click () ->
-    current_password = $ '.current_password'
-    password = $ '.password'
-    password2 = $ '.password2'
+  $change_password = $ '.change_password input'
+  $change_password.click () ->
+    console.log 1
 
-    err = false
-    if password.val() != password2.val()
-      err = 'I\'m sorry, I don\'t think those passwords match.'
-    else if password.val().length<4
-      err = 'Password should be a little longer, at least 4 characters.'
-    else if err
-      loadAlert {content:err}
-    else
-      current_password = password.val()
 
-    ### Timer Stuff 
-    $('.password').data('timer',0).keyup ->
-      $t = $ this
-      clearTimeout $t.data 'timer'
-      $t.data 'timer', setTimeout ->
-        if $t.val().length >= 4
-          $t.removeClass('error').addClass 'valid'
-        else
-          $t.removeClass('valid').addClass('error').show_tooltip
-            message: 'Just '+(6-$t.val().length)+' more characters please.'
-      ,1000
-    $('.password2').data('timer',0).keyup ->
-      $t = $ this
-      clearTimeout $t.data 'timer'
-      $t.data 'timer', setTimeout ->
-        if $t.val() == $('.password').val()
-          $t.removeClass('error').addClass 'valid'
-          $('.step_4').fadeTo 300, 1
-        else
-          $t.removeClass('valid').addClass('error').show_tooltip
-            message:'Passwords should match please.'
-      ,1000
-    false
-    ### 
-
-  # This is the code that makes the dropdown menu changes which chart is displayed on the account page
 
   $('#show_activity').change () ->
     $('#activity_container ul').hide('slow')
