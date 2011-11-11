@@ -1593,7 +1593,7 @@ input
 .phone_frame {
   height: 542px;
   width: 276px;
-  margin: 0 287px;
+  margin: 0 500px;
   display: block;
 }
 .slides,
@@ -1616,6 +1616,9 @@ input
 }
 .phone_frame {
   z-index: 300;
+}
+.biz_card1 {
+  padding: 30px;
 }
 .internet_explorer_error_page {
   font-size: 16px;
