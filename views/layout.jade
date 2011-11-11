@@ -43,8 +43,10 @@ body
             a(href='/profile')
               if user.name
                 =user.name
-              else if user.email
+              else user.email
                 =user.email
+                .hidden_email
+                  =user.email
               .gear
                 img(src='/images/buttons/gear.png')
             ul.account_menu

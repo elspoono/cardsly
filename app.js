@@ -652,6 +652,13 @@
       session: req.session
     });
   });
+  app.get('/thank_you', function(req, res) {
+    return res.render('thank_you', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing_page'
+    });
+  });
   app.get('/splash', function(req, res) {
     return res.render('splash', {
       user: req.user,

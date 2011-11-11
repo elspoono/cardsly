@@ -823,7 +823,7 @@ $ ->
   $('.change_password_button').click () ->
     current_password = $ '.current_password'
     password = $ '.password'
-    password2 = $ '.password_retyped'
+    password2 = $ '.password2'
 
     err = false
     if password.val() != password2.val()

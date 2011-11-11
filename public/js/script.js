@@ -914,7 +914,7 @@
       var current_password, err, password, password2;
       current_password = $('.current_password');
       password = $('.password');
-      password2 = $('.password_retyped');
+      password2 = $('.password2');
       err = false;
       if (password.val() !== password2.val()) {
         return err = 'I\'m sorry, I don\'t think those passwords match.';
