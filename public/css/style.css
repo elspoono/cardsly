@@ -804,7 +804,6 @@ input {
   display: block;
   position: absolute;
   white-space: nowrap;
-  overflow: hidden;
 }
 .designer .card .active {
   border: 1px solid #56a3da;

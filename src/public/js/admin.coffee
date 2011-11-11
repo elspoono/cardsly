@@ -123,7 +123,7 @@ $ ->
       shift_amount = 10
     #
     # Only if we have a live one, do we do anything with this
-    if $active_item.length #and not $font_color.is(':focus') and not $font_family.is(':focus')
+    if $active_item.length and not $font_family.is(':focus') #and not $font_color.is(':focus')
       #
       # Up and Down Events
       if c is 38 or c is 40
@@ -267,7 +267,6 @@ $ ->
     $font_family[0].selectedIndex = null
     $font_color.val active_theme.positions[index].color
     $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
-    $font_family.focus()
     $selected.focus().attr 'selected', 'selected'
   #
   # Highlighting and making a line the active one

@@ -8,7 +8,7 @@
         .qr
           img(src='/images/qr.png')
         ul.content
-          - lines = ['Jimbo bo Jim','Banker Extraordinaire','Cool Cats Cucumbers','57 Bakers, Edwarstonville ','555.555.5555','New York','','h','i','j','l','m']
+          - lines = ['Jimbo jo Jiming','Banker Extraordinaire','Cool Cats Cucumbers','57 Bakers, Edwarstonville ','555.555.5555','New York','','h','i','j','l','m']
           - for(var i=0; i<12; i++)
             .line(class='nth-'+i)
               =lines[i]
@@ -47,11 +47,10 @@
               input.qr_color1(placeholder='000000')
               input.qr_color2(placeholder='FFFFFF')
             li
-              label Corners
+              label Style
               select
-                - for(var i=0; i<=20; i++)
-                  option(value=i)
-                    =i
+                option square
+                option round
         .buttons
           .button.normal.save Save
           .button.gray.delete Delete

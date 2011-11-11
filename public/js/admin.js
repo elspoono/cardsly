@@ -117,7 +117,7 @@
         shift_pressed = true;
         shift_amount = 10;
       }
-      if ($active_item.length) {
+      if ($active_item.length && !$font_family.is(':focus')) {
         if (c === 38 || c === 40) {
           new_top = parseInt($active_item.css('top'));
           if (c === 38) new_top -= shift_amount;
@@ -220,7 +220,6 @@
       $font_family[0].selectedIndex = null;
       $font_color.val(active_theme.positions[index].color);
       $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]');
-      $font_family.focus();
       return $selected.focus().attr('selected', 'selected');
     });
     $qr.mousedown(function() {
