@@ -118,9 +118,12 @@ input {
   left: 0;
   z-index: 201;
   cursor: pointer;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  border-radius: 8px;
+  border-top-left-radius: 8px;
+  -moz-border-radius-topleft: 8px;
+  -webkit-border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  -moz-border-radius-topright: 8px;
+  -webkit-border-top-right-radius: 8px;
 }
 .window {
   z-index: 201;
@@ -129,6 +132,9 @@ input {
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
   border-radius: 8px;
+  border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
   color: #eee;
   padding: 30px;
   display: none;
@@ -755,7 +761,7 @@ input {
 .colorpicker {
   z-index: 500;
 }
-.colorpicker_hex {
+.colorpicker_submit {
   display: none;
 }
 .designer .card {
@@ -784,9 +790,6 @@ input {
 }
 .designer .card .qr .background {
   background: #908575;
-  -webkit-border-radius: 5%;
-  -moz-border-radius: 5%;
-  border-radius: 5%;
   position: absolute;
   z-index: 350;
 }
@@ -807,6 +810,11 @@ input {
   float: right;
   height: 300px;
   width: 240px;
+  position: relative;
+}
+.designer .options h4 {
+  margin: 0;
+  border-bottom: 5px solid #524641;
 }
 .designer .options li {
   margin-bottom: 10px;
@@ -815,34 +823,37 @@ input {
 .designer .options li label {
   display: block;
 }
-.designer .options li input,
-.designer .options li select {
+.designer .options input,
+.designer .options select {
   font-size: 12.6px;
   line-height: 1.5em;
   margin-right: 10px;
   float: left;
-  width: 180px;
-}
-.designer .options li .color1,
-.designer .options li .color2,
-.designer .options li .color {
   width: 70px;
 }
-.designer .options li .color {
+.designer .options ul {
+  display: none;
+  position: absolute;
+}
+.designer .options .active {
+  display: block;
+}
+.designer .options .category_field input,
+.designer .options .image input {
+  width: 180px;
+}
+.designer .options .color {
   float: none;
 }
-.designer .options li .font_family {
+.designer .options .font_family {
   float: none;
   display: block;
   width: 180px;
-}
-.designer .options li .pre {
-  line-height: 30px;
-  float: left;
   display: block;
 }
-.designer .options .font_style {
-  display: none;
+.designer .options .buttons {
+  bottom: -10px;
+  display: block;
 }
 .designer .options .buttons .button {
   height: 20px;

@@ -8,8 +8,9 @@
   */
 
   $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, c, card_height, card_inner_height, card_inner_width, card_width, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, r, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, _i, _len, _ref, _ref2;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
+    $options = $designer.find('.options');
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
     $lines = $card.find('.line');
@@ -17,7 +18,6 @@
     $cat = $designer.find('.category_field input');
     $color1 = $designer.find('.color1');
     $color2 = $designer.find('.color2');
-    $notfonts = $designer.find('.not_font_style');
     $fonts = $designer.find('.font_style');
     $font_color = $fonts.find('.color');
     $font_family = $fonts.find('.font_family');
@@ -67,20 +67,49 @@
       G_vmlCanvasManager.initElement($canvas[0]);
     }
     ctx = $canvas[0].getContext("2d");
-    ctx.fillStyle = "rgb(0,0,0)";
-    for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
-      for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-        if (qrcode.isDark(r, c)) {
-          ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale);
+    update_qr_color = function(hex) {
+      var c, cutHex, hexToB, hexToG, hexToR, r, _ref, _results;
+      hexToR = function(h) {
+        return parseInt((cutHex(h)).substring(0, 2), 16);
+      };
+      hexToG = function(h) {
+        return parseInt((cutHex(h)).substring(2, 4), 16);
+      };
+      hexToB = function(h) {
+        return parseInt((cutHex(h)).substring(4, 6), 16);
+      };
+      cutHex = function(h) {
+        if (h.charAt(0) === "#") {
+          return h.substring(1, 7);
+        } else {
+          return h;
         }
+      };
+      ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')';
+      console.log(ctx.fillStyle);
+      _results = [];
+      for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
+        _results.push((function() {
+          var _ref2, _results2;
+          _results2 = [];
+          for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
+            if (qrcode.isDark(r, c)) {
+              _results2.push(ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale));
+            } else {
+              _results2.push(void 0);
+            }
+          }
+          return _results2;
+        })());
       }
-    }
+      return _results;
+    };
     $qr.find('img').remove();
     $qr.append('<div class="background" />');
     $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
-      var $active_item, bottom_bound, new_left, new_top, top_bound;
+      var $active_item, bottom_bound, c, new_left, new_top, top_bound;
       $active_item = $card.find('.active');
       c = e.keyCode;
       if ($active_item.length) {
@@ -120,7 +149,7 @@
         'font-family': $t.val()
       });
       index = $active_item.prevAll().length;
-      return active_theme.positions[index + 1].font_family = $t.val();
+      return active_theme.positions[index].font_family = $t.val();
     };
     $font_family.change(update_family);
     $font_color.ColorPicker({
@@ -138,8 +167,15 @@
         color: '#' + $t.val()
       });
       index = $active_item.prevAll().length;
-      return active_theme.positions[index + 1].color = $t.val();
+      return active_theme.positions[index].color = $t.val();
     });
+    change_tab = function(tab_class) {
+      var $a, $t;
+      $t = $options.find(tab_class);
+      $a = $options.find('.active');
+      $a.stop(true, true).fadeOut().removeClass('active');
+      return $t.stop(true, true).fadeIn().addClass('active');
+    };
     unfocus_highlight = function(e) {
       var $t;
       $t = $(e.target);
@@ -148,8 +184,7 @@
       } else {
         $card.find('.active').removeClass('active');
         $body.unbind('click', unfocus_highlight);
-        $fonts.stop(true, false).slideUp();
-        $notfonts.stop(true, false).slideDown();
+        change_tab('.defaults');
         return false;
       }
     };
@@ -161,10 +196,9 @@
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
       index = $t.prevAll().length;
-      $fonts.stop(true, false).slideDown();
-      $notfonts.stop(true, false).slideUp();
-      $font_color.val(active_theme.positions[index + 1].color);
-      return $font_family.find('option[value="' + active_theme.positions[index + 1].font_family + '"]').attr('selected', 'selected');
+      $font_color.val(active_theme.positions[index].color);
+      $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]').attr('selected', 'selected');
+      return change_tab('.font_style');
     });
     $qr.mousedown(function() {
       var $pa, $t;
@@ -173,8 +207,7 @@
       $pa.removeClass('active');
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
-      $fonts.stop(true, false).slideUp();
-      return $notfonts.stop(true, false).slideDown();
+      return change_tab('.qr_style');
     });
     page_timer = 0;
     set_page_timer = function() {
@@ -196,30 +229,35 @@
       grid: 10,
       handles: 'n, e, s, w, se',
       resize: function(e, ui) {
-        return $(ui.element).css({
-          'font-size': ui.size.height + 'px',
-          'line-height': ui.size.height + 'px'
+        var $t, h;
+        $t = $(ui.element);
+        h = $t.height();
+        return $t.css({
+          'font-size': h + 'px',
+          'line-height': h + 'px'
         });
       },
       stop: set_page_timer
     });
     $qr.draggable({
-      grid: [5, 5],
+      grid: [10, 10],
       containment: '.designer .card',
       stop: set_page_timer
     });
     $qr.resizable({
-      grid: 5,
+      grid: 10,
       resize: function(e, ui) {
-        var $t;
+        var $t, h, w;
         $t = $(ui.element);
+        h = $t.height();
+        w = $t.width();
         $t.find('canvas').css({
-          height: ui.size.height,
-          width: ui.size.width
+          height: h,
+          width: w
         });
         return $t.find('.background').css({
-          height: ui.size.height,
-          width: ui.size.width
+          height: h,
+          width: w
         });
       },
       containment: '.designer .card',
@@ -320,46 +358,49 @@
       color1: 'FFFFFF',
       color2: '000000',
       s3_id: '',
-      positions: [
-        {
-          h: 45,
-          w: 45,
-          x: 70,
-          y: 40
-        }
-      ]
+      qr_color1_alpha: .5,
+      qr_color1: 'FFFFFF',
+      qr_color2: '000066',
+      qr_radius: 5,
+      qr_h: 50,
+      qr_w: 50,
+      qr_x: 65,
+      qr_y: 40,
+      positions: []
     };
     for (i = 0; i <= 5; i++) {
       default_theme.positions.push({
-        color: '000000',
+        color: '000066',
         font_family: 'Vast Shadow',
         h: 7,
-        w: 50,
+        w: 60,
         x: 5,
         y: 5 + i * 10
       });
     }
     load_theme = function(theme) {
-      var $li, i, pos, qr, _len2, _ref3;
+      var $li, i, pos, _len2, _ref;
       active_theme = theme;
-      qr = theme.positions.shift();
       $qr.show().css({
-        top: qr.y / 100 * card_height,
-        left: qr.x / 100 * card_width,
-        height: qr.h / 100 * card_height,
-        width: qr.w / 100 * card_height
+        top: theme.qr_y / 100 * card_height,
+        left: theme.qr_x / 100 * card_width,
+        height: theme.qr_h / 100 * card_height,
+        width: theme.qr_w / 100 * card_height
       });
       $qr.find('canvas').css({
-        height: qr.h / 100 * card_height,
-        width: qr.w / 100 * card_height
+        height: theme.qr_h / 100 * card_height,
+        width: theme.qr_w / 100 * card_height
       });
       $qr.find('.background').css({
-        height: qr.h / 100 * card_height,
-        width: qr.w / 100 * card_height
+        'border-radius': theme.qr_radius + 'px',
+        height: theme.qr_h / 100 * card_height,
+        width: theme.qr_w / 100 * card_height,
+        background: '#' + theme.qr_color1
       });
-      _ref3 = theme.positions;
-      for (i = 0, _len2 = _ref3.length; i < _len2; i++) {
-        pos = _ref3[i];
+      update_qr_color(theme.qr_color2);
+      _ref = theme.positions;
+      for (i = 0, _len2 = _ref.length; i < _len2; i++) {
+        pos = _ref[i];
         $li = $lines.eq(i);
         $li.show().css({
           top: pos.y / 100 * card_height,
@@ -371,7 +412,6 @@
           color: '#' + pos.color
         });
       }
-      theme.positions.unshift(qr);
       $cat.val(theme.category);
       $color1.val(theme.color1);
       return $color2.val(theme.color2);

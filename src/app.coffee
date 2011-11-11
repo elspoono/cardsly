@@ -210,24 +210,18 @@ ThemeSchema = new Schema
     type: Boolean
     default: true
   theme_group_id: Number
+  qr_color1: String
+  qr_color2: String
+  qr_radius: Number
+  qr_color1_alpha: Number
+  qr_h: Number
+  qr_w: Number
+  qr_x: Number
+  qr_y: Number
   color1: String
   color2: String
   s3_id: String
 Theme = mongoose.model 'Theme', ThemeSchema
-
-###
-You may sometimes ask yourself:
-"Where is the QR code's position?"
-
-It's in the position schema.
-"Wait, won't that mean it's mixed up?"
-
-No, it's always the first position.
-
-Always.
-
-For now.
-###
 
 # Style Field Positions
 PositionSchema = new Schema

@@ -13,6 +13,7 @@ $ ->
   # Grab all the guys we're going to use
   $designer = $ '.designer'
   #
+  $options = $designer.find '.options'
   $card = $designer.find '.card'
   $qr = $card.find '.qr'
   $lines = $card.find '.line'
@@ -23,7 +24,6 @@ $ ->
   $color1 = $designer.find '.color1'
   $color2 = $designer.find '.color2'
   #
-  $notfonts = $designer.find '.not_font_style'
   $fonts = $designer.find '.font_style'
   $font_color = $fonts.find '.color'
   $font_family = $fonts.find '.font_family'
@@ -88,13 +88,22 @@ $ ->
   if typeof G_vmlCanvasManager != 'undefined'
     G_vmlCanvasManager.initElement $canvas[0]
   ctx = $canvas[0].getContext "2d"
-  ctx.fillStyle = "rgb(0,0,0)"
 
-  # Actual Drawing of the QR Code
-  for r in [0..count-1]
-    for c in [0..count-1]
-      ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(r,c)
+  update_qr_color = (hex) ->
+    
+    hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
+    hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
+    hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
+    cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
 
+    ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')'
+
+    console.log ctx.fillStyle
+    # Actual Drawing of the QR Code
+    for r in [0..count-1]
+      for c in [0..count-1]
+        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(r,c)
+  
   $qr.find('img').remove()
   $qr.append '<div class="background" />'
   $qr.append $canvas
@@ -170,7 +179,7 @@ $ ->
     #
     # Find it's index relative to it's peers
     index = $active_item.prevAll().length
-    active_theme.positions[index+1].font_family = $t.val()
+    active_theme.positions[index].font_family = $t.val()
   #
   $font_family.change update_family
   #
@@ -192,7 +201,17 @@ $ ->
     #
     # Find it's index relative to it's peers
     index = $active_item.prevAll().length
-    active_theme.positions[index+1].color = $t.val()
+    active_theme.positions[index].color = $t.val()
+  #
+  #
+  #
+  #
+  # Changing "tabs" (different options for editing)
+  change_tab = (tab_class) ->
+    $t = $options.find tab_class
+    $a = $options.find '.active'
+    $a.stop(true,true).fadeOut().removeClass 'active'
+    $t.stop(true,true).fadeIn().addClass 'active'
   #
   # 
   #
@@ -204,8 +223,7 @@ $ ->
     else
       $card.find('.active').removeClass 'active'
       $body.unbind 'click', unfocus_highlight
-      $fonts.stop(true,false).slideUp()
-      $notfonts.stop(true,false).slideDown()
+      change_tab '.defaults'
       return false
   #
   # Highlighting and making a line the active one
@@ -222,10 +240,9 @@ $ ->
     #
     # Find it's index relative to it's peers
     index = $t.prevAll().length
-    $fonts.stop(true,false).slideDown()
-    $notfonts.stop(true,false).slideUp()
-    $font_color.val active_theme.positions[index+1].color
-    $font_family.find('option[value="' + active_theme.positions[index+1].font_family + '"]').attr 'selected', 'selected'
+    $font_color.val active_theme.positions[index].color
+    $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]').attr 'selected', 'selected'
+    change_tab '.font_style'
   #
   # Highlighting and making a line the active one
   $qr.mousedown ->
@@ -234,8 +251,7 @@ $ ->
     $pa.removeClass 'active'
     $t.addClass 'active'
     $body.bind 'click', unfocus_highlight
-    $fonts.stop(true,false).slideUp()
-    $notfonts.stop(true,false).slideDown()
+    change_tab '.qr_style'
 
   #
   # A global page timer for the automatic save event.
@@ -263,26 +279,30 @@ $ ->
     grid: 10
     handles: 'n, e, s, w, se'
     resize: (e, ui) ->
-      $(ui.element).css
-        'font-size': ui.size.height + 'px'
-        'line-height': ui.size.height + 'px'
+      $t = $(ui.element)
+      h = $t.height()
+      $t.css
+        'font-size': h + 'px'
+        'line-height': h + 'px'
     stop: set_page_timer
   #
   # Dragging and dropping functions for the qr code
   $qr.draggable
-    grid: [5,5]
+    grid: [10,10]
     containment: '.designer .card'
     stop: set_page_timer
   $qr.resizable
-    grid: 5
+    grid: 10
     resize: (e, ui) ->
         $t = $(ui.element)
+        h = $t.height()
+        w = $t.width()
         $t.find('canvas').css
-          height: ui.size.height
-          width: ui.size.width
+          height: h
+          width: w
         $t.find('.background').css
-          height: ui.size.height
-          width: ui.size.width
+          height: h
+          width: w
         
     containment: '.designer .card'
     handles: 'n, e, s, w, ne, nw, se, sw'
@@ -406,18 +426,21 @@ $ ->
     color1: 'FFFFFF'
     color2: '000000'
     s3_id: ''
-    positions: [
-      h: 45
-      w: 45
-      x: 70
-      y: 40
-    ]
+    qr_color1_alpha: .5
+    qr_color1: 'FFFFFF'
+    qr_color2: '000066'
+    qr_radius: 5
+    qr_h: 50
+    qr_w: 50
+    qr_x: 65
+    qr_y: 40
+    positions: []
   for i in [0..5]
     default_theme.positions.push
-      color: '000000'
+      color: '000066'
       font_family: 'Vast Shadow'
       h: 7
-      w: 50
+      w: 60
       x: 5
       y: 5+i*10
   #
@@ -425,18 +448,20 @@ $ ->
   # It's for putting a theme into the designer for editing
   load_theme = (theme) ->
     active_theme = theme
-    qr = theme.positions.shift()
     $qr.show().css
-      top: qr.y/100 * card_height
-      left: qr.x/100 * card_width
-      height: qr.h/100 * card_height
-      width: qr.w/100 * card_height
+      top: theme.qr_y/100 * card_height
+      left: theme.qr_x/100 * card_width
+      height: theme.qr_h/100 * card_height
+      width: theme.qr_w/100 * card_height
     $qr.find('canvas').css
-      height: qr.h/100 * card_height
-      width: qr.w/100 * card_height
+      height: theme.qr_h/100 * card_height
+      width: theme.qr_w/100 * card_height
     $qr.find('.background').css
-      height: qr.h/100 * card_height
-      width: qr.w/100 * card_height
+      'border-radius': theme.qr_radius+'px'
+      height: theme.qr_h/100 * card_height
+      width: theme.qr_w/100 * card_height
+      background: '#'+theme.qr_color1
+    update_qr_color theme.qr_color2
     for pos,i in theme.positions
       $li = $lines.eq i
       $li.show().css
@@ -447,7 +472,6 @@ $ ->
         lineHeight: (pos.h/100 * card_height) + 'px'
         fontFamily: pos.font_family
         color: '#'+pos.color
-    theme.positions.unshift qr
     $cat.val theme.category
     $color1.val theme.color1
     $color2.val theme.color2

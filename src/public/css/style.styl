@@ -213,11 +213,11 @@ input
   absolute()
   z-index 201
   cursor pointer
-  border_radius(8px)
+  border_radius_top_only(8px)
 .window
   z-index 201
   alpha_bg(darken($c_bg_dark,20),.9)
-  border_radius(8px)
+  border_radius_except_top_right(8px)
   color $c_light
   padding 30px
   absolute()
@@ -589,7 +589,7 @@ input
 //
 .colorpicker
   z-index 500
-.colorpicker_hex
+.colorpicker_submit
   display none
 
 //
@@ -615,7 +615,6 @@ input
         z-index 351
       .background
         background $c_bg_light
-        border_radius(5%)
         position absolute
         z-index 350
       border 1px solid transparent
@@ -640,31 +639,38 @@ input
     float right
     height 300px
     width 240px
+    position relative
+    h4
+      margin 0
+      border-bottom 5px solid $c_bg_dark
     li
       margin-bottom 10px
       overflow hidden
       label
         display block
-      input,select
-        relative_size(.6)
-        margin-right 10px
-        float left
-        width 180px
-      .color1,.color2,.color
-        width 70px
-      .color
-        float none
-      .font_family
-        float none
-        display block
-        width 180px
-      .pre
-        line-height 30px
-        float left
-        display block
-    .font_style
+    input,select
+      relative_size(.6)
+      margin-right 10px
+      float left
+      width 70px
+    ul
       display none
+      position absolute
+    .active
+      display block
+    .category_field,.image
+      input
+        width 180px
+    .color
+      float none
+    .font_family
+      float none
+      display block
+      width 180px
+      display block
     .buttons
+      bottom -10px
+      display block
       .button
         height 20px
         width 80px

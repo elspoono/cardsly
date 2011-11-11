@@ -13,33 +13,40 @@
             .line(class='nth-'+i)
               =lines[i]
       .options
-        ul.not_font_style
+        ul.defaults.active
+          li
+            h4 Card
           li.category_field
             label Category
             input(placeholder='Professional')
           li.image
-            label Card Image
+            label Background
             form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
               input(type='file',name='image')
             .img_loader
               iframe(name='hiddenFrame')
           li.gradient
-            label Web Gradient
-            span.pre #
+            label Website Colors
             input.color1(placeholder='000000')
-            span.pre #
             input.color2(placeholder='FFFFFF')
-        ul
-          li.font_style
-            label Font
-            span.pre #
+        ul.font_style
+          li
+            h4 Font
+          li
             input.color(placeholder='000000')
             select.font_family(size='10')
               option
               option Luckiest Guy
               option Arial
-        ul
-          li.buttons
+        ul.qr_style
+          li
+            h4 QR
+          li
+            label Colors
+            input.qr_color1(placeholder='000000')
+            input.qr_color2(placeholder='FFFFFF')
+        ul.buttons
+          li
             .button.normal.save Save
             .button.gray.delete Delete
       .clear
