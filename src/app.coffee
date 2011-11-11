@@ -212,8 +212,8 @@ ThemeSchema = new Schema
   theme_group_id: Number
   qr_color1: String
   qr_color2: String
+  qr_color2_alpha: Number
   qr_radius: Number
-  qr_color1_alpha: Number
   qr_h: Number
   qr_w: Number
   qr_x: Number

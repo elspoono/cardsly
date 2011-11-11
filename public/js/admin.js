@@ -8,11 +8,12 @@
   */
 
   $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_color1, $qr_color2, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_color, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
+    $qr_bg = $qr.find('.background');
     $lines = $card.find('.line');
     $body = $(document);
     $cat = $designer.find('.category_field input');
@@ -96,7 +97,7 @@
           var _ref2, _results2;
           _results2 = [];
           for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-            if (qrcode.isDark(r, c)) {
+            if (qrcode.isDark(c, r)) {
               _results2.push(ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale));
             } else {
               _results2.push(void 0);
@@ -107,8 +108,6 @@
       }
       return _results;
     };
-    $qr.find('img').remove();
-    $qr.append('<div class="background" />');
     $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
@@ -171,13 +170,44 @@
         return $font_color.keyup();
       }
     });
-    $font_color.ColorPicker({
+    $color1.ColorPicker({
       livePreview: true,
       onChange: function(hsb, hex, rgb) {
-        $font_color.val(hex);
-        return $font_color.keyup();
+        $color1.val(hex);
+        return $color1.keyup();
       }
     });
+    $color2.ColorPicker({
+      livePreview: true,
+      onChange: function(hsb, hex, rgb) {
+        $color2.val(hex);
+        return $color2.keyup();
+      }
+    });
+    $qr_color1.ColorPicker({
+      livePreview: true,
+      onChange: function(hsb, hex, rgb) {
+        $qr_color1.val(hex);
+        return $qr_color1.keyup();
+      }
+    });
+    $qr_color2.ColorPicker({
+      livePreview: true,
+      onChange: function(hsb, hex, rgb) {
+        $qr_color2.val(hex);
+        return $qr_color2.keyup();
+      }
+    });
+    set_color = function() {
+      var $t;
+      $t = $(this);
+      return $t.ColorPickerSetColor($t.val());
+    };
+    $font_color.focus(set_color);
+    $color1.focus(set_color);
+    $color2.focus(set_color);
+    $qr_color1.focus(set_color);
+    $qr_color2.focus(set_color);
     $font_color.keyup(function() {
       var $active_item, $t, index;
       $t = $(this);
@@ -187,6 +217,18 @@
       });
       index = $active_item.prevAll().length;
       return active_theme.positions[index].color = $t.val();
+    });
+    $qr_color1.keyup(function() {
+      var $t;
+      $t = $(this);
+      return update_qr_color($t.val());
+    });
+    $qr_color2.keyup(function() {
+      var $t;
+      $t = $(this);
+      return $qr_bg.css({
+        background: '#' + $t.val()
+      });
     });
     change_tab = function(tab_class) {
       var $a, $t;
@@ -212,7 +254,7 @@
     unfocus_highlight = function(e) {
       var $t;
       $t = $(e.target);
-      if ($t.hasClass('font-style') || $t.closest('.font_style').length || $t.hasClass('line') || $t.hasClass('qr') || $t.closest('.line').length || $t.closest('.qr').length || $t.closest('.colorpicker').length) {
+      if ($t.hasClass('font_style') || $t.closest('.font_style').length || $t.hasClass('qr_style') || $t.closest('.qr_style').length || $t.hasClass('line') || $t.hasClass('qr') || $t.closest('.line').length || $t.closest('.qr').length || $t.closest('.colorpicker').length) {
         return $t = null;
       } else {
         $card.find('.active').removeClass('active');
@@ -254,7 +296,6 @@
     $cat.keyup(set_page_timer);
     $font_color.keyup(set_page_timer);
     $color1.keyup(set_page_timer);
-    $color2.keyup(set_page_timer);
     $lines.draggable({
       grid: [10, 10],
       containment: '.designer .card',
@@ -262,7 +303,7 @@
     });
     $lines.resizable({
       grid: 10,
-      handles: 'n, e, s, w, se',
+      handles: 'e, s, se',
       resize: function(e, ui) {
         var $t, h;
         $t = $(ui.element);
@@ -296,7 +337,7 @@
         });
       },
       containment: '.designer .card',
-      handles: 'n, e, s, w, ne, nw, se, sw',
+      handles: 'se',
       aspectRatio: 1,
       stop: set_page_timer
     });
@@ -397,10 +438,10 @@
       color1: 'FFFFFF',
       color2: '000000',
       s3_id: '',
-      qr_color1_alpha: .5,
-      qr_color1: 'FFFFFF',
-      qr_color2: '000066',
-      qr_radius: 5,
+      qr_color1: '000066',
+      qr_color2: 'FFFFFF',
+      qr_color2_alpha: .9,
+      qr_radius: 10,
       qr_h: 50,
       qr_w: 28.57,
       qr_x: 68.76,
@@ -430,13 +471,14 @@
         height: theme.qr_h / 100 * card_height,
         width: theme.qr_h / 100 * card_height
       });
-      $qr.find('.background').css({
+      $qr_bg.css({
         'border-radius': theme.qr_radius + 'px',
         height: theme.qr_h / 100 * card_height,
         width: theme.qr_h / 100 * card_height,
-        background: '#' + theme.qr_color1
+        background: '#' + theme.qr_color2
       });
-      update_qr_color(theme.qr_color2);
+      $qr_bg.fadeTo(0, theme.qr_color2_alpha);
+      update_qr_color(theme.qr_color1);
       _ref = theme.positions;
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         pos = _ref[i];
@@ -453,7 +495,9 @@
       }
       $cat.val(theme.category);
       $color1.val(theme.color1);
-      return $color2.val(theme.color2);
+      $color2.val(theme.color2);
+      $qr_color1.val(theme.qr_color1);
+      return $qr_color2.val(theme.qr_color2);
     };
     $('.add_new').click(function() {
       return load_theme(default_theme);
