@@ -1,20 +1,14 @@
-(function() {
+
   /*
   
   All the stuff for the admin template designer
   is probably going to be in this section right here.
   
   ok.
-<<<<<<< HEAD
   */
 
   $(function() {
     var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
-=======
-  
-  */  $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $notfonts, $qr, $upload, active_theme, c, card_height, card_inner_height, card_inner_width, card_width, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, r, scale, set_page_timer, shift_amount, size, unfocus_highlight, update_family, _i, _len, _ref, _ref2;
->>>>>>> 1c92c1cfc818038f453edcba3c4f688e5cfca73c
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -39,8 +33,7 @@
     
       1. Load them
       2. Make their common names available
-    
-      */
+    */
     setTimeout(function() {
       return WebFont.load({
         google: {
@@ -51,7 +44,7 @@
     font_families = ['Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'IM Fell English SC', 'Julee', 'Syncopate', 'Gravitas One', 'Quicksand', 'Vast Shadow', 'Smokum', 'Ovo', 'Amatic SC', 'Rancho', 'Poly', 'Chivo', 'Prata', 'Abril Fatface', 'Ultra', 'Love Ya Like A Sister', 'Carter One', 'Luckiest Guy', 'Gruppo', 'Slackey'].sort();
     /*
       END GOOGLE FONTS
-      */
+    */
     $font_family.find('option').remove();
     for (_i = 0, _len = font_families.length; _i < _len; _i++) {
       fam = font_families[_i];
@@ -120,54 +113,32 @@
       $active_item = $card.find('.active');
       c = e.keyCode;
       if ($active_item.length) {
-        if (e.keyCode === 16) {
-          shift_amount = 10;
-        }
+        if (e.keyCode === 16) shift_amount = 10;
         if (c === 38 || c === 40) {
           new_top = parseInt($active_item.css('top'));
-          if (c === 38) {
-            new_top -= shift_amount;
-          }
-          if (c === 40) {
-            new_top += shift_amount;
-          }
+          if (c === 38) new_top -= shift_amount;
+          if (c === 40) new_top += shift_amount;
           top_bound = (card_height - card_inner_height) / 2;
           bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-          if (new_top < top_bound) {
-            new_top = top_bound;
-          }
-          if (new_top > bottom_bound) {
-            new_top = bottom_bound;
-          }
+          if (new_top < top_bound) new_top = top_bound;
+          if (new_top > bottom_bound) new_top = bottom_bound;
           $active_item.css('top', new_top);
         }
         if (c === 37 || c === 39) {
           new_left = parseInt($active_item.css('left'));
-          if (c === 37) {
-            new_left -= shift_amount;
-          }
-          if (c === 39) {
-            new_left += shift_amount;
-          }
+          if (c === 37) new_left -= shift_amount;
+          if (c === 39) new_left += shift_amount;
           top_bound = (card_width - card_inner_width) / 2;
           bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-          if (new_left < top_bound) {
-            new_left = top_bound;
-          }
-          if (new_left > bottom_bound) {
-            new_left = bottom_bound;
-          }
+          if (new_left < top_bound) new_left = top_bound;
+          if (new_left > bottom_bound) new_left = bottom_bound;
           $active_item.css('left', new_left);
         }
-        if (c === 38 || c === 40 || c === 39 || c === 37) {
-          return false;
-        }
+        if (c === 38 || c === 40 || c === 39 || c === 37) return false;
       }
     });
     $body.keyup(function(e) {
-      if (e.keyCode === 16) {
-        return shift_amount = 1;
-      }
+      if (e.keyCode === 16) return shift_amount = 1;
     });
     update_family = function() {
       var $active_item, $t, index;
@@ -319,9 +290,7 @@
       width = parseInt($t.width());
       left = parseInt($t.css('left'));
       top = parseInt($t.css('top'));
-      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
-        return false;
-      }
+      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) return false;
       return result = {
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
@@ -348,9 +317,7 @@
         var $t, pos;
         $t = $(this);
         pos = get_position($t);
-        if (pos) {
-          return theme.positions.push(pos);
-        }
+        if (pos) return theme.positions.push(pos);
       });
       parameters = {
         theme: theme,
@@ -365,17 +332,13 @@
               message: 'Error saving.'
             });
           }
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         },
         error: function() {
           $designer.find('.save').showTooltip({
             message: 'Error saving.'
           });
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         }
       });
     };
@@ -470,12 +433,10 @@
           $new_li = $ '<li class="card" />'
           $('.category[category=""] .gallery').append $new_li
           $new_li.click()
-          */
+      */
     });
     $designer.find('.buttons .save').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
         return execute_save(function() {
           return close_loading();
@@ -483,9 +444,7 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
@@ -498,8 +457,7 @@
                         TODO: Make this delete the template
               
                         So send to the server to delete the template we're on here ...
-              
-                        */              return close_func();
+              */              return close_func();
             }
           }, {
             "class": 'gray',
@@ -512,4 +470,3 @@
       });
     });
   });
-}).call(this);

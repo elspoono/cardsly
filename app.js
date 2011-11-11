@@ -738,9 +738,7 @@
       session: req.session
     });
   });
-<<<<<<< HEAD
 
-=======
   app.get('/thank_you', function(req, res) {
     return res.render('thank_you', {
       user: req.user,
@@ -748,7 +746,7 @@
       layout: 'layout_landing_page'
     });
   });
->>>>>>> 1c92c1cfc818038f453edcba3c4f688e5cfca73c
+
   app.get('/splash', function(req, res) {
     return res.render('splash', {
       user: req.user,
