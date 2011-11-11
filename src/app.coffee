@@ -730,6 +730,13 @@ app.get '/account', (req, res) ->
     user: req.user
     session: req.session
 
+#Thank_You Page
+app.get '/thank_you', (req, res) -> 
+  res.render 'thank_you'
+    user: req.user
+    session: req.session
+    layout: 'layout_landing_page'
+
 
 # Splash Page
 app.get '/splash', (req, res) -> 
