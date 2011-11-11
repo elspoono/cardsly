@@ -405,7 +405,6 @@ app.configure ->
   app.set "views", __dirname + conf.dir.views
   app.set "view engine", "jade"
   app.set 'view options',
-    script: false
     scripts: []
     user: false
     session: false
@@ -725,10 +724,13 @@ app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
   
 # Account Page
-app.get '/account', (req, res) ->
-  res.render 'account'
+app.get '/settings', securedPage, (req, res) ->
+  res.render 'settings'
     user: req.user
     session: req.session
+    scripts:[
+      '/js/settings.js'
+    ]
 
 #Thank_You Page
 app.get '/thank_you', (req, res) -> 

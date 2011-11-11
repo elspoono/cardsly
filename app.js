@@ -423,7 +423,6 @@
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
     app.set('view options', {
-      script: false,
       scripts: [],
       user: false,
       session: false
@@ -732,10 +731,11 @@
     });
   });
 
-  app.get('/account', function(req, res) {
-    return res.render('account', {
+  app.get('/settings', securedPage, function(req, res) {
+    return res.render('settings', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      scripts: ['/js/settings.js']
     });
   });
 

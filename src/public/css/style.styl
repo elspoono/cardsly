@@ -902,12 +902,11 @@ input
   .nth_6,.nth_7,.nth_8,.nth_9,.nth_10,.nth_11
     display none
 //
-// Login Form On Login Page Styling
 //
-// container of whole section
-.login_container
+// The two login fields specifically, and their login button
+.form_narrow
   max-width 480px
-  float right
+  float left
   p
     text-align center
   .local
@@ -918,21 +917,22 @@ input
     span
       width 150px
       text-align center
-//
-// The two login fields specifically, and their login button
-.login_form
-  span
+  label
     width 250px
     display block
     margin 0 auto
-  input,.button
+    font-weight bold
+  input
     margin 0 auto 15px auto
     float none
     display block
     width 250px
-  .button
-    margin 20px auto
-    width 220px
+  .buttons
+    .button
+      margin 20px auto
+      width 220px
+  .new
+    margin 0 auto
   
   
 
@@ -1180,19 +1180,6 @@ input value=["Send Feedback"]
       z-index 400
       background #e3007b
       display block
-.change_password
-  .current_password
-    overflow hidden
-    padding 0px 0px 0px 68px
-  .set_new_password
-    float top
-    padding 5px 0px 0px 27px
-  .new_password
-    padding 0px 0px 0px 68px
-  .new_password2
-    padding 5px 0px 10px 0px
-  .change_password_button
-    margin 0px 0px 0px 110px
 // Footer
 
 .footer
@@ -1222,7 +1209,7 @@ input value=["Send Feedback"]
       display inline-block
       float inherit
       margin 15px 10px
-
+  
 
 // New How It Works Section - Scott Cain 11.1.11
 
@@ -1233,9 +1220,6 @@ input value=["Send Feedback"]
 .sam
   float left
   margin 30px
-
-
-
 
 
 // SCOTTS STUFF _ HOME PAGE CRAP
