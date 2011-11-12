@@ -1627,7 +1627,7 @@ input
   z-index: 300;
 }
 .biz_card1 {
-  padding: 30px;
+  padding: 30px 0px 0px 30px;
 }
 .internet_explorer_error_page {
   font-size: 16px;
