@@ -851,6 +851,14 @@ input {
   float: left;
   width: 70px;
 }
+.designer .options .color {
+  width: 25px;
+  height: 25px;
+  float: left;
+  margin: 5px 10px 5px 0;
+  border: 2px solid #524641;
+  cursor: pointer;
+}
 .designer .options ul {
   display: none;
 }
@@ -861,7 +869,7 @@ input {
 .designer .options .image input {
   width: 180px;
 }
-.designer .options .color {
+.designer .options .font_color {
   float: none;
 }
 .designer .options .font_family {

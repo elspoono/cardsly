@@ -10,34 +10,52 @@ ok.
 ###
 
 $ ->
+
+  #############
+  #
+  # Instanstiate all of our jQuery objects we'll be reusing
+  #
   # Grab all the guys we're going to use
   $designer = $ '.designer'
   #
+  # Containers
   $options = $designer.find '.options'
   $card = $designer.find '.card'
+  $body = $ 'body'
+  #
+  # Stuff inside the designer itself
   $qr = $card.find '.qr'
   $qr_bg = $qr.find('.background')
   $lines = $card.find '.line'
-  $body = $ document
   #
+  # Main Options
   $cat = $designer.find '.category_field input'
-  #
   $color1 = $designer.find '.color1'
   $color2 = $designer.find '.color2'
   #
+  # Font Options
   $fonts = $designer.find '.font_style'
-  $font_color = $fonts.find '.color'
+  $font_color = $fonts.find '.font_color'
   $font_family = $fonts.find '.font_family'
   #
+  # QR Options
   $qrs = $designer.find '.qr_style'
   $qr_color1 = $qrs.find '.qr_color1'
   $qr_color2 = $qrs.find '.qr_color2'
   $qr_radius = $qrs.find '.qr_radius'
   $qr_color2_alpha = $qrs.find '.qr_color2_alpha'
   #
+  # All Color Pickers
+  $all_colors = $ '.color'
+  #
+  # The form
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
   #
+  #
+  ################
+
+
   # Set some constants
   card_height = $card.outerHeight()
   card_width = $card.outerWidth()
@@ -46,32 +64,36 @@ $ ->
   active_theme = false
   shift_pressed = false
   #
+  
+  ##############
   #
-  ###
-  GOOGLE FONTS
-
-  1. Load them
-  2. Make their common names available
-
-  ###
-
+  # GOOGLE FONTS
+  #
+  # 1. Load them
+  # 2. Make their common names available
+  #
+  #
   # Loading Them
   setTimeout ->
     WebFont.load google:
       families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
   ,3000
-
+  #
   # Common Names
   font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM Fell English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-
-  ###
-  END GOOGLE FONTS
-  ###
   #
   # Load in those font families
   $font_family.find('option').remove()
   for fam in font_families
     $font_family.append '<option value="' + fam + '" style="font-family:' + fam + ';">' + fam + '</option>'
+  #
+  # END GOOGLE FONTS
+  #
+  ################
+
+
+
+
 
   #
   # QRs and Lines are hidden By default
@@ -112,7 +134,13 @@ $ ->
         ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
   
   $qr.append $canvas
-  
+
+
+
+  #############################
+  #
+  # The KEYBOARD events
+  #
   #
   # Key up and down events for active lines
   shift_amount = 1
@@ -177,6 +205,11 @@ $ ->
       shift_amount = 1
       shift_pressed = false
   #
+  #
+  #
+  ##########################
+
+
 
   # ***************************************************************
   # *
@@ -189,41 +222,23 @@ $ ->
   ##############
   # Colors pickers for ... ... .... ... picking colors.
   #
-  $font_color.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $font_color.val hex
-      $font_color.keyup()
-  #
-  $color1.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $color1.val hex
-      $color1.keyup()
-  $color2.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $color2.val hex
-      $color2.keyup()
-  #
-  $qr_color1.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $qr_color1.val hex
-      $qr_color1.keyup()
-  $qr_color2.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $qr_color2.val hex
-      $qr_color2.keyup()
-  set_color = ->
+
+  $all_colors.each ->
     $t = $ this
-    $t.ColorPickerSetColor $t.val()
-  $font_color.focus set_color
-  $color1.focus set_color
-  $color2.focus set_color
-  $qr_color1.focus set_color
-  $qr_color2.focus set_color
+    $t.bind 'color_update', (e, hex) ->
+      $t.data
+        hex: hex
+      $t.css
+        background: '#' + hex
+    $t.focus ->
+      $t.ColorPickerSetColor $t.val()
+    $t.ColorPicker
+      livePreview: true
+      onChange: (hsb, hex, rgb) ->
+        $t.trigger 'color_update', hex
+      onShow: (colpkr) ->
+        $t.blur()
+        
   #
   ###############
 
@@ -232,27 +247,27 @@ $ ->
   # Actual triggers from those color pickers to do real stuff
   #
   # Changing font color on key presses
-  $font_color.keyup ->
+  $font_color.bind 'color_update', (e, hex) ->
     $t = $ this
-    $active_item = $card.find('.active')
-    #
-    # Update it all
-    $active_item.css
-      color: '#'+$t.val()
-    #
-    # Find it's index relative to it's peers
-    index = $active_item.prevAll().length
-    active_theme.positions[index].color = $t.val()
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        color: '#' + hex
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].color = hex
   #
   # Changing QR Color on key presses
-  $qr_color1.keyup ->
-    $t = $ this
-    update_qr_color $t.val()
+  $qr_color1.bind 'color_update', (e, hex) ->
+    update_qr_color hex
   #
-  $qr_color2.keyup ->
-    $t = $ this
+  $qr_color2.bind 'color_update', (e, hex) ->
     $qr_bg.css
-      background: '#'+$t.val()
+      background: '#' + hex
   #
   #
   ##############
@@ -295,11 +310,14 @@ $ ->
 
   # *
   # *
-  # * END
+  # * END Options doing functional things
   # *
   # *
   # *
   # ***************************************************************
+
+
+
 
   ##############
   #
@@ -348,12 +366,12 @@ $ ->
       return false
   #
   # Highlighting and making a line the active one
-  $lines.mousedown ->
+  $lines.mousedown (e) ->
     #
     # Set it up and make it active
     $t = $ this
     $pa = $card.find '.active'
-    $pa.removeClass 'active'
+    $pa.removeClass 'active' if not shift_pressed
     $t.addClass 'active'
     #
     # Allow body clicks to unfocus it
@@ -363,7 +381,7 @@ $ ->
     change_tab '.font_style'
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
-    $font_color.val active_theme.positions[index].color
+    $font_color.trigger 'color_update', active_theme.positions[index].color
     $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
@@ -478,6 +496,7 @@ $ ->
       w: Math.round(width / card_width * 10000) / 100
       x: Math.round(left / card_width * 10000) / 100
       y: Math.round(top / card_height * 10000) / 100
+      color: $t.data 'hex'
   #
   # Do the actual save.
   #
@@ -497,8 +516,8 @@ $ ->
       qr_h: qr.h
       qr_w: qr.w
       positions: []
-      color1: $color1.val()
-      color2: $color2.val()
+      color1: $color1.data 'hex'
+      color2: $color2.data 'hex'
       s3_id: active_theme.s3_id
     #
     #
@@ -610,10 +629,10 @@ $ ->
         fontFamily: pos.font_family
         color: '#'+pos.color
     $cat.val theme.category
-    $color1.val theme.color1
-    $color2.val theme.color2
-    $qr_color1.val theme.qr_color1
-    $qr_color2.val theme.qr_color2
+    $color1.trigger 'color_update', theme.color1
+    $color2.trigger 'color_update', theme.color2
+    $qr_color1.trigger 'color_update', theme.qr_color1
+    $qr_color2.trigger 'color_update', theme.qr_color2
     $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
     $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
   #
