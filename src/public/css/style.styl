@@ -658,13 +658,14 @@ input
       margin-right 10px
       float left
       width 70px
-    .color
+    .color,.left,.center,.right
       width 25px
       height 25px
-      float left
       margin 5px 10px 5px 0
-      border 2px solid $c_bg_dark
+      float left
       cursor pointer
+    .color
+      border 2px solid $c_bg_dark
     ul
       display none
     .active ul
@@ -672,8 +673,15 @@ input
     .category_field,.image
       input
         width 180px
-    .font_color
-      float none
+    .alignment
+      float left
+      .left,.center,.right
+        background $c_bg_light url('/images/align_sprite.png') no-repeat
+        border 2px solid $c_bg_dark
+      .center
+        background-position -25px 0
+      .right
+        background-position -50px 0
     .font_family
       float none
       display block

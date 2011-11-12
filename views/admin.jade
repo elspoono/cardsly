@@ -13,7 +13,7 @@
             .line(class='nth-'+i)
               =lines[i]
       .options
-        .tab.defaults.active
+        .tab.defaults
           h4 Card
           ul
             li.category_field
@@ -29,13 +29,17 @@
               label Website Colors
               .color.color1
               .color.color2
-        .tab.font_style
+        .tab.font_style.active
           h4 Font
           ul
             li
               .color.font_color
+              .alignment
+                .left
+                .center
+                .right
             li
-              select.font_family(size='8')
+              select.font_family(size='6')
                 option
                 option Luckiest Guy
                 option Arial

@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+    var $all_colors, $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_align, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -193,16 +193,43 @@
       });
     });
     update_family = function() {
-      var $active_item, $t, index;
+      var $active_items, $t;
       $t = $(this);
-      $active_item = $card.find('.active');
-      $active_item.css({
-        'font-family': $t.val()
+      $active_items = $card.find('.active');
+      return $active_items.each(function() {
+        var $active_item, index;
+        $active_item = $(this);
+        $active_item.css({
+          'font-family': $t.val()
+        });
+        index = $active_item.prevAll().length;
+        return active_theme.positions[index].font_family = $t.val();
       });
-      index = $active_item.prevAll().length;
-      return active_theme.positions[index].font_family = $t.val();
     };
     $font_family.change(update_family);
+    update_align = function(align) {
+      var $active_items, $t;
+      $t = $(this);
+      $active_items = $card.find('.active');
+      return $active_items.each(function() {
+        var $active_item, index;
+        $active_item = $(this);
+        $active_item.css({
+          'text-align': align
+        });
+        index = $active_item.prevAll().length;
+        return active_theme.positions[index].font_family = align;
+      });
+    };
+    $fonts.find('.left').click(function() {
+      return update_align('left');
+    });
+    $fonts.find('.center').click(function() {
+      return update_align('center');
+    });
+    $fonts.find('.right').click(function() {
+      return update_align('right');
+    });
     $qr_color2_alpha.change(function() {
       var $t;
       $t = $(this);
@@ -438,6 +465,7 @@
       default_theme.positions.push({
         color: '000066',
         font_family: 'Vast Shadow',
+        text_align: 'left',
         h: 7,
         w: 60,
         x: 3.05,
@@ -476,6 +504,7 @@
           fontSize: (pos.h / 100 * card_height) + 'px',
           lineHeight: (pos.h / 100 * card_height) + 'px',
           fontFamily: pos.font_family,
+          textAlign: pos.text_align,
           color: '#' + pos.color
         });
       }

@@ -851,13 +851,18 @@ input {
   float: left;
   width: 70px;
 }
-.designer .options .color {
+.designer .options .color,
+.designer .options .left,
+.designer .options .center,
+.designer .options .right {
   width: 25px;
   height: 25px;
-  float: left;
   margin: 5px 10px 5px 0;
-  border: 2px solid #524641;
+  float: left;
   cursor: pointer;
+}
+.designer .options .color {
+  border: 2px solid #524641;
 }
 .designer .options ul {
   display: none;
@@ -869,8 +874,20 @@ input {
 .designer .options .image input {
   width: 180px;
 }
-.designer .options .font_color {
-  float: none;
+.designer .options .alignment {
+  float: left;
+}
+.designer .options .alignment .left,
+.designer .options .alignment .center,
+.designer .options .alignment .right {
+  background: #908575 url("/images/align_sprite.png") no-repeat;
+  border: 2px solid #524641;
+}
+.designer .options .alignment .center {
+  background-position: -25px 0;
+}
+.designer .options .alignment .right {
+  background-position: -50px 0;
 }
 .designer .options .font_family {
   float: none;

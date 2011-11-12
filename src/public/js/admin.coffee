@@ -278,17 +278,43 @@ $ ->
   #
   update_family = ->
     $t = $ this
-    $active_item = $card.find('.active')
-    #
-    # Update it all
-    $active_item.css
-      'font-family': $t.val()
-    #
-    # Find it's index relative to it's peers
-    index = $active_item.prevAll().length
-    active_theme.positions[index].font_family = $t.val()
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        'font-family': $t.val()
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].font_family = $t.val()
   #
   $font_family.change update_family
+  #
+  ##############
+
+
+  ###############
+  # Changing alignment for those thumbnail guys
+  #
+  update_align = (align) ->
+    $t = $ this
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        'text-align': align
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].font_family = align
+  #
+  $fonts.find('.left').click -> update_align 'left'
+  $fonts.find('.center').click -> update_align 'center'
+  $fonts.find('.right').click -> update_align 'right'
   #
   ##############
 
@@ -594,6 +620,7 @@ $ ->
     default_theme.positions.push
       color: '000066'
       font_family: 'Vast Shadow'
+      text_align: 'left'
       h: 7
       w: 60
       x: 3.05
@@ -627,6 +654,7 @@ $ ->
         fontSize: (pos.h/100 * card_height) + 'px'
         lineHeight: (pos.h/100 * card_height) + 'px'
         fontFamily: pos.font_family
+        textAlign: pos.text_align
         color: '#'+pos.color
     $cat.val theme.category
     $color1.trigger 'color_update', theme.color1
