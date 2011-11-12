@@ -63,6 +63,9 @@ $ ->
   card_inner_width = $card.width()
   active_theme = false
   shift_pressed = false
+  ctrl_pressed = false
+  history = []
+  redo_history = []
   #
   
   ##############
@@ -153,6 +156,39 @@ $ ->
       shift_pressed = true
       shift_amount = 10
     #
+    # Ctrl or Command Pressed Down
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = true
+    #
+    #
+    # Undo 
+    if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      current_theme = history.pop()
+      new_theme = history[history.length-1]
+      if new_theme
+        redo_history.push current_theme
+        load_theme new_theme
+        console.log history
+      else
+        history.push current_theme
+        $.load_alert
+          content: 'No more to undo'
+    #
+    # Redo
+    if ctrl_pressed and shift_pressed and e.keyCode is 90
+      new_theme = redo_history.pop()
+      if new_theme
+        history.push new_theme
+        load_theme new_theme
+        console.log history
+      else
+        redo_history.push new_theme
+        $.load_alert
+          content: 'No more to redo'
+    #
+    #
+    #
+    #
     # Only if we have a live one, do we do anything with this
     if $active_items.length and not $font_family.is(':focus') #and not $font_color.is(':focus')
       $active_items.each ->
@@ -201,6 +237,8 @@ $ ->
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
   $body.keyup (e) ->
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = false
     if e.keyCode is 16
       shift_amount = 1
       shift_pressed = false
@@ -326,11 +364,15 @@ $ ->
   $qr_color2_alpha.change ->
     $t = $ this
     $qr_bg.fadeTo 0, $t.val()
+    active_theme.qr_color2_alpha = $t.val()
+    set_timers()
   #
   $qr_radius.change ->
     $t = $ this
     $qr_bg.css
       'border-radius': $t.val() + 'px'
+    active_theme.qr_radius = $t.val()
+    set_timers()
   #
   ##############
 
@@ -426,18 +468,23 @@ $ ->
   ####################
   #
   # A global page timer for the automatic save event.
-  page_timer = 0
-  set_page_timer = ->
-    clearTimeout page_timer
-    page_timer = setTimeout ->
+  save_timer = 0
+  history_timer = 0
+  set_timers = ->
+    clearTimeout save_timer
+    save_timer = setTimeout ->
       execute_save()
-    , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
+    , 2000
+    clearTimeout history_timer
+    history_timer = setTimeout ->
+      update_active_theme()
+      history.push active_theme
+      redo_history = []
+    , 500
 
   #
   # Set that timer on the right events for the right things
-  $cat.keyup set_page_timer
-  $font_color.keyup set_page_timer
-  $color1.keyup set_page_timer#
+  $cat.keyup set_timers
   #
   ######################
 
@@ -447,7 +494,7 @@ $ ->
   $lines.draggable
     grid: [10,10]
     containment: '.designer .card'
-    stop: set_page_timer
+    stop: set_timers
   $lines.resizable
     grid: 10
     handles: 'e, s, se'
@@ -457,13 +504,13 @@ $ ->
       $t.css
         'font-size': h + 'px'
         'line-height': h + 'px'
-    stop: set_page_timer
+    stop: set_timers
   #
   # Dragging and dropping functions for the qr code
   $qr.draggable
     grid: [10,10]
     containment: '.designer .card'
-    stop: set_page_timer
+    stop: set_timers
   $qr.resizable
     grid: 10
     resize: (e, ui) ->
@@ -480,7 +527,7 @@ $ ->
     containment: '.designer .card'
     handles: 'se'
     aspectRatio: 1
-    stop: set_page_timer
+    stop: set_timers
   #
 
   #
@@ -505,7 +552,7 @@ $ ->
 
   #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
-  get_position = ($t) ->
+  get_position = ($t, previous) ->
     # Get it's CSS Values
     height = parseInt $t.height()
     width = parseInt $t.width()
@@ -522,16 +569,15 @@ $ ->
       w: Math.round(width / card_width * 10000) / 100
       x: Math.round(left / card_width * 10000) / 100
       y: Math.round(top / card_height * 10000) / 100
-      color: $t.data 'hex'
+      text_align: previous.text_align
+      color: previous.color
+      font_family: previous.font_family
   #
-  # Do the actual save.
   #
-  # It should be noted, that in most cases, this just means saving into the session
-  # Only on save button click does it pass an extra parameter to save it to a record in the database
-  execute_save = (next) ->
-    #
+  # Helper function to get the active them stuff before history and before save
+  update_active_theme = ->
     # Get the position of the qr
-    qr = get_position $qr
+    qr = get_position $qr, {}
     #
     # Set the theme start
     theme =
@@ -544,19 +590,34 @@ $ ->
       positions: []
       color1: $color1.data 'hex'
       color2: $color2.data 'hex'
+      qr_color1: $qr_color1.data 'hex'
+      qr_color2: $qr_color2.data 'hex'
       s3_id: active_theme.s3_id
+      qr_radius: active_theme.qr_radius
+      qr_color2_alpha: active_theme.qr_color2_alpha
     #
     #
     # Get the position of each line
-    $lines.each ->
+    $lines.each (i) ->
       $t = $ this
-      pos = get_position $t
+      pos = get_position $t, active_theme.positions[i] || {}
       if pos
         theme.positions.push pos
     #
+    #
+    active_theme = theme
+  #
+  # Do the actual save.
+  #
+  # It should be noted, that in most cases, this just means saving into the session
+  # Only on save button click does it pass an extra parameter to save it to a record in the database
+  execute_save = (next) ->
+    #
+    update_active_theme()
+    #
     # Set the parameters
     parameters =
-      theme: theme
+      theme: active_theme
       do_save: if next then true else false
     #
     $.ajax
@@ -582,6 +643,7 @@ $ ->
   #
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
+    set_timers()
     if not no_theme() and s3_id
       active_theme.s3_id = s3_id
       $card.css
@@ -621,7 +683,7 @@ $ ->
       color: '000066'
       font_family: 'Vast Shadow'
       text_align: 'left'
-      h: 7
+      h: 6.67
       w: 60
       x: 3.05
       y: 5+i*10
@@ -666,16 +728,13 @@ $ ->
   #
   # The add new button
   $('.add_new').click ->
+    #
+    # Restart the history
+    history = [default_theme]
+    #
+    # Load it up
     load_theme(default_theme)
-
-    # Oh wait, this doesn't happen until save, eh?
-    ###
-    $new_li = $ '<li class="card" />'
-    $('.category[category=""] .gallery').append $new_li
-    $new_li.click()
-    ###
-
-
+  #
   #
   # On save click
   $designer.find('.buttons .save').click ->

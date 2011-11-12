@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_align, update_family, update_qr_color, _i, _len;
+    var $all_colors, $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -36,6 +36,9 @@
     card_inner_width = $card.width();
     active_theme = false;
     shift_pressed = false;
+    ctrl_pressed = false;
+    history = [];
+    redo_history = [];
     setTimeout(function() {
       return WebFont.load({
         google: {
@@ -105,12 +108,42 @@
     $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
-      var $active_items, c;
+      var $active_items, c, current_theme, new_theme;
       $active_items = $card.find('.active');
       c = e.keyCode;
       if (e.keyCode === 16) {
         shift_pressed = true;
         shift_amount = 10;
+      }
+      if (e.keyCode === 17 || e.keyCode === 91 || e.keyCode === 93) {
+        ctrl_pressed = true;
+      }
+      if (ctrl_pressed && !shift_pressed && e.keyCode === 90) {
+        current_theme = history.pop();
+        new_theme = history[history.length - 1];
+        if (new_theme) {
+          redo_history.push(current_theme);
+          load_theme(new_theme);
+          console.log(history);
+        } else {
+          history.push(current_theme);
+          $.load_alert({
+            content: 'No more to undo'
+          });
+        }
+      }
+      if (ctrl_pressed && shift_pressed && e.keyCode === 90) {
+        new_theme = redo_history.pop();
+        if (new_theme) {
+          history.push(new_theme);
+          load_theme(new_theme);
+          console.log(history);
+        } else {
+          redo_history.push(new_theme);
+          $.load_alert({
+            content: 'No more to redo'
+          });
+        }
       }
       if ($active_items.length && !$font_family.is(':focus')) {
         $active_items.each(function() {
@@ -141,6 +174,9 @@
       }
     });
     $body.keyup(function(e) {
+      if (e.keyCode === 17 || e.keyCode === 91 || e.keyCode === 93) {
+        ctrl_pressed = false;
+      }
       if (e.keyCode === 16) {
         shift_amount = 1;
         return shift_pressed = false;
@@ -233,14 +269,18 @@
     $qr_color2_alpha.change(function() {
       var $t;
       $t = $(this);
-      return $qr_bg.fadeTo(0, $t.val());
+      $qr_bg.fadeTo(0, $t.val());
+      active_theme.qr_color2_alpha = $t.val();
+      return set_timers();
     });
     $qr_radius.change(function() {
       var $t;
       $t = $(this);
-      return $qr_bg.css({
+      $qr_bg.css({
         'border-radius': $t.val() + 'px'
       });
+      active_theme.qr_radius = $t.val();
+      return set_timers();
     });
     change_tab = function(tab_class) {
       var $a, $t;
@@ -298,20 +338,25 @@
       $body.bind('click', unfocus_highlight);
       return change_tab('.qr_style');
     });
-    page_timer = 0;
-    set_page_timer = function() {
-      clearTimeout(page_timer);
-      return page_timer = setTimeout(function() {
+    save_timer = 0;
+    history_timer = 0;
+    set_timers = function() {
+      clearTimeout(save_timer);
+      save_timer = setTimeout(function() {
         return execute_save();
+      }, 2000);
+      clearTimeout(history_timer);
+      return history_timer = setTimeout(function() {
+        update_active_theme();
+        history.push(active_theme);
+        return redo_history = [];
       }, 500);
     };
-    $cat.keyup(set_page_timer);
-    $font_color.keyup(set_page_timer);
-    $color1.keyup(set_page_timer);
+    $cat.keyup(set_timers);
     $lines.draggable({
       grid: [10, 10],
       containment: '.designer .card',
-      stop: set_page_timer
+      stop: set_timers
     });
     $lines.resizable({
       grid: 10,
@@ -325,12 +370,12 @@
           'line-height': h + 'px'
         });
       },
-      stop: set_page_timer
+      stop: set_timers
     });
     $qr.draggable({
       grid: [10, 10],
       containment: '.designer .card',
-      stop: set_page_timer
+      stop: set_timers
     });
     $qr.resizable({
       grid: 10,
@@ -351,7 +396,7 @@
       containment: '.designer .card',
       handles: 'se',
       aspectRatio: 1,
-      stop: set_page_timer
+      stop: set_timers
     });
     $upload.change(function() {
       return $dForm.submit();
@@ -365,7 +410,7 @@
       $t.addClass('active');
       return false;
     });
-    get_position = function($t) {
+    get_position = function($t, previous) {
       var height, left, result, top, width;
       height = parseInt($t.height());
       width = parseInt($t.width());
@@ -377,12 +422,14 @@
         w: Math.round(width / card_width * 10000) / 100,
         x: Math.round(left / card_width * 10000) / 100,
         y: Math.round(top / card_height * 10000) / 100,
-        color: $t.data('hex')
+        text_align: previous.text_align,
+        color: previous.color,
+        font_family: previous.font_family
       };
     };
-    execute_save = function(next) {
-      var parameters, qr, theme;
-      qr = get_position($qr);
+    update_active_theme = function() {
+      var qr, theme;
+      qr = get_position($qr, {});
       theme = {
         _id: active_theme._id,
         category: $cat.val(),
@@ -393,16 +440,25 @@
         positions: [],
         color1: $color1.data('hex'),
         color2: $color2.data('hex'),
-        s3_id: active_theme.s3_id
+        qr_color1: $qr_color1.data('hex'),
+        qr_color2: $qr_color2.data('hex'),
+        s3_id: active_theme.s3_id,
+        qr_radius: active_theme.qr_radius,
+        qr_color2_alpha: active_theme.qr_color2_alpha
       };
-      $lines.each(function() {
+      $lines.each(function(i) {
         var $t, pos;
         $t = $(this);
-        pos = get_position($t);
+        pos = get_position($t, active_theme.positions[i] || {});
         if (pos) return theme.positions.push(pos);
       });
+      return active_theme = theme;
+    };
+    execute_save = function(next) {
+      var parameters;
+      update_active_theme();
       parameters = {
-        theme: theme,
+        theme: active_theme,
         do_save: next ? true : false
       };
       return $.ajax({
@@ -425,6 +481,7 @@
       });
     };
     $.s3_result = function(s3_id) {
+      set_timers();
       if (!no_theme() && s3_id) {
         active_theme.s3_id = s3_id;
         return $card.css({
@@ -466,7 +523,7 @@
         color: '000066',
         font_family: 'Vast Shadow',
         text_align: 'left',
-        h: 7,
+        h: 6.67,
         w: 60,
         x: 3.05,
         y: 5 + i * 10
@@ -517,12 +574,8 @@
       return $qr_radius.find('[value=' + theme.qr_radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
+      history = [default_theme];
       return load_theme(default_theme);
-      /*
-          $new_li = $ '<li class="card" />'
-          $('.category[category=""] .gallery').append $new_li
-          $new_li.click()
-      */
     });
     $designer.find('.buttons .save').click(function() {
       if (no_theme()) return false;

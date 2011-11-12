@@ -3,6 +3,9 @@
   .cell_bg
   .cell_content
     h3 Theme Admin
+    p.subtitle
+      b keyboard shortcuts:
+      |  arrow, shift+arrow, cmd+z and shift+cmd+z
     .designer
       .card
         .qr
@@ -13,8 +16,8 @@
             .line(class='nth-'+i)
               =lines[i]
       .options
-        .tab.defaults
-          h4 Card
+        .tab.defaults.active
+          h4 General
           ul
             li.category_field
               label Category
@@ -29,7 +32,7 @@
               label Website Colors
               .color.color1
               .color.color2
-        .tab.font_style.active
+        .tab.font_style
           h4 Font
           ul
             li
