@@ -455,7 +455,8 @@ $ ->
     change_tab '.font_style'
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
-    $font_color.trigger 'color_update', active_theme.positions[index].color, true
+    $font_color.trigger 'color_update'
+      hex: active_theme.positions[index].color
     $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
@@ -750,10 +751,11 @@ $ ->
   $('.add_new').click ->
     #
     # Restart the history
-    history = [default_theme]
+    theme = default_theme
+    history = [theme]
     #
     # Load it up
-    load_theme(default_theme)
+    load_theme(theme)
   #
   #
   # On save click
