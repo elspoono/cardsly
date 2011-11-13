@@ -12,8 +12,6 @@ $ ->
   $slides = $ '.slides'
   $screens = $slides.find 'li'
 
-  console.log $screens
-
   #
   # Let's change the screens periodically
   setInterval ->

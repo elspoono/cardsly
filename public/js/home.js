@@ -4,7 +4,6 @@
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $screens = $slides.find('li');
-    console.log($screens);
     setInterval(function() {
       var $last_visible_guy;
       $last_visible_guy = $screens.filter(':visible:last');
