@@ -168,11 +168,11 @@ $ ->
       if new_theme
         redo_history.push current_theme
         load_theme new_theme
-        console.log history
       else
         history.push current_theme
-        $.load_alert
-          content: 'No more to undo'
+        if $('.modal').length is 0
+          $.load_alert
+            content: 'No more to undo'
     #
     # Redo
     if ctrl_pressed and shift_pressed and e.keyCode is 90
@@ -180,11 +180,11 @@ $ ->
       if new_theme
         history.push new_theme
         load_theme new_theme
-        console.log history
       else
         redo_history.push new_theme
-        $.load_alert
-          content: 'No more to redo'
+        if $('.modal').length is 0
+          $.load_alert
+            content: 'No more to redo'
     #
     #
     #
@@ -263,17 +263,19 @@ $ ->
 
   $all_colors.each ->
     $t = $ this
-    $t.bind 'color_update', (e, hex) ->
+    $t.bind 'color_update', (e, options) ->
       $t.data
-        hex: hex
+        hex: options.hex
       $t.css
-        background: '#' + hex
+        background: '#' + options.hex
     $t.focus ->
       $t.ColorPickerSetColor $t.val()
     $t.ColorPicker
       livePreview: true
       onChange: (hsb, hex, rgb) ->
-        $t.trigger 'color_update', hex
+        $t.trigger 'color_update'
+          hex: hex
+          timer: true
       onShow: (colpkr) ->
         $t.blur()
         
@@ -285,7 +287,7 @@ $ ->
   # Actual triggers from those color pickers to do real stuff
   #
   # Changing font color on key presses
-  $font_color.bind 'color_update', (e, hex) ->
+  $font_color.bind 'color_update', (e, options) ->
     $t = $ this
     $active_items = $card.find '.active'
     $active_items.each ->
@@ -293,19 +295,22 @@ $ ->
       #
       # Update it all
       $active_item.css
-        color: '#' + hex
+        color: '#' + options.hex
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.positions[index].color = hex
+      active_theme.positions[index].color = options.hex
+    set_timers() if options.timer
   #
   # Changing QR Color on key presses
-  $qr_color1.bind 'color_update', (e, hex) ->
-    update_qr_color hex
+  $qr_color1.bind 'color_update', (e, options) ->
+    update_qr_color options.hex
+    set_timers() if options.timer
   #
-  $qr_color2.bind 'color_update', (e, hex) ->
+  $qr_color2.bind 'color_update', (e, options) ->
     $qr_bg.css
-      background: '#' + hex
+      background: '#' + options.hex
+    set_timers() if options.timer
   #
   #
   ##############
@@ -327,6 +332,7 @@ $ ->
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
       active_theme.positions[index].font_family = $t.val()
+    set_timers()
   #
   $font_family.change update_family
   #
@@ -449,7 +455,7 @@ $ ->
     change_tab '.font_style'
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
-    $font_color.trigger 'color_update', active_theme.positions[index].color
+    $font_color.trigger 'color_update', active_theme.positions[index].color, true
     $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
@@ -691,7 +697,11 @@ $ ->
   # The general load theme function
   # It's for putting a theme into the designer for editing
   load_theme = (theme) ->
+    #
+    # set this theme as the active_theme
     active_theme = theme
+    #
+    # Show the qr code and set it to the right place
     $qr.show().css
       top: theme.qr_y/100 * card_height
       left: theme.qr_x/100 * card_width
@@ -707,6 +717,8 @@ $ ->
       background: '#'+theme.qr_color2
     $qr_bg.fadeTo 0, theme.qr_color2_alpha
     update_qr_color theme.qr_color1
+    #
+    # Move all the lines and their shit
     for pos,i in theme.positions
       $li = $lines.eq i
       $li.show().css
@@ -719,10 +731,18 @@ $ ->
         textAlign: pos.text_align
         color: '#'+pos.color
     $cat.val theme.category
-    $color1.trigger 'color_update', theme.color1
-    $color2.trigger 'color_update', theme.color2
-    $qr_color1.trigger 'color_update', theme.qr_color1
-    $qr_color2.trigger 'color_update', theme.qr_color2
+    #
+    # Set all the colors
+    $color1.trigger 'color_update'
+      hex: theme.color1
+    $color2.trigger 'color_update'
+      hex: theme.color2
+    $qr_color1.trigger 'color_update'
+      hex: theme.qr_color1
+    $qr_color2.trigger 'color_update'
+      hex: theme.qr_color2
+    #
+    # Get the QR alpha and radius ready
     $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
     $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
   #
