@@ -772,7 +772,7 @@
                 form_close();
                 return $.load_loading({}, function(loading_close) {
                   return $.ajax({
-                    url: '/createUser',
+                    url: '/create-user',
                     data: {
                       email: email.val(),
                       password: password.val()
@@ -810,7 +810,7 @@
           if ($t.val().match(/.{1,}@.{1,}\..{1,}/)) {
             $t.removeClass('error').addClass('valid');
             return $.ajax({
-              url: '/checkEmail',
+              url: '/check-email',
               data: {
                 email: $t.val()
               },
@@ -893,7 +893,7 @@
               form_close();
               return $.load_loading({}, function(loading_close) {
                 return $.ajax({
-                  url: '/sendFeedback',
+                  url: '/send-feedback',
                   data: {
                     content: $('.feedback_text').val(),
                     email: $('.emailNotUser').val()
@@ -1050,7 +1050,7 @@
           }));
           console.log(array_oF_inpUt_values);
           $.ajax({
-            url: '/saveForm',
+            url: '/save-form',
             data: {
               inputs: array_oF_inpUt_values.join('`~`')
             }

@@ -9,7 +9,7 @@
   *****************************************
   */
 
-  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, url, util;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, message_schema, mongoStore, mongo_card, mongo_message, mongo_position, mongo_theme, mongo_theme_group, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, position_schema, rest, schema, securedAdminPage, securedPage, session_store, theme_group_schema, theme_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -78,11 +78,11 @@
 
   mongoose.connect(db_uri);
 
-  Schema = mongoose.Schema;
+  schema = mongoose.Schema;
 
-  ObjectId = Schema.ObjectId;
+  object_id = schema.ObjectId;
 
-  sessionStore = new mongoStore({
+  session_store = new mongoStore({
     db: db,
     username: dbAuth.username,
     password: dbAuth.password
@@ -125,7 +125,7 @@
   *****************************************
   */
 
-  UserSchema = new Schema({
+  user_schema = new schema({
     email: String,
     password_encrypted: String,
     role: String,
@@ -152,22 +152,22 @@
     }
   });
 
-  UserSchema.static('authenticate', function(email, password, next) {
+  user_schema.static('authenticate', function(email, password, next) {
     if (!email || !password || email === '' || password === '') {
       return next('Please enter an email address and password');
     } else {
-      return User.findOne({
+      return mongo_user.findOne({
         email: email,
         active: true
-      }, function(err, foundUser) {
+      }, function(err, founduser) {
         if (err) {
           return next('Database Error');
         } else {
-          if (foundUser) {
-            if (!foundUser.password_encrypted) {
+          if (founduser) {
+            if (!founduser.password_encrypted) {
               return next('That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.');
-            } else if (compareEncrypted(password, foundUser.password_encrypted)) {
-              return next(null, foundUser);
+            } else if (compareEncrypted(password, founduser.password_encrypted)) {
+              return next(null, founduser);
             } else {
               return next('Password incorrect for that email address.');
             }
@@ -179,10 +179,10 @@
     }
   });
 
-  User = mongoose.model('User', UserSchema);
+  mongo_user = mongoose.model('users', user_schema);
 
-  CardSchema = new Schema({
-    user_id: Number,
+  card_schema = new schema({
+    user_id: String,
     print_id: Number,
     path: String,
     theme_id: Number,
@@ -196,9 +196,9 @@
     }
   });
 
-  Card = mongoose.model('Card', CardSchema);
+  mongo_card = mongoose.model('cards', card_schema);
 
-  MessageSchema = new Schema({
+  message_schema = new schema({
     include_contact: Boolean,
     content: String,
     s3_id: String,
@@ -212,9 +212,9 @@
     }
   });
 
-  Message = mongoose.model('Message', MessageSchema);
+  mongo_message = mongoose.model('messages', message_schema);
 
-  ThemeGroupSchema = new Schema({
+  theme_group_schema = new schema({
     category: String,
     date_added: {
       type: Date,
@@ -226,9 +226,9 @@
     }
   });
 
-  ThemeGroup = mongoose.model('ThemeGroup', ThemeGroupSchema);
+  mongo_theme_group = mongoose.model('theme_groups', theme_group_schema);
 
-  ThemeSchema = new Schema({
+  theme_schema = new schema({
     date_added: {
       type: Date,
       "default": Date.now
@@ -237,7 +237,7 @@
       type: Boolean,
       "default": true
     },
-    theme_group_id: Number,
+    theme_group_id: String,
     qr_color1: String,
     qr_color2: String,
     qr_color2_alpha: Number,
@@ -251,10 +251,10 @@
     s3_id: String
   });
 
-  Theme = mongoose.model('Theme', ThemeSchema);
+  mongo_theme = mongoose.model('themes', theme_schema);
 
-  PositionSchema = new Schema({
-    theme_id: Number,
+  position_schema = new schema({
+    theme_id: String,
     order_id: Number,
     color: String,
     font_family: String,
@@ -265,19 +265,19 @@
     y: Number
   });
 
-  Position = mongoose.model('Position', PositionSchema);
+  mongo_position = mongoose.model('positions', position_schema);
 
-  ViewSchema = new Schema({
+  view_schema = new schema({
     ip_address: String,
     user_agent: String,
-    card_id: Number,
+    card_id: String,
     date_added: {
       type: Date,
       "default": Date.now
     }
   });
 
-  View = mongoose.model('View', ViewSchema);
+  mongo_view = mongoose.model('views', view_schema);
 
   /*
   EVERYAUTH STUFF
@@ -305,28 +305,28 @@
       userSearch.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
     }
     if (userMeta.email) userSearch.email = userMeta.email;
-    User.findOne(userSearch, function(err, existingUser) {
+    mongo_user.findOne(userSearch, function(err, existinguser) {
       var user;
       if (err) {
         console.log('err: ', err);
         return promise.fail(err);
-      } else if (existingUser) {
-        console.log('user exists: ', existingUser);
-        return promise.fulfill(existingUser);
+      } else if (existinguser) {
+        console.log('user exists: ', existinguser);
+        return promise.fulfill(existinguser);
       } else {
-        user = new User;
+        user = new mongo_user;
         user.name = userSearch.name;
         user.linkedin_url = userSearch.linkedin_url;
         user.facebook_url = userSearch.facebook_url;
         user.twitter_url = userSearch.twitter_url;
         user.email = userSearch.email;
-        return user.save(function(err, createdUser) {
+        return user.save(function(err, createduser) {
           if (err) {
             console.log('err: ', err);
             return promise.fail(err);
           } else {
-            console.log('user created: ', createdUser);
-            return promise.fulfill(createdUser);
+            console.log('user created: ', createduser);
+            return promise.fulfill(createduser);
           }
         });
       }
@@ -342,7 +342,7 @@
   */
 
   everyauth.everymodule.findUserById(function(userId, callback) {
-    return User.findById(userId, callback);
+    return mongo_user.findById(userId, callback);
   });
 
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
@@ -390,11 +390,11 @@
         alt: 'json'
       }
     }).on('success', function(data, res) {
-      var oauthUser;
-      oauthUser = {
+      var oauthuser;
+      oauthuser = {
         email: data.data.email
       };
-      return promise.fulfill(oauthUser);
+      return promise.fulfill(oauthuser);
     }).on('error', function(data, res) {
       return promise.fail(data);
     });
@@ -440,7 +440,7 @@
     app.use(express.cookieParser());
     app.use(express.session({
       secret: 'how now brown cow bow wow',
-      store: sessionStore,
+      store: session_store,
       cookie: {
         maxAge: 86400000 * 14
       }
@@ -479,7 +479,7 @@
   actions, like saving stuff, and checking stuff, from ajax
   */
 
-  app.post('/uploadImage', function(req, res) {
+  app.post('/upload-image', function(req, res) {
     var s3_fail;
     s3_fail = function(err) {
       console.log('ERR: ', err);
@@ -551,18 +551,79 @@
     }
   });
 
-  app.post('/saveTheme', function(req, res) {
-    var params;
+  check_no_err_ajax = function(err) {
+    if (err) {
+      console.log(err);
+      res.send({
+        err: err
+      });
+    }
+    return !err;
+  };
+
+  app.post('/save-theme', function(req, res) {
+    var params, theme_group;
     params = JSON.parse(req.rawBody);
     console.log(util.inspect(params));
     console.log(util.inspect(params.theme.positions));
     req.session.theme = params.theme;
-    return res.send({
-      success: true
-    });
+    if (params.do_save) {
+      if (params.theme._id) {
+        return console.log(params.theme);
+      } else {
+        theme_group = new mongo_theme_group;
+        theme_group.category = params.theme.category;
+        return theme_group.save(function(err, new_theme_group) {
+          var theme;
+          if (check_no_err_ajax(err)) {
+            theme = new mongo_theme;
+            theme.theme_group_id = new_theme_group._id;
+            theme.qr_x = params.theme.qr_x;
+            theme.qr_y = params.theme.qr_y;
+            theme.qr_h = params.theme.qr_h;
+            theme.qr_w = params.theme.qr_w;
+            theme.qr_color1 = params.theme.qr_color1;
+            theme.qr_color2 = params.theme.qr_color2;
+            theme.qr_radius = params.theme.qr_radius;
+            theme.qr_color2_alpha = params.theme.qr_color2_alpha;
+            theme.color1 = params.theme.color1;
+            theme.color2 = params.theme.color2;
+            theme.s3_id = params.theme.s3_id;
+            return theme.save(function(err, new_theme) {
+              var i, param_position, position, _len, _ref, _results;
+              if (check_no_err_ajax(err)) {
+                res.send({
+                  success: true,
+                  theme: new_theme
+                });
+                _ref = params.theme.positions;
+                _results = [];
+                for (param_position = 0, _len = _ref.length; param_position < _len; param_position++) {
+                  i = _ref[param_position];
+                  position = new mongo_position;
+                  position.theme_id = new_theme._id;
+                  position.order_id = i;
+                  position.x = param_position.x;
+                  position.y = param_position.y;
+                  position.h = param_position.h;
+                  position.w = param_position.w;
+                  position.text_align = param_position.text_align;
+                  position.color = param_position.color;
+                  position.font_family = param_position.font_family;
+                  _results.push(position.save(function(err, new_theme_position) {
+                    if (err) return console.log('POSITION SAVE ERR: ', err);
+                  }));
+                }
+                return _results;
+              }
+            });
+          }
+        });
+      }
+    }
   });
 
-  app.post('/saveForm', function(req, res) {
+  app.post('/save-form', function(req, res) {
     /*
       TODO
       
@@ -576,7 +637,7 @@
     });
   });
 
-  app.post('/checkEmail', function(req, res, next) {
+  app.post('/check-email', function(req, res, next) {
     var handleReturn, params;
     params = req.body || {};
     req.email = params.email || '';
@@ -587,12 +648,12 @@
       return next();
     };
     if (params.id) {
-      return User.count({
+      return mongo_user.count({
         email: req.email,
         active: true
       }, handleReturn);
     } else {
-      return User.count({
+      return mongo_user.count({
         email: req.email,
         active: true
       }, handleReturn);
@@ -606,7 +667,7 @@
   });
 
   app.post('/login', function(req, res, next) {
-    return User.authenticate(req.body.email, req.body.password, function(err, user) {
+    return mongo_user.authenticate(req.body.email, req.body.password, function(err, user) {
       if (err || !user) {
         return res.send({
           err: err
@@ -622,7 +683,7 @@
     });
   });
 
-  app.post('/sendFeedback', function(req, res, next) {
+  app.post('/send-feedback', function(req, res, next) {
     res.send({
       succesfulFeedback: 'This worked!'
     });
@@ -639,8 +700,8 @@
     });
   });
 
-  app.post('/createUser', function(req, res, next) {
-    return User.count({
+  app.post('/create-user', function(req, res, next) {
+    return mongo_user.count({
       email: req.body.email,
       active: true
     }, function(err, already) {
@@ -654,7 +715,7 @@
     });
   }, function(req, res, next) {
     var user;
-    user = new User();
+    user = new mongo_user();
     user.email = req.body.email;
     user.password_encrypted = encrypted(req.body.password);
     return user.save(function(err, data) {
@@ -664,7 +725,7 @@
     });
   });
 
-  app.post('/change_password', function(req, res, next) {
+  app.post('/change-password', function(req, res, next) {
     user.password_encrypted = encrypted(req.body.password);
     return user.save(function(err, data) {
       return res.send({
@@ -722,7 +783,10 @@
     });
   });
 
-  app.get('/admin', securedAdminPage, function(req, res) {
+  app.get('/admin', securedAdminPage, function(req, res, next) {
+    mongo_theme_group.find({
+      active: true
+    }, function(err, theme_groups) {});
     return res.render('admin', {
       user: req.user,
       session: req.session,
@@ -745,7 +809,6 @@
   });
 
   app.get('/how-it-works/:whateverComesAfterHowItWorks?', function(req, res) {
-    console.log(req);
     return res.render('how-it-works', {
       user: req.user,
       session: req.session,
@@ -789,7 +852,7 @@
   });
 
   app.get('/robots.txt', function(req, res, next) {
-    return res.send('User-agent: *\nDisallow: ', {
+    return res.send('user-agent: *\nDisallow: ', {
       'Content-Type': 'text/plain'
     });
   });

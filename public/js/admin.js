@@ -361,7 +361,7 @@
         update_active_theme();
         history.push(active_theme);
         return redo_history = [];
-      }, 500);
+      }, 200);
     };
     $cat.keyup(set_timers);
     $lines.draggable({
@@ -473,18 +473,18 @@
         do_save: next ? true : false
       };
       return $.ajax({
-        url: '/saveTheme',
+        url: '/save-theme',
         data: JSON.stringify(parameters),
         success: function(serverResponse) {
           if (!serverResponse.success) {
-            $designer.find('.save').showTooltip({
+            $designer.find('.save').show_tooltip({
               message: 'Error saving.'
             });
           }
           if (next) return next();
         },
         error: function() {
-          $designer.find('.save').showTooltip({
+          $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
           if (next) return next();

@@ -487,7 +487,7 @@ $ ->
       update_active_theme()
       history.push active_theme
       redo_history = []
-    , 500
+    , 200
 
   #
   # Set that timer on the right events for the right things
@@ -628,7 +628,7 @@ $ ->
       do_save: if next then true else false
     #
     $.ajax
-      url: '/saveTheme'
+      url: '/save-theme'
       #
       # jQuery's default data parser does well with simple objects, but with complex ones it doesn't do quite what we need.
       # So in this case, we need to stringify first, doing our own conversion to a string to transmit across the 
@@ -638,11 +638,11 @@ $ ->
       data: JSON.stringify parameters
       success: (serverResponse) ->
         if !serverResponse.success
-          $designer.find('.save').showTooltip
+          $designer.find('.save').show_tooltip
             message: 'Error saving.'
         if next then next()
       error: ->
-        $designer.find('.save').showTooltip
+        $designer.find('.save').show_tooltip
           message: 'Error saving.'
         if next then next()
 
