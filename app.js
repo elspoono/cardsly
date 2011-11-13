@@ -204,6 +204,7 @@
     order_id: Number,
     color: String,
     font_family: String,
+    text_align: String,
     h: Number,
     w: Number,
     x: Number,
