@@ -492,9 +492,9 @@
       });
     };
     $.s3_result = function(s3_id) {
-      set_timers();
       if (!no_theme() && s3_id) {
         active_theme.s3_id = s3_id;
+        set_timers();
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
         });
@@ -561,6 +561,15 @@
       });
       $qr_bg.fadeTo(0, theme.qr_color2_alpha);
       update_qr_color(theme.qr_color1);
+      if (theme.s3_id) {
+        $card.css({
+          background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+        });
+      } else {
+        $card.css({
+          background: '#FFFFFF'
+        });
+      }
       _ref = theme.positions;
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         pos = _ref[i];

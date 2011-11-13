@@ -650,9 +650,9 @@ $ ->
   #
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
-    set_timers()
     if not no_theme() and s3_id
       active_theme.s3_id = s3_id
+      set_timers()
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
     else
@@ -718,6 +718,14 @@ $ ->
       background: '#'+theme.qr_color2
     $qr_bg.fadeTo 0, theme.qr_color2_alpha
     update_qr_color theme.qr_color1
+    #
+    # Card Background
+    if theme.s3_id
+      $card.css
+        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+    else
+      $card.css
+        background: '#FFFFFF'
     #
     # Move all the lines and their shit
     for pos,i in theme.positions

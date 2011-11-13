@@ -8,6 +8,8 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 *****************************************
 ###
 
+process.on 'uncaughtException', (err) ->
+  console.log 'UNCAUGHT', err
 
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
@@ -465,74 +467,85 @@ POST PAGES
 actions, like saving stuff, and checking stuff, from ajax
 
 ###
-
+#
+#
+# Form request for multipart form uploading image
 app.post '/uploadImage', (req, res) ->
-  
-  # Wait for the upload of the large file to finish before doing anything
-  req.form.complete (err, fields, files) ->
-    if err
-      res.send
-        err: err
-    else
-    
-      # Find the file we just created
-      path = files.image.path
-      # Identify it's filname
-      fileName = path.replace /.*tmp\//ig, ''
-      # And it's extension
-      ext = fileName.replace /.*\./ig, ''
+  #
+  # Set up our failure function
+  s3_fail = (err) ->
+    console.log 'ERR: ', err
+    res.send '<script>parent.window.$.s3_result(false);</script>'
+  #
+  try
+    # Wait for the upload of the large file to finish before doing anything
+    req.form.complete (err, fields, files) ->
+      if err
+        s3_fail err
+      else
+        # Find the file we just created
+        path = files.image.path
+        # Identify it's filname
+        fileName = path.replace /.*tmp\//ig, ''
+        # And it's extension
+        ext = fileName.replace /.*\./ig, ''
 
-      # Define the sizes we will resize too
-      sizes = [
-        '158x90'
-        '525x300'
-      ]
-      for size in sizes
-        do (size) ->
-          # Resize it with ImageMagick
-          im.convert [
-            path
-            '-filter','Quadratic'
-            '-resize',size
-            '/tmp/'+size+fileName
-          ], (err, smallImg, stderr) ->
-            if err
-              console.log 'ERR:', err
-            else
-              # Read the resized File with node FS libary
-              fs.readFile '/tmp/'+size+fileName, (err, buff) ->
-                if err
-                  console.log 'ERR:', err
-                else
-                  # Send that new file to Amazon to be saved!
-                  knoxReq = knoxClient.put '/'+size+'/'+fileName,
-                    'Content-Length': buff.length
-                    'Content-Type' : 'image/'+ext
-                  knoxReq.on 'response', (awsRes) ->
-                    console.log 'ERR', awsRes if awsRes.statusCode != 200
-                    # Only send this response once we get the 525x300 that we need
-                    if size is '525x300'
-                      if awsRes.statusCode is 200
-                        res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
-                      else
-                        res.send '<script>parent.window.$.s3_result(false);</script>'
-                  knoxReq.end buff
-                  # Finally, delete that temporary resized file. Keep shit clean.
-                  fs.unlink '/tmp/'+size+fileName, (err) ->
-                    if err
+        # Define the sizes we will resize too
+        sizes = [
+          '158x90'
+          '525x300'
+        ]
+        for size in sizes
+          do (size) ->
+            # Resize it with ImageMagick
+            im.convert [
+              path
+              '-filter','Quadratic'
+              '-resize',size
+              '/tmp/'+size+fileName
+            ], (err, smallImg, stderr) ->
+              if err
+                s3_fail err
+              else
+                # Read the resized File with node FS libary
+                fs.readFile '/tmp/'+size+fileName, (err, buff) ->
+                  if err
+                    console.log 'ERR:', err
+                  else
+                    # Send that new file to Amazon to be saved!
+                    knoxReq = knoxClient.put '/'+size+'/'+fileName,
+                      'Content-Length': buff.length
+                      'Content-Type' : 'image/'+ext
+                    knoxReq.on 'response', (awsRes) ->
+                      console.log 'ERR', awsRes if awsRes.statusCode != 200
+                      # Only send this response once we get the 525x300 that we need
+                      if size is '525x300'
+                        if awsRes.statusCode is 200
+                          res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
+                        else
+                          s3_fail awsRes
+                    knoxReq.end buff
+                    # Finally, delete that temporary resized file. Keep shit clean.
+                    fs.unlink '/tmp/'+size+fileName, (err) ->
+                      if err
                         console.log 'ERR:', err
-      
-      # Read the raw File
-      fs.readFile path, (err, buff) ->
-        # Send that raw file to Amazon to be saved!
-        knoxReq = knoxClient.put '/raw/'+fileName,
-          'Content-Length': buff.length
-          'Content-Type' : 'image/'+ext
-        knoxReq.on 'response', (res) ->
-          console.log 'ERR', res if res.statusCode != 200
-          console.log knoxReq.url
-        knoxReq.end buff
-
+        
+        # Read the raw File
+        fs.readFile path, (err, buff) ->
+          # Send that raw file to Amazon to be saved!
+          knoxReq = knoxClient.put '/raw/'+fileName,
+            'Content-Length': buff.length
+            'Content-Type' : 'image/'+ext
+          knoxReq.on 'response', (res) ->
+            console.log 'ERR', res if res.statusCode != 200
+            console.log knoxReq.url
+          knoxReq.end buff
+  catch err
+    s3_fail err
+#
+#
+# AJAX request for saving theme
+#
 app.post '/saveTheme', (req, res) ->
   params = JSON.parse req.rawBody
   # Did the data come across?
