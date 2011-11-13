@@ -9,7 +9,7 @@
   *****************************************
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, message_schema, mongoStore, mongo_card, mongo_message, mongo_position, mongo_theme, mongo_theme_group, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, position_schema, rest, schema, securedAdminPage, securedPage, session_store, theme_group_schema, theme_schema, url, user_schema, util, view_schema;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, message_schema, mongoStore, mongo_card, mongo_message, mongo_position, mongo_theme, mongo_theme_group, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, position_schema, rest, schema, securedAdminPage, securedPage, session_store, theme_group_schema, theme_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -754,6 +754,16 @@
     }
   };
 
+  check_no_err = function(err) {
+    if (err) {
+      console.log(err);
+      res.send('', {
+        Location: '/error'
+      }, 302);
+    }
+    return !err;
+  };
+
   /*
   
   GET PAGES
@@ -784,13 +794,33 @@
   });
 
   app.get('/admin', securedAdminPage, function(req, res, next) {
-    mongo_theme_group.find({
+    return mongo_theme_group.find({
       active: true
-    }, function(err, theme_groups) {});
-    return res.render('admin', {
-      user: req.user,
-      session: req.session,
-      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
+    }, function(err, theme_groups) {
+      if (check_no_err(err)) {
+        console.log(theme_groups);
+        /*
+        
+              DEREK
+        
+        
+        
+              YOU WERE HERE
+        
+        
+              - find the themes for that theme group
+              - next
+              - find the positions
+              - next
+              - render with that data
+              - loop through that in the admin
+        */
+        return res.render('admin', {
+          user: req.user,
+          session: req.session,
+          scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
+        });
+      }
     });
   });
 

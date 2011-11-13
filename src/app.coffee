@@ -724,7 +724,13 @@ securedPage = (req, res, next) ->
     res.send '',
       Location: '/'
     ,302
-
+check_no_err = (err) ->
+  if err
+    console.log err
+    res.send '',
+      Location: '/error'
+    ,302
+  !err
 
 ###
 
@@ -762,16 +768,36 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
   mongo_theme_group.find
     active: true
   , (err, theme_groups) ->
+    if check_no_err err
 
-  res.render 'admin'
-    user: req.user
-    session: req.session
-    scripts:[
-      '/js/libs/colorpicker/js/colorpicker.js'
-      '/js/libs/qrcode.js'
-      '/js/libs/excanvas.compiled.js'
-      '/js/admin.js'
-    ]
+      console.log theme_groups
+      ###
+
+      DEREK
+
+
+
+      YOU WERE HERE
+
+
+      - find the themes for that theme group
+      - next
+      - find the positions
+      - next
+      - render with that data
+      - loop through that in the admin
+
+
+      ###
+      res.render 'admin'
+        user: req.user
+        session: req.session
+        scripts:[
+          '/js/libs/colorpicker/js/colorpicker.js'
+          '/js/libs/qrcode.js'
+          '/js/libs/excanvas.compiled.js'
+          '/js/admin.js'
+        ]
 
 # login page
 app.get '/login', (req, res) ->
