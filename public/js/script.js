@@ -531,7 +531,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
     */
-    var $a, $am, $body, $change_password, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
+    var $a, $am, $body, $change_password, $feedback_a, $gs, $mc, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -1107,7 +1107,7 @@
       new_margin -= -margin_increment;
       return advance_slide();
     });
-    timer = setTimeout(function() {
+    return timer = setTimeout(function() {
       margin_increment = $('.slides').width();
       new_margin -= margin_increment;
       advance_slide();
@@ -1118,10 +1118,6 @@
         return advance_slide();
       }, 6500);
     }, 3000);
-    $slides = $('.slides');
-    return $slides.animate({
-      'padding-left': '301px'
-    });
   });
 
 }).call(this);

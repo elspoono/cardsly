@@ -847,6 +847,9 @@ app.get '/home', (req, res) ->
   res.render 'index'
     user: req.user
     session: req.session
+    scripts:[
+      '/js/home.js'
+    ]
 
 
 

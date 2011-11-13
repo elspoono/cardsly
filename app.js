@@ -873,7 +873,8 @@
   app.get('/home', function(req, res) {
     return res.render('index', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      scripts: ['/js/home.js']
     });
   });
 

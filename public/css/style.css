@@ -1537,29 +1537,28 @@ input
   margin: 0 500px;
   display: block;
 }
-.slides,
 .phone_frame {
-  position: absolute;
-}
-.container_slides {
-  overflow: hidden;
-  width: 850px;
-  height: 562px;
-  position: relative;
-}
-.slides {
-  padding-top: 96px;
-  width: 9000px;
-}
-.slides li {
-  padding: 0 10px;
-  float: left;
-}
-.phone_frame {
+  margin: 30px 30px 30px 450px;
   z-index: 300;
 }
-.biz_card1 {
-  padding: 30px 0px 0px 30px;
+.home_slides {
+  overflow: hidden;
+}
+.slides {
+  position: absolute;
+  left: 473px;
+  top: 126px;
+}
+.slides li {
+  position: absolute;
+}
+.biz_cards {
+  top: -205px;
+  left: 30px;
+  position: absolute;
+}
+.biz_cards li {
+  margin: 30px 0;
 }
 .internet_explorer_error_page {
   font-size: 16px;
