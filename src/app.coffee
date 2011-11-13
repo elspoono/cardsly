@@ -842,6 +842,13 @@ app.get '/splash', (req, res) ->
     session: req.session
     layout: 'layout_landing_page'
 
+# Error Page
+app.get '/error', (req, res) -> 
+  res.render 'error'
+    user: req.user
+    session: req.session
+    layout: 'layout_landing_page'
+
 # Landing page prelaunch
 app.get '/home', (req, res) -> 
   res.render 'index'

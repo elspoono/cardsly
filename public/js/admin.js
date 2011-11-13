@@ -237,17 +237,23 @@
         index = $active_item.prevAll().length;
         return active_theme.positions[index].color = options.hex;
       });
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     $qr_color1.bind('color_update', function(e, options) {
       update_qr_color(options.hex);
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     $qr_color2.bind('color_update', function(e, options) {
       $qr_bg.css({
         background: '#' + options.hex
       });
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     update_family = function() {
       var $active_items, $t;

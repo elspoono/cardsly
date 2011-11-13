@@ -825,10 +825,11 @@ $ ->
   # Change Password
   $change_password = $ '.change_password input'
   $change_password.click () ->
-    console.log 1
+    password
+    user.update()
 
 
-
+  ###
   $('#show_activity').change () ->
     $('#activity_container ul').hide('slow')
     e='#' + $(':selected', $(this)).attr 'name'
@@ -841,8 +842,7 @@ $ ->
     e='#' + $(':selected', $(this)).attr 'name'
     $(e).show('slow')
   $('#chart_container ul').hide()
-
-
+  ###
 
     
          
