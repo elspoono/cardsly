@@ -8,6 +8,8 @@ Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
 *****************************************
 ###
 
+process.on 'uncaughtException', (err) ->
+  console.log 'UNCAUGHT', err
 
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
@@ -64,11 +66,11 @@ mongoStore = require 'connect-mongodb'
 # Mongoose is for everyone 
 mongoose = require 'mongoose'
 mongoose.connect db_uri
-Schema = mongoose.Schema
-ObjectId = Schema.ObjectId
+schema = mongoose.Schema
+object_id = schema.ObjectId
 
 # This store is for the session
-sessionStore = new mongoStore
+session_store = new mongoStore
   db: db
   username: dbAuth.username
   password: dbAuth.password
@@ -110,8 +112,8 @@ All our schemas
 ###
 
 
-# User Schema Definition
-UserSchema = new Schema
+# user schema Definition
+user_schema = new schema
   email:String
   password_encrypted: String
   role: String
@@ -135,35 +137,35 @@ UserSchema = new Schema
     type: Boolean
     default: true
 
-# User Authentication
-UserSchema.static 'authenticate', (email, password, next) ->
+# user Authentication
+user_schema.static 'authenticate', (email, password, next) ->
   if !email || !password || email == '' || password == ''
     next 'Please enter an email address and password'
   else
-    User.findOne
+    mongo_user.findOne
       email: email
       active:true
-    , (err,foundUser) ->
+    , (err,founduser) ->
       if err
         next 'Database Error'
       else
-        if foundUser
-          if !foundUser.password_encrypted
+        if founduser
+          if !founduser.password_encrypted
             next 'That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.'
-          else if compareEncrypted password, foundUser.password_encrypted
-            next null, foundUser
+          else if compareEncrypted password, founduser.password_encrypted
+            next null, founduser
           else
             next 'Password incorrect for that email address.'
         else
           next 'No account found for that email address.'
 
-# Actually build the User Model we just created
-User = mongoose.model 'User', UserSchema
+# Actually build the user Model we just created
+mongo_user = mongoose.model 'users', user_schema
 
 
-# Cards
-CardSchema = new Schema
-  user_id: Number
+# cards
+card_schema = new schema
+  user_id: String
   print_id: Number
   path: String
   theme_id: Number
@@ -173,10 +175,10 @@ CardSchema = new Schema
   active:
     type: Boolean
     default: true
-Card = mongoose.model 'Card', CardSchema
+mongo_card = mongoose.model 'cards', card_schema
 
 # Messages
-MessageSchema = new Schema
+message_schema = new schema
   include_contact: Boolean
   content: String
   s3_id: String
@@ -186,12 +188,12 @@ MessageSchema = new Schema
   active:
     type: Boolean
     default: true
-Message = mongoose.model 'Message', MessageSchema
+mongo_message = mongoose.model 'messages', message_schema
 
 
 
 # Groups of Themes
-ThemeGroupSchema = new Schema
+theme_group_schema = new schema
   category: String
   date_added:
     type: Date
@@ -199,17 +201,17 @@ ThemeGroupSchema = new Schema
   active:
     type: Boolean
     default: true
-ThemeGroup = mongoose.model 'ThemeGroup', ThemeGroupSchema
+mongo_theme_group = mongoose.model 'theme_groups', theme_group_schema
 
 # Themes
-ThemeSchema = new Schema
+theme_schema = new schema
   date_added:
     type: Date
     default: Date.now
   active:
     type: Boolean
     default: true
-  theme_group_id: Number
+  theme_group_id: String
   qr_color1: String
   qr_color2: String
   qr_color2_alpha: Number
@@ -221,11 +223,11 @@ ThemeSchema = new Schema
   color1: String
   color2: String
   s3_id: String
-Theme = mongoose.model 'Theme', ThemeSchema
+mongo_theme = mongoose.model 'themes', theme_schema
 
 # Style Field Positions
-PositionSchema = new Schema
-  theme_id: Number
+position_schema = new schema
+  theme_id: String
   order_id: Number
   color: String
   font_family: String
@@ -234,19 +236,19 @@ PositionSchema = new Schema
   w: Number
   x: Number
   y: Number
-Position = mongoose.model 'Position', PositionSchema
+mongo_position = mongoose.model 'positions', position_schema
 
 
 
 # Views (for stats)
-ViewSchema = new Schema
+view_schema = new schema
   ip_address: String
   user_agent: String
-  card_id: Number
+  card_id: String
   date_added:
     type: Date
     default: Date.now
-View = mongoose.model 'View', ViewSchema
+mongo_view = mongoose.model 'views', view_schema
 
 
 
@@ -289,27 +291,27 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   if userMeta.email
     userSearch.email = userMeta.email
 
-  User.findOne userSearch, (err,existingUser) ->
+  mongo_user.findOne userSearch, (err,existinguser) ->
     if err
       console.log 'err: ', err
       promise.fail err
-    else if existingUser
-      console.log 'user exists: ', existingUser
-      promise.fulfill existingUser
+    else if existinguser
+      console.log 'user exists: ', existinguser
+      promise.fulfill existinguser
     else
-      user = new User
+      user = new mongo_user
       user.name = userSearch.name
       user.linkedin_url = userSearch.linkedin_url
       user.facebook_url = userSearch.facebook_url
       user.twitter_url = userSearch.twitter_url
       user.email = userSearch.email
-      user.save (err, createdUser) -> 
+      user.save (err, createduser) -> 
         if err
           console.log 'err: ', err
           promise.fail err
         else
-          console.log 'user created: ', createdUser
-          promise.fulfill createdUser
+          console.log 'user created: ', createduser
+          promise.fulfill createduser
   promise
 
 ###
@@ -321,7 +323,7 @@ per the "Accessing the user" section of the everyauth README
 ###
 
 everyauth.everymodule.findUserById (userId, callback) ->
-  User.findById userId, callback
+  mongo_user.findById userId, callback
 
 # Twitter API Key and Config
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
@@ -357,9 +359,9 @@ everyauth.google.fetchOAuthUser (accessToken) ->
       oauth_token: accessToken
       alt: 'json'
   .on 'success',(data, res) ->
-    oauthUser = 
+    oauthuser = 
       email: data.data.email
-    promise.fulfill oauthUser
+    promise.fulfill oauthuser
   .on 'error', (data, res) ->
     promise.fail data
   promise;
@@ -416,7 +418,7 @@ app.configure ->
   app.use express.cookieParser()
   app.use express.session
     secret: 'how now brown cow bow wow'
-    store: sessionStore
+    store: session_store
     cookie:
       maxAge: 86400000 * 14
   app.use express.static(__dirname + conf.dir.public)
@@ -465,75 +467,95 @@ POST PAGES
 actions, like saving stuff, and checking stuff, from ajax
 
 ###
+#
+#
+# Form request for multipart form uploading image
+app.post '/upload-image', (req, res) ->
+  #
+  # Set up our failure function
+  s3_fail = (err) ->
+    console.log 'ERR: ', err
+    res.send '<script>parent.window.$.s3_result(false);</script>'
+  #
+  try
+    # Wait for the upload of the large file to finish before doing anything
+    req.form.complete (err, fields, files) ->
+      if err
+        s3_fail err
+      else
+        # Find the file we just created
+        path = files.image.path
+        # Identify it's filname
+        fileName = path.replace /.*tmp\//ig, ''
+        # And it's extension
+        ext = fileName.replace /.*\./ig, ''
 
-app.post '/uploadImage', (req, res) ->
-  
-  # Wait for the upload of the large file to finish before doing anything
-  req.form.complete (err, fields, files) ->
-    if err
-      res.send
-        err: err
-    else
-    
-      # Find the file we just created
-      path = files.image.path
-      # Identify it's filname
-      fileName = path.replace /.*tmp\//ig, ''
-      # And it's extension
-      ext = fileName.replace /.*\./ig, ''
-
-      # Define the sizes we will resize too
-      sizes = [
-        '158x90'
-        '525x300'
-      ]
-      for size in sizes
-        do (size) ->
-          # Resize it with ImageMagick
-          im.convert [
-            path
-            '-filter','Quadratic'
-            '-resize',size
-            '/tmp/'+size+fileName
-          ], (err, smallImg, stderr) ->
-            if err
-              console.log 'ERR:', err
-            else
-              # Read the resized File with node FS libary
-              fs.readFile '/tmp/'+size+fileName, (err, buff) ->
-                if err
-                  console.log 'ERR:', err
-                else
-                  # Send that new file to Amazon to be saved!
-                  knoxReq = knoxClient.put '/'+size+'/'+fileName,
-                    'Content-Length': buff.length
-                    'Content-Type' : 'image/'+ext
-                  knoxReq.on 'response', (awsRes) ->
-                    console.log 'ERR', awsRes if awsRes.statusCode != 200
-                    # Only send this response once we get the 525x300 that we need
-                    if size is '525x300'
-                      if awsRes.statusCode is 200
-                        res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
-                      else
-                        res.send '<script>parent.window.$.s3_result(false);</script>'
-                  knoxReq.end buff
-                  # Finally, delete that temporary resized file. Keep shit clean.
-                  fs.unlink '/tmp/'+size+fileName, (err) ->
-                    if err
+        # Define the sizes we will resize too
+        sizes = [
+          '158x90'
+          '525x300'
+        ]
+        for size in sizes
+          do (size) ->
+            # Resize it with ImageMagick
+            im.convert [
+              path
+              '-filter','Quadratic'
+              '-resize',size
+              '/tmp/'+size+fileName
+            ], (err, smallImg, stderr) ->
+              if err
+                s3_fail err
+              else
+                # Read the resized File with node FS libary
+                fs.readFile '/tmp/'+size+fileName, (err, buff) ->
+                  if err
+                    console.log 'ERR:', err
+                  else
+                    # Send that new file to Amazon to be saved!
+                    knoxReq = knoxClient.put '/'+size+'/'+fileName,
+                      'Content-Length': buff.length
+                      'Content-Type' : 'image/'+ext
+                    knoxReq.on 'response', (awsRes) ->
+                      console.log 'ERR', awsRes if awsRes.statusCode != 200
+                      # Only send this response once we get the 525x300 that we need
+                      if size is '525x300'
+                        if awsRes.statusCode is 200
+                          res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
+                        else
+                          s3_fail awsRes
+                    knoxReq.end buff
+                    # Finally, delete that temporary resized file. Keep shit clean.
+                    fs.unlink '/tmp/'+size+fileName, (err) ->
+                      if err
                         console.log 'ERR:', err
-      
-      # Read the raw File
-      fs.readFile path, (err, buff) ->
-        # Send that raw file to Amazon to be saved!
-        knoxReq = knoxClient.put '/raw/'+fileName,
-          'Content-Length': buff.length
-          'Content-Type' : 'image/'+ext
-        knoxReq.on 'response', (res) ->
-          console.log 'ERR', res if res.statusCode != 200
-          console.log knoxReq.url
-        knoxReq.end buff
-
-app.post '/saveTheme', (req, res) ->
+        
+        # Read the raw File
+        fs.readFile path, (err, buff) ->
+          # Send that raw file to Amazon to be saved!
+          knoxReq = knoxClient.put '/raw/'+fileName,
+            'Content-Length': buff.length
+            'Content-Type' : 'image/'+ext
+          knoxReq.on 'response', (res) ->
+            console.log 'ERR', res if res.statusCode != 200
+            console.log knoxReq.url
+          knoxReq.end buff
+  catch err
+    s3_fail err
+#
+#
+# Generic Ajax Error Handling
+check_no_err_ajax = (err) ->
+  if err
+    console.log err
+    res.send
+      err: err
+  !err
+#
+#
+# AJAX request for saving theme
+#
+app.post '/save-theme', (req, res) ->
   params = JSON.parse req.rawBody
   # Did the data come across?
   console.log util.inspect params
@@ -543,17 +565,54 @@ app.post '/saveTheme', (req, res) ->
 
   req.session.theme = params.theme
 
-  # if they hit the save button too (another parameter will indicate this)
-  
-  # then make sure we save it to whatever theme
-  # (save the session.theme I mean)
+  if params.do_save
 
-  # (or create a new one, if it's 0 or empty or whatever)
+    if params.theme._id
+      console.log params.theme
+    else
+      theme_group = new mongo_theme_group
+      theme_group.category = params.theme.category
+      theme_group.save (err,new_theme_group) ->
+        #
+        # Make sure there's no error
+        if check_no_err_ajax err
+          #
+          theme = new mongo_theme
+          theme.theme_group_id = new_theme_group._id
+          theme.qr_x = params.theme.qr_x
+          theme.qr_y = params.theme.qr_y
+          theme.qr_h = params.theme.qr_h
+          theme.qr_w = params.theme.qr_w
+          theme.qr_color1 = params.theme.qr_color1
+          theme.qr_color2 = params.theme.qr_color2
+          theme.qr_radius = params.theme.qr_radius
+          theme.qr_color2_alpha = params.theme.qr_color2_alpha
+          theme.color1 = params.theme.color1
+          theme.color2 = params.theme.color2
+          theme.s3_id = params.theme.s3_id
+          theme.save (err, new_theme) ->
+            if check_no_err_ajax err
+              res.send
+                success: true
+                theme: new_theme
+              for i,param_position in params.theme.positions
+                position = new mongo_position
+                position.theme_id = new_theme._id
+                position.order_id = i
+                position.x = param_position.x
+                position.y = param_position.y
+                position.h = param_position.h
+                position.w = param_position.w
+                position.text_align = param_position.text_align
+                position.color = param_position.color
+                position.font_family = param_position.font_family
+                #
+                position.save (err, new_theme_position) ->
+                  if err
+                    console.log 'POSITION SAVE ERR: ', err
 
-  res.send
-    success: true
 
-app.post '/saveForm', (req, res) ->
+app.post '/save-form', (req, res) ->
   ###
   TODO
   
@@ -569,7 +628,7 @@ app.post '/saveForm', (req, res) ->
 
 
 # Make Sure an email isn't taken
-app.post '/checkEmail', (req, res, next) ->
+app.post '/check-email', (req, res, next) ->
   params = req.body || {}
   req.email = params.email || ''
   req.email = req.email.toLowerCase()
@@ -578,12 +637,12 @@ app.post '/checkEmail', (req, res, next) ->
     req.count = count
     next()
   if params.id
-    User.count
+    mongo_user.count
       email:req.email
       active:true
     , handleReturn
   else
-    User.count
+    mongo_user.count
       email: req.email
       active:true
     , handleReturn
@@ -596,7 +655,7 @@ app.post '/checkEmail', (req, res, next) ->
 
 # Normal Login
 app.post '/login', (req, res, next) ->
-  User.authenticate req.body.email, req.body.password, (err, user) ->
+  mongo_user.authenticate req.body.email, req.body.password, (err, user) ->
     if err || !user
       res.send
         err: err
@@ -608,7 +667,7 @@ app.post '/login', (req, res, next) ->
 
 
 # Sends feedback to us
-app.post '/sendFeedback', (req,res,next) ->
+app.post '/send-feedback', (req,res,next) ->
   res.send
       succesfulFeedback:'This worked!'
   nodemailer.send_mail
@@ -623,8 +682,8 @@ app.post '/sendFeedback', (req,res,next) ->
     
 
 # Create the new sign up
-app.post '/createUser', (req,res,next) ->
-  User.count
+app.post '/create-user', (req,res,next) ->
+  mongo_user.count
     email:req.body.email
     active:true
   ,(err,already) ->
@@ -634,7 +693,7 @@ app.post '/createUser', (req,res,next) ->
     else
       next()
 ,(req,res,next) ->
-  user = new User()
+  user = new mongo_user()
   user.email = req.body.email;
   user.password_encrypted = encrypted(req.body.password);
   user.save (err,data) ->
@@ -642,7 +701,7 @@ app.post '/createUser', (req,res,next) ->
       success: 'True'
 
 # Change Password
-app.post '/change_password', (req,res,next) ->
+app.post '/change-password', (req,res,next) ->
   user.password_encrypted = encrypted(req.body.password);
   user.save (err,data) ->
     res.send
@@ -665,7 +724,13 @@ securedPage = (req, res, next) ->
     res.send '',
       Location: '/'
     ,302
-
+check_no_err = (err) ->
+  if err
+    console.log err
+    res.send '',
+      Location: '/error'
+    ,302
+  !err
 
 ###
 
@@ -692,23 +757,47 @@ app.get '/success', (req, res) ->
     user: req.user
     session: req.session
 
-# Cards Page Mockup
+# cards Page Mockup
 app.get '/cards', securedPage, (req, res) ->
   res.render 'cards'
     user: req.user
     session: req.session
 
 # Admin Page Mockup
-app.get '/admin', securedAdminPage, (req, res) ->
-  res.render 'admin'
-    user: req.user
-    session: req.session
-    scripts:[
-      '/js/libs/colorpicker/js/colorpicker.js'
-      '/js/libs/qrcode.js'
-      '/js/libs/excanvas.compiled.js'
-      '/js/admin.js'
-    ]
+app.get '/admin', securedAdminPage, (req, res, next) ->
+  mongo_theme_group.find
+    active: true
+  , (err, theme_groups) ->
+    if check_no_err err
+
+      console.log theme_groups
+      ###
+
+      DEREK
+
+
+
+      YOU WERE HERE
+
+
+      - find the themes for that theme group
+      - next
+      - find the positions
+      - next
+      - render with that data
+      - loop through that in the admin
+
+
+      ###
+      res.render 'admin'
+        user: req.user
+        session: req.session
+        scripts:[
+          '/js/libs/colorpicker/js/colorpicker.js'
+          '/js/libs/qrcode.js'
+          '/js/libs/excanvas.compiled.js'
+          '/js/admin.js'
+        ]
 
 # login page
 app.get '/login', (req, res) ->
@@ -724,7 +813,6 @@ app.get '/about', (req, res) ->
 
 # How it Works Page
 app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
-  console.log req
   res.render 'how-it-works'
     user: req.user
     session: req.session
@@ -759,6 +847,9 @@ app.get '/home', (req, res) ->
   res.render 'index'
     user: req.user
     session: req.session
+    scripts:[
+      '/js/home.js'
+    ]
 
 
 
@@ -768,7 +859,7 @@ app.get '/error', (req, res) ->
 
 # Robots.txt to tell google it's cool to crawl
 app.get '/robots.txt', (req, res, next) ->
-  res.send 'User-agent: *\nDisallow: ',
+  res.send 'user-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
 
 

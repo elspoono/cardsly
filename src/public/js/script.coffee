@@ -710,7 +710,7 @@ $ ->
             form_close()
             $.load_loading {}, (loading_close) ->
               $.ajax
-                url: '/createUser'
+                url: '/create-user'
                 data:
                   email: email.val()
                   password: password.val()
@@ -737,7 +737,7 @@ $ ->
         if $t.val().match /.{1,}@.{1,}\..{1,}/
           $t.removeClass('error').addClass 'valid'
           $.ajax
-            url: '/checkEmail'
+            url: '/check-email'
             data:
               email: $t.val()
             success: (full_responsE) ->
@@ -801,7 +801,7 @@ $ ->
           form_close()
           $.load_loading {}, (loading_close) ->
             $.ajax
-              url: '/sendFeedback'
+              url: '/send-feedback'
               data:
                 content: $('.feedback_text').val()
                 email: $('.emailNotUser').val()
@@ -952,7 +952,7 @@ $ ->
           array_oF_inpUt_values = $.makeArray $('.card.main input').map -> this.value
           console.log array_oF_inpUt_values
           $.ajax
-            url: '/saveForm'
+            url: '/save-form'
             data:
               inputs: array_oF_inpUt_values.join('`~`')
           false
@@ -1019,11 +1019,6 @@ $ ->
       advance_slide()
     , 6500
   , 3000
-
-
-  $slides = $ '.slides'
-  $slides.animate
-    'padding-left':'301px'
 
 
     

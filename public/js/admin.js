@@ -119,12 +119,13 @@
         if (new_theme) {
           redo_history.push(current_theme);
           load_theme(new_theme);
-          console.log(history);
         } else {
           history.push(current_theme);
-          $.load_alert({
-            content: 'No more to undo'
-          });
+          if ($('.modal').length === 0) {
+            $.load_alert({
+              content: 'No more to undo'
+            });
+          }
         }
       }
       if (ctrl_pressed && shift_pressed && e.keyCode === 90) {
@@ -132,12 +133,13 @@
         if (new_theme) {
           history.push(new_theme);
           load_theme(new_theme);
-          console.log(history);
         } else {
           redo_history.push(new_theme);
-          $.load_alert({
-            content: 'No more to redo'
-          });
+          if ($('.modal').length === 0) {
+            $.load_alert({
+              content: 'No more to redo'
+            });
+          }
         }
       }
       if ($active_items.length && !$font_family.is(':focus')) {
@@ -198,12 +200,12 @@
     $all_colors.each(function() {
       var $t;
       $t = $(this);
-      $t.bind('color_update', function(e, hex) {
+      $t.bind('color_update', function(e, options) {
         $t.data({
-          hex: hex
+          hex: options.hex
         });
         return $t.css({
-          background: '#' + hex
+          background: '#' + options.hex
         });
       });
       $t.focus(function() {
@@ -212,40 +214,46 @@
       return $t.ColorPicker({
         livePreview: true,
         onChange: function(hsb, hex, rgb) {
-          return $t.trigger('color_update', hex);
+          return $t.trigger('color_update', {
+            hex: hex,
+            timer: true
+          });
         },
         onShow: function(colpkr) {
           return $t.blur();
         }
       });
     });
-    $font_color.bind('color_update', function(e, hex) {
+    $font_color.bind('color_update', function(e, options) {
       var $active_items, $t;
       $t = $(this);
       $active_items = $card.find('.active');
-      return $active_items.each(function() {
+      $active_items.each(function() {
         var $active_item, index;
         $active_item = $(this);
         $active_item.css({
-          color: '#' + hex
+          color: '#' + options.hex
         });
         index = $active_item.prevAll().length;
-        return active_theme.positions[index].color = hex;
+        return active_theme.positions[index].color = options.hex;
       });
+      if (options.timer) return set_timers();
     });
-    $qr_color1.bind('color_update', function(e, hex) {
-      return update_qr_color(hex);
+    $qr_color1.bind('color_update', function(e, options) {
+      update_qr_color(options.hex);
+      if (options.timer) return set_timers();
     });
-    $qr_color2.bind('color_update', function(e, hex) {
-      return $qr_bg.css({
-        background: '#' + hex
+    $qr_color2.bind('color_update', function(e, options) {
+      $qr_bg.css({
+        background: '#' + options.hex
       });
+      if (options.timer) return set_timers();
     });
     update_family = function() {
       var $active_items, $t;
       $t = $(this);
       $active_items = $card.find('.active');
-      return $active_items.each(function() {
+      $active_items.each(function() {
         var $active_item, index;
         $active_item = $(this);
         $active_item.css({
@@ -254,6 +262,7 @@
         index = $active_item.prevAll().length;
         return active_theme.positions[index].font_family = $t.val();
       });
+      return set_timers();
     };
     $font_family.change(update_family);
     update_align = function(align) {
@@ -340,7 +349,9 @@
       change_tab('.font_style');
       index = $t.prevAll().length;
       $font_family[0].selectedIndex = null;
-      $font_color.trigger('color_update', active_theme.positions[index].color);
+      $font_color.trigger('color_update', {
+        hex: active_theme.positions[index].color
+      });
       $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]');
       return $selected.focus().attr('selected', 'selected');
     });
@@ -365,7 +376,7 @@
         update_active_theme();
         history.push(active_theme);
         return redo_history = [];
-      }, 500);
+      }, 200);
     };
     $cat.keyup(set_timers);
     $lines.draggable({
@@ -481,11 +492,11 @@
         do_save: next ? true : false
       };
       return $.ajax({
-        url: '/saveTheme',
+        url: '/save-theme',
         data: JSON.stringify(parameters),
         success: function(serverResponse) {
           if (!serverResponse.success) {
-            $designer.find('.save').showTooltip({
+            $designer.find('.save').show_tooltip({
               message: 'Error saving.'
             });
           }
@@ -494,7 +505,7 @@
           }
         },
         error: function() {
-          $designer.find('.save').showTooltip({
+          $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
           if (next) {
@@ -504,9 +515,9 @@
       });
     };
     $.s3_result = function(s3_id) {
-      set_timers();
       if (!no_theme() && s3_id) {
         active_theme.s3_id = s3_id;
+        set_timers();
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
         });
@@ -573,6 +584,15 @@
       });
       $qr_bg.fadeTo(0, theme.qr_color2_alpha);
       update_qr_color(theme.qr_color1);
+      if (theme.s3_id) {
+        $card.css({
+          background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+        });
+      } else {
+        $card.css({
+          background: '#FFFFFF'
+        });
+      }
       _ref = theme.positions;
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         pos = _ref[i];
@@ -589,16 +609,26 @@
         });
       }
       $cat.val(theme.category);
-      $color1.trigger('color_update', theme.color1);
-      $color2.trigger('color_update', theme.color2);
-      $qr_color1.trigger('color_update', theme.qr_color1);
-      $qr_color2.trigger('color_update', theme.qr_color2);
+      $color1.trigger('color_update', {
+        hex: theme.color1
+      });
+      $color2.trigger('color_update', {
+        hex: theme.color2
+      });
+      $qr_color1.trigger('color_update', {
+        hex: theme.qr_color1
+      });
+      $qr_color2.trigger('color_update', {
+        hex: theme.qr_color2
+      });
       $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr('selected', 'selected');
       return $qr_radius.find('[value=' + theme.qr_radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
-      history = [default_theme];
-      return load_theme(default_theme);
+      var theme;
+      theme = default_theme;
+      history = [theme];
+      return load_theme(theme);
     });
     $designer.find('.buttons .save').click(function() {
       if (no_theme()) {
