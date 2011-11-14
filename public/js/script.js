@@ -780,7 +780,7 @@
                         content: 'Our apologies. A server error occurred.'
                       });
                     }
-                  }, 1000);
+                  });
                 });
               }
             }

@@ -41,9 +41,9 @@
     false;
     $set_new_password = $('.set_new_password');
     return $set_new_password.submit(function() {
-      var err, new_password, new_password2;
-      new_password = $('.new_password');
-      new_password2 = $('.new_password2');
+      var $new_password, $new_password2, err;
+      $new_password = $('.new_password');
+      $new_password2 = $('.new_password2');
       err = false;
       if (new_password.val() === '' || new_password2.val() === '') {
         err = 'Please enter your new password twice.';
@@ -63,25 +63,26 @@
             url: '/change-password',
             data: {
               new_password: new_password.val(),
-              new_password2: new_password2.val()
-            },
-            success: function(data) {
-              loading_close();
-              if (data.err) {
-                return $.load_alert({
-                  content: data.err
-                });
-              } else {
-                return successful_password_change();
-              }
-            },
-            error: function(err) {
-              loading_close();
-              return $.load_alert({
-                content: 'Our apologies. A server error occurred.'
-              });
+              new_password2: new_password2.val()({
+                success: function(data) {
+                  loading_close();
+                  if (data.err) {
+                    return $.load_alert({
+                      content: data.err
+                    });
+                  } else {
+                    return successful_password_change();
+                  }
+                },
+                error: function(err) {
+                  loading_close();
+                  return $.load_alert({
+                    content: 'Our apologies. A server error occurred.'
+                  });
+                }
+              })
             }
-          }, 1000);
+          });
         });
       }
       return false;
