@@ -1,4 +1,12 @@
 
+  /*
+  
+  This is only for the home page
+  
+  - Home page animations
+  - Gallery selection on the home page
+  */
+
   $(function() {
     var $biz_cards, $mc, $screens, $slides, $win, item_name, start_animation, update_cards;
     $biz_cards = $('.biz_cards');

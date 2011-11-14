@@ -1,4 +1,17 @@
 
+##################################################################
+
+###
+
+Theme admin
+
+- All the theme designer stuff
+
+- Plus maybe some similar stuff to home page gallery selection
+
+###
+
+##################################################################
 
 ###
 

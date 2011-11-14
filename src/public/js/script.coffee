@@ -1,3 +1,20 @@
+
+##################################################################
+#
+###
+
+This file is everywhere on the site
+
+- We put a lot of library functions in it
+- As well as things that need to happen on every page
+
+###
+#
+##################################################################
+
+
+
+
 ###
  * 
  * Set settings / defaults
@@ -16,15 +33,26 @@ $.fx.speeds._default = 300
 if $.browser.msie and parseInt($.browser.version, 10)<8
     document.location.href = '/splash'
 
-
-
-
+#############################################
+#
+#
+# BEGIN Re-usable functions for everywhere
+#
+#
+#
+#
+#
+#
+#
+#
 ###
  * 
- * Modal Handling Functions
  * 
- * show tooltip, can be used on any element with jquery
+ * Generic Tooltip function
  * 
+ * - does a little tooltip dealy bob on any element
+ *
+ * - usually used for form inputs
  * 
 ###
 $.fn.show_tooltip = (options) ->
@@ -61,7 +89,10 @@ $.fn.show_tooltip = (options) ->
 
     ###
     tooltip.stop(true,true).fadeIn().delay(usualDelay).fadeOut()
-
+#
+#
+#
+#
 ###
    * 
    * Modal Handling Functions
@@ -111,9 +142,9 @@ $.load_modal = (options, next) ->
       'min-height':settings.height
   if settings.width
     win.width settings.width
-
+  #
   buttons = $ '<div class="buttons" />'
-
+  #
   ###
   Loop through the buttons passed in.
 
@@ -140,13 +171,8 @@ $.load_modal = (options, next) ->
       this_button.click () ->
         i.action my_next
       buttons.append this_button
-
   win.append buttons
-
   $('body').append modal,close,win
-
-
-  $body = $('body')
   resize_event = () ->
     width = $window.width()
     height = $window.height()
@@ -200,7 +226,10 @@ $.load_modal = (options, next) ->
   if next
     next my_next
   resize_event()
-
+#
+#
+#
+#
 ###
  * 
  * Modal Handling Functions
@@ -219,7 +248,10 @@ $.load_loading = (options, next) ->
   for i,v of options
     modified_options[i] = options[i]
   $.load_modal modified_options, next
-
+#
+#
+#
+#
 ###
  * 
  * Modal Handling Functions
@@ -237,7 +269,10 @@ $.load_confirm = (options, next) ->
   for i,v of options
     modified_options[i] = options[i]
   $.load_modal modified_options, next
-
+#
+#
+#
+#
 ###
  * 
  * Modal Handling Functions
@@ -263,8 +298,10 @@ $.load_alert = (options, next) ->
   for i,v of options
     modified_options[i] = options[i]
   $.load_modal modified_options, next
-
-
+#
+#
+#
+#
 ###
  * jQuery Scrollbar Width v1.0
  * 
@@ -283,8 +320,14 @@ $.scrollbar_width = () ->
     $body.css 'overflow',''
     $._scrollbar_width = w
   $._scrollbar_width
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 ###
 #http:#stevenlevithan.com/assets/misc/date.format.js
  * Date Format 1.2.3
@@ -299,9 +342,7 @@ $.scrollbar_width = () ->
  * The date defaults to the current date/time.
  * The mask defaults to date_format.masks.default.
 ###
-
 class date_format
-
   token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g
   timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g
   timezoneClip = /[^-+\dA-Z]/g
@@ -311,7 +352,6 @@ class date_format
     while val.length < len
       val = "0" + val
     val
-
   format: (date, mask, utc) ->
     dF = date_format.prototype
 
@@ -370,11 +410,8 @@ class date_format
       Z:    if utc then "UTC" else (String(date).match(timezone) || [""]).pop().replace(timezoneClip, "")
       o:    (if o > 0 then "-" else "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4)
       S:    ["th", "st", "nd", "rd"][if d % 10 > 3 then 0 else (d % 100 - d % 10 != 10) * d % 10]
-
-
     mask.replace token, ($0) ->
       if flags then flags[$0] else $0.slice(1, $0.length - 1)
-
   # Some common format strings
   masks :
     default:      "ddd mmm dd yyyy HH:MM:ss"
@@ -389,20 +426,28 @@ class date_format
     isoTime:        "HH:MM:ss"
     isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss"
     isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
-
-
   # Internationalization strings
   i18n :
     dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
-
+#
+#
+#
+#
 # For convenience...
 Date::format = (mask, utc) ->
   a = new date_format
   a.format(this, mask, utc)
-
-
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 ###
  * jQuery Cookie plugin
  *
@@ -439,8 +484,8 @@ jQuery.cookie = (key, value, options) ->
   options = value || {}
   decode =  if options.raw  then (s) ->  s  else decodeURIComponent
   if (result = new RegExp('(?:^| )' + encodeURIComponent(key) + '=([^]*)').exec(document.cookie)) then decode(result[1]) else null
-
-
+#
+#
 # Box rotate anything you want a lil bit
 $.fn.box_rotate = (options) ->
   settings = 
@@ -458,29 +503,35 @@ $.fn.box_rotate = (options) ->
       '-o-transform':'rotate('+degrees+'deg)'
       '-ms-transform':'rotate('+degrees+'deg)'
       'filter:progid':'DXImageTransform.Microsoft.BasicImage(rotation='+rotate+')'
+#
+#
+#
+#
+#
+# END Re-usable functions for everywhere
+#
+#
+#############################################
 
 
 
 
 ###
-
-
-THIS IS WHERE REAL CODE STARTS
-
 The 
 $ ->
 
   Means everything under him (like me, indented here)
   WILL be done on document ready event.
-
-
-
 ###
-
+#
+#
+#
+#
 $ ->
-
-
-
+  #
+  #
+  #
+  #
   ###
   Profile MENU in the TOP RIGHT
   Thing that shows a drop down
@@ -509,13 +560,16 @@ $ ->
     $body.bind 'click', close_menu
     false
   $a.one 'click', expand_menu
-
-
-
-
+  #
+  #
+  #
+  #
   # Path we'll use a few places, it's just the page we're on now, yeah?
   path = document.location.href.replace /http:\/\/[^\/]*/ig, ''
-
+  #
+  #
+  #
+  #
   #
   # Get Started Button Scroll
   $('.design_button').click ->
@@ -527,13 +581,19 @@ $ ->
       ,
       500
     false
-
+  #
+  #
+  #
+  #
   #
   # And again, on the home page, if we were passed the hash, scroll down!
   if path == '/#design-button'
     document.location.href = '#'
     $('.design_button').click()
-
+  #
+  #
+  #
+  #
   #
   # Successful Login Function
   successful_login = ->
@@ -545,8 +605,10 @@ $ ->
         $s.html 'You are now logged in, please continue.'
         $s.fadeIn 1000
       $('.login a').attr('href','/logout').html 'Logout'
-
-  
+  #
+  #
+  #
+  #
   ###
   Login stuff
   ###
@@ -578,6 +640,10 @@ $ ->
     false
   #
   #
+  #
+  #
+  #
+  #
   #Regular Login
   $('.login_form').submit ->
     $.load_loading {}, (loading_close) ->
@@ -598,6 +664,10 @@ $ ->
           $.load_alert
             content: 'Our apologies. A server error occurred.'
     false
+  #
+  #
+  #
+  #
   #
   # New Login Creation
   $('.new').click () ->
@@ -687,7 +757,10 @@ $ ->
             message:'Passwords should match please.'
       ,1000
     false
- 
+  #
+  #
+  #
+  #
   $feedback_a = $ '.feedback a'
   $feedback_a.mouseover () ->
     $feedback = $ '.feedback'
@@ -699,7 +772,10 @@ $ ->
     $feedback.stop(true,false).animate
       right: '-45px'
       ,250
-      
+  #
+  #
+  #
+  #
   #Feedback Button
   $feedback_a.click () ->
     $.load_modal
@@ -733,10 +809,14 @@ $ ->
             , 1000
       ] 
     false
-  
-
-
-
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
   # Buttons everywhere need hover and click states
   $('.button').live 'mouseenter', ->
     $(this).addClass 'hover'
@@ -746,6 +826,3 @@ $ ->
     $(this).addClass 'click'
   .live 'mouseup', ->
     $(this).removeClass 'click'
-
-         
-    
