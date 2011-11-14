@@ -31,14 +31,11 @@ $ ->
   $screens = $slides.find 'li'
 
   screens_fade_in = ->
-    $screens.show 'fade', 500, ->
-      screens_fade_out()
+    $screens.effect 'fade', 5000
+    console.log 5
+        
 
-  screens_fade_out = ->
-     $screens.show 'fade', 500, ->
-      screens_fade_in()
-
-      
+ 
   #
   ### Let's change the screens periodically
   setInterval ->
@@ -68,6 +65,7 @@ $ ->
       start_animation()
   # Fire the function in the first place on page load (cause we're inside this jquery document.ready)
   start_animation()
+  screens_fade_in()
   ###
   Shopping Cart Stuff
   ###
@@ -81,21 +79,6 @@ $ ->
       content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
 
-  # 
-  # Category Expand/Collapse
-  $('.category h4').click () ->
-    $t = $ this
-    $c = $t.closest '.category'
-    $g = $c.find '.gallery'
-    $a = $ '.category.active'
-    if !$c.hasClass 'active'
-      $a.removeClass('active')
-      $a.find('.gallery').show().slideUp 400
-      $gs.hide()
-      $c.find('.gallery').slideDown 400, ->
-        $gs.show()
-        $c.find('.card:first').click()
-      $c.addClass('active')
 
   #
   # Form Fields
@@ -184,38 +167,3 @@ $ ->
               $t.data 'cleared', true
           $t.bind 'focus', ->
             $t.trigger 'clearMe'  
-  ###
-  #
-  # The floaty guy behind the gallery selection
-  $gs = $ '.gallery_select'
-  $gs.css
-    left: -220
-    top: 0
-  $('.gallery .card').live 'click', () ->
-    $t = $ this
-    $('.card').removeClass 'active'
-    $t.addClass('active')
-    $find_class = $t.clone()
-    class_name = $find_class.removeClass('card')[0].class_name
-    $find_class.remove()
-    $('.main').attr
-      class: 'card main '+class_name
-    if $gs.offset().top == $t.offset().top_10
-      $gs.animate
-        left: $t.offset().left_10
-      ,500
-    else
-      $gs.stop(true,false).animate
-        top: $t.offset().top_10
-      ,500,'linear',() ->
-          $gs.animate
-            left: $t.offset().left_10
-          ,500,'linear'
-  $gs.bind 'activeMoved', ->
-    $a = $ '.card.active'
-    $gs.css
-      left: $a.offset().left_10
-      top: $a.offset().top_10
-  $(window).load () ->
-    $('.gallery:first .card:first').click()
-  ###
