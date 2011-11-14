@@ -721,7 +721,6 @@ securedAdminPage = (req, res, next) ->
       Location: '/cards'
     ,302
 securedPage = (req, res, next) ->
-  console.log req.user
   if req.user
     next()
   else
@@ -802,6 +801,16 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
           '/js/libs/excanvas.compiled.js'
           '/js/admin.js'
         ]
+
+# Make me an admin
+app.get '/make-me-admin', securedPage, (req, res) ->
+  req.user.role = 'admin'
+  res.user.save (err) ->
+    console.log err if err
+    res.send '',
+      Location: '/admin'
+    , 302
+
 
 # login page
 app.get '/login', (req, res) ->
