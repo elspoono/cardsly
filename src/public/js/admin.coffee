@@ -90,7 +90,8 @@ $ ->
       $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
       for theme in all_themes
         #
-        # Set Content template
+        # Set Constants
+        theme_template = theme.theme_templates[0]
         #
         # Prep the Card
         $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
@@ -101,29 +102,29 @@ $ ->
         $my_qr_bg = $my_qr.find '.background'
 
         $my_qr.draw_qr
-          color: theme.theme_templates[0].qr.color1
+          color: theme_template.qr.color1
         $my_qr.find('canvas').css
           zIndex: 150
           position: 'absolute'
-          height: theme.theme_templates[0].qr.h/100 * 90
-          width: theme.theme_templates[0].qr.w/100 * 158
+          height: theme_template.qr.h/100 * 90
+          width: theme_template.qr.w/100 * 158
         $my_qr.css
           position: 'absolute'
-          height: theme.theme_templates[0].qr.h/100 * 90
-          width: theme.theme_templates[0].qr.w/100 * 158
-          top: theme.theme_templates[0].qr.y/100 * 90
-          left: theme.theme_templates[0].qr.y/100 * 158
+          height: theme_template.qr.h/100 * 90
+          width: theme_template.qr.w/100 * 158
+          top: theme_template.qr.y/100 * 90
+          left: theme_template.qr.y/100 * 158
         $my_qr_bg.css
           zIndex: 140
           position: 'absolute'
-          'border-radius': theme.qr_radius+'px'
-          height: theme.theme_templates[0].qr.h/100 * 90
-          width: theme.theme_templates[0].qr.w/100 * 158
-          background: '#' + theme.theme_templates[0].qr.color2
-        $my_qr_bg.fadeTo 0, theme.theme_templates[0].qr.color2_alpha
+          'border-radius': theme_template.qr.radius+'px'
+          height: theme_template.qr.h/100 * 90
+          width: theme_template.qr.w/100 * 158
+          background: '#' + theme_template.qr.color2
+        $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
         #
         #
-        for pos,i in theme.theme_templates[0].lines
+        for pos,i in theme_template.lines
           $li = $ '<div>gibberish</div>'
           $li.appendTo($my_card).css
             position: 'absolute'
@@ -139,7 +140,7 @@ $ ->
         #
         # Set the card background
         $my_card.css
-          background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+          background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
         
         # Push the whole thing to categories
         #
@@ -762,43 +763,46 @@ $ ->
         x: 3.05
         y: 5+i*10) for i in [0..5]
     ]
-  return false
   #
   # The general load theme function
   # It's for putting a theme into the designer for editing
   load_theme = (theme) ->
     #
+    #
+    # Set Constants
+    theme_template = theme.theme_templates[0]
     # set this theme as the active_theme
     active_theme = theme
     #
+    #
     # Show the qr code and set it to the right place
     $qr.show().css
-      top: theme.qr_y/100 * card_height
-      left: theme.qr_x/100 * card_width
-      height: theme.qr_h/100 * card_height
-      width: theme.qr_h/100 * card_height
+      top: theme_template.qr.y/100 * card_height
+      left: theme_template.qr.x/100 * card_width
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
     $qr.find('canvas').css
-      height: theme.qr_h/100 * card_height
-      width: theme.qr_h/100 * card_height
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
     $qr_bg.css
-      'border-radius': theme.qr_radius+'px'
-      height: theme.qr_h/100 * card_height
-      width: theme.qr_h/100 * card_height
-      background: '#'+theme.qr_color2
-    $qr_bg.fadeTo 0, theme.qr_color2_alpha
+      'border-radius': theme_template.qr.radius+'px'
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
+      background: '#'+theme_template.qr.color2
+    $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
     $qr.draw_qr
-      color: theme.qr_color1
+      color: theme_template.qr.color1
     #
     # Card Background
-    if theme.s3_id
+    if theme_template.s3_id
       $card.css
-        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
     else
       $card.css
         background: '#FFFFFF'
     #
     # Move all the lines and their shit
-    for pos,i in theme.positions
+    for pos,i in theme_template.lines
       $li = $lines.eq i
       $li.show().css
         top: pos.y/100 * card_height
@@ -813,17 +817,17 @@ $ ->
     #
     # Set all the colors
     $color1.trigger 'color_update'
-      hex: theme.color1
+      hex: theme_template.color1
     $color2.trigger 'color_update'
-      hex: theme.color2
+      hex: theme_template.color2
     $qr_color1.trigger 'color_update'
-      hex: theme.qr_color1
+      hex: theme_template.qr.color1
     $qr_color2.trigger 'color_update'
-      hex: theme.qr_color2
+      hex: theme_template.qr.color2
     #
     # Get the QR alpha and radius ready
-    $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
-    $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
+    $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr 'selected', 'selected'
+    $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr 'selected', 'selected'
   #
   # The add new button
   $('.add_new').click ->
