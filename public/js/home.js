@@ -7,12 +7,13 @@
   - Gallery selection on the home page
   
   */  $(function() {
-    var $biz_cards, $lis, $mc, $phone_scanner, $slides, $win, current_num, item_name, iterate_num, my_repeatable_function, update_cards;
+    var $biz_cards, $lis, $loading_screen, $mc, $phone_scanner, $slides, $win, current_num, item_name, iterate_num, my_repeatable_function, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
     $lis = $slides.find('li');
     console.log($lis);
+    $loading_screen = $('.loading_screen');
     $lis.hide();
     $phone_scanner.hide();
     $biz_cards.find('li').each(function(i) {
@@ -35,6 +36,7 @@
         $my_next_guy = $lis.filter(':first');
       }
       $guy_im_fading_out.stop(true, true).delay(600).fadeOut(500);
+      $loading_screen.stop(true, true).fadeIn(300).fadeOut(300);
       $my_next_guy.stop(true, true).delay(600).fadeIn(500);
       $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
       $biz_cards.stop(true, true);

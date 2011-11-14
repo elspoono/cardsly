@@ -31,10 +31,12 @@ $ ->
   $phone_scanner = $ '.phone_scanner'
   $lis = $slides.find 'li'
   console.log $lis
+  $loading_screen = $ '.loading_screen'
   #
   # Hide all the stuff to hide
   $lis.hide()
   $phone_scanner.hide()
+
   #
   #
   # DRAW SOME QR CODES
@@ -56,7 +58,6 @@ $ ->
   my_repeatable_function = ->
     #
     #
-    $loading_screen = 
     $guy_im_fading_out = $lis.filter ':eq(' + current_num + ')'
     $my_next_guy = $lis.filter ':eq(' + (current_num+1) + ')'
     #
@@ -66,6 +67,7 @@ $ ->
     #
     #
     $guy_im_fading_out.stop(true,true).delay(600).fadeOut 500
+    $loading_screen.stop(true,true).fadeIn(300).fadeOut(300)
 
     $my_next_guy.stop(true,true).delay(600).fadeIn 500
     #
