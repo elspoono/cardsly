@@ -31,14 +31,11 @@ $ ->
   $screens = $slides.find 'li'
 
   screens_fade_in = ->
-    $screens.show 'fade', 500, ->
-      screens_fade_out()
+    $screens.effect 'fade', 5000
+    console.log 5
+        
 
-  screens_fade_out = ->
-     $screens.show 'fade', 500, ->
-      screens_fade_in()
-
-      
+ 
   #
   ### Let's change the screens periodically
   setInterval ->
@@ -68,6 +65,7 @@ $ ->
       start_animation()
   # Fire the function in the first place on page load (cause we're inside this jquery document.ready)
   start_animation()
+  screens_fade_in()
   ###
   Shopping Cart Stuff
   ###

@@ -7,19 +7,13 @@
   - Gallery selection on the home page
   
   */  $(function() {
-    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, screens_fade_out, start_animation, update_cards;
+    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, start_animation, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $screens = $slides.find('li');
     screens_fade_in = function() {
-      return $screens.show('fade', 500, function() {
-        return screens_fade_out();
-      });
-    };
-    screens_fade_out = function() {
-      return $screens.show('fade', 500, function() {
-        return screens_fade_in();
-      });
+      $screens.effect('fade', 5000);
+      return console.log(5);
     };
     /* Let's change the screens periodically
     setInterval ->
@@ -44,6 +38,7 @@
       });
     };
     start_animation();
+    screens_fade_in();
     /*
       Shopping Cart Stuff
       */
