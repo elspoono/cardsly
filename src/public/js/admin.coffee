@@ -87,7 +87,7 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html ''
+      $categories.html '<div class="category"><h4>(no category)</h4></div>'
       for theme in all_themes
         console.log theme
         # Prep the Card
@@ -140,7 +140,7 @@ $ ->
           background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
         
         # Push the whole thing to categories
-        $categories.append $my_card
+        $categories.find('.category').append $my_card
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'

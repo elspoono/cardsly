@@ -47,7 +47,7 @@
       success: function(all_data) {
         var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme, _i, _len, _len2, _ref, _results;
         all_themes = all_data.themes;
-        $categories.html('');
+        $categories.html('<div class="category"><h4>(no category)</h4></div>');
         _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
@@ -100,7 +100,7 @@
           $my_card.css({
             background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
           });
-          _results.push($categories.append($my_card));
+          _results.push($categories.find('.category').append($my_card));
         }
         return _results;
       },
