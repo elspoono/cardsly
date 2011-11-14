@@ -8,14 +8,6 @@
   - Plus maybe some similar stuff to home page gallery selection
   */
 
-  /*
-  
-  All the stuff for the admin template designer
-  is probably going to be in this section right here.
-  
-  ok.
-  */
-
   $(function() {
     var $all_colors, $body, $canvas, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');

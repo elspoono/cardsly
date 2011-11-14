@@ -1,15 +1,23 @@
 (function() {
 
   /*
-  GENERIC LIBRARY LOADING AND SETUP
-  *****************************************
   
-  Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
+  THE APPLICATION
   
-  *****************************************
+  - pretty much everything server side is in here
+  - for now (intentionally for now, not lazy for now)
+  - we'll separate it into files later, depending on how it evolves
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
+  /*
+  
+  LIBRARY LOADING
+  
+  - load in the libraries we'll use
+  - do basic config on all of them
+  */
+
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -90,11 +98,12 @@
 
   /*
   UTIL
-  
+  #
+  #
   it's a useful for inspecting.
-  
+  #
   USAGE:
-  
+  #
   console.log util.inspect myVariableIWantToInspect
   */
 
@@ -117,12 +126,22 @@
   Promise = everyauth.Promise;
 
   /*
+  Knox - AMAZON S3 Connector
+  Add the api keys and such
+  */
+
+  knoxClient = knox.createClient({
+    key: 'AKIAI2CJEBPY77CQ32AA',
+    secret: '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',
+    bucket: 'cardsly'
+  });
+
+  /*
+  
   DATABASE MODELING
-  *****************************************
   
-  All our schemas
-  
-  *****************************************
+  - set up the schemas
+  - they's all prefixed with mongo_
   */
 
   user_schema = new schema({
@@ -270,12 +289,10 @@
   mongo_view = mongoose.model('views', view_schema);
 
   /*
-  EVERYAUTH STUFF
-  *****************************************
   
-  Authenticating to 3rd Party Providers
+  EVERYAUTH CONFIG
   
-  *****************************************
+  - authenticating to 3rd Party Providers
   */
 
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
@@ -325,9 +342,7 @@
   };
 
   /*
-  
   Create the Everyauth Accessing the user function
-  
   per the "Accessing the user" section of the everyauth README
   */
 
@@ -392,27 +407,12 @@
   });
 
   /*
-  everyauth.googlehybrid.consumerKey 'cards.ly'
-  everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
-  everyauth.googlehybrid.findOrCreateUser handleGoodResponse
-  everyauth.googlehybrid.scope ['email']
-  everyauth.googlehybrid.redirectPath '/success'
-  */
-
-  everyauth.debug = true;
-
-  /*
   
-  Knox - AMAZON S3 Connector
+  EXPRESS APPLICATION CONFIG
   
-  Add the api keys and such
+  - set route defaults
+  - configure middleware, etc
   */
-
-  knoxClient = knox.createClient({
-    key: 'AKIAI2CJEBPY77CQ32AA',
-    secret: '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',
-    bucket: 'cardsly'
-  });
 
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
@@ -449,18 +449,6 @@
   app.configure("production", function() {
     return app.use(express.errorHandler());
   });
-
-  /*
-  ROUTES
-  
-  All of our routes are defined here
-  */
-
-  err = function(res, err) {
-    return res.send('', {
-      Location: '/error'
-    }, 302);
-  };
 
   /*
   

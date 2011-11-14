@@ -1,15 +1,44 @@
-###
-GENERIC LIBRARY LOADING AND SETUP
-*****************************************
+##################################################################
 
-Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
-
-*****************************************
 ###
 
+THE APPLICATION
+
+- pretty much everything server side is in here
+- for now (intentionally for now, not lazy for now)
+- we'll separate it into files later, depending on how it evolves
+
+###
+
+##################################################################
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+###
+
+LIBRARY LOADING
+
+- load in the libraries we'll use
+- do basic config on all of them
+
+###
+#
+#
+#
+#
 process.on 'uncaughtException', (err) ->
   console.log 'UNCAUGHT', err
-
+#
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
 express = require 'express'
@@ -21,19 +50,23 @@ fs = require 'fs'
 app = module.exports = express.createServer()
 # Module requires
 conf = require './lib/conf'
-
+#
 # Image Magick for graphic editing
 im = require 'imagemagick'
-
-
-
+#
+#
+#
+#
 geo = require('geo')
-
+#
+#
+#
+#
 require 'coffee-script'
 PDFDocument = require 'pdfkit'
-
+#
 nodemailer = require 'nodemailer'
-
+#
 nodemailer.SMTP = 
   host: 'smtp.sendgrid.net'
   port: 25
@@ -41,9 +74,10 @@ nodemailer.SMTP =
   user: process.env.SENDGRID_USERNAME
   pass: process.env.SENDGRID_PASSWORD
   domain: process.env.SENDGRID_DOMAIN
-
-
-
+#
+#
+#
+#
 # DATABASE
 # url set
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
@@ -61,32 +95,38 @@ Server = mongodb.Server
 db = new Db(parsed.pathname.replace(/^\//, ''), new Server(parsed.hostname, parsed.port))
 # This library is for the database store for the session
 mongoStore = require 'connect-mongodb'
-
+#
 # Mongoose is for everyone 
 mongoose = require 'mongoose'
 mongoose.connect db_uri
 schema = mongoose.Schema
 object_id = schema.ObjectId
-
+#
 # This store is for the session
 session_store = new mongoStore
   db: db
   username: dbAuth.username
   password: dbAuth.password
-
+#
+#
+#
+#
+#
 ###
 UTIL
-
+#
+#
 it's a useful for inspecting.
-
+#
 USAGE:
-
+#
 console.log util.inspect myVariableIWantToInspect
-
 ###
 util = require 'util'
-
-
+#
+#
+#
+#
 # BCRYPT for password storage
 bcrypt = require 'bcrypt'
 encrypted = (inString) ->
@@ -94,23 +134,62 @@ encrypted = (inString) ->
   bcrypt.encrypt_sync(inString, salt)
 compareEncrypted = (inString,hash) ->
   bcrypt.compare_sync(inString, hash)
-
+#
+#
+#
+#
 # Everyauth for 3rd party providers
 everyauth = require 'everyauth'
 Promise = everyauth.Promise
-
-
-
+#
+#
+#
+#
 ###
+Knox - AMAZON S3 Connector
+Add the api keys and such
+###
+#
+knoxClient = knox.createClient
+  key: 'AKIAI2CJEBPY77CQ32AA'
+  secret: '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'
+  bucket: 'cardsly'
+#
+#
+#
+#
+# END LIBRARY LOADING
+#
+#
+###########################################################
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+###
+
 DATABASE MODELING
-*****************************************
 
-All our schemas
+- set up the schemas
+- they's all prefixed with mongo_
 
-*****************************************
 ###
-
-
+#
+#
+#
+#
+#
 # user schema Definition
 user_schema = new schema
   email:String
@@ -135,7 +214,10 @@ user_schema = new schema
   active:
     type: Boolean
     default: true
-
+#
+#
+#
+#
 # user Authentication
 user_schema.static 'authenticate', (email, password, next) ->
   if !email || !password || email == '' || password == ''
@@ -157,11 +239,13 @@ user_schema.static 'authenticate', (email, password, next) ->
             next 'Password incorrect for that email address.'
         else
           next 'No account found for that email address.'
-
+#
 # Actually build the user Model we just created
 mongo_user = mongoose.model 'users', user_schema
-
-
+#
+#
+#
+#
 # cards
 card_schema = new schema
   user_id: String
@@ -175,7 +259,10 @@ card_schema = new schema
     type: Boolean
     default: true
 mongo_card = mongoose.model 'cards', card_schema
-
+#
+#
+#
+#
 # Messages
 message_schema = new schema
   include_contact: Boolean
@@ -188,9 +275,10 @@ message_schema = new schema
     type: Boolean
     default: true
 mongo_message = mongoose.model 'messages', message_schema
-
-
-
+#
+#
+#
+#
 # Style Field Positions
 line_schema = new schema
   order_id: Number
@@ -201,7 +289,14 @@ line_schema = new schema
   w: Number
   x: Number
   y: Number
-
+#
+#
+#
+#
+#
+#
+#
+#
 # Themes
 theme_template_schema = new schema
   qr:
@@ -217,7 +312,9 @@ theme_template_schema = new schema
   color1: String
   color2: String
   s3_id: String
-
+#
+#
+#
 # Groups of Themes
 theme_schema = new schema
   category: String
@@ -230,11 +327,14 @@ theme_schema = new schema
     default: true
 
 mongo_theme = mongoose.model 'themes', theme_schema
-
-
-
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 # Views (for stats)
 view_schema = new schema
   ip_address: String
@@ -244,22 +344,44 @@ view_schema = new schema
     type: Date
     default: Date.now
 mongo_view = mongoose.model 'views', view_schema
+#
+#
+#
+#
+# END DATABASE MODELING
+#
+#
+#
+###########################################################
 
 
 
 
 
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+###
+
+EVERYAUTH CONFIG
+
+- authenticating to 3rd Party Providers
 
 ###
-EVERYAUTH STUFF
-*****************************************
-
-Authenticating to 3rd Party Providers
-
-*****************************************
-###
-
-
+#
+#
+#
+#
 # Handle Good Response
 #
 # Set up a response handler for all of the everyauth configs we are about to use
@@ -268,11 +390,11 @@ Authenticating to 3rd Party Providers
 # This should create the user or grab it based on the auth info
 #
 handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
+  #
   #console.log 'userMeta', userMeta
+  #
   promise = new Promise()
-
-
-
+  #
   userSearch = {}
   if userMeta.publicProfileUrl
     userSearch.name = userMeta.firstName+' '+userMeta.lastName
@@ -285,7 +407,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
     userSearch.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
   if userMeta.email
     userSearch.email = userMeta.email
-
+  #
   mongo_user.findOne userSearch, (err,existinguser) ->
     if err
       console.log 'err: ', err
@@ -308,43 +430,42 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
           console.log 'user created: ', createduser
           promise.fulfill createduser
   promise
-
+#
+#
 ###
-
 Create the Everyauth Accessing the user function
-
 per the "Accessing the user" section of the everyauth README
-
 ###
-
+#
+#
 everyauth.everymodule.findUserById (userId, callback) ->
   mongo_user.findById userId, callback
-
+#
 # Twitter API Key and Config
 everyauth.twitter.consumerKey 'I4s77xbnJvV0bHa7wO8zTA'
 everyauth.twitter.consumerSecret '7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0'
 everyauth.twitter.findOrCreateUser handleGoodResponse
 everyauth.twitter.redirectPath '/success'
-
+#
 # Facebook API Key / Config
 everyauth.facebook.appId '292309860797409'
 everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
 everyauth.facebook.findOrCreateUser handleGoodResponse
 everyauth.facebook.redirectPath '/success'
-
+#
 # LinkedIn API Key / Config
 everyauth.linkedin.consumerKey 'fuj9rhx302d7'
 everyauth.linkedin.consumerSecret 'pvWmN5CkrdT3GHF3'
 everyauth.linkedin.findOrCreateUser handleGoodResponse
 everyauth.linkedin.redirectPath '/success'
-
+#
 # Google API Key / Config
 everyauth.google.appId '90634622438.apps.googleusercontent.com'
 everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
 everyauth.google.findOrCreateUser handleGoodResponse
 everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'
 everyauth.google.redirectPath '/success'
-
+#
 # Google API requires additional setup to use 
 rest = require('./node_modules/everyauth/node_modules/restler');
 everyauth.google.fetchOAuthUser (accessToken) ->
@@ -360,39 +481,53 @@ everyauth.google.fetchOAuthUser (accessToken) ->
   .on 'error', (data, res) ->
     promise.fail data
   promise;
+#
+# everyauth.debug = true
+#
+#
+# END EVERYAUTH CONFIG
+#
+#
+#
+##########################################################
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+###
+
+EXPRESS APPLICATION CONFIG
+
+- set route defaults
+- configure middleware, etc
 
 ###
-everyauth.googlehybrid.consumerKey 'cards.ly'
-everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
-everyauth.googlehybrid.findOrCreateUser handleGoodResponse
-everyauth.googlehybrid.scope ['email']
-everyauth.googlehybrid.redirectPath '/success'
-###
-everyauth.debug = true
-
-
-
-###
-
-Knox - AMAZON S3 Connector
-
-Add the api keys and such
-
-###
-
-knoxClient = knox.createClient
-  key: 'AKIAI2CJEBPY77CQ32AA'
-  secret: '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'
-  bucket: 'cardsly'
-
-
-
-
-
-
-
+#
+#
+#
 # ## App configurations
 # ### Global app settings
 #
@@ -439,19 +574,22 @@ app.configure "development", ->
 
 app.configure "production", ->
   app.use express.errorHandler()
+#
+#
+#
+# END EXPRESS APP CONFIG
+#
+#
+#
+###########################################################
 
-###
-ROUTES
 
-All of our routes are defined here
 
-###
 
-# Redirect Error
-err = (res, err) ->
-  res.send '',
-    Location: '/error'
-  , 302
+
+
+
+
 
 
 
@@ -804,6 +942,10 @@ app.post '/get-themes', (req,res,next) ->
 
 
 
+
+
+
+
 ###########################################################
 #
 #
@@ -932,6 +1074,11 @@ app.get '/home', (req, res) ->
 #
 #
 ###########################################################
+
+
+
+
+
 
 
 
