@@ -122,7 +122,9 @@
     var settings;
     settings = {
       color: '000000',
-      url: 'http://cards.ly'
+      url: 'http://cards.ly',
+      height: 50,
+      width: 50
     };
     return this.each(function(i) {
       var $t;
@@ -131,8 +133,16 @@
       $t.prep_qr({
         url: settings.url
       });
-      return $t.draw_qr({
+      $t.draw_qr({
         color: settings.color
+      });
+      $t.css({
+        height: settings.height,
+        width: settings.width
+      });
+      return $t.find('canvas').css({
+        height: settings.height,
+        width: settings.width
       });
     });
   };
