@@ -192,42 +192,8 @@ mongo_message = mongoose.model 'messages', message_schema
 
 
 
-# Groups of Themes
-theme_group_schema = new schema
-  category: String
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-mongo_theme_group = mongoose.model 'theme_groups', theme_group_schema
-
-# Themes
-theme_schema = new schema
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-  theme_group_id: String
-  qr_color1: String
-  qr_color2: String
-  qr_color2_alpha: Number
-  qr_radius: Number
-  qr_h: Number
-  qr_w: Number
-  qr_x: Number
-  qr_y: Number
-  color1: String
-  color2: String
-  s3_id: String
-mongo_theme = mongoose.model 'themes', theme_schema
-
 # Style Field Positions
-position_schema = new schema
-  theme_id: String
+line_schema = new schema
   order_id: Number
   color: String
   font_family: String
@@ -236,7 +202,38 @@ position_schema = new schema
   w: Number
   x: Number
   y: Number
-mongo_position = mongoose.model 'positions', position_schema
+
+# Themes
+theme_template_schema = new schema
+  qr:
+    color1: String
+    color2: String
+    color2_alpha: Number
+    radius: Number
+    h: Number
+    w: Number
+    x: Number
+    y: Number
+  lines: [line_schema]
+  color1: String
+  color2: String
+  s3_id: String
+mongo_theme_template = mongoose.model 'theme_templates', theme_template_schema
+
+# Groups of Themes
+theme_schema = new schema
+  category: String
+  theme_templates: [theme_template_schema]
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+
+mongo_theme = mongoose.model 'themes', theme_schema
+
+
 
 
 
@@ -556,60 +553,73 @@ check_no_err_ajax = (err) ->
 # AJAX request for saving theme
 #
 app.post '/save-theme', (req, res) ->
+  #
+  # Put it into a nice pretty JSON object 
   params = JSON.parse req.rawBody
-  # Did the data come across?
-  console.log util.inspect params
-  console.log util.inspect params.theme.positions
-
-  # Based on which parameters they send, save them all in the session
-
+  #
+  # Save it in the session always.
   req.session.theme = params.theme
+  #
+  #
+  ###
+  TODO
 
+  All of these parameters are coming in right now in a very weird way.
+
+  We probably want to match the way they are saved in the database a little more closely in the admin.coffee
+
+  That means using qr.x instead of qr_x, etc, etc, etc.
+
+  Just a TODO, migrate that over at some point.
+
+  ###
+  #
+  # If we hit the save button
   if params.do_save
-
+    #
+    # If we're updating do this
     if params.theme._id
       console.log params.theme
+    #
+    # This indicates we are creating a new one, nothing to update
     else
-      theme_group = new mongo_theme_group
-      theme_group.category = params.theme.category
-      theme_group.save (err,new_theme_group) ->
-        #
-        # Make sure there's no error
+      new_theme = new mongo_theme
+      new_theme.category = params.theme.category
+      #
+      # Prep the new template
+      new_theme_template = new mongo_theme_template
+      new_theme_template.qr =
+        x: params.theme.qr_x
+        y: params.theme.qr_y
+        h: params.theme.qr_h
+        w: params.theme.qr_w
+        radius: params.theme.qr_radius
+        color1: params.theme.qr_color1
+        color2: params.theme.qr_color2
+        color2_alpha: params.theme.qr_color2_alpha
+      new_theme_template.color1 = params.theme.color1
+      new_theme_template.color2 = params.theme.color2
+      new_theme_template.s3_id = params.theme.s3_id
+      #
+      for i,param_position in params.theme.positions
+        new_theme_template.lines.push
+          order_id: i
+          x: param_position.x
+          y: param_position.y
+          h: param_position.h
+          w: param_position.w
+          text_align: param_position.text_align
+          color: param_position.color
+          font_family: param_position.font_family
+      #
+      # Push the new template in
+      new_theme.theme_templates.push new_theme_template
+      #
+      new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err
-          #
-          theme = new mongo_theme
-          theme.theme_group_id = new_theme_group._id
-          theme.qr_x = params.theme.qr_x
-          theme.qr_y = params.theme.qr_y
-          theme.qr_h = params.theme.qr_h
-          theme.qr_w = params.theme.qr_w
-          theme.qr_color1 = params.theme.qr_color1
-          theme.qr_color2 = params.theme.qr_color2
-          theme.qr_radius = params.theme.qr_radius
-          theme.qr_color2_alpha = params.theme.qr_color2_alpha
-          theme.color1 = params.theme.color1
-          theme.color2 = params.theme.color2
-          theme.s3_id = params.theme.s3_id
-          theme.save (err, new_theme) ->
-            if check_no_err_ajax err
-              res.send
-                success: true
-                theme: new_theme
-              for i,param_position in params.theme.positions
-                position = new mongo_position
-                position.theme_id = new_theme._id
-                position.order_id = i
-                position.x = param_position.x
-                position.y = param_position.y
-                position.h = param_position.h
-                position.w = param_position.w
-                position.text_align = param_position.text_align
-                position.color = param_position.color
-                position.font_family = param_position.font_family
-                #
-                position.save (err, new_theme_position) ->
-                  if err
-                    console.log 'POSITION SAVE ERR: ', err
+          res.send
+            success: true
+            theme: theme_saved
 
 
 app.post '/save-form', (req, res) ->
@@ -768,12 +778,12 @@ app.get '/cards', securedPage, (req, res) ->
 
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
-  mongo_theme_group.find
+  mongo_theme.find
     active: true
-  , (err, theme_groups) ->
+  , (err, themes) ->
     if check_no_err err
 
-      console.log theme_groups
+      console.log themes
       ###
 
       DEREK
@@ -805,7 +815,7 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
 # Make me an admin
 app.get '/make-me-admin', securedPage, (req, res) ->
   req.user.role = 'admin'
-  res.user.save (err) ->
+  req.user.save (err) ->
     console.log err if err
     res.send '',
       Location: '/admin'
