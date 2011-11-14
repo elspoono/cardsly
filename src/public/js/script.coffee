@@ -725,7 +725,6 @@ $ ->
                   loading_close()
                   $.load_alert
                     content: 'Our apologies. A server error occurred.'
-              , 1000
       ]
       height: 340
       width: 400
