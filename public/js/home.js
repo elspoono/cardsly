@@ -7,19 +7,13 @@
   - Gallery selection on the home page
   
   */  $(function() {
-    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, screens_fade_out, start_animation, update_cards;
+    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, start_animation, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $screens = $slides.find('li');
     screens_fade_in = function() {
-      return $screens.show('fade', 500, function() {
-        return screens_fade_out();
-      });
-    };
-    screens_fade_out = function() {
-      return $screens.show('fade', 500, function() {
-        return screens_fade_in();
-      });
+      $screens.effect('fade', 5000);
+      return console.log(5);
     };
     /* Let's change the screens periodically
     setInterval ->
@@ -44,6 +38,7 @@
       });
     };
     start_animation();
+    screens_fade_in();
     /*
       Shopping Cart Stuff
       */
@@ -53,23 +48,6 @@
         content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
       });
       return false;
-    });
-    $('.category h4').click(function() {
-      var $a, $c, $g, $t;
-      $t = $(this);
-      $c = $t.closest('.category');
-      $g = $c.find('.gallery');
-      $a = $('.category.active');
-      if (!$c.hasClass('active')) {
-        $a.removeClass('active');
-        $a.find('.gallery').show().slideUp(400);
-        $gs.hide();
-        $c.find('.gallery').slideDown(400, function() {
-          $gs.show();
-          return $c.find('.card:first').click();
-        });
-        return $c.addClass('active');
-      }
     });
     $('.card.main input').each(function(i) {
       var $t;
@@ -179,40 +157,5 @@
         }
       }
     });
-    /*
-      #
-      # The floaty guy behind the gallery selection
-      $gs = $ '.gallery_select'
-      $gs.css
-        left: -220
-        top: 0
-      $('.gallery .card').live 'click', () ->
-        $t = $ this
-        $('.card').removeClass 'active'
-        $t.addClass('active')
-        $find_class = $t.clone()
-        class_name = $find_class.removeClass('card')[0].class_name
-        $find_class.remove()
-        $('.main').attr
-          class: 'card main '+class_name
-        if $gs.offset().top == $t.offset().top_10
-          $gs.animate
-            left: $t.offset().left_10
-          ,500
-        else
-          $gs.stop(true,false).animate
-            top: $t.offset().top_10
-          ,500,'linear',() ->
-              $gs.animate
-                left: $t.offset().left_10
-              ,500,'linear'
-      $gs.bind 'activeMoved', ->
-        $a = $ '.card.active'
-        $gs.css
-          left: $a.offset().left_10
-          top: $a.offset().top_10
-      $(window).load () ->
-        $('.gallery:first .card:first').click()
-      */
   });
 }).call(this);
