@@ -192,7 +192,8 @@ mongo_message = mongoose.model 'messages', message_schema
 
 
 
-# Style Field Positions
+#
+# line positions
 line_schema = new schema
   order_id: Number
   color: String
@@ -202,9 +203,17 @@ line_schema = new schema
   w: Number
   x: Number
   y: Number
-
-# Themes
-theme_template_schema = new schema
+#
+# themes
+theme_schema = new schema
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+  category: String
+  group_id: String
   qr:
     color1: String
     color2: String
@@ -218,19 +227,8 @@ theme_template_schema = new schema
   color1: String
   color2: String
   s3_id: String
-mongo_theme_template = mongoose.model 'theme_templates', theme_template_schema
-
-# Groups of Themes
-theme_schema = new schema
-  category: String
-  theme_templates: [theme_template_schema]
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-
+#
+# Model It
 mongo_theme = mongoose.model 'themes', theme_schema
 
 
@@ -586,9 +584,7 @@ app.post '/save-theme', (req, res) ->
       new_theme = new mongo_theme
       new_theme.category = params.theme.category
       #
-      # Prep the new template
-      new_theme_template = new mongo_theme_template
-      new_theme_template.qr =
+      new_theme.qr =
         x: params.theme.qr_x
         y: params.theme.qr_y
         h: params.theme.qr_h
@@ -597,12 +593,14 @@ app.post '/save-theme', (req, res) ->
         color1: params.theme.qr_color1
         color2: params.theme.qr_color2
         color2_alpha: params.theme.qr_color2_alpha
-      new_theme_template.color1 = params.theme.color1
-      new_theme_template.color2 = params.theme.color2
-      new_theme_template.s3_id = params.theme.s3_id
+      new_theme.color1 = params.theme.color1
+      new_theme.color2 = params.theme.color2
+      new_theme.s3_id = params.theme.s3_id
       #
       for i,param_position in params.theme.positions
-        new_theme_template.lines.push
+        console.log 'I: ', i
+        console.log 'PARAM: ', param_position
+        new_theme.lines.push
           order_id: i
           x: param_position.x
           y: param_position.y
@@ -611,15 +609,17 @@ app.post '/save-theme', (req, res) ->
           text_align: param_position.text_align
           color: param_position.color
           font_family: param_position.font_family
-      #
-      # Push the new template in
-      new_theme.theme_templates.push new_theme_template
+      
+      console.log new_theme
       #
       new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err
-          res.send
-            success: true
-            theme: theme_saved
+          theme_saved.group_id = theme_saved._id
+          theme_saved.save (err, theme_saved_final) ->
+            if check_no_err_ajax err
+              res.send
+                success: true
+                theme: theme_saved_final
 
 
 app.post '/save-form', (req, res) ->
@@ -715,7 +715,7 @@ app.post '/create-user', (req,res,next) ->
 
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  req.user.password_encrypted = encrypted(req.body.new_password);
+  req.user.password_encrypted = encrypted(req.body.password);
   req.user.save (err,data) ->
     res.send
       success: 'True'
