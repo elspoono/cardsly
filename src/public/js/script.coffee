@@ -923,9 +923,6 @@ $ ->
             left: $t.offset().left-10
           ,500,'linear'
   #
-  $(window).load () ->
-    $('.category:first .card:first').click()
-  #
   # 
   # Category Expand/Collapse
   $('.category h4').click () ->

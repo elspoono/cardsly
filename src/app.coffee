@@ -718,63 +718,38 @@ app.post '/save-theme', (req, res) ->
   req.session.theme = params.theme
   #
   #
-  ###
-  TODO
-
-  All of these parameters are coming in right now in a very weird way.
-
-  We probably want to match the way they are saved in the database a little more closely in the admin.coffee
-
-  That means using qr.x instead of qr_x, etc, etc, etc.
-
-  Just a TODO, migrate that over at some point.
-
-  ###
-  #
   # If we hit the save button
   if params.do_save
     #
     # If we're updating do this
     if params.theme._id
-      console.log params.theme
+      mongo_theme.findById params.theme._id, (err, found_theme) ->
+        found_theme.category
+        found_theme.category = params.theme.category
+        #
+        # Push the new template in
+        found_theme.theme_templates = params.theme.theme_templates
+        #
+        console.log params.theme.theme_templates
+        #
+        found_theme.save (err,theme_saved) ->
+          if check_no_err_ajax err
+            res.send
+              success: true
+              theme: theme_saved
+    #
+    #
     #
     # This indicates we are creating a new one, nothing to update
     else
       new_theme = new mongo_theme
       new_theme.category = params.theme.category
       #
-      # Prep the new template
-      new_theme_template =
-        qr:
-          x: params.theme.qr_x
-          y: params.theme.qr_y
-          h: params.theme.qr_h
-          w: params.theme.qr_w
-          radius: params.theme.qr_radius
-          color1: params.theme.qr_color1
-          color2: params.theme.qr_color2
-          color2_alpha: params.theme.qr_color2_alpha
-        color1: params.theme.color1
-        color2: params.theme.color2
-        s3_id: params.theme.s3_id
-        lines: []
-      #
-      # Prep the lines
-      for param_position,i in params.theme.positions
-        new_theme_template.lines.push
-          order_id: i
-          x: param_position.x
-          y: param_position.y
-          h: param_position.h
-          w: param_position.w
-          text_align: param_position.text_align
-          color: param_position.color
-          font_family: param_position.font_family
-      #
       # Push the new template in
-      new_theme.theme_templates.push new_theme_template
-
-
+      new_theme.theme_templates = params.theme.theme_templates
+      #
+      console.log params.theme.theme_templates
+      #
       new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err
           res.send

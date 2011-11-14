@@ -1,13 +1,20 @@
-(function() {
+
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
+<<<<<<< HEAD
   
   */  $(function() {
     var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, screens_fade_out, start_animation, update_cards;
+=======
+  */
+
+  $(function() {
+    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fading, start_animation, update_cards;
+>>>>>>> 6241861f4194a885bbabb60e510c9a8c75fa242c
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $screens = $slides.find('li');
@@ -47,7 +54,7 @@
     screens_fade_out();
     /*
       Shopping Cart Stuff
-      */
+    */
     item_name = '100 cards';
     $('.checkout').click(function() {
       $.load_alert({
@@ -73,7 +80,7 @@
                     # this.value should have a .replace ',' '\,'
                     # on it so that we can use a comma character and escape anything.
                     # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-                    */
+          */
           array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
             return this.value;
           }));
@@ -91,7 +98,7 @@
     });
     /*
       # Radio Button Clicking Stuff
-      */
+    */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
@@ -104,7 +111,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-      */
+    */
     update_cards = function(rowNumber, value) {
       return $('.card .content').each(function() {
         return $(this).find('li:eq(' + rowNumber + ')').html(value);
@@ -164,4 +171,3 @@
       }
     });
   });
-}).call(this);

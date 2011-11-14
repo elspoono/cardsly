@@ -1,8 +1,12 @@
 (function() {
   var assert, firstBatch, setup, teardown, testSuite, vows, vowsSetup, vowsTeardown, _ref;
+
   vows = require('vows');
+
   assert = require('assert');
+
   _ref = require('./testHelpers'), setup = _ref.setup, teardown = _ref.teardown;
+
   vowsSetup = {
     "...Setting up stubs...": {
       topic: function() {
@@ -13,6 +17,7 @@
       }
     }
   };
+
   vowsTeardown = {
     "...Tearing down stubs...": {
       topic: function() {
@@ -23,7 +28,9 @@
       }
     }
   };
+
   testSuite = vows.describe('Test suite');
+
   firstBatch = {
     "GIVEN that this is a test suite": {
       topic: function() {
@@ -37,5 +44,7 @@
       }
     }
   };
+
   testSuite.addBatch(vowsSetup).addBatch(vowsTeardown).addBatch(firstBatch)["export"](module);
+
 }).call(this);
