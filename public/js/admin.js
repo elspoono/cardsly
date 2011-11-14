@@ -45,7 +45,7 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $li, $my_card, $my_qr, i, pos, theme, _i, _len, _len2, _ref, _results;
+        var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme, _i, _len, _len2, _ref, _results;
         all_themes = all_data.themes;
         $categories.html('');
         _results = [];
@@ -54,16 +54,33 @@
           console.log(theme);
           $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
           $my_qr = $my_card.find('.qr');
-          $my_qr.qr().find('canvas').css({
+          $my_qr.prep_qr();
+          $my_qr_bg = $my_qr.find('.background');
+          $my_qr.draw_qr({
+            color: theme.theme_templates[0].qr.color1
+          });
+          $my_qr.find('canvas').css({
+            zIndex: 150,
+            position: 'absolute',
             height: theme.theme_templates[0].qr.h / 100 * 90,
             width: theme.theme_templates[0].qr.w / 100 * 158
           });
           $my_qr.css({
+            position: 'absolute',
             height: theme.theme_templates[0].qr.h / 100 * 90,
             width: theme.theme_templates[0].qr.w / 100 * 158,
             top: theme.theme_templates[0].qr.y / 100 * 90,
             left: theme.theme_templates[0].qr.y / 100 * 158
           });
+          $my_qr_bg.css({
+            zIndex: 140,
+            position: 'absolute',
+            'border-radius': theme.qr_radius + 'px',
+            height: theme.theme_templates[0].qr.h / 100 * 90,
+            width: theme.theme_templates[0].qr.w / 100 * 158,
+            background: '#' + theme.theme_templates[0].qr.color2
+          });
+          $my_qr_bg.fadeTo(0, theme.theme_templates[0].qr.color2_alpha);
           _ref = theme.theme_templates[0].lines;
           for (i = 0, _len2 = _ref.length; i < _len2; i++) {
             pos = _ref[i];
