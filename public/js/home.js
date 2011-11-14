@@ -15,11 +15,15 @@
     console.log($lis);
     $lis.hide();
     $phone_scanner.hide();
-    $biz_cards.find('li').each(function() {
+    $biz_cards.find('li').each(function(i) {
       var $qr, $t;
       $t = $(this);
       $qr = $t.find('.qr');
-      return $qr.qr();
+      return $qr.qr({
+        url: 'http://cards.ly/' + Math.random(),
+        height: 70,
+        width: 70
+      });
     });
     iterate_num = $lis.length;
     current_num = 0;

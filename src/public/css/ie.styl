@@ -1,0 +1,144 @@
+$base-font-size = 21px
+$base-line-height = 1.5
+
+$base-gap = $base-font-size * $base-line-height
+
+/* Font-families */
+$base-font-family = 'Ubuntu', sans-serif
+$display-font-family = 'Maven Pro', sans-serif
+
+/***********************************
+ *
+ * Color Definitions
+ *
+ ***********************************/
+$c-light = #EEEEEE
+$c-mid-cool = #AAAAAA
+$c-dark-cool = #111111
+$c-mid-warm = #FFFFFF
+$c-dark-warm = #333333
+$c-black = #000000
+
+$c-bg-dark = #524641//#006E9F
+$c-bg-light = #908575//#006E9F
+$c-logo-light = #f05a23//#f37b4f
+$c-logo-alt = #56A3DA
+
+$c-go = #23f067
+
+$c-background = lighten($c-light, 10%)
+$c-body-bg = #cfbea8
+$c-font = $c-dark-warm
+$c-highlight = $c-mid-warm
+
+$c-link = $c-mid-cool
+$c-link-hover = $c-mid-warm
+$c-link-visited = $c-mid-cool
+$c-link-active = $c-mid-cool
+
+$c-a-nav = #d8cfc5
+
+
+/********************************
+ *
+ * LIBRARY FUNCTIONS
+ *
+ ********************************/
+
+// CHAM builtin style functions
+relative-size($size-multiplier, $set-line-height=true)
+  $font-size = unit($base-font-size * $size-multiplier, 'px')
+  font-size $font-size
+  if $set-line-height
+    line-height unit($base-line-height / $font-size, 'em')
+gap($multiplier)
+  return $base-gap * $multiplier
+
+// Alpha Background
+alpha-bg(color,n)
+  background rgb(color);
+  background rgba(color,n);
+
+// Shadow
+box-shadow(n = gap(.25), color = $c-dark-warm, b = n)
+  -moz-box-shadow n n b color
+  -webkit-box-shadow n n b color
+  box-shadow n n b color
+text-shadow(n = gap(.1), color = $c-dark-warm, b = n)
+  text-shadow n n b color
+
+// Rounded Corners
+border-radius(n = gap(.5))
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+border-radius-except-top-right(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-top-right-radius 0
+  -moz-border-radius-topright 0
+  -webkit-border-top-right-radius 0
+border-radius-top-only(n)
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
+  border-top-right-radius n
+  -moz-border-radius-topright n
+  -webkit-border-top-right-radius n
+
+// Transparency
+opacity(n)
+  opacity n
+  filter alpha\(opacity\=n*100\)
+
+absolute()
+  display none
+  position absolute
+  top 0
+  left 0
+
+// Resize Ratio
+transform-scale(width=0.5,height=width)
+  -webkit-transform: scale(height, width);
+  -moz-transform: scale(height, width);
+  -ms-transform: scale(height, width);
+  transform: scale(height, width);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// IE SPECIFIC STYLES GO HERE
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Well, down here somewhere
+//
+//
+//
+//
+//
+//

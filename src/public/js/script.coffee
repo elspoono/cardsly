@@ -124,6 +124,8 @@ $.fn.qr = (options) ->
   settings = 
     color: '000000'
     url: 'http://cards.ly'
+    height: 50
+    width: 50
   this.each (i) ->
     if options
       $.extend settings, options
@@ -134,6 +136,13 @@ $.fn.qr = (options) ->
     #
     $t.draw_qr
       color: settings.color
+    #
+    $t.css
+      height: settings.height
+      width: settings.width
+    $t.find('canvas').css
+      height: settings.height
+      width: settings.width
 
 ###
  * 

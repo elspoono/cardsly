@@ -53,21 +53,18 @@
           $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
           $my_card.data('theme', theme);
           $my_qr = $my_card.find('.qr');
-          $my_qr.prep_qr();
           $my_qr_bg = $my_qr.find('.background');
-          $my_qr.draw_qr({
-            color: theme_template.qr.color1
-          });
-          $my_qr.find('canvas').css({
-            zIndex: 150,
-            position: 'absolute',
+          $my_qr.qr({
+            color: theme_template.qr.color1,
             height: theme_template.qr.h / 100 * 90,
             width: theme_template.qr.w / 100 * 158
           });
+          $my_qr.find('canvas').css({
+            zIndex: 150,
+            position: 'absolute'
+          });
           $my_qr.css({
             position: 'absolute',
-            height: theme_template.qr.h / 100 * 90,
-            width: theme_template.qr.w / 100 * 158,
             top: theme_template.qr.y / 100 * 90,
             left: theme_template.qr.x / 100 * 158
           });

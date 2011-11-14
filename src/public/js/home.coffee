@@ -38,11 +38,14 @@ $ ->
   #
   #
   # DRAW SOME QR CODES
-  $biz_cards.find('li').each ->
+  $biz_cards.find('li').each (i) ->
     $t = $ this
     $qr = $t.find '.qr'
 
-    $qr.qr()
+    $qr.qr
+      url: 'http://cards.ly/' + Math.random()
+      height: 70
+      width: 70
   #
   #
   # Find our total length
