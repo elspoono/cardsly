@@ -1,5 +1,13 @@
 (function() {
   /*
+  
+  This file is everywhere on the site
+  
+  - We put a lot of library functions in it
+  - As well as things that need to happen on every page
+  
+  */
+  /*
    * 
    * Set settings / defaults
    * 
@@ -19,10 +27,12 @@
   }
   /*
    * 
-   * Modal Handling Functions
    * 
-   * show tooltip, can be used on any element with jquery
+   * Generic Tooltip function
    * 
+   * - does a little tooltip dealy bob on any element
+   *
+   * - usually used for form inputs
    * 
   */
   $.fn.show_tooltip = function(options) {
@@ -79,7 +89,7 @@
      * 
   */
   $.load_modal = function(options, next) {
-    var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
+    var buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
     modal = $('<div class="modal" />');
     win = $('<div class="window" />');
@@ -163,7 +173,6 @@
     }
     win.append(buttons);
     $('body').append(modal, close, win);
-    $body = $('body');
     resize_event = function() {
       var height, top, width;
       width = $window.width();
@@ -504,25 +513,18 @@
     });
   };
   /*
-  
-  
-  THIS IS WHERE REAL CODE STARTS
-  
   The 
   $ ->
   
     Means everything under him (like me, indented here)
     WILL be done on document ready event.
-  
-  
-  
   */
   $(function() {
     /*
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $change_password, $feedback_a, $gs, $mc, $slides, $win, advance_slide, close_menu, expand_menu, has_hidden, i, item_name, margin_increment, max_slides, monitor_for_complete, new_margin, path, successful_login, timer, update_cards, winH, _i, _len;
+    var $a, $am, $body, $feedback_a, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -552,11 +554,6 @@
       return false;
     };
     $a.one('click', expand_menu);
-    /*
-      Multiple
-      Lines Of
-      Comments
-      */
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design_button').click(function() {
       if (path !== '/') {
@@ -585,94 +582,6 @@
         return $('.login a').attr('href', '/logout').html('Logout');
       }
     };
-    $win = $(window);
-    $mc = $('.main.card');
-    winH = $win.height() + $win.scrollTop();
-    has_hidden = [];
-    $('.section_to_hide').each(function() {
-      var $this, thisT;
-      $this = $(this);
-      thisT = $this.offset().top;
-      if (winH < thisT) {
-        return has_hidden.push({
-          $this: $this,
-          thisT: thisT
-        });
-      }
-    });
-    for (_i = 0, _len = has_hidden.length; _i < _len; _i++) {
-      i = has_hidden[_i];
-      i.$this.hide();
-    }
-    /*
-      Update Cards
-    
-      This is used each time we need to update all the cards on the home page with the new content that's typed in.
-      */
-    update_cards = function(rowNumber, value) {
-      return $('.card .content').each(function() {
-        return $(this).find('li:eq(' + rowNumber + ')').html(value);
-      });
-    };
-    $win.scroll(function() {
-      var i, newWinH, time_lapse, _j, _len2, _results;
-      newWinH = $win.height() + $win.scrollTop();
-      if ($mc.length) {
-        if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
-          $mc.data('didLoad', true);
-          time_lapse = 0;
-          $('.main.card').find('input').each(function(rowNumber) {
-            return update_cards(rowNumber, this.value);
-          });
-          $('.main.card .defaults').find('input').each(function(rowNumber) {
-            var $t, j, timers, v;
-            $t = $(this);
-            v = $t.val();
-            $t.val('');
-            timers = (function() {
-              var _ref, _results;
-              _results = [];
-              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
-                _results.push((function(j) {
-                  var timer;
-                  timer = setTimeout(function() {
-                    var v_substring;
-                    v_substring = v.substr(0, j);
-                    $t.val(v_substring);
-                    return update_cards(rowNumber, v_substring);
-                  }, time_lapse * 70);
-                  time_lapse++;
-                  return timer;
-                })(j));
-              }
-              return _results;
-            })();
-            $t.bind('clearMe', function() {
-              var i, _j, _len2;
-              console.log($t.data('cleared'));
-              if (!$t.data('cleared')) {
-                for (_j = 0, _len2 = timers.length; _j < _len2; _j++) {
-                  i = timers[_j];
-                  clearTimeout(i);
-                }
-                $t.val('');
-                update_cards(rowNumber, '');
-                return $t.data('cleared', true);
-              }
-            });
-            return $t.bind('focus', function() {
-              return $t.trigger('clearMe');
-            });
-          });
-        }
-      }
-      _results = [];
-      for (_j = 0, _len2 = has_hidden.length; _j < _len2; _j++) {
-        i = has_hidden[_j];
-        _results.push(i.thisT_50 < newWinH ? i.$this.fadeIn(2000) : void 0);
-      }
-      return _results;
-    });
     /*
       Login stuff
       */
@@ -759,7 +668,7 @@
                 form_close();
                 return $.load_loading({}, function(loading_close) {
                   return $.ajax({
-                    url: '/createUser',
+                    url: '/create-user',
                     data: {
                       email: email.val(),
                       password: password.val()
@@ -780,7 +689,7 @@
                         content: 'Our apologies. A server error occurred.'
                       });
                     }
-                  }, 1000);
+                  });
                 });
               }
             }
@@ -797,7 +706,7 @@
           if ($t.val().match(/.{1,}@.{1,}\..{1,}/)) {
             $t.removeClass('error').addClass('valid');
             return $.ajax({
-              url: '/checkEmail',
+              url: '/check-email',
               data: {
                 email: $t.val()
               },
@@ -880,7 +789,7 @@
               form_close();
               return $.load_loading({}, function(loading_close) {
                 return $.ajax({
-                  url: '/sendFeedback',
+                  url: '/send-feedback',
                   data: {
                     content: $('.feedback_text').val(),
                     email: $('.emailNotUser').val()
@@ -912,75 +821,7 @@
       });
       return false;
     });
-    $change_password = $('.change_password input');
-    $change_password.click(function() {
-      return console.log(1);
-    });
-    $('#show_activity').change(function() {
-      var e;
-      $('#activity_container ul').hide('slow');
-      e = '#' + $(':selected', $(this)).attr('name');
-      return $(e).show('slow');
-    });
-    $('#activity_container ul').hide();
-    $('#show_card_chart').change(function() {
-      var e;
-      $('#chart_container ul').hide('slow');
-      e = '#' + $(':selected', $(this)).attr('name');
-      return $(e).show('slow');
-    });
-    $('#chart_container ul').hide();
-    /*
-      Shopping Cart Stuff
-      */
-    item_name = '100 cards';
-    $('.checkout').click(function() {
-      $.load_alert({
-        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
-      });
-      return false;
-    });
-    $gs = $('.gallery_select');
-    $gs.css({
-      left: -220,
-      top: 0
-    });
-    $('.gallery .card').live('click', function() {
-      var $find_class, $t, class_name;
-      $t = $(this);
-      $('.card').removeClass('active');
-      $t.addClass('active');
-      $find_class = $t.clone();
-      class_name = $find_class.removeClass('card')[0].class_name;
-      $find_class.remove();
-      $('.main').attr({
-        "class": 'card main ' + class_name
-      });
-      if ($gs.offset().top === $t.offset().top_10) {
-        return $gs.animate({
-          left: $t.offset().left_10
-        }, 500);
-      } else {
-        return $gs.stop(true, false).animate({
-          top: $t.offset().top_10
-        }, 500, 'linear', function() {
-          return $gs.animate({
-            left: $t.offset().left_10
-          }, 500, 'linear');
-        });
-      }
-    });
-    $gs.bind('activeMoved', function() {
-      $a = $('.card.active');
-      return $gs.css({
-        left: $a.offset().left_10,
-        top: $a.offset().top_10
-      });
-    });
-    $(window).load(function() {
-      return $('.gallery:first .card:first').click();
-    });
-    $('.button').live('mouseenter', function() {
+    return $('.button').live('mouseenter', function() {
       return $(this).addClass('hover');
     }).live('mouseleave', function() {
       return $(this).removeClass('hover');
@@ -988,126 +829,6 @@
       return $(this).addClass('click');
     }).live('mouseup', function() {
       return $(this).removeClass('click');
-    });
-    new_margin = 0;
-    max_slides = $('.slides li').length;
-    margin_increment = 620;
-    max_slides--;
-    /*
-      # Home Page Stuff
-      */
-    $('.category h4').click(function() {
-      var $c, $g, $t;
-      $t = $(this);
-      $c = $t.closest('.category');
-      $g = $c.find('.gallery');
-      $a = $('.category.active');
-      if (!$c.hasClass('active')) {
-        $a.removeClass('active');
-        $a.find('.gallery').show().slideUp(400);
-        $gs.hide();
-        $c.find('.gallery').slideDown(400, function() {
-          $gs.show();
-          return $c.find('.card:first').click();
-        });
-        return $c.addClass('active');
-      }
-    });
-    $('.card.main input').each(function(i) {
-      var $t;
-      $t = $(this);
-      $t.data('timer', 0);
-      return $t.keyup(function() {
-        update_cards(i, this.value);
-        clearTimeout($t.data('timer'));
-        $t.data('timer', setTimeout(function() {
-          var array_oF_inpUt_values;
-          $('.card.main input').each(function() {
-            return $(this).trigger('clearMe');
-          });
-          /*
-                    # TODO
-                    #
-                    # this.value should have a .replace ',' '\,'
-                    # on it so that we can use a comma character and escape anything.
-                    # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-                    */
-          array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
-            return this.value;
-          }));
-          console.log(array_oF_inpUt_values);
-          $.ajax({
-            url: '/saveForm',
-            data: {
-              inputs: array_oF_inpUt_values.join('`~`')
-            }
-          });
-          return false;
-        }, 1000));
-        return false;
-      });
-    });
-    /*
-      # Button Clicking Stuff
-      */
-    $('.quantity input,.shipping_method input').bind('click change', function() {
-      var $q, $s;
-      $q = $('.quantity input:checked');
-      $s = $('.shipping_method input:checked');
-      return $('.order_total .price').html('$' + ($q.val() * 1 + $s.val() * 1));
-    });
-    $('.main_fields .more').click(function() {
-      $('.main_fields .alt').slideDown(500, 'linear', function() {
-        return $('.gallery .card.active').click();
-      });
-      $(this).hide();
-      $('.main_fields .less').show();
-      return false;
-    });
-    $('.main_fields .less').hide().click(function() {
-      $('.main_fields .alt').slideUp(500, 'linear', function() {
-        return $('.gallery .card.active').click();
-      });
-      $(this).hide();
-      $('.main_fields .more').show();
-      return false;
-    });
-    advance_slide = function() {
-      if (new_margin < max_slides * -margin_increment) {
-        new_margin = 0;
-      } else if (new_margin > 0) {
-        new_margin = max_slides * -margin_increment;
-      }
-      return $('.slides .content').stop(true, false).animate({
-        'margin-left': new_margin
-      }, 400);
-    };
-    $('.slides .arrow_right').click(function() {
-      margin_increment = $('.slides').width();
-      clearTimeout(timer);
-      new_margin -= margin_increment;
-      return advance_slide();
-    });
-    $('.slides .arrow_left').click(function() {
-      margin_increment = $('.slides').width();
-      clearTimeout(timer);
-      new_margin -= -margin_increment;
-      return advance_slide();
-    });
-    timer = setTimeout(function() {
-      margin_increment = $('.slides').width();
-      new_margin -= margin_increment;
-      advance_slide();
-      clearTimeout(timer);
-      return timer = setInterval(function() {
-        margin_increment = $('.slides').width();
-        new_margin -= margin_increment;
-        return advance_slide();
-      }, 6500);
-    }, 3000);
-    $slides = $('.slides');
-    return $slides.animate({
-      'padding-left': '301px'
     });
   });
 }).call(this);

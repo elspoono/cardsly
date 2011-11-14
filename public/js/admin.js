@@ -1,31 +1,42 @@
 (function() {
   /*
   
-  All the stuff for the admin template designer
-  is probably going to be in this section right here.
+  Theme admin
   
+<<<<<<< HEAD
   ok.
   
   */  $(function() {
     var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_color, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
+=======
+  - All the theme designer stuff
+  
+  - Plus maybe some similar stuff to home page gallery selection
+  */
+
+  $(function() {
+    var $all_colors, $body, $canvas, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
+>>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
+    $body = $('body');
+    $categories = $('.categories');
     $qr = $card.find('.qr');
     $qr_bg = $qr.find('.background');
     $lines = $card.find('.line');
-    $body = $(document);
     $cat = $designer.find('.category_field input');
     $color1 = $designer.find('.color1');
     $color2 = $designer.find('.color2');
     $fonts = $designer.find('.font_style');
-    $font_color = $fonts.find('.color');
+    $font_color = $fonts.find('.font_color');
     $font_family = $fonts.find('.font_family');
     $qrs = $designer.find('.qr_style');
     $qr_color1 = $qrs.find('.qr_color1');
     $qr_color2 = $qrs.find('.qr_color2');
     $qr_radius = $qrs.find('.qr_radius');
     $qr_color2_alpha = $qrs.find('.qr_color2_alpha');
+    $all_colors = $('.color');
     $dForm = $designer.find('form');
     $upload = $dForm.find('[type=file]');
     card_height = $card.outerHeight();
@@ -34,6 +45,7 @@
     card_inner_width = $card.width();
     active_theme = false;
     shift_pressed = false;
+<<<<<<< HEAD
     /*
       GOOGLE FONTS
     
@@ -41,6 +53,35 @@
       2. Make their common names available
     
       */
+=======
+    ctrl_pressed = false;
+    history = [];
+    redo_history = [];
+    all_themes = [];
+    $.ajax({
+      url: '/get-themes',
+      success: function(all_data) {
+        var theme, _i, _len, _results;
+        all_themes = all_data.themes;
+        $categories.html('');
+        _results = [];
+        for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
+          theme = all_themes[_i];
+          $card = $('<div class="card"><div class="qr"><canvas /></div></div>');
+          $card.css({
+            background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+          });
+          _results.push($categories.append($card));
+        }
+        return _results;
+      },
+      error: function() {
+        return $.load_alert({
+          content: 'Error loading themes. Please try again later.'
+        });
+      }
+    });
+>>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     setTimeout(function() {
       return WebFont.load({
         google: {
@@ -49,9 +90,12 @@
       });
     }, 3000);
     font_families = ['Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'IM Fell English SC', 'Julee', 'Syncopate', 'Gravitas One', 'Quicksand', 'Vast Shadow', 'Smokum', 'Ovo', 'Amatic SC', 'Rancho', 'Poly', 'Chivo', 'Prata', 'Abril Fatface', 'Ultra', 'Love Ya Like A Sister', 'Carter One', 'Luckiest Guy', 'Gruppo', 'Slackey'].sort();
+<<<<<<< HEAD
     /*
       END GOOGLE FONTS
       */
+=======
+>>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     $font_family.find('option').remove();
     for (_i = 0, _len = font_families.length; _i < _len; _i++) {
       fam = font_families[_i];
@@ -109,12 +153,44 @@
     $qr.append($canvas);
     shift_amount = 1;
     $body.keydown(function(e) {
-      var $active_items, c;
+      var $active_items, c, current_theme, new_theme;
       $active_items = $card.find('.active');
       c = e.keyCode;
       if (e.keyCode === 16) {
         shift_pressed = true;
         shift_amount = 10;
+      }
+      if (e.keyCode === 17 || e.keyCode === 91 || e.keyCode === 93) {
+        ctrl_pressed = true;
+      }
+      if (ctrl_pressed && !shift_pressed && e.keyCode === 90) {
+        current_theme = history.pop();
+        new_theme = history[history.length - 1];
+        if (new_theme) {
+          redo_history.push(current_theme);
+          load_theme(new_theme);
+        } else {
+          history.push(current_theme);
+          if ($('.modal').length === 0) {
+            $.load_alert({
+              content: 'No more to undo'
+            });
+          }
+        }
+      }
+      if (ctrl_pressed && shift_pressed && e.keyCode === 90) {
+        new_theme = redo_history.pop();
+        if (new_theme) {
+          history.push(new_theme);
+          load_theme(new_theme);
+        } else {
+          redo_history.push(new_theme);
+          if ($('.modal').length === 0) {
+            $.load_alert({
+              content: 'No more to redo'
+            });
+          }
+        }
       }
       if ($active_items.length && !$font_family.is(':focus')) {
         $active_items.each(function() {
@@ -163,100 +239,120 @@
       }
     });
     $body.keyup(function(e) {
+      if (e.keyCode === 17 || e.keyCode === 91 || e.keyCode === 93) {
+        ctrl_pressed = false;
+      }
       if (e.keyCode === 16) {
         shift_amount = 1;
         return shift_pressed = false;
       }
     });
-    $font_color.ColorPicker({
-      livePreview: true,
-      onChange: function(hsb, hex, rgb) {
-        $font_color.val(hex);
-        return $font_color.keyup();
-      }
-    });
-    $color1.ColorPicker({
-      livePreview: true,
-      onChange: function(hsb, hex, rgb) {
-        $color1.val(hex);
-        return $color1.keyup();
-      }
-    });
-    $color2.ColorPicker({
-      livePreview: true,
-      onChange: function(hsb, hex, rgb) {
-        $color2.val(hex);
-        return $color2.keyup();
-      }
-    });
-    $qr_color1.ColorPicker({
-      livePreview: true,
-      onChange: function(hsb, hex, rgb) {
-        $qr_color1.val(hex);
-        return $qr_color1.keyup();
-      }
-    });
-    $qr_color2.ColorPicker({
-      livePreview: true,
-      onChange: function(hsb, hex, rgb) {
-        $qr_color2.val(hex);
-        return $qr_color2.keyup();
-      }
-    });
-    set_color = function() {
+    $all_colors.each(function() {
       var $t;
       $t = $(this);
-      return $t.ColorPickerSetColor($t.val());
-    };
-    $font_color.focus(set_color);
-    $color1.focus(set_color);
-    $color2.focus(set_color);
-    $qr_color1.focus(set_color);
-    $qr_color2.focus(set_color);
-    $font_color.keyup(function() {
-      var $active_item, $t, index;
-      $t = $(this);
-      $active_item = $card.find('.active');
-      $active_item.css({
-        color: '#' + $t.val()
+      $t.bind('color_update', function(e, options) {
+        $t.data({
+          hex: options.hex
+        });
+        return $t.css({
+          background: '#' + options.hex
+        });
       });
-      index = $active_item.prevAll().length;
-      return active_theme.positions[index].color = $t.val();
-    });
-    $qr_color1.keyup(function() {
-      var $t;
-      $t = $(this);
-      return update_qr_color($t.val());
-    });
-    $qr_color2.keyup(function() {
-      var $t;
-      $t = $(this);
-      return $qr_bg.css({
-        background: '#' + $t.val()
+      $t.focus(function() {
+        return $t.ColorPickerSetColor($t.val());
       });
+      return $t.ColorPicker({
+        livePreview: true,
+        onChange: function(hsb, hex, rgb) {
+          return $t.trigger('color_update', {
+            hex: hex,
+            timer: true
+          });
+        },
+        onShow: function(colpkr) {
+          return $t.blur();
+        }
+      });
+    });
+    $font_color.bind('color_update', function(e, options) {
+      var $active_items, $t;
+      $t = $(this);
+      $active_items = $card.find('.active');
+      $active_items.each(function() {
+        var $active_item, index;
+        $active_item = $(this);
+        $active_item.css({
+          color: '#' + options.hex
+        });
+        index = $active_item.prevAll().length;
+        return active_theme.positions[index].color = options.hex;
+      });
+      if (options.timer) return set_timers();
+    });
+    $qr_color1.bind('color_update', function(e, options) {
+      update_qr_color(options.hex);
+      if (options.timer) return set_timers();
+    });
+    $qr_color2.bind('color_update', function(e, options) {
+      $qr_bg.css({
+        background: '#' + options.hex
+      });
+      if (options.timer) return set_timers();
     });
     update_family = function() {
-      var $active_item, $t, index;
+      var $active_items, $t;
       $t = $(this);
-      $active_item = $card.find('.active');
-      $active_item.css({
-        'font-family': $t.val()
+      $active_items = $card.find('.active');
+      $active_items.each(function() {
+        var $active_item, index;
+        $active_item = $(this);
+        $active_item.css({
+          'font-family': $t.val()
+        });
+        index = $active_item.prevAll().length;
+        return active_theme.positions[index].font_family = $t.val();
       });
-      index = $active_item.prevAll().length;
-      return active_theme.positions[index].font_family = $t.val();
+      return set_timers();
     };
     $font_family.change(update_family);
+    update_align = function(align) {
+      var $active_items, $t;
+      $t = $(this);
+      $active_items = $card.find('.active');
+      return $active_items.each(function() {
+        var $active_item, index;
+        $active_item = $(this);
+        $active_item.css({
+          'text-align': align
+        });
+        index = $active_item.prevAll().length;
+        return active_theme.positions[index].font_family = align;
+      });
+    };
+    $fonts.find('.left').click(function() {
+      return update_align('left');
+    });
+    $fonts.find('.center').click(function() {
+      return update_align('center');
+    });
+    $fonts.find('.right').click(function() {
+      return update_align('right');
+    });
     $qr_color2_alpha.change(function() {
       var $t;
       $t = $(this);
-      return $qr_bg.fadeTo(0, $t.val());
+      $qr_bg.fadeTo(0, $t.val());
+      active_theme.qr_color2_alpha = $t.val();
+      return set_timers();
     });
     $qr_radius.change(function() {
       var $t;
       $t = $(this);
-      return $qr_bg.css({
+      $qr_bg.css({
         'border-radius': $t.val() + 'px'
       });
+      active_theme.qr_radius = $t.val();
+      return set_timers();
     });
     change_tab = function(tab_class) {
       var $a, $t;
@@ -291,17 +387,19 @@
         return false;
       }
     };
-    $lines.mousedown(function() {
+    $lines.mousedown(function(e) {
       var $pa, $selected, $t, index;
       $t = $(this);
       $pa = $card.find('.active');
-      $pa.removeClass('active');
+      if (!shift_pressed) $pa.removeClass('active');
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
       change_tab('.font_style');
       index = $t.prevAll().length;
       $font_family[0].selectedIndex = null;
-      $font_color.val(active_theme.positions[index].color);
+      $font_color.trigger('color_update', {
+        hex: active_theme.positions[index].color
+      });
       $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]');
       return $selected.focus().attr('selected', 'selected');
     });
@@ -314,20 +412,25 @@
       $body.bind('click', unfocus_highlight);
       return change_tab('.qr_style');
     });
-    page_timer = 0;
-    set_page_timer = function() {
-      clearTimeout(page_timer);
-      return page_timer = setTimeout(function() {
+    save_timer = 0;
+    history_timer = 0;
+    set_timers = function() {
+      clearTimeout(save_timer);
+      save_timer = setTimeout(function() {
         return execute_save();
-      }, 500);
+      }, 2000);
+      clearTimeout(history_timer);
+      return history_timer = setTimeout(function() {
+        update_active_theme();
+        history.push(active_theme);
+        return redo_history = [];
+      }, 200);
     };
-    $cat.keyup(set_page_timer);
-    $font_color.keyup(set_page_timer);
-    $color1.keyup(set_page_timer);
+    $cat.keyup(set_timers);
     $lines.draggable({
       grid: [10, 10],
       containment: '.designer .card',
-      stop: set_page_timer
+      stop: set_timers
     });
     $lines.resizable({
       grid: 10,
@@ -341,12 +444,12 @@
           'line-height': h + 'px'
         });
       },
-      stop: set_page_timer
+      stop: set_timers
     });
     $qr.draggable({
       grid: [10, 10],
       containment: '.designer .card',
-      stop: set_page_timer
+      stop: set_timers
     });
     $qr.resizable({
       grid: 10,
@@ -367,7 +470,7 @@
       containment: '.designer .card',
       handles: 'se',
       aspectRatio: 1,
-      stop: set_page_timer
+      stop: set_timers
     });
     $upload.change(function() {
       return $dForm.submit();
@@ -381,7 +484,7 @@
       $t.addClass('active');
       return false;
     });
-    get_position = function($t) {
+    get_position = function($t, previous) {
       var height, left, result, top, width;
       height = parseInt($t.height());
       width = parseInt($t.width());
@@ -394,12 +497,15 @@
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
         x: Math.round(left / card_width * 10000) / 100,
-        y: Math.round(top / card_height * 10000) / 100
+        y: Math.round(top / card_height * 10000) / 100,
+        text_align: previous.text_align,
+        color: previous.color,
+        font_family: previous.font_family
       };
     };
-    execute_save = function(next) {
-      var parameters, qr, theme;
-      qr = get_position($qr);
+    update_active_theme = function() {
+      var qr, theme;
+      qr = get_position($qr, {});
       theme = {
         _id: active_theme._id,
         category: $cat.val(),
@@ -408,28 +514,42 @@
         qr_h: qr.h,
         qr_w: qr.w,
         positions: [],
-        color1: $color1.val(),
-        color2: $color2.val(),
-        s3_id: active_theme.s3_id
+        color1: $color1.data('hex'),
+        color2: $color2.data('hex'),
+        qr_color1: $qr_color1.data('hex'),
+        qr_color2: $qr_color2.data('hex'),
+        s3_id: active_theme.s3_id,
+        qr_radius: active_theme.qr_radius,
+        qr_color2_alpha: active_theme.qr_color2_alpha
       };
-      $lines.each(function() {
+      $lines.each(function(i) {
         var $t, pos;
         $t = $(this);
+<<<<<<< HEAD
         pos = get_position($t);
         if (pos) {
           return theme.positions.push(pos);
         }
+=======
+        pos = get_position($t, active_theme.positions[i] || {});
+        if (pos) return theme.positions.push(pos);
+>>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
       });
+      return active_theme = theme;
+    };
+    execute_save = function(next) {
+      var parameters;
+      update_active_theme();
       parameters = {
-        theme: theme,
+        theme: active_theme,
         do_save: next ? true : false
       };
       return $.ajax({
-        url: '/saveTheme',
+        url: '/save-theme',
         data: JSON.stringify(parameters),
         success: function(serverResponse) {
           if (!serverResponse.success) {
-            $designer.find('.save').showTooltip({
+            $designer.find('.save').show_tooltip({
               message: 'Error saving.'
             });
           }
@@ -438,7 +558,7 @@
           }
         },
         error: function() {
-          $designer.find('.save').showTooltip({
+          $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
           if (next) {
@@ -450,6 +570,7 @@
     $.s3_result = function(s3_id) {
       if (!no_theme() && s3_id) {
         active_theme.s3_id = s3_id;
+        set_timers();
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
         });
@@ -488,7 +609,8 @@
       default_theme.positions.push({
         color: '000066',
         font_family: 'Vast Shadow',
-        h: 7,
+        text_align: 'left',
+        h: 6.67,
         w: 60,
         x: 3.05,
         y: 5 + i * 10
@@ -515,6 +637,15 @@
       });
       $qr_bg.fadeTo(0, theme.qr_color2_alpha);
       update_qr_color(theme.qr_color1);
+      if (theme.s3_id) {
+        $card.css({
+          background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+        });
+      } else {
+        $card.css({
+          background: '#FFFFFF'
+        });
+      }
       _ref = theme.positions;
       for (i = 0, _len2 = _ref.length; i < _len2; i++) {
         pos = _ref[i];
@@ -526,24 +657,40 @@
           fontSize: (pos.h / 100 * card_height) + 'px',
           lineHeight: (pos.h / 100 * card_height) + 'px',
           fontFamily: pos.font_family,
+          textAlign: pos.text_align,
           color: '#' + pos.color
         });
       }
       $cat.val(theme.category);
-      $color1.val(theme.color1);
-      $color2.val(theme.color2);
-      $qr_color1.val(theme.qr_color1);
-      $qr_color2.val(theme.qr_color2);
+      $color1.trigger('color_update', {
+        hex: theme.color1
+      });
+      $color2.trigger('color_update', {
+        hex: theme.color2
+      });
+      $qr_color1.trigger('color_update', {
+        hex: theme.qr_color1
+      });
+      $qr_color2.trigger('color_update', {
+        hex: theme.qr_color2
+      });
       $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr('selected', 'selected');
       return $qr_radius.find('[value=' + theme.qr_radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
+<<<<<<< HEAD
       return load_theme(default_theme);
       /*
           $new_li = $ '<li class="card" />'
           $('.category[category=""] .gallery').append $new_li
           $new_li.click()
           */
+=======
+      var theme;
+      theme = default_theme;
+      history = [theme];
+      return load_theme(theme);
+>>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     });
     $designer.find('.buttons .save').click(function() {
       if (no_theme()) {

@@ -3,6 +3,9 @@
   .cell_bg
   .cell_content
     h3 Theme Admin
+    p.subtitle
+      b keyboard shortcuts:
+      |  arrow, shift+arrow, cmd+z and shift+cmd+z
     .designer
       .card
         .qr
@@ -14,28 +17,32 @@
               =lines[i]
       .options
         .tab.defaults.active
-          h4 Card
+          h4 General
           ul
             li.category_field
               label Category
               input(placeholder='Professional')
             li.image
               label Background
-              form(target='hiddenFrame',action='/uploadImage',method='POST',enctype='multipart/form-data')
+              form(target='hiddenFrame',action='/upload-image',method='POST',enctype='multipart/form-data')
                 input(type='file',name='image')
               .img_loader
                 iframe(name='hiddenFrame')
             li.gradient
               label Website Colors
-              input.color1(placeholder='000000')
-              input.color2(placeholder='FFFFFF')
+              .color.color1
+              .color.color2
         .tab.font_style
           h4 Font
           ul
             li
-              input.color(placeholder='000000')
+              .color.font_color
+              .alignment
+                .left
+                .center
+                .right
             li
-              select.font_family(size='8')
+              select.font_family(size='6')
                 option
                 option Luckiest Guy
                 option Arial
@@ -44,8 +51,8 @@
           ul
             li
               label Colors
-              input.qr_color1(placeholder='000000')
-              input.qr_color2(placeholder='FFFFFF')
+              .color.qr_color1
+              .color.qr_color2
             li
               label Opacity
               select.qr_color2_alpha
@@ -61,7 +68,8 @@
           .button.normal.save Save
           .button.gray.delete Delete
       .clear
-    .category.active(category='')
-      h4 (No Category)
-      ul.gallery
     .button.gray.add_new Add New
+.section
+  .cell_bg
+  .cell_content
+    .categories Loading thumbnails ...

@@ -1,13 +1,25 @@
 (function() {
   /*
-  GENERIC LIBRARY LOADING AND SETUP
-  *****************************************
   
-  Express / Sendgrid / Coffeescript /  Imagemagick / etc etc etc
+  THE APPLICATION
   
-  *****************************************
+  - pretty much everything server side is in here
+  - for now (intentionally for now, not lazy for now)
+  - we'll separate it into files later, depending on how it evolves
+  
   */
-  var Card, CardSchema, Db, Message, MessageSchema, ObjectId, PDFDocument, Position, PositionSchema, Promise, Schema, Server, Theme, ThemeGroup, ThemeGroupSchema, ThemeSchema, User, UserSchema, View, ViewSchema, app, auth, bcrypt, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, mongoStore, mongodb, mongoose, nodemailer, parsed, rest, securedAdminPage, securedPage, sessionStore, url, util;
+  /*
+  
+  LIBRARY LOADING
+  
+  - load in the libraries we'll use
+  - do basic config on all of them
+  
+  */
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
+  process.on('uncaughtException', function(err) {
+    return console.log('UNCAUGHT', err);
+  });
   express = require('express');
   http = require('http');
   form = require('connect-form');
@@ -45,22 +57,22 @@
   mongoStore = require('connect-mongodb');
   mongoose = require('mongoose');
   mongoose.connect(db_uri);
-  Schema = mongoose.Schema;
-  ObjectId = Schema.ObjectId;
-  sessionStore = new mongoStore({
+  schema = mongoose.Schema;
+  object_id = schema.ObjectId;
+  session_store = new mongoStore({
     db: db,
     username: dbAuth.username,
     password: dbAuth.password
   });
   /*
   UTIL
-  
+  #
+  #
   it's a useful for inspecting.
-  
+  #
   USAGE:
-  
+  #
   console.log util.inspect myVariableIWantToInspect
-  
   */
   util = require('util');
   bcrypt = require('bcrypt');
@@ -75,14 +87,23 @@
   everyauth = require('everyauth');
   Promise = everyauth.Promise;
   /*
-  DATABASE MODELING
-  *****************************************
-  
-  All our schemas
-  
-  *****************************************
+  Knox - AMAZON S3 Connector
+  Add the api keys and such
   */
-  UserSchema = new Schema({
+  knoxClient = knox.createClient({
+    key: 'AKIAI2CJEBPY77CQ32AA',
+    secret: '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',
+    bucket: 'cardsly'
+  });
+  /*
+  
+  DATABASE MODELING
+  
+  - set up the schemas
+  - they's all prefixed with mongo_
+  
+  */
+  user_schema = new schema({
     email: String,
     password_encrypted: String,
     role: String,
@@ -108,22 +129,22 @@
       "default": true
     }
   });
-  UserSchema.static('authenticate', function(email, password, next) {
+  user_schema.static('authenticate', function(email, password, next) {
     if (!email || !password || email === '' || password === '') {
       return next('Please enter an email address and password');
     } else {
-      return User.findOne({
+      return mongo_user.findOne({
         email: email,
         active: true
-      }, function(err, foundUser) {
+      }, function(err, founduser) {
         if (err) {
           return next('Database Error');
         } else {
-          if (foundUser) {
-            if (!foundUser.password_encrypted) {
+          if (founduser) {
+            if (!founduser.password_encrypted) {
               return next('That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.');
-            } else if (compareEncrypted(password, foundUser.password_encrypted)) {
-              return next(null, foundUser);
+            } else if (compareEncrypted(password, founduser.password_encrypted)) {
+              return next(null, founduser);
             } else {
               return next('Password incorrect for that email address.');
             }
@@ -134,9 +155,9 @@
       });
     }
   });
-  User = mongoose.model('User', UserSchema);
-  CardSchema = new Schema({
-    user_id: Number,
+  mongo_user = mongoose.model('users', user_schema);
+  card_schema = new schema({
+    user_id: String,
     print_id: Number,
     path: String,
     theme_id: Number,
@@ -149,8 +170,8 @@
       "default": true
     }
   });
-  Card = mongoose.model('Card', CardSchema);
-  MessageSchema = new Schema({
+  mongo_card = mongoose.model('cards', card_schema);
+  message_schema = new schema({
     include_contact: Boolean,
     content: String,
     s3_id: String,
@@ -163,70 +184,62 @@
       "default": true
     }
   });
-  Message = mongoose.model('Message', MessageSchema);
-  ThemeGroupSchema = new Schema({
-    category: String,
-    date_added: {
-      type: Date,
-      "default": Date.now
-    },
-    active: {
-      type: Boolean,
-      "default": true
-    }
-  });
-  ThemeGroup = mongoose.model('ThemeGroup', ThemeGroupSchema);
-  ThemeSchema = new Schema({
-    date_added: {
-      type: Date,
-      "default": Date.now
-    },
-    active: {
-      type: Boolean,
-      "default": true
-    },
-    theme_group_id: Number,
-    qr_color1: String,
-    qr_color2: String,
-    qr_color2_alpha: Number,
-    qr_radius: Number,
-    qr_h: Number,
-    qr_w: Number,
-    qr_x: Number,
-    qr_y: Number,
-    color1: String,
-    color2: String,
-    s3_id: String
-  });
-  Theme = mongoose.model('Theme', ThemeSchema);
-  PositionSchema = new Schema({
-    theme_id: Number,
+  mongo_message = mongoose.model('messages', message_schema);
+  line_schema = new schema({
     order_id: Number,
     color: String,
     font_family: String,
+    text_align: String,
     h: Number,
     w: Number,
     x: Number,
     y: Number
   });
-  Position = mongoose.model('Position', PositionSchema);
-  ViewSchema = new Schema({
+  theme_template_schema = new schema({
+    qr: {
+      color1: String,
+      color2: String,
+      color2_alpha: Number,
+      radius: Number,
+      h: Number,
+      w: Number,
+      x: Number,
+      y: Number
+    },
+    lines: [line_schema],
+    color1: String,
+    color2: String,
+    s3_id: String
+  });
+  theme_schema = new schema({
+    category: String,
+    theme_templates: [theme_template_schema],
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
+  });
+  mongo_theme = mongoose.model('themes', theme_schema);
+  view_schema = new schema({
     ip_address: String,
     user_agent: String,
-    card_id: Number,
+    card_id: String,
     date_added: {
       type: Date,
       "default": Date.now
     }
   });
-  View = mongoose.model('View', ViewSchema);
+  mongo_view = mongoose.model('views', view_schema);
   /*
-  EVERYAUTH STUFF
-  *****************************************
   
-  Authenticating to 3rd Party Providers
+  EVERYAUTH CONFIG
   
-  *****************************************
+  - authenticating to 3rd Party Providers
+  
   */
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, userSearch;
@@ -247,28 +260,28 @@
     if (userMeta.email) {
       userSearch.email = userMeta.email;
     }
-    User.findOne(userSearch, function(err, existingUser) {
+    mongo_user.findOne(userSearch, function(err, existinguser) {
       var user;
       if (err) {
         console.log('err: ', err);
         return promise.fail(err);
-      } else if (existingUser) {
-        console.log('user exists: ', existingUser);
-        return promise.fulfill(existingUser);
+      } else if (existinguser) {
+        console.log('user exists: ', existinguser);
+        return promise.fulfill(existinguser);
       } else {
-        user = new User;
+        user = new mongo_user;
         user.name = userSearch.name;
         user.linkedin_url = userSearch.linkedin_url;
         user.facebook_url = userSearch.facebook_url;
         user.twitter_url = userSearch.twitter_url;
         user.email = userSearch.email;
-        return user.save(function(err, createdUser) {
+        return user.save(function(err, createduser) {
           if (err) {
             console.log('err: ', err);
             return promise.fail(err);
           } else {
-            console.log('user created: ', createdUser);
-            return promise.fulfill(createdUser);
+            console.log('user created: ', createduser);
+            return promise.fulfill(createduser);
           }
         });
       }
@@ -276,14 +289,11 @@
     return promise;
   };
   /*
-  
   Create the Everyauth Accessing the user function
-  
   per the "Accessing the user" section of the everyauth README
-  
   */
   everyauth.everymodule.findUserById(function(userId, callback) {
-    return User.findById(userId, callback);
+    return mongo_user.findById(userId, callback);
   });
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
   everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
@@ -312,36 +322,24 @@
         alt: 'json'
       }
     }).on('success', function(data, res) {
-      var oauthUser;
-      oauthUser = {
+      var oauthuser;
+      oauthuser = {
         email: data.data.email
       };
-      return promise.fulfill(oauthUser);
+      return promise.fulfill(oauthuser);
     }).on('error', function(data, res) {
       return promise.fail(data);
     });
     return promise;
   });
   /*
-  everyauth.googlehybrid.consumerKey 'cards.ly'
-  everyauth.googlehybrid.consumerSecret 'C_UrIqmFopTXRPLFfFRcwXa9'
-  everyauth.googlehybrid.findOrCreateUser handleGoodResponse
-  everyauth.googlehybrid.scope ['email']
-  everyauth.googlehybrid.redirectPath '/success'
-  */
-  everyauth.debug = true;
-  /*
   
-  Knox - AMAZON S3 Connector
+  EXPRESS APPLICATION CONFIG
   
-  Add the api keys and such
+  - set route defaults
+  - configure middleware, etc
   
   */
-  knoxClient = knox.createClient({
-    key: 'AKIAI2CJEBPY77CQ32AA',
-    secret: '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',
-    bucket: 'cardsly'
-  });
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
@@ -358,7 +356,7 @@
     app.use(express.cookieParser());
     app.use(express.session({
       secret: 'how now brown cow bow wow',
-      store: sessionStore,
+      store: session_store,
       cookie: {
         maxAge: 86400000 * 14
       }
@@ -376,104 +374,163 @@
     return app.use(express.errorHandler());
   });
   /*
-  ROUTES
   
-  All of our routes are defined here
+  POST ROUTES
   
-  */
-  err = function(res, err) {
-    return res.send('', {
-      Location: '/error'
-    }, 302);
-  };
-  /*
-  
-  POST PAGES
-  
-  actions, like saving stuff, and checking stuff, from ajax
+  - for AJAX stuff mostly
+  - maybe other post actions
   
   */
-  app.post('/uploadImage', function(req, res) {
-    return req.form.complete(function(err, fields, files) {
-      var ext, fileName, path, size, sizes, _fn, _i, _len;
-      if (err) {
-        return res.send({
-          err: err
-        });
-      } else {
-        path = files.image.path;
-        fileName = path.replace(/.*tmp\//ig, '');
-        ext = fileName.replace(/.*\./ig, '');
-        sizes = ['158x90', '525x300'];
-        _fn = function(size) {
-          return im.convert([path, '-filter', 'Quadratic', '-resize', size, '/tmp/' + size + fileName], function(err, smallImg, stderr) {
-            if (err) {
-              return console.log('ERR:', err);
-            } else {
-              return fs.readFile('/tmp/' + size + fileName, function(err, buff) {
-                var knoxReq;
-                if (err) {
-                  return console.log('ERR:', err);
-                } else {
-                  knoxReq = knoxClient.put('/' + size + '/' + fileName, {
-                    'Content-Length': buff.length,
-                    'Content-Type': 'image/' + ext
-                  });
-                  knoxReq.on('response', function(awsRes) {
-                    if (awsRes.statusCode !== 200) {
-                      console.log('ERR', awsRes);
-                    }
-                    if (size === '525x300') {
-                      if (awsRes.statusCode === 200) {
-                        return res.send('<script>parent.window.$.s3_result(\'' + fileName + '\');</script>');
-                      } else {
-                        return res.send('<script>parent.window.$.s3_result(false);</script>');
+  app.post('/upload-image', function(req, res) {
+    var s3_fail;
+    s3_fail = function(err) {
+      console.log('ERR: ', err);
+      return res.send('<script>parent.window.$.s3_result(false);</script>');
+    };
+    try {
+      return req.form.complete(function(err, fields, files) {
+        var ext, fileName, path, size, sizes, _fn, _i, _len;
+        if (err) {
+          return s3_fail(err);
+        } else {
+          path = files.image.path;
+          fileName = path.replace(/.*tmp\//ig, '');
+          ext = fileName.replace(/.*\./ig, '');
+          sizes = ['158x90', '525x300'];
+          _fn = function(size) {
+            return im.convert([path, '-filter', 'Quadratic', '-resize', size, '/tmp/' + size + fileName], function(err, smallImg, stderr) {
+              if (err) {
+                return s3_fail(err);
+              } else {
+                return fs.readFile('/tmp/' + size + fileName, function(err, buff) {
+                  var knoxReq;
+                  if (err) {
+                    return console.log('ERR:', err);
+                  } else {
+                    knoxReq = knoxClient.put('/' + size + '/' + fileName, {
+                      'Content-Length': buff.length,
+                      'Content-Type': 'image/' + ext
+                    });
+                    knoxReq.on('response', function(awsRes) {
+                      if (awsRes.statusCode !== 200) {
+                        console.log('ERR', awsRes);
                       }
-                    }
-                  });
-                  knoxReq.end(buff);
-                  return fs.unlink('/tmp/' + size + fileName, function(err) {
-                    if (err) {
-                      return console.log('ERR:', err);
-                    }
-                  });
-                }
-              });
-            }
+                      if (size === '525x300') {
+                        if (awsRes.statusCode === 200) {
+                          return res.send('<script>parent.window.$.s3_result(\'' + fileName + '\');</script>');
+                        } else {
+                          return s3_fail(awsRes);
+                        }
+                      }
+                    });
+                    knoxReq.end(buff);
+                    return fs.unlink('/tmp/' + size + fileName, function(err) {
+                      if (err) {
+                        return console.log('ERR:', err);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          };
+          for (_i = 0, _len = sizes.length; _i < _len; _i++) {
+            size = sizes[_i];
+            _fn(size);
+          }
+          return fs.readFile(path, function(err, buff) {
+            var knoxReq;
+            knoxReq = knoxClient.put('/raw/' + fileName, {
+              'Content-Length': buff.length,
+              'Content-Type': 'image/' + ext
+            });
+            knoxReq.on('response', function(res) {
+              if (res.statusCode !== 200) {
+                return console.log('ERR', res);
+              }
+            });
+            return knoxReq.end(buff);
           });
-        };
-        for (_i = 0, _len = sizes.length; _i < _len; _i++) {
-          size = sizes[_i];
-          _fn(size);
         }
-        return fs.readFile(path, function(err, buff) {
-          var knoxReq;
-          knoxReq = knoxClient.put('/raw/' + fileName, {
-            'Content-Length': buff.length,
-            'Content-Type': 'image/' + ext
+      });
+    } catch (err) {
+      return s3_fail(err);
+    }
+  });
+  check_no_err_ajax = function(err) {
+    if (err) {
+      console.log(err);
+      res.send({
+        err: err
+      });
+    }
+    return !err;
+  };
+  app.post('/save-theme', function(req, res) {
+    var i, new_theme, new_theme_template, param_position, params, _len, _ref;
+    params = JSON.parse(req.rawBody);
+    req.session.theme = params.theme;
+    /*
+      TODO
+    
+      All of these parameters are coming in right now in a very weird way.
+    
+      We probably want to match the way they are saved in the database a little more closely in the admin.coffee
+    
+      That means using qr.x instead of qr_x, etc, etc, etc.
+    
+      Just a TODO, migrate that over at some point.
+    
+      */
+    if (params.do_save) {
+      if (params.theme._id) {
+        return console.log(params.theme);
+      } else {
+        new_theme = new mongo_theme;
+        new_theme.category = params.theme.category;
+        new_theme_template = {
+          qr: {
+            x: params.theme.qr_x,
+            y: params.theme.qr_y,
+            h: params.theme.qr_h,
+            w: params.theme.qr_w,
+            radius: params.theme.qr_radius,
+            color1: params.theme.qr_color1,
+            color2: params.theme.qr_color2,
+            color2_alpha: params.theme.qr_color2_alpha
+          },
+          color1: params.theme.color1,
+          color2: params.theme.color2,
+          s3_id: params.theme.s3_id,
+          lines: []
+        };
+        _ref = params.theme.positions;
+        for (i = 0, _len = _ref.length; i < _len; i++) {
+          param_position = _ref[i];
+          new_theme_template.lines.push({
+            order_id: i,
+            x: param_position.x,
+            y: param_position.y,
+            h: param_position.h,
+            w: param_position.w,
+            text_align: param_position.text_align,
+            color: param_position.color,
+            font_family: param_position.font_family
           });
-          knoxReq.on('response', function(res) {
-            if (res.statusCode !== 200) {
-              console.log('ERR', res);
-            }
-            return console.log(knoxReq.url);
-          });
-          return knoxReq.end(buff);
+        }
+        new_theme.theme_templates.push(new_theme_template);
+        return new_theme.save(function(err, theme_saved) {
+          if (check_no_err_ajax(err)) {
+            return res.send({
+              success: true,
+              theme: theme_saved
+            });
+          }
         });
       }
-    });
+    }
   });
-  app.post('/saveTheme', function(req, res) {
-    var params;
-    params = JSON.parse(req.rawBody);
-    console.log(util.inspect(params));
-    console.log(util.inspect(params.theme.positions));
-    req.session.theme = params.theme;
-    return res.send({
-      success: true
-    });
-  });
-  app.post('/saveForm', function(req, res) {
+  app.post('/save-form', function(req, res) {
     /*
       TODO
       
@@ -487,7 +544,7 @@
       success: true
     });
   });
-  app.post('/checkEmail', function(req, res, next) {
+  app.post('/check-email', function(req, res, next) {
     var handleReturn, params;
     params = req.body || {};
     req.email = params.email || '';
@@ -498,12 +555,12 @@
       return next();
     };
     if (params.id) {
-      return User.count({
+      return mongo_user.count({
         email: req.email,
         active: true
       }, handleReturn);
     } else {
-      return User.count({
+      return mongo_user.count({
         email: req.email,
         active: true
       }, handleReturn);
@@ -516,7 +573,7 @@
     });
   });
   app.post('/login', function(req, res, next) {
-    return User.authenticate(req.body.email, req.body.password, function(err, user) {
+    return mongo_user.authenticate(req.body.email, req.body.password, function(err, user) {
       if (err || !user) {
         return res.send({
           err: err
@@ -525,13 +582,14 @@
         req.session.auth = {
           userId: user._id
         };
-        return res.send({
+        res.send({
           success: true
         });
+        return console.log(req.user);
       }
     });
   });
-  app.post('/sendFeedback', function(req, res, next) {
+  app.post('/send-feedback', function(req, res, next) {
     res.send({
       succesfulFeedback: 'This worked!'
     });
@@ -547,8 +605,8 @@
       }
     });
   });
-  app.post('/createUser', function(req, res, next) {
-    return User.count({
+  app.post('/create-user', function(req, res, next) {
+    return mongo_user.count({
       email: req.body.email,
       active: true
     }, function(err, already) {
@@ -562,23 +620,49 @@
     });
   }, function(req, res, next) {
     var user;
-    user = new User();
+    user = new mongo_user();
     user.email = req.body.email;
     user.password_encrypted = encrypted(req.body.password);
     return user.save(function(err, data) {
+      req.session.auth = {
+        userId: user._id
+      };
       return res.send({
         success: 'True'
       });
     });
   });
-  app.post('/change_password', function(req, res, next) {
-    user.password_encrypted = encrypted(req.body.password);
-    return user.save(function(err, data) {
+  app.post('/change-password', function(req, res, next) {
+    req.user.password_encrypted = encrypted(req.body.password);
+    return req.user.save(function(err, data) {
       return res.send({
         success: 'True'
       });
     });
   });
+  app.post('/get-themes', function(req, res, next) {
+    return mongo_theme.find({
+      active: true
+    }, [], {
+      sort: {
+        category: 1
+      }
+    }, function(err, themes) {
+      if (check_no_err_ajax(err)) {
+        return res.send({
+          themes: themes
+        });
+      }
+    });
+  });
+  /*
+  
+  GET ROUTES
+  
+  - normal pages
+  - anything that's a regular page
+  
+  */
   securedAdminPage = function(req, res, next) {
     if (req.user && req.user.role === 'admin') {
       return next();
@@ -597,18 +681,20 @@
       }, 302);
     }
   };
-  /*
-  
-  GET PAGES
-  
-  like the home page and about page and stuff
-  
-  */
+  check_no_err = function(err) {
+    if (err) {
+      console.log(err);
+      res.send('', {
+        Location: '/error'
+      }, 302);
+    }
+    return !err;
+  };
   app.get('/', function(req, res) {
     return res.render('landing-prelaunch', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
   app.get('/success', function(req, res) {
@@ -623,11 +709,22 @@
       session: req.session
     });
   });
-  app.get('/admin', securedAdminPage, function(req, res) {
+  app.get('/admin', securedAdminPage, function(req, res, next) {
     return res.render('admin', {
       user: req.user,
       session: req.session,
       scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
+    });
+  });
+  app.get('/make-me-admin', securedPage, function(req, res) {
+    req.user.role = 'admin';
+    return req.user.save(function(err) {
+      if (err) {
+        console.log(err);
+      }
+      return res.send('', {
+        Location: '/admin'
+      }, 302);
     });
   });
   app.get('/login', function(req, res) {
@@ -643,7 +740,6 @@
     });
   });
   app.get('/how-it-works/:whateverComesAfterHowItWorks?', function(req, res) {
-    console.log(req);
     return res.render('how-it-works', {
       user: req.user,
       session: req.session,
@@ -661,27 +757,45 @@
     return res.render('thank_you', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
   app.get('/splash', function(req, res) {
     return res.render('splash', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
+    });
+  });
+  app.get('/error', function(req, res) {
+    return res.render('error', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing'
     });
   });
   app.get('/home', function(req, res) {
     return res.render('index', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      scripts: ['/js/home.js']
     });
   });
+  /*
+  
+  Generic Routes
+  
+  - error handlers
+  - redirects
+  - robots.txt
+  - etc
+  
+  */
   app.get('/error', function(req, res) {
     return res.render('error');
   });
   app.get('/robots.txt', function(req, res, next) {
-    return res.send('User-agent: *\nDisallow: ', {
+    return res.send('user-agent: *\nDisallow: ', {
       'Content-Type': 'text/plain'
     });
   });

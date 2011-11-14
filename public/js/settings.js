@@ -7,6 +7,7 @@
   ok.
   
   */  $(function() {
+    var $set_new_password;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
       $t = $(this);
@@ -37,6 +38,54 @@
         }
       }, 1000));
     });
-    return false;
+    false;
+    $set_new_password = $('.set_new_password');
+    return $set_new_password.submit(function() {
+      var $new_password, $new_password2, err;
+      $new_password = $('.new_password');
+      $new_password2 = $('.new_password2');
+      err = false;
+      if (new_password.val() === '' || new_password2.val() === '') {
+        err = 'Please enter your new password twice.';
+      } else if (password.val() !== password2.val()) {
+        err = 'I\'m sorry, I don\'t think those passwords match.';
+      } else if (password.val().length < 4) {
+        err = 'Password should be a little longer, at least 4 characters.';
+      }
+      if (err) {
+        $.load_alert({
+          content: err
+        });
+      } else {
+        form_close();
+        $.load_loading({}, function(loading_close) {
+          return $.ajax({
+            url: '/change-password',
+            data: {
+              new_password: new_password.val(),
+              new_password2: new_password2.val()({
+                success: function(data) {
+                  loading_close();
+                  if (data.err) {
+                    return $.load_alert({
+                      content: data.err
+                    });
+                  } else {
+                    return successful_password_change();
+                  }
+                },
+                error: function(err) {
+                  loading_close();
+                  return $.load_alert({
+                    content: 'Our apologies. A server error occurred.'
+                  });
+                }
+              })
+            }
+          });
+        });
+      }
+      return false;
+    });
   });
 }).call(this);

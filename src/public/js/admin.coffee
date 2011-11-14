@@ -1,43 +1,70 @@
+##################################################################
 
+###
+
+Theme admin
+
+- All the theme designer stuff
+
+- Plus maybe some similar stuff to home page gallery selection
 
 ###
 
-All the stuff for the admin template designer
-is probably going to be in this section right here.
+##################################################################
 
-ok.
 
-###
+
+
+
 
 $ ->
+
+  #############
+  #
+  # Instanstiate all of our jQuery objects we'll be reusing
+  #
   # Grab all the guys we're going to use
   $designer = $ '.designer'
   #
+  # Containers
   $options = $designer.find '.options'
   $card = $designer.find '.card'
+  $body = $ 'body'
+  $categories = $ '.categories'
+  #
+  # Stuff inside the designer itself
   $qr = $card.find '.qr'
   $qr_bg = $qr.find('.background')
   $lines = $card.find '.line'
-  $body = $ document
   #
+  # Main Options
   $cat = $designer.find '.category_field input'
-  #
   $color1 = $designer.find '.color1'
   $color2 = $designer.find '.color2'
   #
+  # Font Options
   $fonts = $designer.find '.font_style'
-  $font_color = $fonts.find '.color'
+  $font_color = $fonts.find '.font_color'
   $font_family = $fonts.find '.font_family'
   #
+  # QR Options
   $qrs = $designer.find '.qr_style'
   $qr_color1 = $qrs.find '.qr_color1'
   $qr_color2 = $qrs.find '.qr_color2'
   $qr_radius = $qrs.find '.qr_radius'
   $qr_color2_alpha = $qrs.find '.qr_color2_alpha'
   #
+  # All Color Pickers
+  $all_colors = $ '.color'
+  #
+  # The form
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
   #
+  #
+  ################
+
+
   # Set some constants
   card_height = $card.outerHeight()
   card_width = $card.outerWidth()
@@ -45,33 +72,67 @@ $ ->
   card_inner_width = $card.width()
   active_theme = false
   shift_pressed = false
+  ctrl_pressed = false
+  history = []
+  redo_history = []
+  all_themes = []
+  #
+  
+  ##############
+  #
+  # The Themes
   #
   #
-  ###
-  GOOGLE FONTS
+  $.ajax
+    url: '/get-themes'
+    success: (all_data) ->
+      all_themes = all_data.themes
+      $categories.html ''
+      for theme in all_themes
+        $card = $ '<div class="card"><div class="qr"><canvas /></div></div>'
+        $card.css
+          background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+        $categories.append $card
+    error: ->
+      $.load_alert
+        content: 'Error loading themes. Please try again later.'
+  #
+  #
+  #
+  # END The Themes
+  #
+  #
+  ##############
 
-  1. Load them
-  2. Make their common names available
-
-  ###
-
+  ##############
+  #
+  # GOOGLE FONTS
+  #
+  # 1. Load them
+  # 2. Make their common names available
+  #
+  #
   # Loading Them
   setTimeout ->
     WebFont.load google:
       families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
   ,3000
-
+  #
   # Common Names
   font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM Fell English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-
-  ###
-  END GOOGLE FONTS
-  ###
   #
   # Load in those font families
   $font_family.find('option').remove()
   for fam in font_families
     $font_family.append '<option value="' + fam + '" style="font-family:' + fam + ';">' + fam + '</option>'
+  #
+  # END GOOGLE FONTS
+  #
+  ################
+
+
+
+
 
   #
   # QRs and Lines are hidden By default
@@ -112,7 +173,13 @@ $ ->
         ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
   
   $qr.append $canvas
-  
+
+
+
+  #############################
+  #
+  # The KEYBOARD events
+  #
   #
   # Key up and down events for active lines
   shift_amount = 1
@@ -124,6 +191,39 @@ $ ->
     if e.keyCode is 16
       shift_pressed = true
       shift_amount = 10
+    #
+    # Ctrl or Command Pressed Down
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = true
+    #
+    #
+    # Undo 
+    if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      current_theme = history.pop()
+      new_theme = history[history.length-1]
+      if new_theme
+        redo_history.push current_theme
+        load_theme new_theme
+      else
+        history.push current_theme
+        if $('.modal').length is 0
+          $.load_alert
+            content: 'No more to undo'
+    #
+    # Redo
+    if ctrl_pressed and shift_pressed and e.keyCode is 90
+      new_theme = redo_history.pop()
+      if new_theme
+        history.push new_theme
+        load_theme new_theme
+      else
+        redo_history.push new_theme
+        if $('.modal').length is 0
+          $.load_alert
+            content: 'No more to redo'
+    #
+    #
+    #
     #
     # Only if we have a live one, do we do anything with this
     if $active_items.length and not $font_family.is(':focus') #and not $font_color.is(':focus')
@@ -173,10 +273,17 @@ $ ->
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
   $body.keyup (e) ->
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = false
     if e.keyCode is 16
       shift_amount = 1
       shift_pressed = false
   #
+  #
+  #
+  ##########################
+
+
 
   # ***************************************************************
   # *
@@ -189,41 +296,25 @@ $ ->
   ##############
   # Colors pickers for ... ... .... ... picking colors.
   #
-  $font_color.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $font_color.val hex
-      $font_color.keyup()
-  #
-  $color1.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $color1.val hex
-      $color1.keyup()
-  $color2.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $color2.val hex
-      $color2.keyup()
-  #
-  $qr_color1.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $qr_color1.val hex
-      $qr_color1.keyup()
-  $qr_color2.ColorPicker
-    livePreview: true
-    onChange: (hsb, hex, rgb) ->
-      $qr_color2.val hex
-      $qr_color2.keyup()
-  set_color = ->
+
+  $all_colors.each ->
     $t = $ this
-    $t.ColorPickerSetColor $t.val()
-  $font_color.focus set_color
-  $color1.focus set_color
-  $color2.focus set_color
-  $qr_color1.focus set_color
-  $qr_color2.focus set_color
+    $t.bind 'color_update', (e, options) ->
+      $t.data
+        hex: options.hex
+      $t.css
+        background: '#' + options.hex
+    $t.focus ->
+      $t.ColorPickerSetColor $t.val()
+    $t.ColorPicker
+      livePreview: true
+      onChange: (hsb, hex, rgb) ->
+        $t.trigger 'color_update'
+          hex: hex
+          timer: true
+      onShow: (colpkr) ->
+        $t.blur()
+        
   #
   ###############
 
@@ -232,27 +323,30 @@ $ ->
   # Actual triggers from those color pickers to do real stuff
   #
   # Changing font color on key presses
-  $font_color.keyup ->
+  $font_color.bind 'color_update', (e, options) ->
     $t = $ this
-    $active_item = $card.find('.active')
-    #
-    # Update it all
-    $active_item.css
-      color: '#'+$t.val()
-    #
-    # Find it's index relative to it's peers
-    index = $active_item.prevAll().length
-    active_theme.positions[index].color = $t.val()
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        color: '#' + options.hex
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].color = options.hex
+    set_timers() if options.timer
   #
   # Changing QR Color on key presses
-  $qr_color1.keyup ->
-    $t = $ this
-    update_qr_color $t.val()
+  $qr_color1.bind 'color_update', (e, options) ->
+    update_qr_color options.hex
+    set_timers() if options.timer
   #
-  $qr_color2.keyup ->
-    $t = $ this
+  $qr_color2.bind 'color_update', (e, options) ->
     $qr_bg.css
-      background: '#'+$t.val()
+      background: '#' + options.hex
+    set_timers() if options.timer
   #
   #
   ##############
@@ -263,17 +357,44 @@ $ ->
   #
   update_family = ->
     $t = $ this
-    $active_item = $card.find('.active')
-    #
-    # Update it all
-    $active_item.css
-      'font-family': $t.val()
-    #
-    # Find it's index relative to it's peers
-    index = $active_item.prevAll().length
-    active_theme.positions[index].font_family = $t.val()
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        'font-family': $t.val()
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].font_family = $t.val()
+    set_timers()
   #
   $font_family.change update_family
+  #
+  ##############
+
+
+  ###############
+  # Changing alignment for those thumbnail guys
+  #
+  update_align = (align) ->
+    $t = $ this
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      # Update it all
+      $active_item.css
+        'text-align': align
+      #
+      # Find it's index relative to it's peers
+      index = $active_item.prevAll().length
+      active_theme.positions[index].font_family = align
+  #
+  $fonts.find('.left').click -> update_align 'left'
+  $fonts.find('.center').click -> update_align 'center'
+  $fonts.find('.right').click -> update_align 'right'
   #
   ##############
 
@@ -285,21 +406,28 @@ $ ->
   $qr_color2_alpha.change ->
     $t = $ this
     $qr_bg.fadeTo 0, $t.val()
+    active_theme.qr_color2_alpha = $t.val()
+    set_timers()
   #
   $qr_radius.change ->
     $t = $ this
     $qr_bg.css
       'border-radius': $t.val() + 'px'
+    active_theme.qr_radius = $t.val()
+    set_timers()
   #
   ##############
 
   # *
   # *
-  # * END
+  # * END Options doing functional things
   # *
   # *
   # *
   # ***************************************************************
+
+
+
 
   ##############
   #
@@ -348,12 +476,12 @@ $ ->
       return false
   #
   # Highlighting and making a line the active one
-  $lines.mousedown ->
+  $lines.mousedown (e) ->
     #
     # Set it up and make it active
     $t = $ this
     $pa = $card.find '.active'
-    $pa.removeClass 'active'
+    $pa.removeClass 'active' if not shift_pressed
     $t.addClass 'active'
     #
     # Allow body clicks to unfocus it
@@ -363,7 +491,8 @@ $ ->
     change_tab '.font_style'
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
-    $font_color.val active_theme.positions[index].color
+    $font_color.trigger 'color_update'
+      hex: active_theme.positions[index].color
     $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
@@ -382,18 +511,22 @@ $ ->
   ####################
   #
   # A global page timer for the automatic save event.
-  page_timer = 0
-  set_page_timer = ->
-    clearTimeout page_timer
-    page_timer = setTimeout ->
+  save_timer = 0
+  history_timer = 0
+  set_timers = ->
+    clearTimeout save_timer
+    save_timer = setTimeout ->
       execute_save()
-    , 500 # This will be 5000 or higher eventually, 500 for now for testing. I'm impatient :D :D :D
-
+    , 2000
+    clearTimeout history_timer
+    history_timer = setTimeout ->
+      update_active_theme()
+      history.push active_theme
+      redo_history = []
+    , 200
   #
   # Set that timer on the right events for the right things
-  $cat.keyup set_page_timer
-  $font_color.keyup set_page_timer
-  $color1.keyup set_page_timer#
+  $cat.keyup set_timers
   #
   ######################
 
@@ -403,7 +536,7 @@ $ ->
   $lines.draggable
     grid: [10,10]
     containment: '.designer .card'
-    stop: set_page_timer
+    stop: set_timers
   $lines.resizable
     grid: 10
     handles: 'e, s, se'
@@ -413,13 +546,13 @@ $ ->
       $t.css
         'font-size': h + 'px'
         'line-height': h + 'px'
-    stop: set_page_timer
+    stop: set_timers
   #
   # Dragging and dropping functions for the qr code
   $qr.draggable
     grid: [10,10]
     containment: '.designer .card'
-    stop: set_page_timer
+    stop: set_timers
   $qr.resizable
     grid: 10
     resize: (e, ui) ->
@@ -436,7 +569,7 @@ $ ->
     containment: '.designer .card'
     handles: 'se'
     aspectRatio: 1
-    stop: set_page_timer
+    stop: set_timers
   #
 
   #
@@ -461,7 +594,7 @@ $ ->
 
   #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
-  get_position = ($t) ->
+  get_position = ($t, previous) ->
     # Get it's CSS Values
     height = parseInt $t.height()
     width = parseInt $t.width()
@@ -478,15 +611,15 @@ $ ->
       w: Math.round(width / card_width * 10000) / 100
       x: Math.round(left / card_width * 10000) / 100
       y: Math.round(top / card_height * 10000) / 100
+      text_align: previous.text_align
+      color: previous.color
+      font_family: previous.font_family
   #
-  # Do the actual save.
   #
-  # It should be noted, that in most cases, this just means saving into the session
-  # Only on save button click does it pass an extra parameter to save it to a record in the database
-  execute_save = (next) ->
-    #
+  # Helper function to get the active them stuff before history and before save
+  update_active_theme = ->
     # Get the position of the qr
-    qr = get_position $qr
+    qr = get_position $qr, {}
     #
     # Set the theme start
     theme =
@@ -497,25 +630,40 @@ $ ->
       qr_h: qr.h
       qr_w: qr.w
       positions: []
-      color1: $color1.val()
-      color2: $color2.val()
+      color1: $color1.data 'hex'
+      color2: $color2.data 'hex'
+      qr_color1: $qr_color1.data 'hex'
+      qr_color2: $qr_color2.data 'hex'
       s3_id: active_theme.s3_id
+      qr_radius: active_theme.qr_radius
+      qr_color2_alpha: active_theme.qr_color2_alpha
     #
     #
     # Get the position of each line
-    $lines.each ->
+    $lines.each (i) ->
       $t = $ this
-      pos = get_position $t
+      pos = get_position $t, active_theme.positions[i] || {}
       if pos
         theme.positions.push pos
     #
+    #
+    active_theme = theme
+  #
+  # Do the actual save.
+  #
+  # It should be noted, that in most cases, this just means saving into the session
+  # Only on save button click does it pass an extra parameter to save it to a record in the database
+  execute_save = (next) ->
+    #
+    update_active_theme()
+    #
     # Set the parameters
     parameters =
-      theme: theme
+      theme: active_theme
       do_save: if next then true else false
     #
     $.ajax
-      url: '/saveTheme'
+      url: '/save-theme'
       #
       # jQuery's default data parser does well with simple objects, but with complex ones it doesn't do quite what we need.
       # So in this case, we need to stringify first, doing our own conversion to a string to transmit across the 
@@ -525,11 +673,11 @@ $ ->
       data: JSON.stringify parameters
       success: (serverResponse) ->
         if !serverResponse.success
-          $designer.find('.save').showTooltip
+          $designer.find('.save').show_tooltip
             message: 'Error saving.'
         if next then next()
       error: ->
-        $designer.find('.save').showTooltip
+        $designer.find('.save').show_tooltip
           message: 'Error saving.'
         if next then next()
 
@@ -539,6 +687,7 @@ $ ->
   $.s3_result = (s3_id) ->
     if not no_theme() and s3_id
       active_theme.s3_id = s3_id
+      set_timers()
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
     else
@@ -575,7 +724,8 @@ $ ->
     default_theme.positions.push
       color: '000066'
       font_family: 'Vast Shadow'
-      h: 7
+      text_align: 'left'
+      h: 6.67
       w: 60
       x: 3.05
       y: 5+i*10
@@ -583,7 +733,11 @@ $ ->
   # The general load theme function
   # It's for putting a theme into the designer for editing
   load_theme = (theme) ->
+    #
+    # set this theme as the active_theme
     active_theme = theme
+    #
+    # Show the qr code and set it to the right place
     $qr.show().css
       top: theme.qr_y/100 * card_height
       left: theme.qr_x/100 * card_width
@@ -599,6 +753,16 @@ $ ->
       background: '#'+theme.qr_color2
     $qr_bg.fadeTo 0, theme.qr_color2_alpha
     update_qr_color theme.qr_color1
+    #
+    # Card Background
+    if theme.s3_id
+      $card.css
+        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
+    else
+      $card.css
+        background: '#FFFFFF'
+    #
+    # Move all the lines and their shit
     for pos,i in theme.positions
       $li = $lines.eq i
       $li.show().css
@@ -608,27 +772,34 @@ $ ->
         fontSize: (pos.h/100 * card_height) + 'px'
         lineHeight: (pos.h/100 * card_height) + 'px'
         fontFamily: pos.font_family
+        textAlign: pos.text_align
         color: '#'+pos.color
     $cat.val theme.category
-    $color1.val theme.color1
-    $color2.val theme.color2
-    $qr_color1.val theme.qr_color1
-    $qr_color2.val theme.qr_color2
+    #
+    # Set all the colors
+    $color1.trigger 'color_update'
+      hex: theme.color1
+    $color2.trigger 'color_update'
+      hex: theme.color2
+    $qr_color1.trigger 'color_update'
+      hex: theme.qr_color1
+    $qr_color2.trigger 'color_update'
+      hex: theme.qr_color2
+    #
+    # Get the QR alpha and radius ready
     $qr_color2_alpha.find('[value="' + theme.qr_color2_alpha + '"]').attr 'selected', 'selected'
     $qr_radius.find('[value=' + theme.qr_radius + ']').attr 'selected', 'selected'
   #
   # The add new button
   $('.add_new').click ->
-    load_theme(default_theme)
-
-    # Oh wait, this doesn't happen until save, eh?
-    ###
-    $new_li = $ '<li class="card" />'
-    $('.category[category=""] .gallery').append $new_li
-    $new_li.click()
-    ###
-
-
+    #
+    # Restart the history
+    theme = default_theme
+    history = [theme]
+    #
+    # Load it up
+    load_theme(theme)
+  #
   #
   # On save click
   $designer.find('.buttons .save').click ->
