@@ -89,9 +89,18 @@ $ ->
       all_themes = all_data.themes
       $categories.html ''
       for theme in all_themes
+
+        # Prep the Card
         $card = $ '<div class="card"><div class="qr"><canvas /></div></div>'
+
+        # Prep the QR Code
+        $canvas = $card.find 'canvas'
+
+        # Set the card background
         $card.css
           background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+        
+        # Push the whole thing to categories
         $categories.append $card
     error: ->
       $.load_alert
@@ -139,27 +148,49 @@ $ ->
   $qr.hide()
   $lines.hide()
 
-  #
-  # QR Code
-  qrcode = new QRCode -1, QRErrorCorrectLevel.H
-  qrcode.addData 'http://cards.ly'
-  qrcode.make()
+  prep_qr = ($qr, url) ->
+    #
+    # Canvas Setup
+    $canvas = $ '<canvas />'
+    $qr.append $canvas
+    #
+    # QR Code
+    qrcode = new QRCode -1, QRErrorCorrectLevel.H
+    qrcode.addData 'http://cards.ly'
+    qrcode.make()
+    #
+    # Save that
+    $qr.data 'qrcode', qrcode
+    #
+    # Prep the variables for the canvas
+    count = qrcode.getModuleCount()
+    scale = 3
+    size = count * scale + scale * 2
+    #
+    #
+    $qr.css
+      height: size
+      width: size
+    $canvas.attr
+      height: size
+      width: size
+    #
+    # IE Only
+    if typeof G_vmlCanvasManager != 'undefined'
+      G_vmlCanvasManager.initElement $canvas[0]
 
-  # Prep the variables for the canvas
-  count = qrcode.getModuleCount()
-  scale = 3
-  size = count * scale + scale * 2
-
-  $canvas = $ '<canvas height=' + size + ' width=' + size + ' />'
-  $qr.css
-    height: size
-    width: size
-  if typeof G_vmlCanvasManager != 'undefined'
-    G_vmlCanvasManager.initElement $canvas[0]
-  ctx = $canvas[0].getContext "2d"
-
-  update_qr_color = (hex) ->
-    
+  draw_qr = ($qr, hex) ->
+    #
+    #
+    qrcode = $qr.data 'qrcode'
+    #
+    # Prep the variables for the canvas
+    count = qrcode.getModuleCount()
+    scale = 3
+    size = count * scale + scale * 2
+    #
+    ctx = $qr.find('canvas')[0].getContext "2d"
+    #
     hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
     hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
     hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
@@ -172,7 +203,7 @@ $ ->
       for c in [0..count-1]
         ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
   
-  $qr.append $canvas
+  prep_qr $qr, 'http://cards.ly'
 
 
 
@@ -340,7 +371,7 @@ $ ->
   #
   # Changing QR Color on key presses
   $qr_color1.bind 'color_update', (e, options) ->
-    update_qr_color options.hex
+    draw_qr $qr, options.hex
     set_timers() if options.timer
   #
   $qr_color2.bind 'color_update', (e, options) ->
@@ -752,7 +783,7 @@ $ ->
       width: theme.qr_h/100 * card_height
       background: '#'+theme.qr_color2
     $qr_bg.fadeTo 0, theme.qr_color2_alpha
-    update_qr_color theme.qr_color1
+    draw_qr $qr, theme.qr_color1
     #
     # Card Background
     if theme.s3_id

@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $canvas, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, draw_qr, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, prep_qr, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -45,13 +45,14 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var theme, _i, _len, _results;
+        var $canvas, theme, _i, _len, _results;
         all_themes = all_data.themes;
         $categories.html('');
         _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
           $card = $('<div class="card"><div class="qr"><canvas /></div></div>');
+          $canvas = $card.find('canvas');
           $card.css({
             background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
           });
@@ -80,23 +81,36 @@
     }
     $qr.hide();
     $lines.hide();
-    qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
-    qrcode.addData('http://cards.ly');
-    qrcode.make();
-    count = qrcode.getModuleCount();
-    scale = 3;
-    size = count * scale + scale * 2;
-    $canvas = $('<canvas height=' + size + ' width=' + size + ' />');
-    $qr.css({
-      height: size,
-      width: size
-    });
-    if (typeof G_vmlCanvasManager !== 'undefined') {
-      G_vmlCanvasManager.initElement($canvas[0]);
-    }
-    ctx = $canvas[0].getContext("2d");
-    update_qr_color = function(hex) {
-      var c, cutHex, hexToB, hexToG, hexToR, r, _ref, _results;
+    prep_qr = function($qr, url) {
+      var $canvas, count, qrcode, scale, size;
+      $canvas = $('<canvas />');
+      $qr.append($canvas);
+      qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
+      qrcode.addData('http://cards.ly');
+      qrcode.make();
+      $qr.data('qrcode', qrcode);
+      count = qrcode.getModuleCount();
+      scale = 3;
+      size = count * scale + scale * 2;
+      $qr.css({
+        height: size,
+        width: size
+      });
+      $canvas.attr({
+        height: size,
+        width: size
+      });
+      if (typeof G_vmlCanvasManager !== 'undefined') {
+        return G_vmlCanvasManager.initElement($canvas[0]);
+      }
+    };
+    draw_qr = function($qr, hex) {
+      var c, count, ctx, cutHex, hexToB, hexToG, hexToR, qrcode, r, scale, size, _ref, _results;
+      qrcode = $qr.data('qrcode');
+      count = qrcode.getModuleCount();
+      scale = 3;
+      size = count * scale + scale * 2;
+      ctx = $qr.find('canvas')[0].getContext("2d");
       hexToR = function(h) {
         return parseInt((cutHex(h)).substring(0, 2), 16);
       };
@@ -131,7 +145,7 @@
       }
       return _results;
     };
-    $qr.append($canvas);
+    prep_qr($qr, 'http://cards.ly');
     shift_amount = 1;
     $body.keydown(function(e) {
       var $active_items, c, current_theme, new_theme;
@@ -253,7 +267,7 @@
       if (options.timer) return set_timers();
     });
     $qr_color1.bind('color_update', function(e, options) {
-      update_qr_color(options.hex);
+      draw_qr($qr, options.hex);
       if (options.timer) return set_timers();
     });
     $qr_color2.bind('color_update', function(e, options) {
@@ -586,7 +600,7 @@
         background: '#' + theme.qr_color2
       });
       $qr_bg.fadeTo(0, theme.qr_color2_alpha);
-      update_qr_color(theme.qr_color1);
+      draw_qr($qr, theme.qr_color1);
       if (theme.s3_id) {
         $card.css({
           background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
