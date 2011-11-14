@@ -30,10 +30,12 @@ $ ->
   $slides = $ '.slides'
   $screens = $slides.find 'li'
 
-  screens_fade_in = ->
-    $screens.effect 'fade', 5000
-    console.log 5
-        
+  screens_fading = ->
+    $current_screen = $screens.filter('visbible:last')
+    if $current_screen.length
+      $current_screen.fadeOut()
+    else
+      $current_screen.fadeIn()
 
  
   #
@@ -65,7 +67,7 @@ $ ->
       start_animation()
   # Fire the function in the first place on page load (cause we're inside this jquery document.ready)
   start_animation()
-  screens_fade_in()
+  screens_fading()
   ###
   Shopping Cart Stuff
   ###
