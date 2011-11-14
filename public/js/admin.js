@@ -45,13 +45,12 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme, _i, _len, _len2, _ref, _results;
+        var $category, $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme, _i, _len, _len2, _ref, _results;
         all_themes = all_data.themes;
-        $categories.html('<div class="category"><h4>(no category)</h4></div>');
+        $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
         _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
-          console.log(theme);
           $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
           $my_qr = $my_card.find('.qr');
           $my_qr.prep_qr();
@@ -100,7 +99,12 @@
           $my_card.css({
             background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
           });
-          _results.push($categories.find('.category').append($my_card));
+          $category = $categories.find('.category[category=' + theme.category + ']');
+          if ($category.length === 0) {
+            $category = $('<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>');
+            $categories.append($category);
+          }
+          _results.push($category.append($my_card));
         }
         return _results;
       },
@@ -538,30 +542,41 @@
     };
     default_theme = {
       category: '',
-      color1: 'FFFFFF',
-      color2: '000000',
-      s3_id: '',
-      qr_color1: '000066',
-      qr_color2: 'FFFFFF',
-      qr_color2_alpha: .9,
-      qr_radius: 10,
-      qr_h: 50,
-      qr_w: 28.57,
-      qr_x: 68.76,
-      qr_y: 43.33,
-      positions: []
+      theme_templates: [
+        {
+          color1: 'FFFFFF',
+          color2: '000000',
+          s3_id: '',
+          qr: {
+            color1: '000066',
+            color2: 'FFFFFF',
+            color2_alpha: .9,
+            radius: 10,
+            h: 50,
+            w: 28.57,
+            x: 68.76,
+            y: 43.33
+          },
+          lines: (function() {
+            var _results;
+            _results = [];
+            for (i = 0; i <= 5; i++) {
+              _results.push({
+                color: '000066',
+                font_family: 'Vast Shadow',
+                text_align: 'left',
+                h: 6.67,
+                w: 60,
+                x: 3.05,
+                y: 5 + i * 10
+              });
+            }
+            return _results;
+          })()
+        }
+      ]
     };
-    for (i = 0; i <= 5; i++) {
-      default_theme.positions.push({
-        color: '000066',
-        font_family: 'Vast Shadow',
-        text_align: 'left',
-        h: 6.67,
-        w: 60,
-        x: 3.05,
-        y: 5 + i * 10
-      });
-    }
+    return false;
     load_theme = function(theme) {
       var $li, i, pos, _len2, _ref;
       active_theme = theme;

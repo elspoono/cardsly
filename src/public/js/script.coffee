@@ -911,27 +911,18 @@ $ ->
     $t = $ this
     $('.card').removeClass 'active'
     $t.addClass('active')
-    $find_class = $t.clone()
-    class_name = $find_class.removeClass('card')[0].class_name
-    $find_class.remove()
-    $('.main').attr
-      class: 'card main '+class_name
-    if $gs.offset().top == $t.offset().top_10
+    if $gs.offset().top == $t.offset().top-10
       $gs.animate
-        left: $t.offset().left_10
+        left: $t.offset().left-10
       ,500
     else
       $gs.stop(true,false).animate
-        top: $t.offset().top_10
+        top: $t.offset().top-10
       ,500,'linear',() ->
           $gs.animate
-            left: $t.offset().left_10
+            left: $t.offset().left-10
           ,500,'linear'
-  $gs.bind 'activeMoved', ->
-    $a = $ '.card.active'
-    $gs.css
-      left: $a.offset().left_10
-      top: $a.offset().top_10
+  #
   $(window).load () ->
     $('.category:first .card:first').click()
   #
