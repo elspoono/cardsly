@@ -598,9 +598,10 @@
         req.session.auth = {
           userId: user._id
         };
-        return res.send({
+        res.send({
           success: true
         });
+        return console.log(req.user);
       }
     });
   });
@@ -639,14 +640,17 @@
     user.email = req.body.email;
     user.password_encrypted = encrypted(req.body.password);
     return user.save(function(err, data) {
+      req.session.auth = {
+        userId: user._id
+      };
       return res.send({
         success: 'True'
       });
     });
   });
   app.post('/change-password', function(req, res, next) {
-    user.password_encrypted = encrypted(req.body.password);
-    return user.save(function(err, data) {
+    req.user.password_encrypted = encrypted(req.body.password);
+    return req.user.save(function(err, data) {
       return res.send({
         success: 'True'
       });
@@ -662,6 +666,7 @@
     }
   };
   securedPage = function(req, res, next) {
+    console.log(req.user);
     if (req.user) {
       return next();
     } else {

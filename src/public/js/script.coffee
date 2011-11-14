@@ -822,11 +822,6 @@ $ ->
       ] 
     false
 
-  # Change Password
-  $change_password = $ '.change_password input'
-  $change_password.click () ->
-    password
-    user.update()
 
 
   ###

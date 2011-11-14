@@ -664,6 +664,7 @@ app.post '/login', (req, res, next) ->
         userId: user._id
       res.send
         success: true
+      console.log req.user
 
 
 # Sends feedback to us
@@ -697,13 +698,15 @@ app.post '/create-user', (req,res,next) ->
   user.email = req.body.email;
   user.password_encrypted = encrypted(req.body.password);
   user.save (err,data) ->
+    req.session.auth = 
+      userId: user._id
     res.send
       success: 'True'
 
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  user.password_encrypted = encrypted(req.body.password);
-  user.save (err,data) ->
+  req.user.password_encrypted = encrypted(req.body.password);
+  req.user.save (err,data) ->
     res.send
       success: 'True'
 
@@ -718,6 +721,7 @@ securedAdminPage = (req, res, next) ->
       Location: '/cards'
     ,302
 securedPage = (req, res, next) ->
+  console.log req.user
   if req.user
     next()
   else
