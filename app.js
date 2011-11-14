@@ -545,7 +545,20 @@
     req.session.theme = params.theme;
     if (params.do_save) {
       if (params.theme._id) {
-        return console.log(params.theme);
+        return mongo_theme.findById(params.theme._id, function(err, found_theme) {
+          found_theme.category;
+          found_theme.category = params.theme.category;
+          found_theme.theme_templates = params.theme.theme_templates;
+          console.log(params.theme.theme_templates);
+          return found_theme.save(function(err, theme_saved) {
+            if (check_no_err_ajax(err)) {
+              return res.send({
+                success: true,
+                theme: theme_saved
+              });
+            }
+          });
+        });
       } else {
         new_theme = new mongo_theme;
         new_theme.category = params.theme.category;

@@ -962,9 +962,6 @@
         });
       }
     });
-    $(window).load(function() {
-      return $('.category:first .card:first').click();
-    });
     $('.category h4').click(function() {
       var $c, $g, $t;
       $t = $(this);

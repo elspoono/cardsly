@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -41,18 +41,17 @@
     ctrl_pressed = false;
     history = [];
     redo_history = [];
-    all_themes = [];
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $category, $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme, theme_template, _i, _len, _len2, _ref, _results;
+        var $category, $li, $my_card, $my_qr, $my_qr_bg, all_themes, i, pos, theme, theme_template, _i, _len, _len2, _ref;
         all_themes = all_data.themes;
         $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
-        _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
           theme_template = theme.theme_templates[0];
           $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
+          $my_card.data('theme', theme);
           $my_qr = $my_card.find('.qr');
           $my_qr.prep_qr();
           $my_qr_bg = $my_qr.find('.background');
@@ -70,7 +69,7 @@
             height: theme_template.qr.h / 100 * 90,
             width: theme_template.qr.w / 100 * 158,
             top: theme_template.qr.y / 100 * 90,
-            left: theme_template.qr.y / 100 * 158
+            left: theme_template.qr.x / 100 * 158
           });
           $my_qr_bg.css({
             zIndex: 140,
@@ -105,15 +104,20 @@
             $category = $('<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>');
             $categories.append($category);
           }
-          _results.push($category.append($my_card));
+          $category.append($my_card);
         }
-        return _results;
+        return $categories.find('.card:first').click();
       },
       error: function() {
         return $.load_alert({
           content: 'Error loading themes. Please try again later.'
         });
       }
+    });
+    $('.category .card').live('click', function() {
+      var $t;
+      $t = $(this);
+      return load_theme($t.data('theme'));
     });
     setTimeout(function() {
       return WebFont.load({
@@ -597,7 +601,7 @@
       $qr_bg.css({
         'border-radius': theme_template.qr.radius + 'px',
         height: theme_template.qr.h / 100 * card_height,
-        width: theme_template.qr.h / 100 * card_height,
+        width: theme_template.qr.w / 100 * card_width,
         background: '#' + theme_template.qr.color2
       });
       $qr_bg.fadeTo(0, theme_template.qr.color2_alpha);

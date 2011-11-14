@@ -75,7 +75,6 @@ $ ->
   ctrl_pressed = false
   history = []
   redo_history = []
-  all_themes = []
   #
   
   ##############
@@ -96,6 +95,8 @@ $ ->
         # Prep the Card
         $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
         #
+        $my_card.data 'theme', theme
+        #
         $my_qr = $my_card.find('.qr')
         #
         $my_qr.prep_qr()
@@ -113,7 +114,7 @@ $ ->
           height: theme_template.qr.h/100 * 90
           width: theme_template.qr.w/100 * 158
           top: theme_template.qr.y/100 * 90
-          left: theme_template.qr.y/100 * 158
+          left: theme_template.qr.x/100 * 158
         $my_qr_bg.css
           zIndex: 140
           position: 'absolute'
@@ -158,9 +159,16 @@ $ ->
         #
         # Finally add it
         $category.append $my_card
+      #
+      #
+      # Click the first theme
+      $categories.find('.card:first').click()
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
+  $('.category .card').live 'click', () ->
+    $t = $ this
+    load_theme $t.data 'theme'
   #
   #
   #
@@ -782,7 +790,7 @@ $ ->
     $qr_bg.css
       'border-radius': theme_template.qr.radius+'px'
       height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.w/100 * card_width
       background: '#'+theme_template.qr.color2
     $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
     $qr.draw_qr
