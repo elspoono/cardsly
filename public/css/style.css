@@ -909,7 +909,7 @@ input {
   overflow: hidden;
   position: relative;
   float: left;
-  margin: 30px;
+  margin: 0 30px 30px 0;
 }
 .card_title {
   text-align: center;
