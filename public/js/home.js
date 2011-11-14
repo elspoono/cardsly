@@ -1,26 +1,38 @@
-
+(function() {
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
-  */
-
-  $(function() {
-    var $biz_cards, $mc, $screens, $slides, $win, item_name, start_animation, update_cards;
+  
+  */  $(function() {
+    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, screens_fade_out, start_animation, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $screens = $slides.find('li');
-    setInterval(function() {
-      var $last_visible_guy;
-      $last_visible_guy = $screens.filter(':visible:last');
-      if ($last_visible_guy.length) {
-        return $last_visible_guy.fadeOut();
-      } else {
-        return $screens.fadeIn();
-      }
-    }, 2000);
+    screens_fade_in = function() {
+      return $screens.show('fade', 500, function() {
+        return screens_fade_out();
+      });
+    };
+    screens_fade_out = function() {
+      return $screens.show('fade', 500, function() {
+        return screens_fade_in();
+      });
+    };
+    /* Let's change the screens periodically
+    setInterval ->
+    
+      $last_visible_guy = $screens.filter(':visible:last')
+    
+      if $last_visible_guy.length
+        $last_visible_guy.fadeOut()
+      else
+        $screens.fadeIn()
+    
+    , 2000
+    */
     start_animation = function() {
       return $biz_cards.animate({
         top: 0
@@ -34,7 +46,7 @@
     start_animation();
     /*
       Shopping Cart Stuff
-    */
+      */
     item_name = '100 cards';
     $('.checkout').click(function() {
       $.load_alert({
@@ -77,7 +89,7 @@
                     # this.value should have a .replace ',' '\,'
                     # on it so that we can use a comma character and escape anything.
                     # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-          */
+                    */
           array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
             return this.value;
           }));
@@ -95,7 +107,7 @@
     });
     /*
       # Radio Button Clicking Stuff
-    */
+      */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
@@ -108,7 +120,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-    */
+      */
     update_cards = function(rowNumber, value) {
       return $('.card .content').each(function() {
         return $(this).find('li:eq(' + rowNumber + ')').html(value);
@@ -201,5 +213,6 @@
           top: $a.offset().top_10
       $(window).load () ->
         $('.gallery:first .card:first').click()
-    */
+      */
   });
+}).call(this);

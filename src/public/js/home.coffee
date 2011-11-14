@@ -30,8 +30,17 @@ $ ->
   $slides = $ '.slides'
   $screens = $slides.find 'li'
 
+  screens_fade_in = ->
+    $screens.show 'fade', 500, ->
+      screens_fade_out()
+
+  screens_fade_out = ->
+     $screens.show 'fade', 500, ->
+      screens_fade_in()
+
+      
   #
-  # Let's change the screens periodically
+  ### Let's change the screens periodically
   setInterval ->
 
     $last_visible_guy = $screens.filter(':visible:last')
@@ -42,6 +51,7 @@ $ ->
       $screens.fadeIn()
 
   , 2000
+  ###
 
   #
   # Slide the business card down slowly

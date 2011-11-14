@@ -89,10 +89,42 @@ $ ->
       all_themes = all_data.themes
       $categories.html ''
       for theme in all_themes
-        $card = $ '<div class="card"><div class="qr"><canvas /></div></div>'
-        $card.css
+        console.log theme
+        # Prep the Card
+        $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
+        #
+        $my_qr = $my_card.find('.qr')
+        #
+        $my_qr.qr().find('canvas').css
+          height: theme.theme_templates[0].qr.h/100 * 90
+          width: theme.theme_templates[0].qr.w/100 * 158
+        $my_qr.css
+          height: theme.theme_templates[0].qr.h/100 * 90
+          width: theme.theme_templates[0].qr.w/100 * 158
+          top: theme.theme_templates[0].qr.y/100 * 90
+          left: theme.theme_templates[0].qr.y/100 * 158
+        #
+        #
+        for pos,i in theme.theme_templates[0].lines
+          $li = $ '<div>gibberish</div>'
+          $li.appendTo($my_card).css
+            position: 'absolute'
+            top: pos.y/100 * 90
+            left: pos.x/100 * 158
+            width: (pos.w/100 * 158) + 'px'
+            fontSize: (pos.h/100 * 90) + 'px'
+            lineHeight: (pos.h/100 * 90) + 'px'
+            fontFamily: pos.font_family
+            textAlign: pos.text_align
+            color: '#'+pos.color
+        #
+        #
+        # Set the card background
+        $my_card.css
           background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
-        $categories.append $card
+        
+        # Push the whole thing to categories
+        $categories.append $my_card
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -138,41 +170,8 @@ $ ->
   # QRs and Lines are hidden By default
   $qr.hide()
   $lines.hide()
-
-  #
-  # QR Code
-  qrcode = new QRCode -1, QRErrorCorrectLevel.H
-  qrcode.addData 'http://cards.ly'
-  qrcode.make()
-
-  # Prep the variables for the canvas
-  count = qrcode.getModuleCount()
-  scale = 3
-  size = count * scale + scale * 2
-
-  $canvas = $ '<canvas height=' + size + ' width=' + size + ' />'
-  $qr.css
-    height: size
-    width: size
-  if typeof G_vmlCanvasManager != 'undefined'
-    G_vmlCanvasManager.initElement $canvas[0]
-  ctx = $canvas[0].getContext "2d"
-
-  update_qr_color = (hex) ->
-    
-    hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
-    hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
-    hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
-    cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
-
-    ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')'
-
-    # Actual Drawing of the QR Code
-    for r in [0..count-1]
-      for c in [0..count-1]
-        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
   
-  $qr.append $canvas
+  $qr.prep_qr()
 
 
 
@@ -340,7 +339,8 @@ $ ->
   #
   # Changing QR Color on key presses
   $qr_color1.bind 'color_update', (e, options) ->
-    update_qr_color options.hex
+    $qr.draw_qr
+      color: options.hex
     set_timers() if options.timer
   #
   $qr_color2.bind 'color_update', (e, options) ->
@@ -390,7 +390,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.positions[index].font_family = align
+      active_theme.positions[index].text_align = align
   #
   $fonts.find('.left').click -> update_align 'left'
   $fonts.find('.center').click -> update_align 'center'
@@ -752,7 +752,8 @@ $ ->
       width: theme.qr_h/100 * card_height
       background: '#'+theme.qr_color2
     $qr_bg.fadeTo 0, theme.qr_color2_alpha
-    update_qr_color theme.qr_color1
+    $qr.draw_qr
+      color: theme.qr_color1
     #
     # Card Background
     if theme.s3_id

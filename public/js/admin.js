@@ -1,22 +1,15 @@
-(function() {
+
   /*
   
   Theme admin
   
-<<<<<<< HEAD
-  ok.
-  
-  */  $(function() {
-    var $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctx, default_theme, execute_save, fam, font_families, get_position, i, load_theme, no_theme, page_timer, qrcode, scale, set_color, set_page_timer, shift_amount, shift_pressed, size, unfocus_highlight, update_family, update_qr_color, _i, _len;
-=======
   - All the theme designer stuff
   
   - Plus maybe some similar stuff to home page gallery selection
   */
 
   $(function() {
-    var $all_colors, $body, $canvas, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
->>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -45,15 +38,6 @@
     card_inner_width = $card.width();
     active_theme = false;
     shift_pressed = false;
-<<<<<<< HEAD
-    /*
-      GOOGLE FONTS
-    
-      1. Load them
-      2. Make their common names available
-    
-      */
-=======
     ctrl_pressed = false;
     history = [];
     redo_history = [];
@@ -61,17 +45,45 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var theme, _i, _len, _results;
+        var $li, $my_card, $my_qr, i, pos, theme, _i, _len, _len2, _ref, _results;
         all_themes = all_data.themes;
         $categories.html('');
         _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
-          $card = $('<div class="card"><div class="qr"><canvas /></div></div>');
-          $card.css({
+          console.log(theme);
+          $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
+          $my_qr = $my_card.find('.qr');
+          $my_qr.qr().find('canvas').css({
+            height: theme.theme_templates[0].qr.h / 100 * 90,
+            width: theme.theme_templates[0].qr.w / 100 * 158
+          });
+          $my_qr.css({
+            height: theme.theme_templates[0].qr.h / 100 * 90,
+            width: theme.theme_templates[0].qr.w / 100 * 158,
+            top: theme.theme_templates[0].qr.y / 100 * 90,
+            left: theme.theme_templates[0].qr.y / 100 * 158
+          });
+          _ref = theme.theme_templates[0].lines;
+          for (i = 0, _len2 = _ref.length; i < _len2; i++) {
+            pos = _ref[i];
+            $li = $('<div>gibberish</div>');
+            $li.appendTo($my_card).css({
+              position: 'absolute',
+              top: pos.y / 100 * 90,
+              left: pos.x / 100 * 158,
+              width: (pos.w / 100 * 158) + 'px',
+              fontSize: (pos.h / 100 * 90) + 'px',
+              lineHeight: (pos.h / 100 * 90) + 'px',
+              fontFamily: pos.font_family,
+              textAlign: pos.text_align,
+              color: '#' + pos.color
+            });
+          }
+          $my_card.css({
             background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
           });
-          _results.push($categories.append($card));
+          _results.push($categories.append($my_card));
         }
         return _results;
       },
@@ -81,7 +93,6 @@
         });
       }
     });
->>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     setTimeout(function() {
       return WebFont.load({
         google: {
@@ -90,12 +101,6 @@
       });
     }, 3000);
     font_families = ['Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'IM Fell English SC', 'Julee', 'Syncopate', 'Gravitas One', 'Quicksand', 'Vast Shadow', 'Smokum', 'Ovo', 'Amatic SC', 'Rancho', 'Poly', 'Chivo', 'Prata', 'Abril Fatface', 'Ultra', 'Love Ya Like A Sister', 'Carter One', 'Luckiest Guy', 'Gruppo', 'Slackey'].sort();
-<<<<<<< HEAD
-    /*
-      END GOOGLE FONTS
-      */
-=======
->>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     $font_family.find('option').remove();
     for (_i = 0, _len = font_families.length; _i < _len; _i++) {
       fam = font_families[_i];
@@ -103,54 +108,7 @@
     }
     $qr.hide();
     $lines.hide();
-    qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
-    qrcode.addData('http://cards.ly');
-    qrcode.make();
-    count = qrcode.getModuleCount();
-    scale = 3;
-    size = count * scale + scale * 2;
-    $canvas = $('<canvas height=' + size + ' width=' + size + ' />');
-    $qr.css({
-      height: size,
-      width: size
-    });
-    if (typeof G_vmlCanvasManager !== 'undefined') {
-      G_vmlCanvasManager.initElement($canvas[0]);
-    }
-    ctx = $canvas[0].getContext("2d");
-    update_qr_color = function(hex) {
-      var c, cutHex, hexToB, hexToG, hexToR, r, _ref, _results;
-      hexToR = function(h) {
-        return parseInt((cutHex(h)).substring(0, 2), 16);
-      };
-      hexToG = function(h) {
-        return parseInt((cutHex(h)).substring(2, 4), 16);
-      };
-      hexToB = function(h) {
-        return parseInt((cutHex(h)).substring(4, 6), 16);
-      };
-      cutHex = function(h) {
-        if (h.charAt(0) === "#") {
-          return h.substring(1, 7);
-        } else {
-          return h;
-        }
-      };
-      ctx.fillStyle = 'rgb(' + hexToR(hex) + ',' + hexToG(hex) + ',' + hexToB(hex) + ')';
-      _results = [];
-      for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
-        _results.push((function() {
-          var _ref2, _results2;
-          _results2 = [];
-          for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-            _results2.push(qrcode.isDark(c, r) ? ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale) : void 0);
-          }
-          return _results2;
-        })());
-      }
-      return _results;
-    };
-    $qr.append($canvas);
+    $qr.prep_qr();
     shift_amount = 1;
     $body.keydown(function(e) {
       var $active_items, c, current_theme, new_theme;
@@ -198,44 +156,26 @@
           $active_item = $(this);
           if (c === 38 || c === 40) {
             new_top = parseInt($active_item.css('top'));
-            if (c === 38) {
-              new_top -= shift_amount;
-            }
-            if (c === 40) {
-              new_top += shift_amount;
-            }
+            if (c === 38) new_top -= shift_amount;
+            if (c === 40) new_top += shift_amount;
             top_bound = (card_height - card_inner_height) / 2;
             bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-            if (new_top < top_bound) {
-              new_top = top_bound;
-            }
-            if (new_top > bottom_bound) {
-              new_top = bottom_bound;
-            }
+            if (new_top < top_bound) new_top = top_bound;
+            if (new_top > bottom_bound) new_top = bottom_bound;
             $active_item.css('top', new_top);
           }
           if (c === 37 || c === 39) {
             new_left = parseInt($active_item.css('left'));
-            if (c === 37) {
-              new_left -= shift_amount;
-            }
-            if (c === 39) {
-              new_left += shift_amount;
-            }
+            if (c === 37) new_left -= shift_amount;
+            if (c === 39) new_left += shift_amount;
             top_bound = (card_width - card_inner_width) / 2;
             bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-            if (new_left < top_bound) {
-              new_left = top_bound;
-            }
-            if (new_left > bottom_bound) {
-              new_left = bottom_bound;
-            }
+            if (new_left < top_bound) new_left = top_bound;
+            if (new_left > bottom_bound) new_left = bottom_bound;
             return $active_item.css('left', new_left);
           }
         });
-        if (c === 38 || c === 40 || c === 39 || c === 37) {
-          return false;
-        }
+        if (c === 38 || c === 40 || c === 39 || c === 37) return false;
       }
     });
     $body.keyup(function(e) {
@@ -290,7 +230,9 @@
       if (options.timer) return set_timers();
     });
     $qr_color1.bind('color_update', function(e, options) {
-      update_qr_color(options.hex);
+      $qr.draw_qr({
+        color: options.hex
+      });
       if (options.timer) return set_timers();
     });
     $qr_color2.bind('color_update', function(e, options) {
@@ -326,7 +268,7 @@
           'text-align': align
         });
         index = $active_item.prevAll().length;
-        return active_theme.positions[index].font_family = align;
+        return active_theme.positions[index].text_align = align;
       });
     };
     $fonts.find('.left').click(function() {
@@ -490,9 +432,7 @@
       width = parseInt($t.width());
       left = parseInt($t.css('left'));
       top = parseInt($t.css('top'));
-      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
-        return false;
-      }
+      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) return false;
       return result = {
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
@@ -525,15 +465,8 @@
       $lines.each(function(i) {
         var $t, pos;
         $t = $(this);
-<<<<<<< HEAD
-        pos = get_position($t);
-        if (pos) {
-          return theme.positions.push(pos);
-        }
-=======
         pos = get_position($t, active_theme.positions[i] || {});
         if (pos) return theme.positions.push(pos);
->>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
       });
       return active_theme = theme;
     };
@@ -553,17 +486,13 @@
               message: 'Error saving.'
             });
           }
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         },
         error: function() {
           $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         }
       });
     };
@@ -636,7 +565,9 @@
         background: '#' + theme.qr_color2
       });
       $qr_bg.fadeTo(0, theme.qr_color2_alpha);
-      update_qr_color(theme.qr_color1);
+      $qr.draw_qr({
+        color: theme.qr_color1
+      });
       if (theme.s3_id) {
         $card.css({
           background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme.s3_id + '\')'
@@ -678,24 +609,13 @@
       return $qr_radius.find('[value=' + theme.qr_radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
-<<<<<<< HEAD
-      return load_theme(default_theme);
-      /*
-          $new_li = $ '<li class="card" />'
-          $('.category[category=""] .gallery').append $new_li
-          $new_li.click()
-          */
-=======
       var theme;
       theme = default_theme;
       history = [theme];
       return load_theme(theme);
->>>>>>> 91d3423a261af747be53767026838ee8c0a1f723
     });
     $designer.find('.buttons .save').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
         return execute_save(function() {
           return close_loading();
@@ -703,9 +623,7 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
@@ -718,8 +636,7 @@
                         TODO: Make this delete the template
               
                         So send to the server to delete the template we're on here ...
-              
-                        */              return close_func();
+              */              return close_func();
             }
           }, {
             "class": 'gray',
@@ -732,4 +649,3 @@
       });
     });
   });
-}).call(this);

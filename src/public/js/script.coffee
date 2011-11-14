@@ -49,6 +49,93 @@ if $.browser.msie and parseInt($.browser.version, 10)<8
 #
 #
 ###
+###
+#
+#
+#
+$.fn.prep_qr = (options) ->
+  settings = 
+    url: 'http://cards.ly'
+  this.each (i) ->
+    if options
+      $.extend settings, options
+    $t = $(this)
+    #
+    # Canvas Setup
+    $canvas = $ '<canvas />'
+    $t.append $canvas
+    #
+    # QR Code
+    qrcode = new QRCode -1, QRErrorCorrectLevel.H
+    qrcode.addData settings.url
+    qrcode.make()
+    #
+    # Save that
+    $t.data 'qrcode', qrcode
+    #
+    # Prep the variables for the canvas
+    count = qrcode.getModuleCount()
+    scale = 3
+    size = count * scale + scale * 2
+    #
+    #
+    $t.css
+      height: size
+      width: size
+    $canvas.attr
+      height: size
+      width: size
+    #
+    # IE Only
+    if typeof G_vmlCanvasManager != 'undefined'
+      G_vmlCanvasManager.initElement $canvas[0]
+#
+$.fn.draw_qr = (options) ->
+  settings = 
+    color: '000000'
+  this.each (i) ->
+    if options
+      $.extend settings, options
+    $t = $(this)
+    #
+    #
+    qrcode = $t.data 'qrcode'
+    #
+    # Prep the variables for the canvas
+    count = qrcode.getModuleCount()
+    scale = 3
+    size = count * scale + scale * 2
+    #
+    ctx = $t.find('canvas')[0].getContext "2d"
+    #
+    hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
+    hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
+    hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
+    cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+
+    ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')'
+
+    # Actual Drawing of the QR Code
+    for r in [0..count-1]
+      for c in [0..count-1]
+        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
+#
+$.fn.qr = (options) ->
+  settings = 
+    color: '000000'
+    url: 'http://cards.ly'
+  this.each (i) ->
+    if options
+      $.extend settings, options
+    $t = $(this)
+    #
+    $t.prep_qr
+      url: settings.url
+    #
+    $t.draw_qr
+      color: settings.color
+
+###
  * 
  * 
  * Generic Tooltip function
@@ -110,6 +197,7 @@ $.load_modal = (options, next) ->
   modal = $('<div class="modal" />')
   win = $('<div class="window" />')
   close = $('<div class="close" />')
+  $body = $(document)
 
   settings =
     width: 500

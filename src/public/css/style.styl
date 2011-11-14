@@ -693,7 +693,13 @@ input
         width 80px
         margin 10px 10px 10px 0
         relative_size(.6)
-
+.categories
+  overflow hidden
+  .card
+    overflow hidden
+    position relative
+    float left
+    margin 0 30px 30px 0
 
 //
 // Business Cards ON HOME PAGE
@@ -734,10 +740,7 @@ input
     padding 15px 10px
     margin-top -54px
   .qr
-    height 30px
-    width 30px
-    margin-left 120px
-    margin-top 24px
+    position absolute
   .theme_1,.theme_1:visited,.theme_2,.theme_2:visited
     text-decoration none
     color $c_black
