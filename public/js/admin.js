@@ -247,7 +247,7 @@
           color: '#' + options.hex
         });
         index = $active_item.prevAll().length;
-        return active_theme.positions[index].color = options.hex;
+        return active_theme.theme_templates[0].lines[index].color = options.hex;
       });
       if (options.timer) return set_timers();
     });
@@ -274,7 +274,7 @@
           'font-family': $t.val()
         });
         index = $active_item.prevAll().length;
-        return active_theme.positions[index].font_family = $t.val();
+        return active_theme.theme_templates[0].lines[index].font_family = $t.val();
       });
       return set_timers();
     };
@@ -290,7 +290,7 @@
           'text-align': align
         });
         index = $active_item.prevAll().length;
-        return active_theme.positions[index].text_align = align;
+        return active_theme.theme_templates[0].lines[index].text_align = align;
       });
     };
     $fonts.find('.left').click(function() {
@@ -306,7 +306,7 @@
       var $t;
       $t = $(this);
       $qr_bg.fadeTo(0, $t.val());
-      active_theme.qr_color2_alpha = $t.val();
+      active_theme.theme_templates[0].qr.color2_alpha = $t.val();
       return set_timers();
     });
     $qr_radius.change(function() {
@@ -315,7 +315,7 @@
       $qr_bg.css({
         'border-radius': $t.val() + 'px'
       });
-      active_theme.qr_radius = $t.val();
+      active_theme.theme_templates[0].qr.radius = $t.val();
       return set_timers();
     });
     change_tab = function(tab_class) {
@@ -362,9 +362,9 @@
       index = $t.prevAll().length;
       $font_family[0].selectedIndex = null;
       $font_color.trigger('color_update', {
-        hex: active_theme.positions[index].color
+        hex: active_theme.theme_templates[0].lines[index].color
       });
-      $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]');
+      $selected = $font_family.find('option[value="' + active_theme.theme_templates[0].lines[index].font_family + '"]');
       return $selected.focus().attr('selected', 'selected');
     });
     $qr.mousedown(function() {
@@ -448,7 +448,7 @@
       $t.addClass('active');
       return false;
     });
-    get_position = function($t, previous) {
+    get_position = function($t) {
       var height, left, result, top, width;
       height = parseInt($t.height());
       width = parseInt($t.width());
@@ -459,38 +459,41 @@
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
         x: Math.round(left / card_width * 10000) / 100,
-        y: Math.round(top / card_height * 10000) / 100,
-        text_align: previous.text_align,
-        color: previous.color,
-        font_family: previous.font_family
+        y: Math.round(top / card_height * 10000) / 100
       };
     };
     update_active_theme = function() {
-      var qr, theme;
-      qr = get_position($qr, {});
-      theme = {
-        _id: active_theme._id,
-        category: $cat.val(),
-        qr_x: qr.x,
-        qr_y: qr.y,
-        qr_h: qr.h,
-        qr_w: qr.w,
-        positions: [],
-        color1: $color1.data('hex'),
-        color2: $color2.data('hex'),
-        qr_color1: $qr_color1.data('hex'),
-        qr_color2: $qr_color2.data('hex'),
-        s3_id: active_theme.s3_id,
-        qr_radius: active_theme.qr_radius,
-        qr_color2_alpha: active_theme.qr_color2_alpha
+      var i, line, line_pos, qr_pos, _len2, _ref, _results;
+      qr_pos = get_position($qr);
+      active_theme.category = $cat.val();
+      active_theme.theme_templates[0].color1 = $color1.data('hex');
+      active_theme.theme_templates[0].color2 = $color2.data('hex');
+      active_theme.theme_templates[0].qr = {
+        x: qr_pos.x,
+        y: qr_pos.y,
+        h: qr_pos.h,
+        w: qr_pos.w,
+        color1: $qr_color1.data('hex'),
+        color2: $qr_color2.data('hex'),
+        color2_alpha: active_theme.theme_templates[0].qr.color2_alpha,
+        radius: active_theme.theme_templates[0].qr.radius
       };
-      $lines.each(function(i) {
-        var $t, pos;
-        $t = $(this);
-        pos = get_position($t, active_theme.positions[i] || {});
-        if (pos) return theme.positions.push(pos);
-      });
-      return active_theme = theme;
+      _ref = active_theme.theme_templates[0].lines;
+      _results = [];
+      for (i = 0, _len2 = _ref.length; i < _len2; i++) {
+        line = _ref[i];
+        line_pos = get_position($lines.filter(':eq(' + i + ')'));
+        _results.push(active_theme.theme_templates[0].lines[i] = {
+          x: line_pos.x,
+          y: line_pos.y,
+          h: line_pos.h,
+          w: line_pos.w,
+          color: line.color,
+          font_family: line.font_family,
+          text_align: line.text_align
+        });
+      }
+      return _results;
     };
     execute_save = function(next) {
       var parameters;
@@ -520,7 +523,7 @@
     };
     $.s3_result = function(s3_id) {
       if (!no_theme() && s3_id) {
-        active_theme.s3_id = s3_id;
+        active_theme.theme_templates[0].s3_id = s3_id;
         set_timers();
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'

@@ -367,7 +367,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.positions[index].color = options.hex
+      active_theme.theme_templates[0].lines[index].color = options.hex
     set_timers() if options.timer
   #
   # Changing QR Color on key presses
@@ -400,7 +400,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.positions[index].font_family = $t.val()
+      active_theme.theme_templates[0].lines[index].font_family = $t.val()
     set_timers()
   #
   $font_family.change update_family
@@ -423,7 +423,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.positions[index].text_align = align
+      active_theme.theme_templates[0].lines[index].text_align = align
   #
   $fonts.find('.left').click -> update_align 'left'
   $fonts.find('.center').click -> update_align 'center'
@@ -439,14 +439,14 @@ $ ->
   $qr_color2_alpha.change ->
     $t = $ this
     $qr_bg.fadeTo 0, $t.val()
-    active_theme.qr_color2_alpha = $t.val()
+    active_theme.theme_templates[0].qr.color2_alpha = $t.val()
     set_timers()
   #
   $qr_radius.change ->
     $t = $ this
     $qr_bg.css
       'border-radius': $t.val() + 'px'
-    active_theme.qr_radius = $t.val()
+    active_theme.theme_templates[0].qr.radius = $t.val()
     set_timers()
   #
   ##############
@@ -525,8 +525,8 @@ $ ->
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
     $font_color.trigger 'color_update'
-      hex: active_theme.positions[index].color
-    $selected = $font_family.find('option[value="' + active_theme.positions[index].font_family + '"]')
+      hex: active_theme.theme_templates[0].lines[index].color
+    $selected = $font_family.find('option[value="' + active_theme.theme_templates[0].lines[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
   # Highlighting and making a line the active one
@@ -627,7 +627,7 @@ $ ->
 
   #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
-  get_position = ($t, previous) ->
+  get_position = ($t) ->
     # Get it's CSS Values
     height = parseInt $t.height()
     width = parseInt $t.width()
@@ -644,43 +644,38 @@ $ ->
       w: Math.round(width / card_width * 10000) / 100
       x: Math.round(left / card_width * 10000) / 100
       y: Math.round(top / card_height * 10000) / 100
-      text_align: previous.text_align
-      color: previous.color
-      font_family: previous.font_family
   #
   #
   # Helper function to get the active them stuff before history and before save
   update_active_theme = ->
     # Get the position of the qr
-    qr = get_position $qr, {}
+    qr_pos = get_position $qr
     #
     # Set the theme start
-    theme =
-      _id: active_theme._id
-      category: $cat.val()
-      qr_x: qr.x
-      qr_y: qr.y
-      qr_h: qr.h
-      qr_w: qr.w
-      positions: []
-      color1: $color1.data 'hex'
-      color2: $color2.data 'hex'
-      qr_color1: $qr_color1.data 'hex'
-      qr_color2: $qr_color2.data 'hex'
-      s3_id: active_theme.s3_id
-      qr_radius: active_theme.qr_radius
-      qr_color2_alpha: active_theme.qr_color2_alpha
+    active_theme.category = $cat.val()
+    active_theme.theme_templates[0].color1 = $color1.data 'hex'
+    active_theme.theme_templates[0].color2 = $color2.data 'hex'
+    active_theme.theme_templates[0].qr =
+      x: qr_pos.x
+      y: qr_pos.y
+      h: qr_pos.h
+      w: qr_pos.w
+      color1: $qr_color1.data 'hex'
+      color2: $qr_color2.data 'hex'
+      color2_alpha: active_theme.theme_templates[0].qr.color2_alpha
+      radius: active_theme.theme_templates[0].qr.radius
     #
     #
-    # Get the position of each line
-    $lines.each (i) ->
-      $t = $ this
-      pos = get_position $t, active_theme.positions[i] || {}
-      if pos
-        theme.positions.push pos
-    #
-    #
-    active_theme = theme
+    for line,i in active_theme.theme_templates[0].lines
+      line_pos = get_position $lines.filter ':eq(' + i + ')'
+      active_theme.theme_templates[0].lines[i] =
+        x: line_pos.x
+        y: line_pos.y
+        h: line_pos.h
+        w: line_pos.w
+        color: line.color
+        font_family: line.font_family
+        text_align: line.text_align
   #
   # Do the actual save.
   #
@@ -719,7 +714,7 @@ $ ->
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
     if not no_theme() and s3_id
-      active_theme.s3_id = s3_id
+      active_theme.theme_templates[0].s3_id = s3_id
       set_timers()
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
@@ -829,6 +824,12 @@ $ ->
     $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr 'selected', 'selected'
     $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr 'selected', 'selected'
   #
+  #
+  #
+  #
+  #
+  #
+  #
   # The add new button
   $('.add_new').click ->
     #
@@ -838,6 +839,12 @@ $ ->
     #
     # Load it up
     load_theme(theme)
+  #
+  #
+  #
+  #
+  #
+  #
   #
   #
   # On save click
