@@ -1,14 +1,13 @@
-
+(function() {
   /*
   
   All the stuff for the admin template designer
   is probably going to be in this section right here.
   
   ok.
-  */
-
-  $(function() {
-    var $set_new_password;
+  
+  */  $(function() {
+    var $new_password, $new_password2, $set_new_password;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
       $t = $(this);
@@ -41,14 +40,14 @@
     });
     false;
     $set_new_password = $('.set_new_password');
+    $new_password = $('.new_password');
+    $new_password2 = $('.new_password2');
     return $set_new_password.submit(function() {
-      var $new_password, $new_password2, err;
-      $new_password = $('.new_password');
-      $new_password2 = $('.new_password2');
+      var err;
       err = false;
-      if (new_password.val() === '' || new_password2.val() === '') {
+      if ($new_password.val() === '' || $new_password2.val() === '') {
         err = 'Please enter your new password twice.';
-      } else if (password.val() !== password2.val()) {
+      } else if ($new_password.val() !== $new_password2.val()) {
         err = 'I\'m sorry, I don\'t think those passwords match.';
       } else if (password.val().length < 4) {
         err = 'Password should be a little longer, at least 4 characters.';
@@ -63,8 +62,8 @@
           return $.ajax({
             url: '/change-password',
             data: {
-              new_password: new_password.val(),
-              new_password2: new_password2.val()({
+              new_password: $new_password.val(),
+              new_password2: $new_password2.val()({
                 success: function(data) {
                   loading_close();
                   if (data.err) {
@@ -89,3 +88,4 @@
       return false;
     });
   });
+}).call(this);
