@@ -87,9 +87,11 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html '<div class="category"><h4>(no category)</h4></div>'
+      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
       for theme in all_themes
-        console.log theme
+        #
+        # Set Content template
+        #
         # Prep the Card
         $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
         #
@@ -140,7 +142,21 @@ $ ->
           background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
         
         # Push the whole thing to categories
-        $categories.find('.category').append $my_card
+        #
+        # Find an existing category
+        $category = $categories.find('.category[category=' + theme.category + ']')
+        #
+        # If that category doesn't exist yet
+        if $category.length == 0
+          #
+          # Create it
+          $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
+          #
+          # And add it to the categories list
+          $categories.append $category
+        #
+        # Finally add it
+        $category.append $my_card
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -724,27 +740,29 @@ $ ->
   # Default Template for Card Designer
   default_theme = 
     category: ''
-    color1: 'FFFFFF'
-    color2: '000000'
-    s3_id: ''
-    qr_color1: '000066'
-    qr_color2: 'FFFFFF'
-    qr_color2_alpha: .9
-    qr_radius: 10
-    qr_h: 50
-    qr_w: 28.57
-    qr_x: 68.76
-    qr_y: 43.33
-    positions: []
-  for i in [0..5]
-    default_theme.positions.push
-      color: '000066'
-      font_family: 'Vast Shadow'
-      text_align: 'left'
-      h: 6.67
-      w: 60
-      x: 3.05
-      y: 5+i*10
+    theme_templates: [
+      color1: 'FFFFFF'
+      color2: '000000'
+      s3_id: ''
+      qr:
+        color1: '000066'
+        color2: 'FFFFFF'
+        color2_alpha: .9
+        radius: 10
+        h: 50
+        w: 28.57
+        x: 68.76
+        y: 43.33
+      lines:
+        (color: '000066'
+        font_family: 'Vast Shadow'
+        text_align: 'left'
+        h: 6.67
+        w: 60
+        x: 3.05
+        y: 5+i*10) for i in [0..5]
+    ]
+  return false
   #
   # The general load theme function
   # It's for putting a theme into the designer for editing

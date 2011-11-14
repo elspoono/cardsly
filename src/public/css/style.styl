@@ -690,11 +690,13 @@ input
         relative_size(.6)
 .categories
   overflow hidden
+  .category
+    overflow hidden
   .card
     overflow hidden
     position relative
     float left
-    margin 15px 30px 15px 0
+    margin 15px 20px 15px 10px
     height 90px
     width 158px
 
@@ -996,8 +998,12 @@ input value=["Send Feedback"]
     margin 30px 0
 
 .phone_scanner
-  
-  margin 0px 0px 0px 330px
+  position absolute
+  left 300px
+  bottom 330px
+  z-index 0
+
+
 
 
 .internet_explorer_error_page 

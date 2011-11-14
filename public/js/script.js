@@ -930,36 +930,23 @@
       top: 0
     });
     $('.category .card').live('click', function() {
-      var $find_class, $t, class_name;
+      var $t;
       $t = $(this);
       $('.card').removeClass('active');
       $t.addClass('active');
-      $find_class = $t.clone();
-      class_name = $find_class.removeClass('card')[0].class_name;
-      $find_class.remove();
-      $('.main').attr({
-        "class": 'card main ' + class_name
-      });
-      if ($gs.offset().top === $t.offset().top_10) {
+      if ($gs.offset().top === $t.offset().top - 10) {
         return $gs.animate({
-          left: $t.offset().left_10
+          left: $t.offset().left - 10
         }, 500);
       } else {
         return $gs.stop(true, false).animate({
-          top: $t.offset().top_10
+          top: $t.offset().top - 10
         }, 500, 'linear', function() {
           return $gs.animate({
-            left: $t.offset().left_10
+            left: $t.offset().left - 10
           }, 500, 'linear');
         });
       }
-    });
-    $gs.bind('activeMoved', function() {
-      $a = $('.card.active');
-      return $gs.css({
-        left: $a.offset().left_10,
-        top: $a.offset().top_10
-      });
     });
     $(window).load(function() {
       return $('.category:first .card:first').click();
