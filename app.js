@@ -9,7 +9,7 @@
   *****************************************
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -464,9 +464,10 @@
 
   /*
   
-  POST PAGES
+  POST ROUTES
   
-  actions, like saving stuff, and checking stuff, from ajax
+  - for AJAX stuff mostly
+  - maybe other post actions
   */
 
   app.post('/upload-image', function(req, res) {
@@ -745,48 +746,19 @@
     });
   });
 
-  securedAdminPage = function(req, res, next) {
-    if (req.user && req.user.role === 'admin') {
-      return next();
-    } else {
-      return res.send('', {
-        Location: '/cards'
-      }, 302);
-    }
-  };
-
-  securedPage = function(req, res, next) {
-    if (req.user) {
-      return next();
-    } else {
-      return res.send('', {
-        Location: '/'
-      }, 302);
-    }
-  };
-
-  check_no_err = function(err) {
-    if (err) {
-      console.log(err);
-      res.send('', {
-        Location: '/error'
-      }, 302);
-    }
-    return !err;
-  };
-
   /*
   
-  GET PAGES
+  GET ROUTES
   
-  like the home page and about page and stuff
+  - normal pages
+  - anything that's a regular page
   */
 
   app.get('/', function(req, res) {
     return res.render('landing-prelaunch', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
 
@@ -856,7 +828,7 @@
     return res.render('thank_you', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
 
@@ -864,7 +836,7 @@
     return res.render('splash', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
 
@@ -872,7 +844,7 @@
     return res.render('error', {
       user: req.user,
       session: req.session,
-      layout: 'layout_landing_page'
+      layout: 'layout_landing'
     });
   });
 
@@ -883,6 +855,16 @@
       scripts: ['/js/home.js']
     });
   });
+
+  /*
+  
+  Generic Routes
+  
+  - error handlers
+  - redirects
+  - robots.txt
+  - etc
+  */
 
   app.get('/error', function(req, res) {
     return res.render('error');

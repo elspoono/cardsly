@@ -1,4 +1,3 @@
-
 ###
 GENERIC LIBRARY LOADING AND SETUP
 *****************************************
@@ -456,13 +455,31 @@ err = (res, err) ->
 
 
 
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
 ###
 
-POST PAGES
+POST ROUTES
 
-actions, like saving stuff, and checking stuff, from ajax
+- for AJAX stuff mostly
+- maybe other post actions
 
 ###
+#
+#
 #
 #
 # Form request for multipart form uploading image
@@ -537,6 +554,10 @@ app.post '/upload-image', (req, res) ->
           knoxReq.end buff
   catch err
     s3_fail err
+#
+#
+#
+#
 #
 #
 # Generic Ajax Error Handling
@@ -621,8 +642,14 @@ app.post '/save-theme', (req, res) ->
           res.send
             success: true
             theme: theme_saved
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 app.post '/save-form', (req, res) ->
   ###
   TODO
@@ -636,8 +663,14 @@ app.post '/save-form', (req, res) ->
   req.session.savedInputs = req.body.inputs.split '`~`'
   res.send
     success: true
-
-
+#
+#
+#
+#
+#
+#
+#
+#
 # Make Sure an email isn't taken
 app.post '/check-email', (req, res, next) ->
   params = req.body || {}
@@ -662,8 +695,10 @@ app.post '/check-email', (req, res, next) ->
     err: req.err
     count: req.count
     email: req.email
-
-
+#
+#
+#
+#
 # Normal Login
 app.post '/login', (req, res, next) ->
   mongo_user.authenticate req.body.email, req.body.password, (err, user) ->
@@ -676,8 +711,10 @@ app.post '/login', (req, res, next) ->
       res.send
         success: true
       console.log req.user
-
-
+#
+#
+#
+#
 # Sends feedback to us
 app.post '/send-feedback', (req,res,next) ->
   res.send
@@ -691,8 +728,10 @@ app.post '/send-feedback', (req,res,next) ->
   , (err, data) ->
     if err
       console.log 'ERR Feedback Email did not send:', err, req.body.email, req.body.content
-    
-
+#
+#
+#
+#
 # Create the new sign up
 app.post '/create-user', (req,res,next) ->
   mongo_user.count
@@ -713,15 +752,21 @@ app.post '/create-user', (req,res,next) ->
       userId: user._id
     res.send
       success: 'True'
-
+#
+#
+#
+#
 # Change Password
 app.post '/change-password', (req,res,next) ->
   req.user.password_encrypted = encrypted(req.body.password);
   req.user.save (err,data) ->
     res.send
       success: 'True'
-
-# Get Themes
+#
+#
+#
+#
+# Get Themes (post route for get themes :)
 app.post '/get-themes', (req,res,next) ->
   mongo_theme.find
     active: true
@@ -732,47 +777,56 @@ app.post '/get-themes', (req,res,next) ->
     if check_no_err_ajax err
       res.send
         themes: themes
+#
+#
+#
+# END POST ROUTES
+#
+#
+#
+###########################################################
 
 
-# Get page helper functions
-securedAdminPage = (req, res, next) ->
-  if req.user && req.user.role == 'admin'
-    next()
-  else
-    res.send '',
-      Location: '/cards'
-    ,302
-securedPage = (req, res, next) ->
-  if req.user
-    next()
-  else
-    res.send '',
-      Location: '/'
-    ,302
-check_no_err = (err) ->
-  if err
-    console.log err
-    res.send '',
-      Location: '/error'
-    ,302
-  !err
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
 ###
 
-GET PAGES
+GET ROUTES
 
-like the home page and about page and stuff
+- normal pages
+- anything that's a regular page
 
 ###
-
-
+#
+#
+#
 # Home Page
 app.get '/', (req, res) ->
   res.render 'landing-prelaunch'
     user: req.user
     session: req.session
-    layout: 'layout_landing_page'
-
+    layout: 'layout_landing'
+#
 # Success Page
 #
 # Where they land after authenticating
@@ -781,13 +835,13 @@ app.get '/success', (req, res) ->
   res.render 'success'
     user: req.user
     session: req.session
-
+#
 # cards Page Mockup
 app.get '/cards', securedPage, (req, res) ->
   res.render 'cards'
     user: req.user
     session: req.session
-
+#
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
   res.render 'admin'
@@ -799,7 +853,7 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
       '/js/libs/excanvas.compiled.js'
       '/js/admin.js'
     ]
-
+#
 # Make me an admin
 app.get '/make-me-admin', securedPage, (req, res) ->
   req.user.role = 'admin'
@@ -808,27 +862,27 @@ app.get '/make-me-admin', securedPage, (req, res) ->
     res.send '',
       Location: '/admin'
     , 302
-
-
+#
+#
 # login page
 app.get '/login', (req, res) ->
   res.render 'login'
     user: req.user
     session: req.session
-
+#
 # About Page
 app.get '/about', (req, res) ->
   res.render 'about'
     user: req.user
     session: req.session
-
+#
 # How it Works Page
 app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
   res.render 'how-it-works'
     user: req.user
     session: req.session
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
-  
+#
 # Settings Page
 app.get '/settings', securedPage, (req, res) ->
   res.render 'settings'
@@ -837,29 +891,29 @@ app.get '/settings', securedPage, (req, res) ->
     scripts:[
       '/js/settings.js'
     ]
-
+#
 #Thank_You Page
 app.get '/thank_you', (req, res) -> 
   res.render 'thank_you'
     user: req.user
     session: req.session
-    layout: 'layout_landing_page'
-
-
+    layout: 'layout_landing'
+#
+#
 # Splash Page
 app.get '/splash', (req, res) -> 
   res.render 'splash'
     user: req.user
     session: req.session
-    layout: 'layout_landing_page'
-
+    layout: 'layout_landing'
+#
 # Error Page
 app.get '/error', (req, res) -> 
   res.render 'error'
     user: req.user
     session: req.session
-    layout: 'layout_landing_page'
-
+    layout: 'layout_landing'
+#
 # Landing page prelaunch
 app.get '/home', (req, res) -> 
   res.render 'index'
@@ -868,19 +922,65 @@ app.get '/home', (req, res) ->
     scripts:[
       '/js/home.js'
     ]
+#
+#
+#
+#
+# END GET ROUTES
+#
+#
+#
+#
+###########################################################
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+###
+
+Generic Routes
+
+- error handlers
+- redirects
+- robots.txt
+- etc
+
+###
+#
+#
+#
+#
 # Generic Error handler page itself
 app.get '/error', (req, res) ->
   res.render 'error'
-
+#
 # Robots.txt to tell google it's cool to crawl
 app.get '/robots.txt', (req, res, next) ->
   res.send 'user-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
-
-
+#
+#
 # Default Route
 #
 # Redirect everything to the home page automagically
@@ -888,8 +988,17 @@ app.get '*', (req, res, next) ->
   res.send '',
     Location:'/'
   , 301
-
-
+#
 # ### Start server
 app.listen process.env.PORT || process.env.C9_PORT || 4000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+#
+#
+#
+#
+# END Generic Routes
+#
+#
+#
+#
+###########################################################
