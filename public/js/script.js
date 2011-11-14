@@ -34,6 +34,110 @@
   }
 
   /*
+  */
+
+  $.fn.prep_qr = function(options) {
+    var settings;
+    settings = {
+      url: 'http://cards.ly'
+    };
+    return this.each(function(i) {
+      var $canvas, $t, count, qrcode, scale, size;
+      if (options) $.extend(settings, options);
+      $t = $(this);
+      $canvas = $('<canvas />');
+      $t.append($canvas);
+      qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
+      qrcode.addData(settings.url);
+      qrcode.make();
+      $t.data('qrcode', qrcode);
+      count = qrcode.getModuleCount();
+      scale = 3;
+      size = count * scale + scale * 2;
+      $t.css({
+        height: size,
+        width: size
+      });
+      $canvas.attr({
+        height: size,
+        width: size
+      });
+      if (typeof G_vmlCanvasManager !== 'undefined') {
+        return G_vmlCanvasManager.initElement($canvas[0]);
+      }
+    });
+  };
+
+  $.fn.draw_qr = function(options) {
+    var settings;
+    settings = {
+      color: '000000'
+    };
+    return this.each(function(i) {
+      var $t, c, count, ctx, cutHex, hexToB, hexToG, hexToR, qrcode, r, scale, size, _ref, _results;
+      if (options) $.extend(settings, options);
+      $t = $(this);
+      qrcode = $t.data('qrcode');
+      count = qrcode.getModuleCount();
+      scale = 3;
+      size = count * scale + scale * 2;
+      ctx = $t.find('canvas')[0].getContext("2d");
+      hexToR = function(h) {
+        return parseInt((cutHex(h)).substring(0, 2), 16);
+      };
+      hexToG = function(h) {
+        return parseInt((cutHex(h)).substring(2, 4), 16);
+      };
+      hexToB = function(h) {
+        return parseInt((cutHex(h)).substring(4, 6), 16);
+      };
+      cutHex = function(h) {
+        if (h.charAt(0) === "#") {
+          return h.substring(1, 7);
+        } else {
+          return h;
+        }
+      };
+      ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')';
+      _results = [];
+      for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
+        _results.push((function() {
+          var _ref2, _results2;
+          _results2 = [];
+          for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
+            if (qrcode.isDark(c, r)) {
+              _results2.push(ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale));
+            } else {
+              _results2.push(void 0);
+            }
+          }
+          return _results2;
+        })());
+      }
+      return _results;
+    });
+  };
+
+  $.fn.qr = function(options) {
+    var settings;
+    settings = {
+      color: '000000',
+      url: 'http://cards.ly'
+    };
+    return this.each(function(i) {
+      var $t;
+      if (options) $.extend(settings, options);
+      $t = $(this);
+      $t.prep_qr({
+        url: settings.url
+      });
+      return $t.draw_qr({
+        color: settings.color
+      });
+    });
+  };
+
+  /*
    * 
    * 
    * Generic Tooltip function
@@ -95,11 +199,12 @@
   */
 
   $.load_modal = function(options, next) {
-    var buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
+    var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, this_button, width, win, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
     modal = $('<div class="modal" />');
     win = $('<div class="window" />');
     close = $('<div class="close" />');
+    $body = $(document);
     settings = {
       width: 500,
       height: 235,

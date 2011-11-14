@@ -902,6 +902,15 @@ input {
   font-size: 12.6px;
   line-height: 1.5em;
 }
+.categories {
+  overflow: hidden;
+}
+.categories .card {
+  overflow: hidden;
+  position: relative;
+  float: left;
+  margin: 30px;
+}
 .card_title {
   text-align: center;
   font-size: 12.6px;
@@ -945,10 +954,7 @@ input {
   margin-top: -54px;
 }
 .card .qr {
-  height: 30px;
-  width: 30px;
-  margin-left: 120px;
-  margin-top: 24px;
+  position: absolute;
 }
 .card .theme_1,
 .card .theme_1:visited,
