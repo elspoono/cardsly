@@ -962,6 +962,29 @@ GET ROUTES
 #
 #
 #
+# Get page helper functions
+securedAdminPage = (req, res, next) ->
+  if req.user && req.user.role == 'admin'
+    next()
+  else
+    res.send '',
+      Location: '/cards'
+    ,302
+securedPage = (req, res, next) ->
+  if req.user
+    next()
+  else
+    res.send '',
+      Location: '/'
+    ,302
+check_no_err = (err) ->
+  if err
+    console.log err
+    res.send '',
+      Location: '/error'
+    ,302
+  !err
+#
 # Home Page
 app.get '/', (req, res) ->
   res.render 'landing-prelaunch'

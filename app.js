@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -741,6 +741,36 @@
   - normal pages
   - anything that's a regular page
   */
+
+  securedAdminPage = function(req, res, next) {
+    if (req.user && req.user.role === 'admin') {
+      return next();
+    } else {
+      return res.send('', {
+        Location: '/cards'
+      }, 302);
+    }
+  };
+
+  securedPage = function(req, res, next) {
+    if (req.user) {
+      return next();
+    } else {
+      return res.send('', {
+        Location: '/'
+      }, 302);
+    }
+  };
+
+  check_no_err = function(err) {
+    if (err) {
+      console.log(err);
+      res.send('', {
+        Location: '/error'
+      }, 302);
+    }
+    return !err;
+  };
 
   app.get('/', function(req, res) {
     return res.render('landing-prelaunch', {
