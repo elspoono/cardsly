@@ -1,0 +1,61 @@
+.feedback
+  a.button.feedback(href='#') Feedback
+.feedback_form
+footer.footer
+  .container
+    .above
+      | Contact us, we respond.
+    ul
+      li
+        a(href="mailto:help@cards.ly")
+          img(src='/images/email-icon.png')
+      li
+        a(href="http://twitter.com/#!/CardsLy")
+          img(src='/images/twitter-icon.png')
+      li
+        a(href="http://facebook.com/CardsLy")
+          img(src='/images/facebook-icon.png')
+      li
+        a(href="https://plus.google.com/101327189030192478503/posts")
+          img(src='/images/googleplus-icon.png')
+    .other
+      a(href='mailto:help@cards.ly') help@cards.ly
+      |  &nbsp;|&nbsp; 
+      a(href='tel:+14804288000') 480.428.8000
+| <!--[if lte IE 7]><script src="/js/libs/json2.js"></script> <![endif]--->
+script(src='//www.google.com/jsapi')
+script
+  google.load("webfont", "1");
+script(src='/js/libs/jquery-1.6.2.min.js')
+script(src='/js/libs/jquery-ui-1.8.16.min.js')
+script(src='/js/plugins.js')
+script(src='/js/script.js')
+- for (var i in scripts)
+  script(src=scripts[i])
+script
+  var _sf_async_config={uid:30481,domain:"cards.ly"};
+  (function(){
+    function loadChartbeat() {
+      window._sf_endpt=(new Date()).getTime();
+      var e = document.createElement('script');
+      e.setAttribute('language', 'javascript');
+      e.setAttribute('type', 'text/javascript');
+      e.setAttribute('src',
+         (("https:" == document.location.protocol) ? "https://a248.e.akamai.net/chartbeat.download.akamai.com/102508/" : "http://static.chartbeat.com/") +
+         "js/chartbeat.js");
+      document.body.appendChild(e);
+    }
+    var oldonload = window.onload;
+    window.onload = (typeof window.onload != 'function') ?
+       loadChartbeat : function() { oldonload(); loadChartbeat(); };
+  })();
+script
+  var _kmq = _kmq || [];
+  function _kms(u){
+    setTimeout(function(){
+      var s = document.createElement('script'); var f = document.getElementsByTagName('script')[0]; s.type = 'text/javascript'; s.async = true;
+      s.src = u; f.parentNode.insertBefore(s, f);
+    }, 1);
+  }
+  _kms('//i.kissmetrics.com/i.js');_kms('//doug1izaerwt3.cloudfront.net/9d1117801d4df63bf079c74f1c957bf5881311a1.1.js');
+script(src='//cdn.optimizely.com/js/13629231.js')

@@ -721,6 +721,14 @@ app.post '/change-password', (req,res,next) ->
     res.send
       success: 'True'
 
+# Get Themes
+app.post '/get-themes', (req,res,next) ->
+  mongo_theme.find
+    active: true
+  , (err, themes) ->
+    if check_no_err_ajax err
+      res.send
+        themes: themes
 
 
 # Get page helper functions
@@ -779,20 +787,15 @@ app.get '/cards', securedPage, (req, res) ->
 
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
-  mongo_theme.find
-    active: true
-  , (err, themes) ->
-    if check_no_err err
-      res.render 'admin'
-        themes: themes
-        user: req.user
-        session: req.session
-        scripts:[
-          '/js/libs/colorpicker/js/colorpicker.js'
-          '/js/libs/qrcode.js'
-          '/js/libs/excanvas.compiled.js'
-          '/js/admin.js'
-        ]
+  res.render 'admin'
+    user: req.user
+    session: req.session
+    scripts:[
+      '/js/libs/colorpicker/js/colorpicker.js'
+      '/js/libs/qrcode.js'
+      '/js/libs/excanvas.compiled.js'
+      '/js/admin.js'
+    ]
 
 # Make me an admin
 app.get '/make-me-admin', securedPage, (req, res) ->

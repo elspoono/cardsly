@@ -729,6 +729,18 @@
     });
   });
 
+  app.post('/get-themes', function(req, res, next) {
+    return mongo_theme.find({
+      active: true
+    }, function(err, themes) {
+      if (check_no_err_ajax(err)) {
+        return res.send({
+          themes: themes
+        });
+      }
+    });
+  });
+
   securedAdminPage = function(req, res, next) {
     if (req.user && req.user.role === 'admin') {
       return next();
@@ -789,17 +801,10 @@
   });
 
   app.get('/admin', securedAdminPage, function(req, res, next) {
-    return mongo_theme.find({
-      active: true
-    }, function(err, themes) {
-      if (check_no_err(err)) {
-        return res.render('admin', {
-          themes: themes,
-          user: req.user,
-          session: req.session,
-          scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
-        });
-      }
+    return res.render('admin', {
+      user: req.user,
+      session: req.session,
+      scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
     });
   });
 
