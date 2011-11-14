@@ -68,7 +68,13 @@
           .button.normal.save Save
           .button.gray.delete Delete
       .clear
-    .category.active(category='')
-      h4 (No Category)
-      ul.gallery
+    - for theme in themes
+      .category.active
+        h4
+          if theme.category
+            =theme.category
+          else
+            | (no category)
+        ul.gallery
+          .card(style='background:url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')')
     .button.gray.add_new Add New

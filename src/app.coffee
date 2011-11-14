@@ -192,8 +192,7 @@ mongo_message = mongoose.model 'messages', message_schema
 
 
 
-#
-# line positions
+# Style Field Positions
 line_schema = new schema
   order_id: Number
   color: String
@@ -203,17 +202,9 @@ line_schema = new schema
   w: Number
   x: Number
   y: Number
-#
-# themes
-theme_schema = new schema
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-  category: String
-  group_id: String
+
+# Themes
+theme_template_schema = new schema
   qr:
     color1: String
     color2: String
@@ -227,8 +218,18 @@ theme_schema = new schema
   color1: String
   color2: String
   s3_id: String
-#
-# Model It
+
+# Groups of Themes
+theme_schema = new schema
+  category: String
+  theme_templates: [theme_template_schema]
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+
 mongo_theme = mongoose.model 'themes', theme_schema
 
 
@@ -533,7 +534,6 @@ app.post '/upload-image', (req, res) ->
             'Content-Type' : 'image/'+ext
           knoxReq.on 'response', (res) ->
             console.log 'ERR', res if res.statusCode != 200
-            console.log knoxReq.url
           knoxReq.end buff
   catch err
     s3_fail err
@@ -584,23 +584,25 @@ app.post '/save-theme', (req, res) ->
       new_theme = new mongo_theme
       new_theme.category = params.theme.category
       #
-      new_theme.qr =
-        x: params.theme.qr_x
-        y: params.theme.qr_y
-        h: params.theme.qr_h
-        w: params.theme.qr_w
-        radius: params.theme.qr_radius
-        color1: params.theme.qr_color1
-        color2: params.theme.qr_color2
-        color2_alpha: params.theme.qr_color2_alpha
-      new_theme.color1 = params.theme.color1
-      new_theme.color2 = params.theme.color2
-      new_theme.s3_id = params.theme.s3_id
+      # Prep the new template
+      new_theme_template =
+        qr:
+          x: params.theme.qr_x
+          y: params.theme.qr_y
+          h: params.theme.qr_h
+          w: params.theme.qr_w
+          radius: params.theme.qr_radius
+          color1: params.theme.qr_color1
+          color2: params.theme.qr_color2
+          color2_alpha: params.theme.qr_color2_alpha
+        color1: params.theme.color1
+        color2: params.theme.color2
+        s3_id: params.theme.s3_id
+        lines: []
       #
-      for i,param_position in params.theme.positions
-        console.log 'I: ', i
-        console.log 'PARAM: ', param_position
-        new_theme.lines.push
+      # Prep the lines
+      for param_position,i in params.theme.positions
+        new_theme_template.lines.push
           order_id: i
           x: param_position.x
           y: param_position.y
@@ -609,17 +611,16 @@ app.post '/save-theme', (req, res) ->
           text_align: param_position.text_align
           color: param_position.color
           font_family: param_position.font_family
-      
-      console.log new_theme
       #
+      # Push the new template in
+      new_theme.theme_templates.push new_theme_template
+
+
       new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err
-          theme_saved.group_id = theme_saved._id
-          theme_saved.save (err, theme_saved_final) ->
-            if check_no_err_ajax err
-              res.send
-                success: true
-                theme: theme_saved_final
+          res.send
+            success: true
+            theme: theme_saved
 
 
 app.post '/save-form', (req, res) ->
@@ -782,27 +783,8 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
     active: true
   , (err, themes) ->
     if check_no_err err
-
-      console.log themes
-      ###
-
-      DEREK
-
-
-
-      YOU WERE HERE
-
-
-      - find the themes for that theme group
-      - next
-      - find the positions
-      - next
-      - render with that data
-      - loop through that in the admin
-
-
-      ###
       res.render 'admin'
+        themes: themes
         user: req.user
         session: req.session
         scripts:[

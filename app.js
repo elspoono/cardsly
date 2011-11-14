@@ -9,7 +9,7 @@
   *****************************************
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, url, user_schema, util, view_schema;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, err, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -225,17 +225,7 @@
     y: Number
   });
 
-  theme_schema = new schema({
-    date_added: {
-      type: Date,
-      "default": Date.now
-    },
-    active: {
-      type: Boolean,
-      "default": true
-    },
-    category: String,
-    group_id: String,
+  theme_template_schema = new schema({
     qr: {
       color1: String,
       color2: String,
@@ -250,6 +240,19 @@
     color1: String,
     color2: String,
     s3_id: String
+  });
+
+  theme_schema = new schema({
+    category: String,
+    theme_templates: [theme_template_schema],
+    date_added: {
+      type: Date,
+      "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
+    }
   });
 
   mongo_theme = mongoose.model('themes', theme_schema);
@@ -526,8 +529,7 @@
               'Content-Type': 'image/' + ext
             });
             knoxReq.on('response', function(res) {
-              if (res.statusCode !== 200) console.log('ERR', res);
-              return console.log(knoxReq.url);
+              if (res.statusCode !== 200) return console.log('ERR', res);
             });
             return knoxReq.end(buff);
           });
@@ -549,7 +551,7 @@
   };
 
   app.post('/save-theme', function(req, res) {
-    var i, new_theme, param_position, params, _len, _ref;
+    var i, new_theme, new_theme_template, param_position, params, _len, _ref;
     params = JSON.parse(req.rawBody);
     req.session.theme = params.theme;
     /*
@@ -569,25 +571,26 @@
       } else {
         new_theme = new mongo_theme;
         new_theme.category = params.theme.category;
-        new_theme.qr = {
-          x: params.theme.qr_x,
-          y: params.theme.qr_y,
-          h: params.theme.qr_h,
-          w: params.theme.qr_w,
-          radius: params.theme.qr_radius,
-          color1: params.theme.qr_color1,
-          color2: params.theme.qr_color2,
-          color2_alpha: params.theme.qr_color2_alpha
+        new_theme_template = {
+          qr: {
+            x: params.theme.qr_x,
+            y: params.theme.qr_y,
+            h: params.theme.qr_h,
+            w: params.theme.qr_w,
+            radius: params.theme.qr_radius,
+            color1: params.theme.qr_color1,
+            color2: params.theme.qr_color2,
+            color2_alpha: params.theme.qr_color2_alpha
+          },
+          color1: params.theme.color1,
+          color2: params.theme.color2,
+          s3_id: params.theme.s3_id,
+          lines: []
         };
-        new_theme.color1 = params.theme.color1;
-        new_theme.color2 = params.theme.color2;
-        new_theme.s3_id = params.theme.s3_id;
         _ref = params.theme.positions;
-        for (param_position = 0, _len = _ref.length; param_position < _len; param_position++) {
-          i = _ref[param_position];
-          console.log('I: ', i);
-          console.log('PARAM: ', param_position);
-          new_theme.lines.push({
+        for (i = 0, _len = _ref.length; i < _len; i++) {
+          param_position = _ref[i];
+          new_theme_template.lines.push({
             order_id: i,
             x: param_position.x,
             y: param_position.y,
@@ -598,17 +601,12 @@
             font_family: param_position.font_family
           });
         }
-        console.log(new_theme);
+        new_theme.theme_templates.push(new_theme_template);
         return new_theme.save(function(err, theme_saved) {
           if (check_no_err_ajax(err)) {
-            theme_saved.group_id = theme_saved._id;
-            return theme_saved.save(function(err, theme_saved_final) {
-              if (check_no_err_ajax(err)) {
-                return res.send({
-                  success: true,
-                  theme: theme_saved_final
-                });
-              }
+            return res.send({
+              success: true,
+              theme: theme_saved
             });
           }
         });
@@ -795,24 +793,8 @@
       active: true
     }, function(err, themes) {
       if (check_no_err(err)) {
-        console.log(themes);
-        /*
-        
-              DEREK
-        
-        
-        
-              YOU WERE HERE
-        
-        
-              - find the themes for that theme group
-              - next
-              - find the positions
-              - next
-              - render with that data
-              - loop through that in the admin
-        */
         return res.render('admin', {
+          themes: themes,
           user: req.user,
           session: req.session,
           scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/qrcode.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
