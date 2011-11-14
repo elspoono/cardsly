@@ -22,6 +22,7 @@ $ ->
   $options = $designer.find '.options'
   $card = $designer.find '.card'
   $body = $ 'body'
+  $categories = $ '.categories'
   #
   # Stuff inside the designer itself
   $qr = $card.find '.qr'
@@ -66,8 +67,35 @@ $ ->
   ctrl_pressed = false
   history = []
   redo_history = []
+  all_themes = []
   #
   
+  ##############
+  #
+  # The Themes
+  #
+  #
+  $.ajax
+    url: '/get-themes'
+    success: (all_data) ->
+      all_themes = all_data.themes
+      $categories.html ''
+      for theme in all_themes
+        $card = $ '<div class="card" />'
+        $card.css
+          background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+        $categories.append $card
+    error: ->
+      $.load_alert
+        content: 'Error loading themes. Please try again later.'
+  #
+  #
+  #
+  # END The Themes
+  #
+  #
+  ##############
+
   ##############
   #
   # GOOGLE FONTS

@@ -8,11 +8,12 @@
   */
 
   $(function() {
-    var $all_colors, $body, $canvas, $card, $cat, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
+    var $all_colors, $body, $canvas, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $upload, active_theme, all_themes, card_height, card_inner_height, card_inner_width, card_width, change_tab, count, ctrl_pressed, ctx, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, qrcode, redo_history, save_timer, scale, set_timers, shift_amount, shift_pressed, size, unfocus_highlight, update_active_theme, update_align, update_family, update_qr_color, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
     $body = $('body');
+    $categories = $('.categories');
     $qr = $card.find('.qr');
     $qr_bg = $qr.find('.background');
     $lines = $card.find('.line');
@@ -39,6 +40,30 @@
     ctrl_pressed = false;
     history = [];
     redo_history = [];
+    all_themes = [];
+    $.ajax({
+      url: '/get-themes',
+      success: function(all_data) {
+        var theme, _i, _len, _results;
+        all_themes = all_data.themes;
+        $categories.html('');
+        _results = [];
+        for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
+          theme = all_themes[_i];
+          $card = $('<div class="card" />');
+          $card.css({
+            background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
+          });
+          _results.push($categories.append($card));
+        }
+        return _results;
+      },
+      error: function() {
+        return $.load_alert({
+          content: 'Error loading themes. Please try again later.'
+        });
+      }
+    });
     setTimeout(function() {
       return WebFont.load({
         google: {

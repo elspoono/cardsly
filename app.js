@@ -732,6 +732,10 @@
   app.post('/get-themes', function(req, res, next) {
     return mongo_theme.find({
       active: true
+    }, [], {
+      sort: {
+        category: 1
+      }
     }, function(err, themes) {
       if (check_no_err_ajax(err)) {
         return res.send({

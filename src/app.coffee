@@ -725,6 +725,9 @@ app.post '/change-password', (req,res,next) ->
 app.post '/get-themes', (req,res,next) ->
   mongo_theme.find
     active: true
+  ,[] ,
+    sort:
+      category: 1
   , (err, themes) ->
     if check_no_err_ajax err
       res.send
