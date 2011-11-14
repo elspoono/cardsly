@@ -627,7 +627,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $feedback_a, close_menu, expand_menu, monitor_for_complete, path, successful_login;
+    var $a, $am, $body, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -923,6 +923,63 @@
         ]
       });
       return false;
+    });
+    $gs = $('.gallery_select');
+    $gs.css({
+      left: -220,
+      top: 0
+    });
+    $('.category .card').live('click', function() {
+      var $find_class, $t, class_name;
+      $t = $(this);
+      $('.card').removeClass('active');
+      $t.addClass('active');
+      $find_class = $t.clone();
+      class_name = $find_class.removeClass('card')[0].class_name;
+      $find_class.remove();
+      $('.main').attr({
+        "class": 'card main ' + class_name
+      });
+      if ($gs.offset().top === $t.offset().top_10) {
+        return $gs.animate({
+          left: $t.offset().left_10
+        }, 500);
+      } else {
+        return $gs.stop(true, false).animate({
+          top: $t.offset().top_10
+        }, 500, 'linear', function() {
+          return $gs.animate({
+            left: $t.offset().left_10
+          }, 500, 'linear');
+        });
+      }
+    });
+    $gs.bind('activeMoved', function() {
+      $a = $('.card.active');
+      return $gs.css({
+        left: $a.offset().left_10,
+        top: $a.offset().top_10
+      });
+    });
+    $(window).load(function() {
+      return $('.category:first .card:first').click();
+    });
+    $('.category h4').click(function() {
+      var $c, $g, $t;
+      $t = $(this);
+      $c = $t.closest('.category');
+      $g = $c.find('.gallery');
+      $a = $('.category.active');
+      if (!$c.hasClass('active')) {
+        $a.removeClass('active');
+        $a.find('.gallery').show().slideUp(400);
+        $gs.hide();
+        $c.find('.gallery').slideDown(400, function() {
+          $gs.show();
+          return $c.find('.card:first').click();
+        });
+        return $c.addClass('active');
+      }
     });
     return $('.button').live('mouseenter', function() {
       return $(this).addClass('hover');

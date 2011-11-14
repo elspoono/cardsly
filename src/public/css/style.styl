@@ -606,16 +606,11 @@ input
     cursor default
     overflow hidden
     position relative
-    .content
-      margin 0
-      padding 0
-    // QR Code Image
     .qr
       canvas
         position absolute
         z-index 351
       .background
-        background $c_bg_light
         position absolute
         z-index 350
       border 1px solid transparent
@@ -699,214 +694,9 @@ input
     overflow hidden
     position relative
     float left
-    margin 30px
-
-//
-// Business Cards ON HOME PAGE
-//
-//
-// Center Card Title
-.card_title
-  text-align center
-  relative_size(.6)
-//
-// Main Card
-.card.main
-  width 420px
-  height 240px
-  display block
-  margin 0 auto
-  box_shadow(4px,$c_bg_dark)
-  relative_size(.8)
-  .content
-    padding 30px 20px
-    margin-top -144px
-  .qr
-    height 80px
-    width 80px
-    margin-left 320px
-    margin-top 64px
-//
-// Little Cards
-.card
-  box_shadow(3px,$c_bg_dark)
-  height 90px
-  width 158px
-  background-size 100%
-  background $c_light
-  cursor pointer
-  .content
-    relative_size(.3)
-    padding 15px 10px
-    margin-top -54px
-  .qr
-    position absolute
-  .theme_1,.theme_1:visited,.theme_2,.theme_2:visited
-    text-decoration none
-    color $c_black
-    width 79px
+    margin 15px 30px 15px 0
     height 90px
-    float left
-    relative_size(2)
-    line-height 90px
-    text-align center
-    alpha_bg($c_black,.1)
-  .theme_1.active,.theme_2.active
-    alpha_bg($c_black,.3)
-  input
-    background none
-    border none
-    color inherit
-    font-size inherit
-    padding 0
-    margin 0
-    width 100%
-    border-bottom 1px solid $c_dark_warm
-
-
-
-.anchor.main
-  background url('/images/card-bg/anchor.png')
-.bike.main
-  background url('/images/card-bg/bike.png')
-.black_red.main
-  background url('/images/card-bg/black-red.png')
-.blue_boxes.main
-  background url('/images/card-bg/blue-boxes.png')
-.blue_circle.main
-  background url('/images/card-bg/blue-circle.png')
-.blue_gradient.main
-  background url('/images/card-bg/blue-gradient.png')
-.blue_green_gradient.main
-  background url('/images/card-bg/blue-green-gradient.png')
-.butterfly.main
-  background url('/images/card-bg/butterfly.png')
-.Card_1_Scott_QR_Blue.main
-  background url('/images/card-bg/Card-1-Scott-QR-Blue.png')
-.circles_blue.main
-  background url('/images/card-bg/circles-blue.png')
-.dark_yellow.main
-  background url('/images/card-bg/dark-yellow.png')
-.giraffe.main
-  background url('/images/card-bg/giraffe.png')
-.Gnome.main
-  background url('/images/card-bg/Gnome.png')
-.gray_blue_gradient.main
-  background url('/images/card-bg/gray-blue-gradient.png')
-.green_grid.main
-  background url('/images/card-bg/green-grid.png')
-.hello.main
-  background url('/images/card-bg/hello.png')
-.insidewatch.main
-  background url('/images/card-bg/insidewatch.png')
-.kickback_blue.main
-  background url('/images/card-bg/kickback-blue.png')
-.kickback_tan.main
-  background url('/images/card-bg/kickback-tan.png')
-.orange_bubble.main
-  background url('/images/card-bg/orange-bubble.png')
-.orange_grass.main
-  background url('/images/card-bg/orange-grass.png')
-.prime_grid.main
-  background url('/images/card-bg/prime-grid.png')
-.purple_blue.main
-  background url('/images/card-bg/purple-blue.png')
-.purple_burst.main
-  background url('/images/card-bg/purple-burst.png')
-.retroish.main
-  background url('/images/card-bg/retroish.png')
-.rose.main
-  background url('/images/card-bg/rose.png')
-.scissors.main
-  background url('/images/card-bg/scissors.png')
-.stripes.main
-  background url('/images/card-bg/stripes.png')
-.tree.main
-  background url('/images/card-bg/tree.png')
-.tri_color.main
-  background url('/images/card-bg/tri-color.png')
-.vertical_gray.main
-  background url('/images/card-bg/vertical-gray.png')
-.white_bubble.main
-  background url('/images/card-bg/white-bubble.png')
-.white_greenborder.main
-  background url('/images/card-bg/white-greenborder.png')
-.white_purple.main
-  background url('/images/card-bg/white-purple.png')
-
-
-.anchor
-  background url('/images/card-bg-small/anchor.png')
-.bike
-  background url('/images/card-bg-small/bike.png')
-.black_red
-  color $c_light
-  background url('/images/card-bg-small/black-red.png')
-.blue_boxes
-  background url('/images/card-bg-small/blue-boxes.png')
-.blue_circle
-  background url('/images/card-bg-small/blue-circle.png')
-.blue_gradient
-  background url('/images/card-bg-small/blue-gradient.png')
-.blue_green_gradient
-  background url('/images/card-bg-small/blue-green-gradient.png')
-.butterfly
-  background url('/images/card-bg-small/butterfly.png')
-.Card_1_Scott_QR_Blue
-  background url('/images/card-bg-small/Card-1-Scott-QR-Blue.png')
-.circles_blue
-  background url('/images/card-bg-small/circles-blue.png')
-.dark_yellow
-  color $c_light
-  background url('/images/card-bg-small/dark-yellow.png')
-.giraffe
-  background url('/images/card-bg-small/giraffe.png')
-.Gnome
-  color $c_light
-  background url('/images/card-bg-small/Gnome.png')
-.gray_blue_gradient
-  background url('/images/card-bg-small/gray-blue-gradient.png')
-.green_grid
-  background url('/images/card-bg-small/green-grid.png')
-.hello
-  background url('/images/card-bg-small/hello.png')
-.insidewatch
-  background url('/images/card-bg-small/insidewatch.png')
-.kickback_blue
-  background url('/images/card-bg-small/kickback-blue.png')
-.kickback_tan
-  background url('/images/card-bg-small/kickback-tan.png')
-.orange_bubble
-  background url('/images/card-bg-small/orange-bubble.png')
-.orange_grass
-  background url('/images/card-bg-small/orange-grass.png')
-.prime_grid
-  background url('/images/card-bg-small/prime-grid.png')
-.purple_blue
-  background url('/images/card-bg-small/purple-blue.png')
-.purple_burst
-  background url('/images/card-bg-small/purple-burst.png')
-.retroish
-  background url('/images/card-bg-small/retroish.png')
-.rose
-  background url('/images/card-bg-small/rose.png')
-.scissors
-  background url('/images/card-bg-small/scissors.png')
-.stripes
-  background url('/images/card-bg-small/stripes.png')
-.tree
-  background url('/images/card-bg-small/tree.png')
-.tri_color
-  background url('/images/card-bg-small/tri-color.png')
-.vertical_gray
-  background url('/images/card-bg-small/vertical-gray.png')
-.white_bubble
-  background url('/images/card-bg-small/white-bubble.png')
-.white_greenborder
-  background url('/images/card-bg-small/white-greenborder.png')
-.white_purple
-  background url('/images/card-bg-small/white-purple.png')
-
+    width 158px
 
 
 // General Style to lighten text
@@ -915,10 +705,6 @@ input
   color darken($c_bg_dark,10)
   relative_size(.6)
 
-// Main Form Layout
-.card.main
-  .nth_6,.nth_7,.nth_8,.nth_9,.nth_10,.nth_11
-    display none
 //
 //
 // The two login fields specifically, and their login button
@@ -1208,6 +994,10 @@ input value=["Send Feedback"]
   position absolute
   li
     margin 30px 0
+
+.phone_scanner
+  
+  margin 0px 0px 0px 330px
 
 
 .internet_explorer_error_page 

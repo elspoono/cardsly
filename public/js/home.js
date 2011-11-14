@@ -49,23 +49,6 @@
       });
       return false;
     });
-    $('.category h4').click(function() {
-      var $a, $c, $g, $t;
-      $t = $(this);
-      $c = $t.closest('.category');
-      $g = $c.find('.gallery');
-      $a = $('.category.active');
-      if (!$c.hasClass('active')) {
-        $a.removeClass('active');
-        $a.find('.gallery').show().slideUp(400);
-        $gs.hide();
-        $c.find('.gallery').slideDown(400, function() {
-          $gs.show();
-          return $c.find('.card:first').click();
-        });
-        return $c.addClass('active');
-      }
-    });
     $('.card.main input').each(function(i) {
       var $t;
       $t = $(this);
@@ -174,40 +157,5 @@
         }
       }
     });
-    /*
-      #
-      # The floaty guy behind the gallery selection
-      $gs = $ '.gallery_select'
-      $gs.css
-        left: -220
-        top: 0
-      $('.gallery .card').live 'click', () ->
-        $t = $ this
-        $('.card').removeClass 'active'
-        $t.addClass('active')
-        $find_class = $t.clone()
-        class_name = $find_class.removeClass('card')[0].class_name
-        $find_class.remove()
-        $('.main').attr
-          class: 'card main '+class_name
-        if $gs.offset().top == $t.offset().top_10
-          $gs.animate
-            left: $t.offset().left_10
-          ,500
-        else
-          $gs.stop(true,false).animate
-            top: $t.offset().top_10
-          ,500,'linear',() ->
-              $gs.animate
-                left: $t.offset().left_10
-              ,500,'linear'
-      $gs.bind 'activeMoved', ->
-        $a = $ '.card.active'
-        $gs.css
-          left: $a.offset().left_10
-          top: $a.offset().top_10
-      $(window).load () ->
-        $('.gallery:first .card:first').click()
-      */
   });
 }).call(this);
