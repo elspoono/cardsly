@@ -51,7 +51,7 @@
         _results = [];
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
-          $card = $('<div class="card" />');
+          $card = $('<div class="card"><div class="qr"><canvas /></div></div>');
           $card.css({
             background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
           });

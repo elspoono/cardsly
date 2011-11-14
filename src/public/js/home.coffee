@@ -173,13 +173,7 @@ $ ->
               update_cards rowNumber, ''
               $t.data 'cleared', true
           $t.bind 'focus', ->
-            $t.trigger 'clearMe'
-
-  
-  
-
-
-
+            $t.trigger 'clearMe'  
   ###
   #
   # The floaty guy behind the gallery selection

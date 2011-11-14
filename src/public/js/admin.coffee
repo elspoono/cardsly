@@ -89,7 +89,7 @@ $ ->
       all_themes = all_data.themes
       $categories.html ''
       for theme in all_themes
-        $card = $ '<div class="card" />'
+        $card = $ '<div class="card"><div class="qr"><canvas /></div></div>'
         $card.css
           background: 'url(\'http://cdn.cards.ly/158x90/' + theme.theme_templates[0].s3_id + '\')'
         $categories.append $card
@@ -524,7 +524,6 @@ $ ->
       history.push active_theme
       redo_history = []
     , 200
-
   #
   # Set that timer on the right events for the right things
   $cat.keyup set_timers
