@@ -28,50 +28,65 @@ $ ->
   # (this is effectively instantiating classes)
   $biz_cards = $ '.biz_cards'
   $slides = $ '.slides'
-  $screens = $slides.find 'li'
-
-  screens_fade_out = ->
-    $screens.fadeOut 5000, ->
-      screens_fade_in()
-  
-  screens_fade_in = ->
-    num_slides = 1 ++
-    
-    $screens.fadeOut 5000, ->
-      screens_fade_out()
-
-
- 
+  $phone_scanner = $ '.phone_scanner'
+  $lis = $slides.find 'li'
+  console.log $lis
   #
-  ### Let's change the screens periodically
-  setInterval ->
-
-    $last_visible_guy = $screens.filter(':visible:last')
-
-    if $last_visible_guy.length
-      $last_visible_guy.fadeOut()
-    else
-      $screens.fadeIn()
-
-  , 2000
-  ###
-
+  # Hide all the stuff to hide
+  $lis.hide()
+  $phone_scanner.hide()
   #
-  # Slide the business card down slowly
   #
-  # Create a repeatable function
-  start_animation = ->
-    $biz_cards.animate
-      top: 0
-    , 3000, 'linear', ->
+  # DRAW SOME QR CODES
+  $biz_cards.find('li').each ->
+    $t = $ this
+    $qr = $t.find '.qr'
+
+    $qr.qr()
+  #
+  #
+  # Find our total length
+  iterate_num = $lis.length
+  current_num = 0
+  #
+  #
+  my_repeatable_function = ->
+    #
+    #
+    $guy_im_fading_out = $lis.filter ':eq(' + current_num + ')'
+    $my_next_guy = $lis.filter ':eq(' + (current_num+1) + ')'
+    #
+    #
+    if not $my_next_guy.length
+      $my_next_guy = $lis.filter(':first')
+    #
+    #
+    $guy_im_fading_out.stop(true,true).delay(600).fadeOut 500
+    $my_next_guy.stop(true,true).delay(600).fadeIn 500
+    #
+    $phone_scanner.stop(true,true).fadeIn(300).fadeOut(300)
+    #
+    #
+    $biz_cards.stop(true,true)
+    #
+    $biz_cards.delay(500).animate
+      top: 5
+    , 3500, 'linear', ->
       # reset the style to it's default
       $biz_cards.css
         top: -205
-      # repeat the function
-      start_animation()
-  # Fire the function in the first place on page load (cause we're inside this jquery document.ready)
-  start_animation()
-  screens_fade_out()
+    #
+    #
+    current_num++
+    current_num = 0 if current_num == iterate_num
+  #
+  #
+  # Create an interval function
+  setInterval my_repeatable_function, 4000
+  #
+  #
+  #
+  my_repeatable_function()
   ###
   Shopping Cart Stuff
   ###

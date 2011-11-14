@@ -989,7 +989,6 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
     session: req.session
     scripts:[
       '/js/libs/colorpicker/js/colorpicker.js'
-      '/js/libs/qrcode.js'
       '/js/libs/excanvas.compiled.js'
       '/js/admin.js'
     ]

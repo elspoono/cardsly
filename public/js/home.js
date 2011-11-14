@@ -5,53 +5,46 @@
   
   - Home page animations
   - Gallery selection on the home page
-<<<<<<< HEAD
-  
-  */  $(function() {
-    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fade_in, screens_fade_out, start_animation, update_cards;
-=======
   */
 
   $(function() {
-    var $biz_cards, $mc, $screens, $slides, $win, item_name, screens_fading, start_animation, update_cards;
->>>>>>> 6241861f4194a885bbabb60e510c9a8c75fa242c
+    var $biz_cards, $lis, $mc, $phone_scanner, $slides, $win, current_num, item_name, iterate_num, my_repeatable_function, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
-    $screens = $slides.find('li');
-    screens_fade_out = function() {
-      return $screens.fadeOut(5000, function() {
-        return screens_fade_in();
-      });
-    };
-    screens_fade_in = function() {
-      return $screens.fadeOut(5000, function() {
-        return screens_fade_out();
-      });
-    };
-    /* Let's change the screens periodically
-    setInterval ->
-    
-      $last_visible_guy = $screens.filter(':visible:last')
-    
-      if $last_visible_guy.length
-        $last_visible_guy.fadeOut()
-      else
-        $screens.fadeIn()
-    
-    , 2000
-    */
-    start_animation = function() {
-      return $biz_cards.animate({
-        top: 0
-      }, 3000, 'linear', function() {
-        $biz_cards.css({
+    $phone_scanner = $('.phone_scanner');
+    $lis = $slides.find('li');
+    console.log($lis);
+    $lis.hide();
+    $phone_scanner.hide();
+    $biz_cards.find('li').each(function() {
+      var $qr, $t;
+      $t = $(this);
+      $qr = $t.find('.qr');
+      return $qr.qr();
+    });
+    iterate_num = $lis.length;
+    current_num = 0;
+    my_repeatable_function = function() {
+      var $guy_im_fading_out, $my_next_guy;
+      $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
+      $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
+      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
+      $guy_im_fading_out.stop(true, true).delay(600).fadeOut(500);
+      $my_next_guy.stop(true, true).delay(600).fadeIn(500);
+      $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
+      $biz_cards.stop(true, true);
+      $biz_cards.delay(500).animate({
+        top: 5
+      }, 3500, 'linear', function() {
+        return $biz_cards.css({
           top: -205
         });
-        return start_animation();
       });
+      current_num++;
+      if (current_num === iterate_num) return current_num = 0;
     };
-    start_animation();
-    screens_fade_out();
+    setInterval(my_repeatable_function, 4000);
+    my_repeatable_function();
     /*
       Shopping Cart Stuff
     */

@@ -1251,6 +1251,7 @@ input
   width: 276px;
   margin: 0 500px;
   display: block;
+  position: relative;
 }
 .phone_frame {
   margin: 30px 30px 30px 450px;
@@ -1274,6 +1275,12 @@ input
 }
 .biz_cards li {
   margin: 30px 0;
+  position: relative;
+}
+.biz_cards li .qr {
+  position: absolute;
+  top: 40px;
+  left: 200px;
 }
 .phone_scanner {
   position: absolute;
