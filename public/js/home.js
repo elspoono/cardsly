@@ -35,8 +35,8 @@
       if (!$my_next_guy.length) {
         $my_next_guy = $lis.filter(':first');
       }
-      $guy_im_fading_out.stop(true, true).delay(600).fadeOut(500);
-      $loading_screen.stop(true, true).fadeIn(300).fadeOut(300);
+      $guy_im_fading_out.stop(true, true).delay(200).fadeOut(50);
+      $loading_screen.stop(true, true).fadeIn(400).delay(100).fadeOut(400);
       $my_next_guy.stop(true, true).delay(600).fadeIn(500);
       $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
       $biz_cards.stop(true, true);

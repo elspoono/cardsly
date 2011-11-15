@@ -757,6 +757,27 @@
       layout: 'layout_landing'
     });
   });
+  app.get('/cute_animal1', function(req, res) {
+    return res.render('cute_animal1', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing'
+    });
+  });
+  app.get('/cute_animal2', function(req, res) {
+    return res.render('cute_animal2', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing'
+    });
+  });
+  app.get('/cute_animal3', function(req, res) {
+    return res.render('cute_animal3', {
+      user: req.user,
+      session: req.session,
+      layout: 'layout_landing'
+    });
+  });
   app.get('/home', function(req, res) {
     return res.render('index', {
       user: req.user,
