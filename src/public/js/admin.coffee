@@ -85,6 +85,80 @@ $ ->
   # The Themes
   #
   #
+  # helper function to create styled card
+  create_card_from_theme = (theme) ->
+    #
+    # Set Constants
+    theme_template = theme.theme_templates[0]
+    #
+    #
+    # Prep the Card
+    $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
+    #
+    $my_card.data 'theme', theme
+    #
+    $my_qr = $my_card.find('.qr')
+    #
+    $my_qr_bg = $my_qr.find '.background'
+    #
+    $my_qr.qr
+      color: theme_template.qr.color1
+      height: theme_template.qr.h/100 * 90
+      width: theme_template.qr.w/100 * 158
+    $my_qr.find('canvas').css
+      zIndex: 150
+      position: 'absolute'
+    $my_qr.css
+      position: 'absolute'
+      top: theme_template.qr.y/100 * 90
+      left: theme_template.qr.x/100 * 158
+    $my_qr_bg.css
+      zIndex: 140
+      position: 'absolute'
+      'border-radius': theme_template.qr.radius+'px'
+      height: theme_template.qr.h/100 * 90
+      width: theme_template.qr.w/100 * 158
+      background: '#' + theme_template.qr.color2
+    $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
+    #
+    #
+    for pos,i in theme_template.lines
+      $li = $ '<div>gibberish</div>'
+      $li.appendTo($my_card).css
+        position: 'absolute'
+        top: pos.y/100 * 90
+        left: pos.x/100 * 158
+        width: (pos.w/100 * 158) + 'px'
+        fontSize: (pos.h/100 * 90) + 'px'
+        lineHeight: (pos.h/100 * 90) + 'px'
+        fontFamily: pos.font_family
+        textAlign: pos.text_align
+        color: '#'+pos.color
+    #
+    #
+    # Set the card background
+    $my_card.css
+      background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
+  #
+  #
+  # another helper function to add it to a category
+  add_card_to_category = ($my_card, theme) ->
+    #
+    # Find an existing category
+    $category = $categories.find('.category[category=' + theme.category + ']')
+    #
+    # If that category doesn't exist yet
+    if $category.length == 0
+      #
+      # Create it
+      $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
+      #
+      # And add it to the categories list
+      $categories.prepend $category
+    #
+    # Finally add it
+    $category.find('h4').after $my_card
+  #
   $.ajax
     url: '/get-themes'
     success: (all_data) ->
@@ -92,73 +166,12 @@ $ ->
       $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
       for theme in all_themes
         #
-        # Set Constants
-        theme_template = theme.theme_templates[0]
-        #
-        # Prep the Card
-        $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
-        #
-        $my_card.data 'theme', theme
-        #
-        $my_qr = $my_card.find('.qr')
-        #
-        $my_qr_bg = $my_qr.find '.background'
-
-        $my_qr.qr
-          color: theme_template.qr.color1
-          height: theme_template.qr.h/100 * 90
-          width: theme_template.qr.w/100 * 158
-        $my_qr.find('canvas').css
-          zIndex: 150
-          position: 'absolute'
-        $my_qr.css
-          position: 'absolute'
-          top: theme_template.qr.y/100 * 90
-          left: theme_template.qr.x/100 * 158
-        $my_qr_bg.css
-          zIndex: 140
-          position: 'absolute'
-          'border-radius': theme_template.qr.radius+'px'
-          height: theme_template.qr.h/100 * 90
-          width: theme_template.qr.w/100 * 158
-          background: '#' + theme_template.qr.color2
-        $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
         #
         #
-        for pos,i in theme_template.lines
-          $li = $ '<div>gibberish</div>'
-          $li.appendTo($my_card).css
-            position: 'absolute'
-            top: pos.y/100 * 90
-            left: pos.x/100 * 158
-            width: (pos.w/100 * 158) + 'px'
-            fontSize: (pos.h/100 * 90) + 'px'
-            lineHeight: (pos.h/100 * 90) + 'px'
-            fontFamily: pos.font_family
-            textAlign: pos.text_align
-            color: '#'+pos.color
-        #
-        #
-        # Set the card background
-        $my_card.css
-          background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
+        $my_card = create_card_from_theme theme
         
         # Push the whole thing to categories
-        #
-        # Find an existing category
-        $category = $categories.find('.category[category=' + theme.category + ']')
-        #
-        # If that category doesn't exist yet
-        if $category.length == 0
-          #
-          # Create it
-          $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
-          #
-          # And add it to the categories list
-          $categories.append $category
-        #
-        # Finally add it
-        $category.append $my_card
+        add_card_to_category $my_card, theme
       #
       #
       # Click the first theme
@@ -167,15 +180,17 @@ $ ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
   $('.category .card').live 'click', () ->
-    console.log_active_theme
+    $t = $ this
+    theme = $t.data 'theme'
     if active_theme._id
       $a = $ '.category .card'
       $a.each ->
         $t = $ this
-        if $t.data('theme')._id == active_theme._id
+        if $t.data('theme') and $t.data('theme')._id == active_theme._id
           $t.data 'theme', active_theme
-    $t = $ this
-    load_theme $t.data 'theme'
+    if theme
+      load_theme theme
+      history = [theme]
   #
   #
   #
@@ -571,6 +586,9 @@ $ ->
       update_active_theme()
       history.push active_theme
       redo_history = []
+      if not active_theme.not_saved
+        active_theme.not_saved = true 
+        $save_button.slideDown()
     , 200
   #
   # Set that timer on the right events for the right things
@@ -723,8 +741,6 @@ $ ->
         $designer.find('.save').show_tooltip
           message: 'Error saving.'
         if next then next()
-
-
   #
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
@@ -855,10 +871,12 @@ $ ->
     history = [theme]
     #
     # Load it up
-    load_theme(theme)
-    $card = $ '<div class="card" />'
-    $('.category[category=]').append $card
-    $card.click()
+    $new_card = $ '<div class="card" />'
+    $new_card.css
+      background: '#FFF'
+    $new_card.data 'theme', theme
+    $('.categories .category[category=]').append $new_card
+    $new_card.click()
   #
   #
   #
@@ -875,6 +893,13 @@ $ ->
     $.load_loading {}, (close_loading) ->
       execute_save ->
         close_loading()
+        $new_card = create_card_from_theme active_theme
+        active_theme.not_saved = true
+        $new_card.addClass 'active'
+        $new_card.data 'theme', active_theme
+        $('.category .card.active').remove()
+        add_card_to_category $new_card, active_theme
+        $new_card.click()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
@@ -886,12 +911,16 @@ $ ->
       buttons: [{
         label: 'Delete'
         action: (close_func) ->
-          ###
-          TODO: Make this delete the template
-
-          So send to the server to delete the template we're on here ...
-
-          ###
+          #
+          #
+          active_theme.active = false
+          #
+          #
+          $.load_loading {}, (close_loading) ->
+            execute_save ->
+              close_loading()
+              $('.category .card.active').remove()
+              $('.category .card:first').click()
           close_func()
         },{
         class: 'gray'

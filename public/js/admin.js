@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $upload, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $upload, active_theme, add_card_to_category, card_height, card_inner_height, card_inner_width, card_width, change_tab, create_card_from_theme, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -42,67 +42,75 @@
     ctrl_pressed = false;
     history = [];
     redo_history = [];
+    create_card_from_theme = function(theme) {
+      var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme_template, _len, _ref;
+      theme_template = theme.theme_templates[0];
+      $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
+      $my_card.data('theme', theme);
+      $my_qr = $my_card.find('.qr');
+      $my_qr_bg = $my_qr.find('.background');
+      $my_qr.qr({
+        color: theme_template.qr.color1,
+        height: theme_template.qr.h / 100 * 90,
+        width: theme_template.qr.w / 100 * 158
+      });
+      $my_qr.find('canvas').css({
+        zIndex: 150,
+        position: 'absolute'
+      });
+      $my_qr.css({
+        position: 'absolute',
+        top: theme_template.qr.y / 100 * 90,
+        left: theme_template.qr.x / 100 * 158
+      });
+      $my_qr_bg.css({
+        zIndex: 140,
+        position: 'absolute',
+        'border-radius': theme_template.qr.radius + 'px',
+        height: theme_template.qr.h / 100 * 90,
+        width: theme_template.qr.w / 100 * 158,
+        background: '#' + theme_template.qr.color2
+      });
+      $my_qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
+      _ref = theme_template.lines;
+      for (i = 0, _len = _ref.length; i < _len; i++) {
+        pos = _ref[i];
+        $li = $('<div>gibberish</div>');
+        $li.appendTo($my_card).css({
+          position: 'absolute',
+          top: pos.y / 100 * 90,
+          left: pos.x / 100 * 158,
+          width: (pos.w / 100 * 158) + 'px',
+          fontSize: (pos.h / 100 * 90) + 'px',
+          lineHeight: (pos.h / 100 * 90) + 'px',
+          fontFamily: pos.font_family,
+          textAlign: pos.text_align,
+          color: '#' + pos.color
+        });
+      }
+      return $my_card.css({
+        background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
+      });
+    };
+    add_card_to_category = function($my_card, theme) {
+      var $category;
+      $category = $categories.find('.category[category=' + theme.category + ']');
+      if ($category.length === 0) {
+        $category = $('<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>');
+        $categories.prepend($category);
+      }
+      return $category.find('h4').after($my_card);
+    };
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $category, $li, $my_card, $my_qr, $my_qr_bg, all_themes, i, pos, theme, theme_template, _i, _len, _len2, _ref;
+        var $my_card, all_themes, theme, _i, _len;
         all_themes = all_data.themes;
         $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
-          theme_template = theme.theme_templates[0];
-          $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
-          $my_card.data('theme', theme);
-          $my_qr = $my_card.find('.qr');
-          $my_qr_bg = $my_qr.find('.background');
-          $my_qr.qr({
-            color: theme_template.qr.color1,
-            height: theme_template.qr.h / 100 * 90,
-            width: theme_template.qr.w / 100 * 158
-          });
-          $my_qr.find('canvas').css({
-            zIndex: 150,
-            position: 'absolute'
-          });
-          $my_qr.css({
-            position: 'absolute',
-            top: theme_template.qr.y / 100 * 90,
-            left: theme_template.qr.x / 100 * 158
-          });
-          $my_qr_bg.css({
-            zIndex: 140,
-            position: 'absolute',
-            'border-radius': theme_template.qr.radius + 'px',
-            height: theme_template.qr.h / 100 * 90,
-            width: theme_template.qr.w / 100 * 158,
-            background: '#' + theme_template.qr.color2
-          });
-          $my_qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
-          _ref = theme_template.lines;
-          for (i = 0, _len2 = _ref.length; i < _len2; i++) {
-            pos = _ref[i];
-            $li = $('<div>gibberish</div>');
-            $li.appendTo($my_card).css({
-              position: 'absolute',
-              top: pos.y / 100 * 90,
-              left: pos.x / 100 * 158,
-              width: (pos.w / 100 * 158) + 'px',
-              fontSize: (pos.h / 100 * 90) + 'px',
-              lineHeight: (pos.h / 100 * 90) + 'px',
-              fontFamily: pos.font_family,
-              textAlign: pos.text_align,
-              color: '#' + pos.color
-            });
-          }
-          $my_card.css({
-            background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
-          });
-          $category = $categories.find('.category[category=' + theme.category + ']');
-          if ($category.length === 0) {
-            $category = $('<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>');
-            $categories.append($category);
-          }
-          $category.append($my_card);
+          $my_card = create_card_from_theme(theme);
+          add_card_to_category($my_card, theme);
         }
         return $categories.find('.card:first').click();
       },
@@ -113,20 +121,22 @@
       }
     });
     $('.category .card').live('click', function() {
-      var $a, $t;
-      console.log_active_theme;
+      var $a, $t, theme;
+      $t = $(this);
+      theme = $t.data('theme');
       if (active_theme._id) {
         $a = $('.category .card');
         $a.each(function() {
-          var $t;
           $t = $(this);
-          if ($t.data('theme')._id === active_theme._id) {
+          if ($t.data('theme') && $t.data('theme')._id === active_theme._id) {
             return $t.data('theme', active_theme);
           }
         });
       }
-      $t = $(this);
-      return load_theme($t.data('theme'));
+      if (theme) {
+        load_theme(theme);
+        return history = [theme];
+      }
     });
     setTimeout(function() {
       return WebFont.load({
@@ -400,7 +410,11 @@
       return history_timer = setTimeout(function() {
         update_active_theme();
         history.push(active_theme);
-        return redo_history = [];
+        redo_history = [];
+        if (!active_theme.not_saved) {
+          active_theme.not_saved = true;
+          return $save_button.slideDown();
+        }
       }, 200);
     };
     $cat.keyup(set_timers);
@@ -664,19 +678,30 @@
       return $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
-      var theme;
+      var $new_card, theme;
       theme = default_theme;
       history = [theme];
-      load_theme(theme);
-      $card = $('<div class="card" />');
-      $('.category[category=]').append($card);
-      return $card.click();
+      $new_card = $('<div class="card" />');
+      $new_card.css({
+        background: '#FFF'
+      });
+      $new_card.data('theme', theme);
+      $('.categories .category[category=]').append($new_card);
+      return $new_card.click();
     });
     $save_button.click(function() {
       if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
         return execute_save(function() {
-          return close_loading();
+          var $new_card;
+          close_loading();
+          $new_card = create_card_from_theme(active_theme);
+          active_theme.not_saved = true;
+          $new_card.addClass('active');
+          $new_card.data('theme', active_theme);
+          $('.category .card.active').remove();
+          add_card_to_category($new_card, active_theme);
+          return $new_card.click();
         });
       });
     });
@@ -690,11 +715,15 @@
           {
             label: 'Delete',
             action: function(close_func) {
-              /*
-                        TODO: Make this delete the template
-              
-                        So send to the server to delete the template we're on here ...
-              */              return close_func();
+              active_theme.active = false;
+              $.load_loading({}, function(close_loading) {
+                return execute_save(function() {
+                  close_loading();
+                  $('.category .card.active').remove();
+                  return $('.category .card:first').click();
+                });
+              });
+              return close_func();
             }
           }, {
             "class": 'gray',

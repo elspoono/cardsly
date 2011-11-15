@@ -724,24 +724,29 @@ app.post '/save-theme', (req, res) ->
     # If we're updating do this
     if params.theme._id
       mongo_theme.findById params.theme._id, (err, found_theme) ->
-        found_theme.category
-        found_theme.category = params.theme.category
-        #
-        # Push the new template in
-        found_theme.theme_templates = params.theme.theme_templates
-        #
-        #
-        found_theme.save (err,theme_saved) ->
-          if check_no_err_ajax err
-            res.send
-              success: true
-              theme: theme_saved
+        if check_no_err_ajax err
+          found_theme.category
+          if typeof(params.theme.active) is 'boolean'
+            found_theme.active = params.theme.active
+          found_theme.category = params.theme.category
+          #
+          # Push the new template in
+          found_theme.theme_templates = params.theme.theme_templates
+          #
+          #
+          found_theme.save (err,theme_saved) ->
+            if check_no_err_ajax err
+              res.send
+                success: true
+                theme: theme_saved
     #
     #
     #
     # This indicates we are creating a new one, nothing to update
     else
       new_theme = new mongo_theme
+      if typeof(params.theme.active) is 'boolean'
+        new_theme.active = params.theme.active
       new_theme.category = params.theme.category
       #
       # Push the new template in

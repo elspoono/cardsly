@@ -263,14 +263,15 @@ $.load_modal = (options, next) ->
   ###
   if settings.buttons
     for i in settings.buttons
-      this_button = $ '<input type="button" class="button" value="'+i.label+'" class="submit">'
-      if i.class
-        this_button.addClass i.class
-      else
-        this_button.addClass 'normal'
-      this_button.click () ->
-        i.action my_next
-      buttons.append this_button
+      do (i) ->
+        this_button = $ '<input type="button" class="button" value="'+i.label+'" class="submit">'
+        if i.class
+          this_button.addClass i.class
+        else
+          this_button.addClass 'normal'
+        this_button.click () ->
+          i.action my_next
+        buttons.append this_button
   win.append buttons
   $('body').append modal,close,win
   resize_event = () ->
