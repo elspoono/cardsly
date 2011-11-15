@@ -730,7 +730,6 @@ app.post '/save-theme', (req, res) ->
         # Push the new template in
         found_theme.theme_templates = params.theme.theme_templates
         #
-        console.log params.theme.theme_templates
         #
         found_theme.save (err,theme_saved) ->
           if check_no_err_ajax err
@@ -748,7 +747,6 @@ app.post '/save-theme', (req, res) ->
       # Push the new template in
       new_theme.theme_templates = params.theme.theme_templates
       #
-      console.log params.theme.theme_templates
       #
       new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err

@@ -549,7 +549,6 @@
           found_theme.category;
           found_theme.category = params.theme.category;
           found_theme.theme_templates = params.theme.theme_templates;
-          console.log(params.theme.theme_templates);
           return found_theme.save(function(err, theme_saved) {
             if (check_no_err_ajax(err)) {
               return res.send({
@@ -563,7 +562,6 @@
         new_theme = new mongo_theme;
         new_theme.category = params.theme.category;
         new_theme.theme_templates = params.theme.theme_templates;
-        console.log(params.theme.theme_templates);
         return new_theme.save(function(err, theme_saved) {
           if (check_no_err_ajax(err)) {
             return res.send({
