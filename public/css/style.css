@@ -909,6 +909,28 @@ input {
   font-size: 12.6px;
   line-height: 1.5em;
 }
+.designer .views {
+  float: left;
+  overflow: hidden;
+}
+.designer .views .six,
+.designer .views .twelve,
+.designer .views .web {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  cursor: pointer;
+  float: left;
+  border: 2px solid #524641;
+  margin: 15px 15px 15px 0;
+  background: #524641;
+  background: rgba(82,70,65,0.60);
+}
+.designer .views .active {
+  background: #524641;
+  background: rgba(82,70,65,0.20);
+}
 .categories {
   overflow: hidden;
 }
@@ -916,6 +938,7 @@ input {
   overflow: hidden;
 }
 .categories .card {
+  cursor: pointer;
   overflow: hidden;
   position: relative;
   float: left;

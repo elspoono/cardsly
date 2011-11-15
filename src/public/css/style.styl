@@ -698,11 +698,28 @@ input
         width 80px
         margin 10px 10px 10px 0
         relative_size(.6)
+  .views
+    float left
+    overflow hidden
+    .six,.twelve,.web
+      width 50px
+      height 50px
+      line-height 50px
+      text-align center
+      cursor pointer
+      float left
+      border 2px solid $c_bg_dark
+      margin 15px 15px 15px 0
+      alpha_bg($c_bg_dark, .6)
+    .active
+      alpha_bg($c_bg_dark, .2)
+
 .categories
   overflow hidden
   .category
     overflow hidden
   .card
+    cursor pointer
     overflow hidden
     position relative
     float left

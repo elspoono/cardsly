@@ -58,7 +58,11 @@ $ ->
   $all_colors = $ '.color'
   #
   #
-  $save_button = $designer.find('.buttons .save')
+  $save_button = $designer.find '.buttons .save'
+  $twelve_button = $designer.find '.views .twelve'
+  $web_button = $designer.find '.views .web'
+  $six_button = $designer.find '.views .six'
+  #
   #
   # The form
   $dForm = $designer.find 'form'
@@ -84,81 +88,6 @@ $ ->
   #
   # The Themes
   #
-  #
-  # helper function to create styled card
-  create_card_from_theme = (theme) ->
-    #
-    # Set Constants
-    theme_template = theme.theme_templates[0]
-    #
-    #
-    # Prep the Card
-    $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
-    #
-    $my_card.data 'theme', theme
-    #
-    $my_qr = $my_card.find('.qr')
-    #
-    $my_qr_bg = $my_qr.find '.background'
-    #
-    $my_qr.qr
-      color: theme_template.qr.color1
-      height: theme_template.qr.h/100 * 90
-      width: theme_template.qr.w/100 * 158
-    $my_qr.find('canvas').css
-      zIndex: 150
-      position: 'absolute'
-    $my_qr.css
-      position: 'absolute'
-      top: theme_template.qr.y/100 * 90
-      left: theme_template.qr.x/100 * 158
-    $my_qr_bg.css
-      zIndex: 140
-      position: 'absolute'
-      'border-radius': theme_template.qr.radius+'px'
-      height: theme_template.qr.h/100 * 90
-      width: theme_template.qr.w/100 * 158
-      background: '#' + theme_template.qr.color2
-    $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
-    #
-    #
-    for pos,i in theme_template.lines
-      $li = $ '<div>gibberish</div>'
-      $li.appendTo($my_card).css
-        position: 'absolute'
-        top: pos.y/100 * 90
-        left: pos.x/100 * 158
-        width: (pos.w/100 * 158) + 'px'
-        fontSize: (pos.h/100 * 90) + 'px'
-        lineHeight: (pos.h/100 * 90) + 'px'
-        fontFamily: pos.font_family
-        textAlign: pos.text_align
-        color: '#'+pos.color
-    #
-    #
-    # Set the card background
-    $my_card.css
-      background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
-  #
-  #
-  # another helper function to add it to a category
-  add_card_to_category = ($my_card, theme) ->
-    #
-    # Find an existing category
-    $category = $categories.find('.category[category=' + theme.category + ']')
-    #
-    # If that category doesn't exist yet
-    if $category.length == 0
-      #
-      # Create it
-      $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
-      #
-      # And add it to the categories list
-      $categories.prepend $category
-    #
-    # Finally add it
-    $category.find('h4').after $my_card
-  #
   $.ajax
     url: '/get-themes'
     success: (all_data) ->
@@ -168,10 +97,10 @@ $ ->
         #
         #
         #
-        $my_card = create_card_from_theme theme
+        $my_card = $.create_card_from_theme theme
         
         # Push the whole thing to categories
-        add_card_to_category $my_card, theme
+        $.add_card_to_category $my_card, theme
       #
       #
       # Click the first theme
@@ -859,6 +788,12 @@ $ ->
   #
   #
   #
+  $twelve_button.click ->
+    $.load_alert
+      content: 'Coming Soon'
+  $web_button.click ->
+    $.load_alert
+      content: 'Coming Soon'
   #
   #
   #
@@ -893,13 +828,13 @@ $ ->
     $.load_loading {}, (close_loading) ->
       execute_save (result) ->
         close_loading()
-        $new_card = create_card_from_theme active_theme
+        $new_card = $.create_card_from_theme active_theme
         active_theme.not_saved = true
         active_theme._id = result.theme._id
         $new_card.addClass 'active'
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()
-        add_card_to_category $new_card, active_theme
+        $.add_card_to_category $new_card, active_theme
         $new_card.click()
   #
   # On delete click
