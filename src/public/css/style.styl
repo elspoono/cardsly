@@ -246,12 +246,15 @@ input
 // Header
 
 // Small nav is the small black bar at the top of the site that is used for logging in and other account actions.
-.small_nav
+.small_nav_container
   position absolute
   top 0
   left 0
   width 100%
   background $c_extra_dark
+.small_nav
+  max-width 850px
+  margin 0 auto
   //This changes the style of the objects that reside within the small nav object
   li
     relative_size(.6)
