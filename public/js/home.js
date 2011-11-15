@@ -1,19 +1,19 @@
-
+(function() {
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
-  */
-
-  $(function() {
-    var $biz_cards, $lis, $mc, $phone_scanner, $slides, $win, current_num, item_name, iterate_num, my_repeatable_function, update_cards;
+  
+  */  $(function() {
+    var $biz_cards, $lis, $loading_screen, $mc, $phone_scanner, $slides, $win, current_num, item_name, iterate_num, my_repeatable_function, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
     $lis = $slides.find('li');
     console.log($lis);
+    $loading_screen = $('.loading_screen');
     $lis.hide();
     $phone_scanner.hide();
     $biz_cards.find('li').each(function(i) {
@@ -32,8 +32,11 @@
       var $guy_im_fading_out, $my_next_guy;
       $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
       $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
-      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
+      if (!$my_next_guy.length) {
+        $my_next_guy = $lis.filter(':first');
+      }
       $guy_im_fading_out.stop(true, true).delay(600).fadeOut(500);
+      $loading_screen.stop(true, true).fadeIn(300).fadeOut(300);
       $my_next_guy.stop(true, true).delay(600).fadeIn(500);
       $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
       $biz_cards.stop(true, true);
@@ -45,13 +48,15 @@
         });
       });
       current_num++;
-      if (current_num === iterate_num) return current_num = 0;
+      if (current_num === iterate_num) {
+        return current_num = 0;
+      }
     };
     setInterval(my_repeatable_function, 4000);
     my_repeatable_function();
     /*
       Shopping Cart Stuff
-    */
+      */
     item_name = '100 cards';
     $('.checkout').click(function() {
       $.load_alert({
@@ -77,7 +82,7 @@
                     # this.value should have a .replace ',' '\,'
                     # on it so that we can use a comma character and escape anything.
                     # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-          */
+                    */
           array_oF_inpUt_values = $.makeArray($('.card.main input').map(function() {
             return this.value;
           }));
@@ -95,7 +100,7 @@
     });
     /*
       # Radio Button Clicking Stuff
-    */
+      */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
@@ -108,7 +113,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-    */
+      */
     update_cards = function(rowNumber, value) {
       return $('.card .content').each(function() {
         return $(this).find('li:eq(' + rowNumber + ')').html(value);
@@ -168,3 +173,4 @@
       }
     });
   });
+}).call(this);
