@@ -162,12 +162,16 @@ input {
   text-align: center;
   width: 225px;
 }
-.small_nav {
+.small_nav_container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   background: #3a322f;
+}
+.small_nav {
+  max-width: 850px;
+  margin: 0 auto;
 }
 .small_nav li {
   font-size: 12.6px;

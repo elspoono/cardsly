@@ -38,29 +38,30 @@ head
 body
   #container
     header
-      //This is the small navigation bar at the top of the page.
-      ul.small_nav
-        if user
-          li.account_link
-            a(href='/profile')
-              if user.name
-                =user.name
-              else if user.email
-                =user.email
-              .gear
-                img(src='/images/buttons/gear.png')
-            ul.account_menu
-              li
-                a(href='/settings') Settings
-              li
-                a(href='/logout') Logout
-        else
+      .small_nav_container
+        //This is the small navigation bar at the top of the page.
+        ul.small_nav
+          if user
+            li.account_link
+              a(href='/profile')
+                if user.name
+                  =user.name
+                else if user.email
+                  =user.email
+                .gear
+                  img(src='/images/buttons/gear.png')
+              ul.account_menu
+                li
+                  a(href='/settings') Settings
+                li
+                  a(href='/logout') Logout
+          else
+            li
+               a(href='/login') Login
           li
-             a(href='/login') Login
-        li
-           a(href='/about') About
-        li
-           a(href='http://blog.cards.ly') Blog
+             a(href='/about') About
+          li
+             a(href='http://blog.cards.ly') Blog
       .header
         .logo
           a(href='/')
