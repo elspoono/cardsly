@@ -28,13 +28,39 @@ This file is everywhere on the site
 ###
 $.ajaxSetup
   type: 'POST'
-usualDelay = 4000
 $window = $ window 
 $.fx.speeds._default = 300
-
-# Splash Page Displays Different
+#
+#
+$.line_copy = [
+  'Jimbo jo Jiming'
+  'Banker Extraordinaire'
+  'Cool Cats Cucumbers'
+  '57 Bakers, Edwarstonville'
+  '555.555.5555'
+  'New York'
+  'speciality'
+  'title'
+  'apt. #666'
+  'New York'
+  'fb.com/my_facebook'
+  '@my_twitter'
+]
+#
+# Redirect non compatible browsers *IMMEDIATELLY*
 if $.browser.msie and parseInt($.browser.version, 10)<8
     document.location.href = '/splash'
+#
+#
+
+
+
+
+
+
+
+
+
 
 #############################################
 #
@@ -195,7 +221,7 @@ $.create_card_from_theme = (theme) ->
   #
   #
   for pos,i in theme_template.lines
-    $li = $ '<div>gibberish</div>'
+    $li = $ '<div>' + $.line_copy[i] + '</div>'
     $li.appendTo($my_card).css
       position: 'absolute'
       top: pos.y/100 * 90
@@ -281,7 +307,7 @@ $.fn.show_tooltip = (options) ->
         TODO : Make the animation in a custom slide up / slide down thing with $.animate
 
     ###
-    tooltip.stop(true,true).fadeIn().delay(usualDelay).fadeOut()
+    tooltip.stop(true,true).fadeIn().delay(4000).fadeOut()
 #
 #
 #
