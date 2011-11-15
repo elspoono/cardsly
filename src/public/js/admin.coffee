@@ -78,6 +78,7 @@ $ ->
   card_inner_height = $card.height()
   card_inner_width = $card.width()
   active_theme = false
+  active_view = 0
   shift_pressed = false
   ctrl_pressed = false
   history = []
@@ -326,7 +327,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.theme_templates[0].lines[index].color = options.hex
+      active_theme.theme_templates[active_view].lines[index].color = options.hex
     set_timers() if options.timer
   #
   # Changing QR Color on key presses
@@ -831,6 +832,7 @@ $ ->
         $new_card = $.create_card_from_theme active_theme
         active_theme.not_saved = true
         active_theme._id = result.theme._id
+        $save_button.slideUp()
         $new_card.addClass 'active'
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()

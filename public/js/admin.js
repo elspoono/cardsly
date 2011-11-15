@@ -1,4 +1,4 @@
-(function() {
+
   /*
   
   Theme admin
@@ -6,9 +6,10 @@
   - All the theme designer stuff
   
   - Plus maybe some similar stuff to home page gallery selection
-  
-  */  $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $web_button, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
+  */
+
+  $(function() {
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $web_button, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -40,6 +41,7 @@
     card_inner_height = $card.height();
     card_inner_width = $card.width();
     active_theme = false;
+    active_view = 0;
     shift_pressed = false;
     ctrl_pressed = false;
     history = [];
@@ -144,44 +146,26 @@
           $active_item = $(this);
           if (c === 38 || c === 40) {
             new_top = parseInt($active_item.css('top'));
-            if (c === 38) {
-              new_top -= shift_amount;
-            }
-            if (c === 40) {
-              new_top += shift_amount;
-            }
+            if (c === 38) new_top -= shift_amount;
+            if (c === 40) new_top += shift_amount;
             top_bound = (card_height - card_inner_height) / 2;
             bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-            if (new_top < top_bound) {
-              new_top = top_bound;
-            }
-            if (new_top > bottom_bound) {
-              new_top = bottom_bound;
-            }
+            if (new_top < top_bound) new_top = top_bound;
+            if (new_top > bottom_bound) new_top = bottom_bound;
             $active_item.css('top', new_top);
           }
           if (c === 37 || c === 39) {
             new_left = parseInt($active_item.css('left'));
-            if (c === 37) {
-              new_left -= shift_amount;
-            }
-            if (c === 39) {
-              new_left += shift_amount;
-            }
+            if (c === 37) new_left -= shift_amount;
+            if (c === 39) new_left += shift_amount;
             top_bound = (card_width - card_inner_width) / 2;
             bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-            if (new_left < top_bound) {
-              new_left = top_bound;
-            }
-            if (new_left > bottom_bound) {
-              new_left = bottom_bound;
-            }
+            if (new_left < top_bound) new_left = top_bound;
+            if (new_left > bottom_bound) new_left = bottom_bound;
             return $active_item.css('left', new_left);
           }
         });
-        if (c === 38 || c === 40 || c === 39 || c === 37) {
-          return false;
-        }
+        if (c === 38 || c === 40 || c === 39 || c === 37) return false;
       }
     });
     $body.keyup(function(e) {
@@ -231,27 +215,21 @@
           color: '#' + options.hex
         });
         index = $active_item.prevAll().length;
-        return active_theme.theme_templates[0].lines[index].color = options.hex;
+        return active_theme.theme_templates[active_view].lines[index].color = options.hex;
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     $qr_color1.bind('color_update', function(e, options) {
       $qr.draw_qr({
         color: options.hex
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     $qr_color2.bind('color_update', function(e, options) {
       $qr_bg.css({
         background: '#' + options.hex
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     update_family = function() {
       var $active_items, $t;
@@ -345,9 +323,7 @@
       var $pa, $selected, $t, index;
       $t = $(this);
       $pa = $card.find('.active');
-      if (!shift_pressed) {
-        $pa.removeClass('active');
-      }
+      if (!shift_pressed) $pa.removeClass('active');
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
       change_tab('.font_style');
@@ -450,9 +426,7 @@
       width = parseInt($t.width());
       left = parseInt($t.css('left'));
       top = parseInt($t.css('top'));
-      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
-        return false;
-      }
+      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) return false;
       return result = {
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
@@ -509,17 +483,13 @@
               message: 'Error saving.'
             });
           }
-          if (next) {
-            return next(serverResponse);
-          }
+          if (next) return next(serverResponse);
         },
         error: function() {
           $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         }
       });
     };
@@ -675,9 +645,7 @@
       return $new_card.click();
     });
     $save_button.click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
         return execute_save(function(result) {
           var $new_card;
@@ -685,6 +653,7 @@
           $new_card = $.create_card_from_theme(active_theme);
           active_theme.not_saved = true;
           active_theme._id = result.theme._id;
+          $save_button.slideUp();
           $new_card.addClass('active');
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();
@@ -694,9 +663,7 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
@@ -726,4 +693,3 @@
       });
     });
   });
-}).call(this);
