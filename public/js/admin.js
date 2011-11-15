@@ -8,7 +8,7 @@
   - Plus maybe some similar stuff to home page gallery selection
   
   */  $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $web_button, active_theme, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $web_button, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, _i, _len;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -40,6 +40,7 @@
     card_inner_height = $card.height();
     card_inner_width = $card.width();
     active_theme = false;
+    active_view = 0;
     shift_pressed = false;
     ctrl_pressed = false;
     history = [];
@@ -231,7 +232,7 @@
           color: '#' + options.hex
         });
         index = $active_item.prevAll().length;
-        return active_theme.theme_templates[0].lines[index].color = options.hex;
+        return active_theme.theme_templates[active_view].lines[index].color = options.hex;
       });
       if (options.timer) {
         return set_timers();
@@ -685,6 +686,7 @@
           $new_card = $.create_card_from_theme(active_theme);
           active_theme.not_saved = true;
           active_theme._id = result.theme._id;
+          $save_button.slideUp();
           $new_card.addClass('active');
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();
