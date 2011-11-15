@@ -1061,20 +1061,8 @@ app.get '/error', (req, res) ->
     layout: 'layout_landing'
 
 # Cute Animal PAges
-app.get '/cute_animal1', (req, res) -> 
-  res.render 'cute_animal1'
-    user: req.user
-    session: req.session
-    layout: 'layout_landing'
-# Cute Animal PAges
-app.get '/cute_animal2', (req, res) -> 
-  res.render 'cute_animal2'
-    user: req.user
-    session: req.session
-    layout: 'layout_landing'
-# Cute Animal PAges
-app.get '/cute_animal3', (req, res) -> 
-  res.render 'cute_animal3'
+app.get '/cute_animal', (req, res) -> 
+  res.render 'cute_animal'
     user: req.user
     session: req.session
     layout: 'layout_landing'
