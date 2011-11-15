@@ -428,16 +428,24 @@ input
   relative_size(1.2)
   color $c_light
   border 0
+
+.button.small
+  width 110px
+  relative_size(.7)
+  padding 4px 8px
   
 // Shift on click (so it looks like it's pressing down, I think ... :)
 .normal.click,.gray.click
   padding 10px 12px 6px 18px
 
+.button.small.click
+  padding 5px 6px 3px 9px
+
 // GRAY BUTTONS, YAY!!
 .button.gray
   gradient($c_mid_cool,darken($c_mid_cool,20))
-.button.normal.gray
-  color lighten($c_mid_cool,10)
+.button.gray.hover
+  color lighten($c_mid_cool,50)
   gradient(lighten($c_mid_cool,10),darken($c_mid_cool,10))
 .button.gray.click
   gradient(darken($c_mid_cool,10),lighten($c_mid_cool,10))
@@ -595,6 +603,8 @@ input
 //
 // Business Cards in TEMPLATE DESIGNER in Admin
 //
+.add_new
+  float right
 .designer
   margin-bottom 60px
   .card
@@ -932,6 +942,8 @@ input value=["Send Feedback"]
     text-decoration none
   margin-top 20px
   text-align center
+  .pep-boys
+    margin 30px 0
   .really_above
     color semi-dark
     a

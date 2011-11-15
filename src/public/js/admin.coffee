@@ -57,6 +57,9 @@ $ ->
   # All Color Pickers
   $all_colors = $ '.color'
   #
+  #
+  $save_button = $designer.find('.buttons .save')
+  #
   # The form
   $dForm = $designer.find 'form'
   $upload = $dForm.find '[type=file]'
@@ -164,6 +167,13 @@ $ ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
   $('.category .card').live 'click', () ->
+    console.log_active_theme
+    if active_theme._id
+      $a = $ '.category .card'
+      $a.each ->
+        $t = $ this
+        if $t.data('theme')._id == active_theme._id
+          $t.data 'theme', active_theme
     $t = $ this
     load_theme $t.data 'theme'
   #
@@ -741,6 +751,7 @@ $ ->
   # Default Template for Card Designer
   default_theme = 
     category: ''
+    not_saved: true
     theme_templates: [
       color1: 'FFFFFF'
       color2: '000000'
@@ -774,6 +785,7 @@ $ ->
     # set this theme as the active_theme
     active_theme = theme
     #
+    if theme.not_saved then $save_button.show() else $save_button.hide() 
     #
     # Show the qr code and set it to the right place
     $qr.show().css
@@ -844,6 +856,9 @@ $ ->
     #
     # Load it up
     load_theme(theme)
+    $card = $ '<div class="card" />'
+    $('.category[category=]').append $card
+    $card.click()
   #
   #
   #
@@ -853,7 +868,7 @@ $ ->
   #
   #
   # On save click
-  $designer.find('.buttons .save').click ->
+  $save_button.click ->
     # Make sure we have something selected.
     if no_theme() then return false
     
