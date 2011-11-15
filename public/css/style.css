@@ -1251,8 +1251,25 @@ input
   color: #524641;
   text-decoration: none;
 }
-.footer .us_pics {
-  margin: 20px 0 0 0;
+.footer .us_pics li {
+  margin: 0px;
+  padding: 30px 30px 0 30px;
+}
+.footer .us_names li {
+  margin: 0px;
+  padding: 0px 30px 0 30px;
+}
+.footer .us_names .derek_text {
+  padding: 0px 50px 0 5px;
+}
+.footer .us_names .johnny_text {
+  padding: 0px 50px 0 30px;
+}
+.footer .us_names .steven_text {
+  padding: 0px 25px 0 30px;
+}
+.footer .us_names .scott_text {
+  padding: 0px 30px 0 15px;
 }
 .footer .really_above {
   color: semi-dark;
