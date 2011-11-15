@@ -35,7 +35,9 @@ $ ->
   # Stuff inside the designer itself
   $qr = $card.find '.qr'
   $qr_bg = $qr.find('.background')
-  $lines = $card.find '.line'
+  $content = $card.find '.content'
+  $content.append('<div class="line">' + line + '</div>') for line in $.line_copy
+  $lines = $content.find '.line'
   #
   # Main Options
   $cat = $designer.find '.category_field input'
@@ -802,15 +804,21 @@ $ ->
   # The add new button
   $('.add_new').click ->
     #
+    #
+    # DEEP COPY
+    # http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-a-javascript-object
+    #
+    # You may need this again :D :D :D
+    temp_theme = $.extend true, {}, default_theme
+    #
     # Restart the history
-    theme = default_theme
-    history = [theme]
+    history = [temp_theme]
     #
     # Load it up
     $new_card = $ '<div class="card" />'
     $new_card.css
       background: '#FFF'
-    $new_card.data 'theme', theme
+    $new_card.data 'theme', temp_theme
     $('.categories .category[category=]').append $new_card
     $new_card.click()
   #
@@ -832,6 +840,7 @@ $ ->
         $new_card = $.create_card_from_theme active_theme
         active_theme.not_saved = true
         active_theme._id = result.theme._id
+        console.log active_theme
         $save_button.slideUp()
         $new_card.addClass 'active'
         $new_card.data 'theme', active_theme
