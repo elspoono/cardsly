@@ -349,7 +349,7 @@
       clearTimeout(save_timer);
       save_timer = setTimeout(function() {
         return execute_save();
-      }, 2000);
+      }, 30000);
       clearTimeout(history_timer);
       return history_timer = setTimeout(function() {
         update_active_theme();

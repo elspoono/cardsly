@@ -509,7 +509,7 @@ $ ->
     clearTimeout save_timer
     save_timer = setTimeout ->
       execute_save()
-    , 2000
+    , 30000
     clearTimeout history_timer
     history_timer = setTimeout ->
       update_active_theme()
