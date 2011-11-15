@@ -736,7 +736,7 @@ $ ->
         if !serverResponse.success
           $designer.find('.save').show_tooltip
             message: 'Error saving.'
-        if next then next()
+        if next then next serverResponse
       error: ->
         $designer.find('.save').show_tooltip
           message: 'Error saving.'
@@ -891,10 +891,11 @@ $ ->
     if no_theme() then return false
     
     $.load_loading {}, (close_loading) ->
-      execute_save ->
+      execute_save (result) ->
         close_loading()
         $new_card = create_card_from_theme active_theme
         active_theme.not_saved = true
+        active_theme._id = result.theme._id
         $new_card.addClass 'active'
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()

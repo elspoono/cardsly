@@ -538,7 +538,7 @@
               message: 'Error saving.'
             });
           }
-          if (next) return next();
+          if (next) return next(serverResponse);
         },
         error: function() {
           $designer.find('.save').show_tooltip({
@@ -692,11 +692,12 @@
     $save_button.click(function() {
       if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
-        return execute_save(function() {
+        return execute_save(function(result) {
           var $new_card;
           close_loading();
           $new_card = create_card_from_theme(active_theme);
           active_theme.not_saved = true;
+          active_theme._id = result.theme._id;
           $new_card.addClass('active');
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();
