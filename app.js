@@ -264,6 +264,10 @@
   theme_schema = new schema({
     category: String,
     theme_templates: [theme_template_schema],
+    date_updated: {
+      type: Date,
+      "default": Date.now
+    },
     date_added: {
       type: Date,
       "default": Date.now
@@ -548,6 +552,7 @@
         return mongo_theme.findById(params.theme._id, function(err, found_theme) {
           if (check_no_err_ajax(err)) {
             found_theme.category;
+            found_theme.date_updated = new Date();
             if (typeof params.theme.active === 'boolean') {
               found_theme.active = params.theme.active;
             }
@@ -702,7 +707,7 @@
       active: true
     }, [], {
       sort: {
-        category: 1
+        date_updated: 0
       }
     }, function(err, themes) {
       if (check_no_err_ajax(err)) {

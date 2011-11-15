@@ -319,6 +319,9 @@ theme_template_schema = new schema
 theme_schema = new schema
   category: String
   theme_templates: [theme_template_schema]
+  date_updated:
+    type: Date
+    default: Date.now
   date_added:
     type: Date
     default: Date.now
@@ -726,6 +729,7 @@ app.post '/save-theme', (req, res) ->
       mongo_theme.findById params.theme._id, (err, found_theme) ->
         if check_no_err_ajax err
           found_theme.category
+          found_theme.date_updated = new Date()
           if typeof(params.theme.active) is 'boolean'
             found_theme.active = params.theme.active
           found_theme.category = params.theme.category
@@ -888,7 +892,7 @@ app.post '/get-themes', (req,res,next) ->
     active: true
   ,[] ,
     sort:
-      category: 1
+      date_updated: 0
   , (err, themes) ->
     if check_no_err_ajax err
       res.send
