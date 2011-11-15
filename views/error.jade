@@ -1,26 +1,25 @@
 .section.first
   .cell_bg
   .cell_content
-    h2 We hope the cute animal calms you down a little
+    h2 Whoops!
+    h4 It broke. We're on it.
+    p We know this error might be upsetting.
+    p To calm your nerves and make your day a little better please scan the below QR code for a picture of a cute animal.
+    a(href='#').qr_link
+      .qr(style='height:200px;width:200px;margin:20px auto;')
+        .background(style='background:#EEE;height:200px;width:200px;position:absolute;z-index:-1;border-radius:5px')
     script
-    function swapImage() {
-      theImages = new Array("images/sorry_puppy.jpg", "images/happy_bunny.jpg", "images/sleepy_kola.jpg");
-      whichImage = Math.floor(Math.random()*theImages.length);
-      document.write('<IMG SRC="' +theImages[whichImage]+ '">');
-
-    }
-  script
-    swapImage();
-  noscript
-    img(src="image.jpg")
-
-
-    h2 We're Sorry
-    h2 Here's a Cute Puppy
-    img(src='images/sorry_puppy.jpg')
-
-    h2 This bunny is happy you found him
-    img(src='images/happy_bunny.jpg')
-
-    h2 This Kola is so tired, he's had a very long day.
-    img(src='images/sleepy_kola.jpg')
+      window.onload = function(){
+        images = [
+          'http://cards.ly'
+        ];
+        image = images[Math.round(Math.random()*(images.length-1))]
+        $('.qr').qr({
+          url: image,
+          height: 200,
+          width: 200,
+          color: '#333333'
+        })
+        $('.qr_link').attr('href',image)
+      }
+    p This should calm you down and make you less angry with us.

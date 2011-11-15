@@ -3,24 +3,11 @@
   .cell_content
     h2 We hope the cute animal calms you down a little
     script
-    function swapImage() {
-      theImages = new Array("images/sorry_puppy.jpg", "images/happy_bunny.jpg", "images/sleepy_kola.jpg");
-      whichImage = Math.floor(Math.random()*theImages.length);
-      document.write('<IMG SRC="' +theImages[whichImage]+ '">');
-
-    }
-  script
-    swapImage();
-  noscript
-    img(src="image.jpg")
-
-
-    h2 We're Sorry
-    h2 Here's a Cute Puppy
-    img(src='images/sorry_puppy.jpg')
-
-    h2 This bunny is happy you found him
-    img(src='images/happy_bunny.jpg')
-
-    h2 This Kola is so tired, he's had a very long day.
-    img(src='images/sleepy_kola.jpg')
+      function swapImage() {
+        theImages = new Array("images/sorry_puppy.jpg", "images/happy_bunny.jpg", "images/sleepy_kola.jpg");
+        whichImage = Math.floor(Math.random()*theImages.length);
+        document.write('<IMG SRC="' +theImages[whichImage]+ '">'); }
+    script
+      swapImage();
+    noscript
+      img(src="image.jpg")
