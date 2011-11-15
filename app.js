@@ -757,8 +757,8 @@
       layout: 'layout_landing'
     });
   });
-  app.get('/cute_animal', function(req, res) {
-    return res.render('cute_animal', {
+  app.get('/cute-animal', function(req, res) {
+    return res.render('cute-animal', {
       user: req.user,
       session: req.session,
       layout: 'layout_landing'
