@@ -845,6 +845,33 @@ input {
 .add_new {
   float: right;
 }
+.home_designer .card {
+  width: 505px;
+  height: 280px;
+  padding: 10px;
+  margin: 0 auto;
+  position: relative;
+}
+.home_designer .card .qr {
+  position: absolute;
+}
+.home_designer .card .qr canvas {
+  position: absolute;
+  z-index: 351;
+}
+.home_designer .card .qr .background {
+  position: absolute;
+  z-index: 350;
+}
+.home_designer .card input {
+  border: 1px solid transparent;
+  border-bottom: 1px solid #908575;
+  padding: 0;
+  margin: 0;
+  background: none;
+  overflow: visible;
+  position: absolute;
+}
 .designer {
   margin-bottom: 60px;
 }
@@ -860,10 +887,7 @@ input {
   z-index: 1;
 }
 .designer .card .qr {
-  border: 1px solid transparent;
-  display: block;
   position: absolute;
-  margin: 0;
 }
 .designer .card .qr canvas {
   position: absolute;
@@ -876,8 +900,6 @@ input {
 .designer .card .line {
   border: 1px solid transparent;
   border-bottom: 1px solid #908575;
-  height: 20px;
-  width: 350px;
   display: block;
   position: absolute;
   white-space: nowrap;
@@ -933,7 +955,8 @@ input {
 .designer .options .center,
 .designer .options .right,
 .designer .options .increase,
-.designer .options .decrease {
+.designer .options .decrease,
+.designer .options .indicator {
   width: 25px;
   height: 25px;
   margin: 5px 10px 5px 0;
@@ -971,6 +994,15 @@ input {
 .designer .options .size {
   float: left;
 }
+.designer .options .size .indicator {
+  cursor: auto;
+  cursor: auto;
+  background: #908575;
+  padding: 2px;
+  text-align: center;
+  line-height: 25px;
+  font-size: 15px;
+}
 .designer .options .size .increase,
 .designer .options .size .decrease {
   background: #908575 url("/images/wysiwyg_spritesheet.png") no-repeat;
@@ -982,11 +1014,22 @@ input {
 .designer .options .size .decrease {
   background-position: -100px 0;
 }
+.designer .options .size .slider {
+  width: 100px;
+  float: left;
+  height: 10px;
+  margin: 15px 10px 0 10px;
+  display: block;
+}
 .designer .options .font_family {
   float: none;
   display: block;
   width: 180px;
   display: block;
+}
+.designer .options .qr_color2_alpha {
+  height: 10px;
+  margin: 5px 0 15px 0;
 }
 .designer .options .buttons .button {
   height: 20px;

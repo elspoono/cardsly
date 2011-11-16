@@ -30,21 +30,191 @@ $ ->
   $slides = $ '.slides'
   $phone_scanner = $ '.phone_scanner'
   $lis = $slides.find 'li'
-  console.log $lis
   $loading_screen = $ '.loading_screen'
   #
   # Hide all the stuff to hide
   $lis.hide()
   $phone_scanner.hide()
+  $designer = $ '.home_designer'
+  $categories = $ '.categories'
+  $card = $designer.find '.card'
+  $qr = $card.find '.qr'
+  $qr_bg = $qr.find '.background'
+  $lines = $card.find 'input'
+  #
+  #
+  # Set some constants
+  active_theme = false
+  active_view = 0
+  card_height = 0
+  card_width = 0
+  card_inner_height = 0
+  card_inner_width = 0
+  update_card_size = ->
+    card_height = $card.outerHeight()
+    card_width = $card.outerWidth()
+    card_inner_height = $card.height()
+    card_inner_width = $card.width()
+  update_card_size()
+  $qr.prep_qr()
+
+
+
+  ##############
+  #
+  # GOOGLE FONTS
+  #
+  # 1. Load them
+  # 2. Make their common names available
+  #
+  #
+  # Loading Them
+  setTimeout ->
+    WebFont.load google:
+      families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
+  ,3000
+  #
+  #
+  # END GOOGLE FONTS
+  #
+  ################
+
+  
+  ##############
+  #
+  # The Themes
+  #
+  $.ajax
+    url: '/get-themes'
+    success: (all_data) ->
+      all_themes = all_data.themes
+      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      for theme in all_themes
+        #
+        #
+        #
+        $my_card = $.create_card_from_theme theme
+        
+        # Push the whole thing to categories
+        $.add_card_to_category $my_card, theme
+      #
+      #
+      # Click the first theme
+      $categories.find('.card:first').click()
+    error: ->
+      $.load_alert
+        content: 'Error loading themes. Please try again later.'
+  $('.category .card').live 'click', () ->
+    $t = $ this
+    theme = $t.data 'theme'
+    if active_theme._id
+      $a = $ '.category .card'
+      $a.each ->
+        $t = $ this
+        if $t.data('theme') and $t.data('theme')._id == active_theme._id
+          $t.data 'theme', active_theme
+    if theme
+      load_theme theme
+      history = [theme]
+  #
+  #
+  #
+  # END The Themes
+  #
+  #
+  ##############
+
+  load_theme = (theme) ->
+    #
+    # Set Constants
+    theme_template = theme.theme_templates[active_view]
+    #
+    if !theme_template
+      if active_view is 2
+        theme_template = $.extend true, {}, theme.theme_templates[0]
+      if active_view is 1
+        theme_template = $.extend true, {}, theme.theme_templates[0]
+        for line in theme_template.lines
+          $.extend true, line,
+            h: line.h/2
+            w: line.w/2
+          new_line = $.extend true, {}, line
+          new_line.x = 100-new_line.x-new_line.w
+          theme_template.lines.push new_line
+        theme_template.qr.h = theme_template.qr.h/2
+        theme_template.qr.w = theme_template.qr.w/2
+      theme.theme_templates[active_view] = theme_template
+    # 
+    #
+    #
+    # set this theme as the active_theme
+    active_theme = theme
+    #
+    #
+    # Card Background
+    if theme_template.s3_id
+      $card.css
+        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
+    else
+      $card.css
+        background: '#FFFFFF'
+      $card.css
+        height: 280
+        width: 505
+        padding: 10
+        margin: 0
+      update_card_size()
+    #
+    #
+    $qr.hide()
+    $lines.hide()
+    #
+    # Show the qr code and set it to the right place
+    $qr.show().css
+      top: theme_template.qr.y/100 * card_height
+      left: theme_template.qr.x/100 * card_width
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
+    $qr.find('canvas').css
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
+    $qr_bg.css
+      'border-radius': theme_template.qr.radius+'px'
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.w/100 * card_width
+      background: '#'+theme_template.qr.color2
+    $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
+    $qr.draw_qr
+      color: theme_template.qr.color1
+    #
+    #
+    # Move all the lines and their shit
+    for pos,i in theme_template.lines
+      $li = $lines.eq i
+      $li.show().css
+        top: pos.y/100 * card_height
+        left: pos.x/100 * card_width
+        width: (pos.w/100 * card_width) + 'px'
+        height: (pos.h/100 * card_height) + 'px'
+        fontSize: (pos.h/100 * card_height) + 'px'
+        lineHeight: (pos.h/100 * card_height) + 'px'
+        fontFamily: pos.font_family
+        textAlign: pos.text_align
+        color: '#'+pos.color
+
+
+
+
+
 
   #
   #
   # DRAW SOME QR CODES
   $biz_cards.find('li').each (i) ->
     $t = $ this
-    $qr = $t.find '.qr'
+    $my_qr = $t.find '.qr'
 
-    $qr.qr
+    $my_qr.qr
       url: 'http://cards.ly/' + Math.random()
       height: 70
       width: 70
@@ -110,15 +280,16 @@ $ ->
 
   #
   # Form Fields
-  $('.card.main input').each (i) ->
+  $lines.each (i) ->
     $t = $ this
     $t.data 'timer', 0
+    $t.click -> 
+      $t.select()
     $t.keyup -> 
       update_cards i, this.value
       clearTimeout $t.data 'timer'
       $t.data 'timer',
         setTimeout ->
-          $('.card.main input').each -> $(this).trigger 'clearMe'
           ###
           # TODO
           #
@@ -126,8 +297,7 @@ $ ->
           # on it so that we can use a comma character and escape anything.
           # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
           ###
-          array_oF_inpUt_values = $.makeArray $('.card.main input').map -> this.value
-          console.log array_oF_inpUt_values
+          array_oF_inpUt_values = $.makeArray $lines.map -> this.value
           $.ajax
             url: '/save-form'
             data:
@@ -148,7 +318,7 @@ $ ->
 
   # Window and Main Card to use later
   $win = $ window
-  $mc = $ '.main.card'
+  $mc = $ '.home_designer'
   
 
   ###
@@ -157,7 +327,9 @@ $ ->
   This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
   update_cards = (rowNumber, value) ->
-    $('.card .content').each -> $(this).find('li:eq('+rowNumber+')').html value
+    $('.categories .card').each -> 
+      $t = $ this
+      $t.find('.line:eq('+rowNumber+')').html value
 
 
   # On the window scroll event ...
@@ -170,9 +342,9 @@ $ ->
       if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
         $mc.data 'didLoad', true
         time_lapse = 0
-        $('.main.card').find('input').each (rowNumber) ->
+        $lines.each (rowNumber) ->
           update_cards rowNumber, this.value
-        $('.main.card .defaults').find('input').each (rowNumber) ->
+        $lines.each (rowNumber) ->
           $t = $ this
           v = $t.val()
           $t.val ''
@@ -185,13 +357,3 @@ $ ->
               ,time_lapse*70
               time_lapse++
               timer
-          $t.bind 'clearMe', ->
-            console.log $t.data 'cleared'
-            if !$t.data 'cleared'
-              for i in timers
-                clearTimeout i
-              $t.val ''
-              update_cards rowNumber, ''
-              $t.data 'cleared', true
-          $t.bind 'focus', ->
-            $t.trigger 'clearMe'  

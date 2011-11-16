@@ -48,6 +48,8 @@ $ ->
   $fonts = $designer.find '.font_style'
   $font_color = $fonts.find '.font_color'
   $font_family = $fonts.find '.font_family'
+  $font_size_indicator = $fonts.find '.indicator'
+  $font_size_slider = $fonts.find '.size .slider'
   #
   # QR Options
   $qrs = $designer.find '.qr_style'
@@ -181,7 +183,6 @@ $ ->
   $web_bg.hide()
   
   $qr.prep_qr()
-
 
 
   #############################
@@ -418,16 +419,11 @@ $ ->
   ###############
   # Changing font size for those thumbnail guys
   #
-  update_size = (size_change) ->
-    $t = $ this
+  update_active_size = (new_h) ->
     $active_items = $card.find '.active'
     $active_items.each ->
       $active_item = $ this
       #
-      #
-      h = $active_item.height()
-      #
-      new_h = h + size_change
       #
       # Update it all
       $active_item.css
@@ -435,9 +431,32 @@ $ ->
         'line-height': new_h + 'px'
         'height': new_h + 'px'
       #
+    $font_size_indicator.html new_h
+    $font_size_slider.slider 'value', new_h
+
+  update_size = (size_change) ->
+    $t = $ this
+    #
+    $active_items = $card.find '.active'
+    h = $active_items.height()
+    #
+    new_h = h + size_change
+    #
+    update_active_size new_h
+    #
+    set_timers()
   #
   $fonts.find('.increase').click -> update_size 1
   $fonts.find('.decrease').click -> update_size -1
+  $font_size_slider.slider
+    min: 1
+    max: 150
+    step: 5
+    slide: (e, ui) ->
+      #
+      update_active_size ui.value
+      #
+      set_timers()
   #
   ##############
 
@@ -446,11 +465,15 @@ $ ->
   ###############
   # Changing QR Extras
   #
-  $qr_color2_alpha.change ->
-    $t = $ this
-    $qr_bg.fadeTo 0, $t.val()
-    active_theme.theme_templates[active_view].qr.color2_alpha = $t.val()
-    set_timers()
+  $qr_color2_alpha.slider
+    min: 0
+    max: 100
+    step: 5
+    slide: (e, ui) ->
+      #
+      $qr_bg.fadeTo 0, ui.value/100
+      active_theme.theme_templates[active_view].qr.color2_alpha = ui.value/100
+      set_timers()
   #
   $qr_radius.change ->
     $t = $ this
@@ -523,6 +546,7 @@ $ ->
     #
     # Set it up and make it active
     $t = $ this
+    new_h = $t.height()
     $pa = $card.find '.active'
     $pa.removeClass 'active' if not shift_pressed
     $t.addClass 'active'
@@ -538,6 +562,10 @@ $ ->
       hex: active_theme.theme_templates[active_view].lines[index].color
     $selected = $font_family.find('option[value="' + active_theme.theme_templates[active_view].lines[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
+    #
+    #
+    $font_size_indicator.html new_h
+    $font_size_slider.slider 'value', new_h
   #
   # Highlighting and making a line the active one
   $qr.mousedown ->
@@ -560,7 +588,7 @@ $ ->
     clearTimeout history_timer
     history_timer = setTimeout ->
       update_active_theme()
-      history.push active_theme
+      history.push $.extend true, {}, active_theme
       redo_history = []
       if not active_theme.not_saved
         active_theme.not_saved = true 
@@ -585,9 +613,7 @@ $ ->
     resize: (e, ui) ->
       $t = $(ui.element)
       h = $t.height()
-      $t.css
-        'font-size': h + 'px'
-        'line-height': h + 'px'
+      update_active_size h
     stop: set_timers
   #
   # Dragging and dropping functions for the qr code
@@ -894,12 +920,11 @@ $ ->
       hex: theme_template.qr.color2
     #
     # Get the QR alpha and radius ready
-    $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr 'selected', 'selected'
+    $qr_color2_alpha.slider 'value', theme_template.qr.color2_alpha*100
     $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr 'selected', 'selected'
   #
   #
   #
-  $
   #
   #
   #
