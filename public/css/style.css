@@ -1256,7 +1256,7 @@ input
   display: block;
 }
 .footer {
-  font-size: 12.6px;
+  font-size: 13.65px;
   line-height: 1.5em;
   color: #746b5e;
   margin-top: 20px;
@@ -1267,20 +1267,15 @@ input
   color: #746b5e;
   text-decoration: none;
 }
+.footer p {
+  margin: 0;
+}
 .footer .us_pics li {
-  margin: 0 20px;
+  margin: 45px 20px 0 20px;
 }
 .footer .us_pics li img {
   display: block;
   margin: 0 auto;
-}
-.footer .really_above {
-  color: semi-dark;
-  padding-bottom: 10px;
-}
-.footer .really_above a {
-  color: semi-dark;
-  text-decoration: none;
 }
 .footer .above {
   border-top: 1px solid #908575;
@@ -1295,7 +1290,7 @@ input
 .footer ul li {
   display: inline-block;
   float: inherit;
-  margin: 10px 15px;
+  margin: 10px 15px 8px 15px;
 }
 .joe {
   float: left;
