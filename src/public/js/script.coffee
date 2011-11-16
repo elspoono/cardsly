@@ -39,10 +39,8 @@ $.line_copy = [
   '57 Bakers, Edwarstonville'
   '555.555.5555'
   'New York'
-  'speciality'
-  'title'
-  'apt. #666'
-  'New York'
+  'Apt. #666'
+  'M thru F - 10 to 7'
   'fb.com/my_facebook'
   '@my_twitter'
 ]
@@ -794,13 +792,14 @@ $ ->
   #
   # Get Started Button Scroll
   $('.design_button').click ->
-    if path != '/'
+    if path isnt '/' and path isnt '/home'
       document.location.href = '/#design-button'
     else
       $('html,body').animate
         scrollTop: $('.section:eq(1)').offset().top
-      ,
-      500
+        500
+        ->
+          $('.home_designer .line:first').click()
     false
   #
   #

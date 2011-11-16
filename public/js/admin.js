@@ -471,15 +471,6 @@
     $upload.change(function() {
       return $dForm.submit();
     });
-    $('.theme_1,.theme_2').click(function() {
-      var $c, $t;
-      $t = $(this);
-      $c = $t.closest('.card');
-      $c.click();
-      $('.theme_1,.theme_2').removeClass('active');
-      $t.addClass('active');
-      return false;
-    });
     get_position = function($t) {
       var height, left, result, top, width;
       height = parseInt($t.height());
@@ -636,17 +627,20 @@
           for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
             line = _ref2[_k];
             $.extend(true, line, {
-              h: line.h / 2,
-              w: line.w / 2
+              h: line.h / 1.5,
+              w: line.w / 1.5
             });
             new_line = $.extend(true, {}, line);
             new_line.x = 100 - new_line.x - new_line.w;
             theme_template.lines.push(new_line);
           }
-          theme_template.qr.h = theme_template.qr.h / 2;
-          theme_template.qr.w = theme_template.qr.w / 2;
+          theme_template.qr.h = theme_template.qr.h / 1.5;
+          theme_template.qr.w = theme_template.qr.w / 1.5;
         }
         theme.theme_templates[active_view] = theme_template;
+      }
+      if (active_view === 1 && theme.theme_templates[active_view].lines.length > 10) {
+        theme.theme_templates[active_view].lines.splice(10, 5);
       }
       if (theme.not_saved) {
         $save_button.stop(true, true).show();

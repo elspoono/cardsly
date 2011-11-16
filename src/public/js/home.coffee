@@ -138,14 +138,16 @@ $ ->
         theme_template = $.extend true, {}, theme.theme_templates[0]
         for line in theme_template.lines
           $.extend true, line,
-            h: line.h/2
-            w: line.w/2
+            h: line.h/1.5
+            w: line.w/1.5
           new_line = $.extend true, {}, line
           new_line.x = 100-new_line.x-new_line.w
           theme_template.lines.push new_line
-        theme_template.qr.h = theme_template.qr.h/2
-        theme_template.qr.w = theme_template.qr.w/2
+        theme_template.qr.h = theme_template.qr.h/1.5
+        theme_template.qr.w = theme_template.qr.w/1.5
       theme.theme_templates[active_view] = theme_template
+    if active_view is 1 and theme.theme_templates[active_view].lines.length > 10
+      theme.theme_templates[active_view].lines.splice 10, 5
     # 
     #
     #
@@ -286,6 +288,9 @@ $ ->
     $t = $ this
     $t.data 'timer', 0
     $t.click -> 
+      if i is 5
+        active_view = 1
+        load_theme active_theme
       style = $t.attr 'style'
       $input = $ '<input class="line" />'
       $input.attr 'style', style
@@ -293,7 +298,10 @@ $ ->
       $t.after $input
       $t.hide()
       $input.focus().select()
-      $input.keyup ->
+      $input.keyup (e) ->
+        if e.keyCode is 13
+          $t.nextAll('div:first').click()
+          return false
         update_cards i, this.value
         $t.html this.value
         clearTimeout input_timer

@@ -27,7 +27,7 @@
 
   $.fx.speeds._default = 300;
 
-  $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'speciality', 'title', 'apt. #666', 'New York', 'fb.com/my_facebook', '@my_twitter'];
+  $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
 
   if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
     document.location.href = '/splash';
@@ -757,12 +757,14 @@
     $a.one('click', expand_menu);
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design_button').click(function() {
-      if (path !== '/') {
+      if (path !== '/' && path !== '/home') {
         document.location.href = '/#design-button';
       } else {
         $('html,body').animate({
           scrollTop: $('.section:eq(1)').offset().top
-        }, 500);
+        }, 500, function() {
+          return $('.home_designer .line:first').click();
+        });
       }
       return false;
     });
