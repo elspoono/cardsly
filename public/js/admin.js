@@ -380,8 +380,7 @@
       } else {
         $card.find('.active').removeClass('active');
         $body.unbind('click', unfocus_highlight);
-        change_tab('.defaults');
-        return false;
+        return change_tab('.defaults');
       }
     };
     $lines.mousedown(function(e) {

@@ -323,10 +323,10 @@ $.fn.show_tooltip = (options) ->
 $.load_modal = (options, next) ->
 
   scrollbar_width = $.scrollbar_width()
-  modal = $('<div class="modal" />')
-  win = $('<div class="window" />')
-  close = $('<div class="close" />')
-  $body = $(document)
+  modal = $ '<div class="modal" />'
+  win = $ '<div class="window" />'
+  close = $ '<div class="close" />'
+  $body = $ document
 
   settings =
     width: 500

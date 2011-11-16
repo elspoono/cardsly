@@ -539,7 +539,6 @@ $ ->
       $card.find('.active').removeClass 'active'
       $body.unbind 'click', unfocus_highlight
       change_tab '.defaults'
-      return false
   #
   # Highlighting and making a line the active one
   $lines.mousedown (e) ->

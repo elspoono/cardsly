@@ -40,7 +40,9 @@ $ ->
   $card = $designer.find '.card'
   $qr = $card.find '.qr'
   $qr_bg = $qr.find '.background'
-  $lines = $card.find 'input'
+  $lines = $card.find '.line'
+  #
+  $body = $ document
   #
   #
   # Set some constants
@@ -284,27 +286,24 @@ $ ->
     $t = $ this
     $t.data 'timer', 0
     $t.click -> 
-      $t.select()
-    $t.keyup -> 
-      update_cards i, this.value
-      clearTimeout $t.data 'timer'
-      $t.data 'timer',
-        setTimeout ->
-          ###
-          # TODO
-          #
-          # this.value should have a .replace ',' '\,'
-          # on it so that we can use a comma character and escape anything.
-          # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-          ###
-          array_oF_inpUt_values = $.makeArray $lines.map -> this.value
-          $.ajax
-            url: '/save-form'
-            data:
-              inputs: array_oF_inpUt_values.join('`~`')
-          false
-        ,1000
-      false
+      style = $t.attr 'style'
+      $input = $ '<input class="line" />'
+      $input.attr 'style', style
+      $input.val $t.html()
+      $t.after $input
+      $t.hide()
+      $input.focus().select()
+      $input.keyup ->
+        update_cards i, this.value
+        $t.html this.value
+
+      remove_input = (e) ->
+        $target = $ e.target
+        if $target[0] isnt $t[0] and $target[0] isnt $input[0]
+          $body.unbind 'click', remove_input
+          $input.remove()
+          $t.show()
+      $body.bind 'click', remove_input
   
   ###
   # Radio Button Clicking Stuff
@@ -343,16 +342,15 @@ $ ->
         $mc.data 'didLoad', true
         time_lapse = 0
         $lines.each (rowNumber) ->
-          update_cards rowNumber, this.value
-        $lines.each (rowNumber) ->
           $t = $ this
-          v = $t.val()
+          v = $t.val() || $t.html()
           $t.val ''
+          update_cards rowNumber, v
           timers = for j in [0..v.length]
             do (j) ->
               timer = setTimeout ->
                 v_substring = v.substr 0,j
-                $t.val v_substring
+                $t.html v_substring
                 update_cards rowNumber, v_substring
               ,time_lapse*70
               time_lapse++

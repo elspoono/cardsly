@@ -798,7 +798,7 @@ input {
   position: absolute;
   z-index: 350;
 }
-.home_designer .card input {
+.home_designer .card .line {
   border: 1px solid transparent;
   border-bottom: 1px solid #908575;
   padding: 0;

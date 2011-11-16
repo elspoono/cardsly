@@ -80,7 +80,7 @@
     .cell_bg
     .cell_content
       h3 Step 1 : Design Your Cards
-      p.card_title Enter your name/etc:
+      p.subtitle Please type your name here:
       .home_designer
         .card
           .qr
@@ -88,7 +88,8 @@
           if session && session.savedInputs
             .content
               - for(var i=0; i<session.savedInputs.length; i++)
-                input(class='nth-'+i,value=session.savedInputs[i])
+                .line
+                  =session.savedInputs[i]
           else
             .content.defaults
               input.nth_0(value='John Stamos')
