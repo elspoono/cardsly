@@ -616,7 +616,7 @@
     });
   });
   app.post('/change-password', function(req, res, next) {
-    req.user.password_encrypted = encrypted(req.body.password);
+    req.user.password_encrypted = encrypted(req.body.new_password);
     return req.user.save(function(err, data) {
       return res.send({
         success: 'True'

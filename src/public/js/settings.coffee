@@ -35,37 +35,45 @@ $ ->
   false
 
    # Change Password
+  $old_password = $ '.current_password'
   $set_new_password = $ '.set_new_password'
   $new_password = $ '.new_password'
   $new_password2 = $ '.new_password2'
   $set_new_password.submit () ->
     err = false
+    if $old.password.val() != req.user.password_encrypted
+      err = 'Please Enter the correct current password'
     if $new_password.val() == '' || $new_password2.val() == ''
       err = 'Please enter your new password twice.'
     else if $new_password.val() != $new_password2.val()
       err = 'I\'m sorry, I don\'t think those passwords match.'
-    else if password.val().length<4
+    else if $new_password.val().length<4
       err = 'Password should be a little longer, at least 4 characters.'
     if err
       $.load_alert
         content:err
     else
-      form_close()
       $.load_loading {}, (loading_close) ->
         $.ajax
           url: '/change-password'
           data:
             new_password: $new_password.val()
             new_password2: $new_password2.val()
-              success: (data) ->
-                loading_close()
-                if data.err
-                  $.load_alert
-                    content: data.err
-                else
-                  successful_password_change()
-              error: (err) ->
-                loading_close()
-                $.load_alert
-                  content: 'Our apologies. A server error occurred.'
+          success: (data) ->
+            loading_close()
+            if data.err
+              $.load_alert
+                content: data.err
+            else
+              successful_password_change()
+          error: (err) ->
+            loading_close()
+            $.load_alert
+              content: 'Our apologies. A server error occurred.'
     false
+
+  #Successful Login Function
+  
+  successful_password_change = ->
+    $.load_alert
+      content: 'Pasword Changed'
