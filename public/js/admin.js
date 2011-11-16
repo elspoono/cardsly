@@ -1,4 +1,4 @@
-(function() {
+
   /*
   
   Theme admin
@@ -6,9 +6,10 @@
   - All the theme designer stuff
   
   - Plus maybe some similar stuff to home page gallery selection
-  
-  */  $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
+  */
+
+  $(function() {
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -29,6 +30,8 @@
     $fonts = $designer.find('.font_style');
     $font_color = $fonts.find('.font_color');
     $font_family = $fonts.find('.font_family');
+    $font_size_indicator = $fonts.find('.indicator');
+    $font_size_slider = $fonts.find('.size .slider');
     $qrs = $designer.find('.qr_style');
     $qr_color1 = $qrs.find('.qr_color1');
     $qr_color2 = $qrs.find('.qr_color2');
@@ -163,46 +166,28 @@
           $active_item = $(this);
           if (c === 38 || c === 40) {
             new_top = parseInt($active_item.css('top'));
-            if (c === 38) {
-              new_top -= shift_amount;
-            }
-            if (c === 40) {
-              new_top += shift_amount;
-            }
+            if (c === 38) new_top -= shift_amount;
+            if (c === 40) new_top += shift_amount;
             top_bound = (card_height - card_inner_height) / 2;
             bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-            if (new_top < top_bound) {
-              new_top = top_bound;
-            }
-            if (new_top > bottom_bound) {
-              new_top = bottom_bound;
-            }
+            if (new_top < top_bound) new_top = top_bound;
+            if (new_top > bottom_bound) new_top = bottom_bound;
             $active_item.css('top', new_top);
             set_timers();
           }
           if (c === 37 || c === 39) {
             new_left = parseInt($active_item.css('left'));
-            if (c === 37) {
-              new_left -= shift_amount;
-            }
-            if (c === 39) {
-              new_left += shift_amount;
-            }
+            if (c === 37) new_left -= shift_amount;
+            if (c === 39) new_left += shift_amount;
             top_bound = (card_width - card_inner_width) / 2;
             bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-            if (new_left < top_bound) {
-              new_left = top_bound;
-            }
-            if (new_left > bottom_bound) {
-              new_left = bottom_bound;
-            }
+            if (new_left < top_bound) new_left = top_bound;
+            if (new_left > bottom_bound) new_left = bottom_bound;
             $active_item.css('left', new_left);
             return set_timers();
           }
         });
-        if (c === 38 || c === 40 || c === 39 || c === 37) {
-          return false;
-        }
+        if (c === 38 || c === 40 || c === 39 || c === 37) return false;
       }
     });
     $body.keyup(function(e) {
@@ -254,25 +239,19 @@
         index = $active_item.prevAll().length;
         return active_theme.theme_templates[active_view].lines[index].color = options.hex;
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     $qr_color1.bind('color_update', function(e, options) {
       $qr.draw_qr({
         color: options.hex
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     $qr_color2.bind('color_update', function(e, options) {
       $qr_bg.css({
         background: '#' + options.hex
       });
-      if (options.timer) {
-        return set_timers();
-      }
+      if (options.timer) return set_timers();
     });
     update_family = function() {
       var $active_items, $t;
@@ -318,23 +297,46 @@
       var $active_items, $t;
       $t = $(this);
       $active_items = $card.find('.active');
-      return $active_items.each(function() {
+      $active_items.each(function() {
         var $active_item, h, new_h;
         $active_item = $(this);
         h = $active_item.height();
         new_h = h + size_change;
-        return $active_item.css({
+        $active_item.css({
           'font-size': new_h + 'px',
           'line-height': new_h + 'px',
           'height': new_h + 'px'
         });
+        $font_size_indicator.html(new_h);
+        return $font_size_slider.slider('value', new_h);
       });
+      return set_timers();
     };
     $fonts.find('.increase').click(function() {
       return update_size(1);
     });
     $fonts.find('.decrease').click(function() {
       return update_size(-1);
+    });
+    $font_size_slider.slider({
+      min: 1,
+      max: 150,
+      step: 5,
+      slide: function(e, ui) {
+        var $active_items;
+        $active_items = $card.find('.active');
+        $active_items.each(function() {
+          var $active_item;
+          $active_item = $(this);
+          return $active_item.css({
+            'font-size': ui.value + 'px',
+            'line-height': ui.value + 'px',
+            'height': ui.value + 'px'
+          });
+        });
+        $font_size_indicator.html(ui.value);
+        return set_timers();
+      }
     });
     $qr_color2_alpha.change(function() {
       var $t;
@@ -389,9 +391,7 @@
       var $pa, $selected, $t, index;
       $t = $(this);
       $pa = $card.find('.active');
-      if (!shift_pressed) {
-        $pa.removeClass('active');
-      }
+      if (!shift_pressed) $pa.removeClass('active');
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
       change_tab('.font_style');
@@ -418,7 +418,7 @@
       clearTimeout(history_timer);
       return history_timer = setTimeout(function() {
         update_active_theme();
-        history.push(active_theme);
+        history.push($.extend(true, {}, active_theme));
         redo_history = [];
         if (!active_theme.not_saved) {
           active_theme.not_saved = true;
@@ -490,9 +490,7 @@
       width = parseInt($t.width());
       left = parseInt($t.css('left'));
       top = parseInt($t.css('top'));
-      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
-        return false;
-      }
+      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) return false;
       return result = {
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
@@ -549,17 +547,13 @@
               message: 'Error saving.'
             });
           }
-          if (next) {
-            return next(serverResponse);
-          }
+          if (next) return next(serverResponse);
         },
         error: function() {
           $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
-          if (next) {
-            return next();
-          }
+          if (next) return next();
         }
       });
     };
@@ -633,7 +627,7 @@
           - if 1 do bleh
           - if 2 do blah
           #
-          */
+      */
       if (!theme_template) {
         if (active_view === 2) {
           theme_template = $.extend(true, {}, theme.theme_templates[0]);
@@ -780,9 +774,7 @@
       return load_theme(active_theme);
     });
     $save_button.click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_loading({}, function(close_loading) {
         return execute_save(function(result) {
           var $new_card;
@@ -800,9 +792,7 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (no_theme()) {
-        return false;
-      }
+      if (no_theme()) return false;
       return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
@@ -832,4 +822,3 @@
       });
     });
   });
-}).call(this);

@@ -668,7 +668,7 @@ input
       margin-right 10px
       float left
       width 70px
-    .color,.left,.center,.right,.increase,.decrease
+    .color,.left,.center,.right,.increase,.decrease,.indicator
       width 25px
       height 25px
       margin 5px 10px 5px 0
@@ -694,6 +694,14 @@ input
         background-position -50px 0
     .size
       float left
+      .indicator
+        cursor auto
+        cursor auto
+        background $c_bg_light
+        padding 2px
+        text-align center
+        line-height 25px
+        font-size 15px
       .increase,.decrease
         background $c_bg_light url('/images/wysiwyg_spritesheet.png') no-repeat
         border 2px solid $c_bg_dark
@@ -701,6 +709,12 @@ input
         background-position -75px 0
       .decrease
         background-position -100px 0
+      .slider
+        width 100px
+        float left
+        height 10px
+        margin 15px 10px 0 10px
+        display block
     .font_family
       float none
       display block

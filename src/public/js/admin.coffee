@@ -48,6 +48,8 @@ $ ->
   $fonts = $designer.find '.font_style'
   $font_color = $fonts.find '.font_color'
   $font_family = $fonts.find '.font_family'
+  $font_size_indicator = $fonts.find '.indicator'
+  $font_size_slider = $fonts.find '.size .slider'
   #
   # QR Options
   $qrs = $designer.find '.qr_style'
@@ -181,7 +183,6 @@ $ ->
   $web_bg.hide()
   
   $qr.prep_qr()
-
 
 
   #############################
@@ -435,9 +436,26 @@ $ ->
         'line-height': new_h + 'px'
         'height': new_h + 'px'
       #
+      $font_size_indicator.html new_h
+      $font_size_slider.slider 'value', new_h
+    set_timers()
   #
   $fonts.find('.increase').click -> update_size 1
   $fonts.find('.decrease').click -> update_size -1
+  $font_size_slider.slider
+    min: 1
+    max: 150
+    step: 5
+    slide: (e, ui) ->
+      $active_items = $card.find '.active'
+      $active_items.each ->
+        $active_item = $ this
+        $active_item.css
+          'font-size': ui.value + 'px'
+          'line-height': ui.value + 'px'
+          'height': ui.value + 'px'
+      $font_size_indicator.html ui.value
+      set_timers()
   #
   ##############
 
@@ -560,7 +578,7 @@ $ ->
     clearTimeout history_timer
     history_timer = setTimeout ->
       update_active_theme()
-      history.push active_theme
+      history.push $.extend true, {}, active_theme
       redo_history = []
       if not active_theme.not_saved
         active_theme.not_saved = true 
