@@ -208,6 +208,7 @@ $ ->
     #
     # Undo 
     if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      e.preventDefault()
       current_theme = history.pop()
       new_theme = history[history.length-1]
       if new_theme
@@ -221,6 +222,7 @@ $ ->
     #
     # Redo
     if ctrl_pressed and shift_pressed and e.keyCode is 90
+      e.preventDefault()
       new_theme = redo_history.pop()
       if new_theme
         history.push new_theme

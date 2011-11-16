@@ -132,6 +132,7 @@
         ctrl_pressed = true;
       }
       if (ctrl_pressed && !shift_pressed && e.keyCode === 90) {
+        e.preventDefault();
         current_theme = history.pop();
         new_theme = history[history.length - 1];
         if (new_theme) {
@@ -147,6 +148,7 @@
         }
       }
       if (ctrl_pressed && shift_pressed && e.keyCode === 90) {
+        e.preventDefault();
         new_theme = redo_history.pop();
         if (new_theme) {
           history.push(new_theme);
