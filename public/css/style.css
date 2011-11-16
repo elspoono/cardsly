@@ -792,6 +792,7 @@ input {
   cursor: default;
   overflow: hidden;
   position: relative;
+  z-index: 1;
 }
 .designer .card .qr {
   border: 1px solid transparent;
@@ -950,6 +951,31 @@ input {
 .designer .views .active {
   background: #524641;
   background: rgba(82,70,65,0.20);
+}
+.web_bg,
+.web_fg {
+  position: absolute;
+  height: 300px;
+  width: 525px;
+}
+.web_bg {
+  background: #000;
+  z-index: -1;
+}
+.web_fg {
+  background-color: rgba(0,0,0,0.00);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.00)), to(#eee));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, rgba(0,0,0,0.00), #eee);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, rgba(0,0,0,0.00), #eee);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, rgba(0,0,0,0.00), #eee);
+/* IE10 */
+  background-image: -o-linear-gradient(top, rgba(0,0,0,0.00), #eee);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, rgba(0,0,0,0.00), #eee);
+  z-index: 600;
 }
 .categories {
   overflow: hidden;

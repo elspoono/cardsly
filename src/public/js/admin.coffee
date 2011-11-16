@@ -60,6 +60,9 @@ $ ->
   $all_colors = $ '.color'
   #
   #
+  $web_fg = $ '.web_fg'
+  $web_bg = $ '.web_bg'
+  #
   $save_button = $designer.find '.buttons .save'
   #
   #
@@ -174,6 +177,8 @@ $ ->
   # QRs and Lines are hidden By default
   $qr.hide()
   $lines.hide()
+  $web_fg.hide()
+  $web_bg.hide()
   
   $qr.prep_qr()
 
@@ -827,6 +832,8 @@ $ ->
       update_card_size()
       $card.css
         height: 290
+      $web_fg.show()
+      $web_bg.show()
     else
       $card.css
         height: 280
@@ -834,6 +841,8 @@ $ ->
         padding: 10
         margin: 0
       update_card_size()
+      $web_fg.hide()
+      $web_bg.hide()
     #
     #
     $qr.hide()

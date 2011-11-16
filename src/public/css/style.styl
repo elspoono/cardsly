@@ -126,7 +126,8 @@ box_rotate(degrees=7.5deg)
   zoom 1
 
 // Background Gradient from 1 color at top to another color at bottom
-gradient(color1=$c_background,color2=$c_background)
+gradient(color1=$c_background,color2=$c_background,alpha=1)
+  color1 = rgba(color1, alpha)
   background-color color1
   background-image -webkit-gradient(linear, left top, left bottom, from(color1), to(color2)) /* Saf4+, Chrome */
   background-image -webkit-linear-gradient(top, color1, color2) /* Chrome 10+, Saf5.1+, iOS 5+ */
@@ -619,6 +620,7 @@ input
     cursor default
     overflow hidden
     position relative
+    z-index 1
     .qr
       canvas
         position absolute
@@ -641,8 +643,8 @@ input
       white-space nowrap
     .active
       border 1px solid $c_logo_alt    
-
   //These are all the other options on the right side of the admin interface
+  //
   .options
     float right
     height 300px
@@ -725,7 +727,18 @@ input
       alpha_bg($c_bg_dark, .6)
     .active
       alpha_bg($c_bg_dark, .2)
-
+//
+.web_bg,.web_fg
+  position absolute
+  height 300px
+  width 525px
+.web_bg
+  background $c_black
+  z-index -1
+.web_fg
+  gradient($c_black,$c_light,0)
+  z-index 600
+//
 .categories
   overflow hidden
   .category

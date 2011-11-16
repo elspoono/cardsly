@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_button, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -36,6 +36,8 @@
     $qr_radius = $qrs.find('.qr_radius');
     $qr_color2_alpha = $qrs.find('.qr_color2_alpha');
     $all_colors = $('.color');
+    $web_fg = $('.web_fg');
+    $web_bg = $('.web_bg');
     $save_button = $designer.find('.buttons .save');
     $views = $designer.find('.views');
     $twelve_button = $views.find('.twelve');
@@ -112,6 +114,8 @@
     }
     $qr.hide();
     $lines.hide();
+    $web_fg.hide();
+    $web_bg.hide();
     $qr.prep_qr();
     shift_amount = 1;
     $body.keydown(function(e) {
@@ -652,6 +656,8 @@
         $card.css({
           height: 290
         });
+        $web_fg.show();
+        $web_bg.show();
       } else {
         $card.css({
           height: 280,
@@ -660,6 +666,8 @@
           margin: 0
         });
         update_card_size();
+        $web_fg.hide();
+        $web_bg.hide();
       }
       $qr.hide();
       $lines.hide();
