@@ -159,6 +159,7 @@
             if (new_top < top_bound) new_top = top_bound;
             if (new_top > bottom_bound) new_top = bottom_bound;
             $active_item.css('top', new_top);
+            set_timers();
           }
           if (c === 37 || c === 39) {
             new_left = parseInt($active_item.css('left'));
@@ -168,7 +169,8 @@
             bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
             if (new_left < top_bound) new_left = top_bound;
             if (new_left > bottom_bound) new_left = bottom_bound;
-            return $active_item.css('left', new_left);
+            $active_item.css('left', new_left);
+            return set_timers();
           }
         });
         if (c === 38 || c === 40 || c === 39 || c === 37) return false;
@@ -264,7 +266,8 @@
           'text-align': align
         });
         index = $active_item.prevAll().length;
-        return active_theme.theme_templates[0].lines[index].text_align = align;
+        active_theme.theme_templates[0].lines[index].text_align = align;
+        return set_timers();
       });
     };
     $fonts.find('.left').click(function() {
@@ -375,10 +378,6 @@
     save_timer = 0;
     history_timer = 0;
     set_timers = function() {
-      clearTimeout(save_timer);
-      save_timer = setTimeout(function() {
-        return execute_save();
-      }, 30000);
       clearTimeout(history_timer);
       return history_timer = setTimeout(function() {
         update_active_theme();
@@ -386,7 +385,7 @@
         redo_history = [];
         if (!active_theme.not_saved) {
           active_theme.not_saved = true;
-          return $save_button.slideDown();
+          return $save_button.stop(true, true).slideDown();
         }
       }, 200);
     };
@@ -586,9 +585,9 @@
       theme_template = theme.theme_templates[0];
       active_theme = theme;
       if (theme.not_saved) {
-        $save_button.show();
+        $save_button.stop(true, true).show();
       } else {
-        $save_button.hide();
+        $save_button.stop(true, true).hide();
       }
       $qr.show().css({
         top: theme_template.qr.y / 100 * card_height,
@@ -680,10 +679,9 @@
           var $new_card;
           close_loading();
           $new_card = $.create_card_from_theme(active_theme);
-          active_theme.not_saved = true;
+          active_theme.not_saved = false;
           active_theme._id = result.theme._id;
-          console.log(active_theme);
-          $save_button.slideUp();
+          $save_button.stop(true, true).slideUp();
           $new_card.addClass('active');
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();

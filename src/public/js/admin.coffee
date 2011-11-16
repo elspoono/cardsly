@@ -243,6 +243,9 @@ $ ->
           #
           # Then set it
           $active_item.css 'top', new_top
+          #
+          #
+          set_timers()
         #
         # Left and Right
         if c is 37 or c is 39
@@ -263,6 +266,9 @@ $ ->
           #
           # Then set it
           $active_item.css 'left', new_left
+          #
+          #
+          set_timers()
       #
       # Always return false on the arrow key presses
       if c is 38 or c is 40 or c is 39 or c is 37 then return false
@@ -386,6 +392,7 @@ $ ->
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
       active_theme.theme_templates[0].lines[index].text_align = align
+      set_timers()
   #
   $fonts.find('.left').click -> update_align 'left'
   $fonts.find('.center').click -> update_align 'center'
@@ -536,10 +543,6 @@ $ ->
   save_timer = 0
   history_timer = 0
   set_timers = ->
-    clearTimeout save_timer
-    save_timer = setTimeout ->
-      execute_save()
-    , 30000
     clearTimeout history_timer
     history_timer = setTimeout ->
       update_active_theme()
@@ -547,7 +550,7 @@ $ ->
       redo_history = []
       if not active_theme.not_saved
         active_theme.not_saved = true 
-        $save_button.slideDown()
+        $save_button.stop(true,true).slideDown()
     , 200
   #
   # Set that timer on the right events for the right things
@@ -760,7 +763,7 @@ $ ->
     # set this theme as the active_theme
     active_theme = theme
     #
-    if theme.not_saved then $save_button.show() else $save_button.hide() 
+    if theme.not_saved then $save_button.stop(true,true).show() else $save_button.stop(true,true).hide() 
     #
     # Show the qr code and set it to the right place
     $qr.show().css
@@ -866,10 +869,9 @@ $ ->
       execute_save (result) ->
         close_loading()
         $new_card = $.create_card_from_theme active_theme
-        active_theme.not_saved = true
+        active_theme.not_saved = false
         active_theme._id = result.theme._id
-        console.log active_theme
-        $save_button.slideUp()
+        $save_button.stop(true,true).slideUp()
         $new_card.addClass 'active'
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()
