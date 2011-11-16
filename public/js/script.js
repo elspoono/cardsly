@@ -759,11 +759,10 @@
         return document.location.href = '/admin';
       } else {
         $s = $('.signins');
-        $s.fadeOut(500, function() {
+        return $s.fadeOut(500, function() {
           $s.html('You are now logged in, please continue.');
           return $s.fadeIn(1000);
         });
-        return $('.login a').attr('href', '/logout').html('Logout');
       }
     };
     /*
