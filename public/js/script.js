@@ -53,7 +53,7 @@
       $t.data('qrcode', qrcode);
       count = qrcode.getModuleCount();
       scale = 3;
-      size = count * scale + scale * 2;
+      size = count * scale + scale * 4;
       $t.css({
         height: size,
         width: size
@@ -80,7 +80,7 @@
       qrcode = $t.data('qrcode');
       count = qrcode.getModuleCount();
       scale = 3;
-      size = count * scale + scale * 2;
+      size = count * scale + scale * 4;
       ctx = $t.find('canvas')[0].getContext("2d");
       hexToR = function(h) {
         return parseInt((cutHex(h)).substring(0, 2), 16);
@@ -106,7 +106,7 @@
           _results2 = [];
           for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
             if (qrcode.isDark(c, r)) {
-              _results2.push(ctx.fillRect(r * scale + scale, c * scale + scale, scale, scale));
+              _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
             } else {
               _results2.push(void 0);
             }

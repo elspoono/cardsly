@@ -102,7 +102,7 @@ $.fn.prep_qr = (options) ->
     # Prep the variables for the canvas
     count = qrcode.getModuleCount()
     scale = 3
-    size = count * scale + scale * 2
+    size = count * scale + scale * 4
     #
     #
     $t.css
@@ -130,7 +130,7 @@ $.fn.draw_qr = (options) ->
     # Prep the variables for the canvas
     count = qrcode.getModuleCount()
     scale = 3
-    size = count * scale + scale * 2
+    size = count * scale + scale * 4
     #
     ctx = $t.find('canvas')[0].getContext "2d"
     #
@@ -144,7 +144,7 @@ $.fn.draw_qr = (options) ->
     # Actual Drawing of the QR Code
     for r in [0..count-1]
       for c in [0..count-1]
-        ctx.fillRect r * scale + scale, c * scale + scale, scale, scale if qrcode.isDark(c,r)
+        ctx.fillRect r * scale + scale*2, c * scale + scale*2, scale, scale if qrcode.isDark(c,r)
 #
 $.fn.qr = (options) ->
   settings = 
