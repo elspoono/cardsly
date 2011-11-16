@@ -394,6 +394,33 @@ $ ->
   ##############
 
 
+  ###############
+  # Changing font size for those thumbnail guys
+  #
+  update_size = (size_change) ->
+    $t = $ this
+    $active_items = $card.find '.active'
+    $active_items.each ->
+      $active_item = $ this
+      #
+      #
+      h = $active_item.height()
+      #
+      new_h = h + size_change
+      #
+      # Update it all
+      $active_item.css
+        'font-size': new_h + 'px'
+        'line-height': new_h + 'px'
+        'height': new_h + 'px'
+      #
+  #
+  $fonts.find('.increase').click -> update_size 1
+  $fonts.find('.decrease').click -> update_size -1
+  #
+  ##############
+
+
 
   ###############
   # Changing QR Extras
@@ -768,6 +795,7 @@ $ ->
         top: pos.y/100 * card_height
         left: pos.x/100 * card_width
         width: (pos.w/100 * card_width) + 'px'
+        height: (pos.h/100 * card_height) + 'px'
         fontSize: (pos.h/100 * card_height) + 'px'
         lineHeight: (pos.h/100 * card_height) + 'px'
         fontFamily: pos.font_family

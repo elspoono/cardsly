@@ -865,7 +865,9 @@ input {
 .designer .options .color,
 .designer .options .left,
 .designer .options .center,
-.designer .options .right {
+.designer .options .right,
+.designer .options .increase,
+.designer .options .decrease {
   width: 25px;
   height: 25px;
   margin: 5px 10px 5px 0;
@@ -891,7 +893,7 @@ input {
 .designer .options .alignment .left,
 .designer .options .alignment .center,
 .designer .options .alignment .right {
-  background: #908575 url("/images/align_sprite.png") no-repeat;
+  background: #908575 url("/images/wysiwyg_spritesheet.png") no-repeat;
   border: 2px solid #524641;
 }
 .designer .options .alignment .center {
@@ -899,6 +901,20 @@ input {
 }
 .designer .options .alignment .right {
   background-position: -50px 0;
+}
+.designer .options .size {
+  float: left;
+}
+.designer .options .size .increase,
+.designer .options .size .decrease {
+  background: #908575 url("/images/wysiwyg_spritesheet.png") no-repeat;
+  border: 2px solid #524641;
+}
+.designer .options .size .increase {
+  background-position: -75px 0;
+}
+.designer .options .size .decrease {
+  background-position: -100px 0;
 }
 .designer .options .font_family {
   float: none;
