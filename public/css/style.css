@@ -805,6 +805,7 @@ input {
   margin: 0;
   background: none;
   overflow: visible;
+  position: absolute;
 }
 .designer {
   margin-bottom: 60px;
@@ -834,8 +835,6 @@ input {
 .designer .card .line {
   border: 1px solid transparent;
   border-bottom: 1px solid #908575;
-  height: 20px;
-  width: 350px;
   display: block;
   position: absolute;
   white-space: nowrap;
