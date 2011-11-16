@@ -208,6 +208,7 @@ $ ->
     #
     # Undo 
     if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      e.preventDefault()
       current_theme = history.pop()
       new_theme = history[history.length-1]
       if new_theme
@@ -221,6 +222,7 @@ $ ->
     #
     # Redo
     if ctrl_pressed and shift_pressed and e.keyCode is 90
+      e.preventDefault()
       new_theme = redo_history.pop()
       if new_theme
         history.push new_theme
@@ -645,21 +647,6 @@ $ ->
     $dForm.submit()
 
   #
-  # 6 and 12 selectors in the thumbnails
-  $('.theme_1,.theme_2').click ->
-    $t = $ this
-    $c = $t.closest '.card'
-
-    $c.click()
-
-    # Actual Switch the classes
-    $('.theme_1,.theme_2').removeClass 'active'
-    $t.addClass 'active'
-
-    # always return false to prevent href from going anywhere
-    false
-
-  #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
   get_position = ($t) ->
     # Get it's CSS Values
@@ -818,14 +805,16 @@ $ ->
         delete theme_template._id
         for line in theme_template.lines
           $.extend true, line,
-            h: line.h/2
-            w: line.w/2
+            h: line.h/1.5
+            w: line.w/1.5
           new_line = $.extend true, {}, line
           new_line.x = 100-new_line.x-new_line.w
           theme_template.lines.push new_line
-        theme_template.qr.h = theme_template.qr.h/2
-        theme_template.qr.w = theme_template.qr.w/2
+        theme_template.qr.h = theme_template.qr.h/1.5
+        theme_template.qr.w = theme_template.qr.w/1.5
       theme.theme_templates[active_view] = theme_template
+    if active_view is 1 and theme.theme_templates[active_view].lines.length > 10
+      theme.theme_templates[active_view].lines.splice 10,5
     #
     #
     # show or hide save button

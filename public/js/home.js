@@ -93,17 +93,20 @@
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             line = _ref[_i];
             $.extend(true, line, {
-              h: line.h / 2,
-              w: line.w / 2
+              h: line.h / 1.5,
+              w: line.w / 1.5
             });
             new_line = $.extend(true, {}, line);
             new_line.x = 100 - new_line.x - new_line.w;
             theme_template.lines.push(new_line);
           }
-          theme_template.qr.h = theme_template.qr.h / 2;
-          theme_template.qr.w = theme_template.qr.w / 2;
+          theme_template.qr.h = theme_template.qr.h / 1.5;
+          theme_template.qr.w = theme_template.qr.w / 1.5;
         }
         theme.theme_templates[active_view] = theme_template;
+      }
+      if (active_view === 1 && theme.theme_templates[active_view].lines.length > 10) {
+        theme.theme_templates[active_view].lines.splice(10, 5);
       }
       active_theme = theme;
       if (theme_template.s3_id) {
@@ -218,6 +221,10 @@
       $t.data('timer', 0);
       return $t.click(function() {
         var $input, remove_input, style;
+        if (i === 5) {
+          active_view = 1;
+          load_theme(active_theme);
+        }
         style = $t.attr('style');
         $input = $('<input class="line" />');
         $input.attr('style', style);
@@ -225,7 +232,11 @@
         $t.after($input);
         $t.hide();
         $input.focus().select();
-        $input.keyup(function() {
+        $input.keyup(function(e) {
+          if (e.keyCode === 13) {
+            $t.nextAll('div:first').click();
+            return false;
+          }
           update_cards(i, this.value);
           $t.html(this.value);
           clearTimeout(input_timer);
