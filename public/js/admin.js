@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_size, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -293,23 +293,28 @@
     $fonts.find('.right').click(function() {
       return update_align('right');
     });
-    update_size = function(size_change) {
-      var $active_items, $t;
-      $t = $(this);
+    update_active_size = function(new_h) {
+      var $active_items;
       $active_items = $card.find('.active');
       $active_items.each(function() {
-        var $active_item, h, new_h;
+        var $active_item;
         $active_item = $(this);
-        h = $active_item.height();
-        new_h = h + size_change;
-        $active_item.css({
+        return $active_item.css({
           'font-size': new_h + 'px',
           'line-height': new_h + 'px',
           'height': new_h + 'px'
         });
-        $font_size_indicator.html(new_h);
-        return $font_size_slider.slider('value', new_h);
       });
+      $font_size_indicator.html(new_h);
+      return $font_size_slider.slider('value', new_h);
+    };
+    update_size = function(size_change) {
+      var $active_items, $t, h, new_h;
+      $t = $(this);
+      $active_items = $card.find('.active');
+      h = $active_items.height();
+      new_h = h + size_change;
+      update_active_size(new_h);
       return set_timers();
     };
     $fonts.find('.increase').click(function() {
@@ -323,18 +328,7 @@
       max: 150,
       step: 5,
       slide: function(e, ui) {
-        var $active_items;
-        $active_items = $card.find('.active');
-        $active_items.each(function() {
-          var $active_item;
-          $active_item = $(this);
-          return $active_item.css({
-            'font-size': ui.value + 'px',
-            'line-height': ui.value + 'px',
-            'height': ui.value + 'px'
-          });
-        });
-        $font_size_indicator.html(ui.value);
+        update_active_size(ui.value);
         return set_timers();
       }
     });
@@ -388,8 +382,9 @@
       }
     };
     $lines.mousedown(function(e) {
-      var $pa, $selected, $t, index;
+      var $pa, $selected, $t, index, new_h;
       $t = $(this);
+      new_h = $t.height();
       $pa = $card.find('.active');
       if (!shift_pressed) $pa.removeClass('active');
       $t.addClass('active');
@@ -401,7 +396,9 @@
         hex: active_theme.theme_templates[active_view].lines[index].color
       });
       $selected = $font_family.find('option[value="' + active_theme.theme_templates[active_view].lines[index].font_family + '"]');
-      return $selected.focus().attr('selected', 'selected');
+      $selected.focus().attr('selected', 'selected');
+      $font_size_indicator.html(new_h);
+      return $font_size_slider.slider('value', new_h);
     });
     $qr.mousedown(function() {
       var $pa, $t;
@@ -439,10 +436,7 @@
         var $t, h;
         $t = $(ui.element);
         h = $t.height();
-        return $t.css({
-          'font-size': h + 'px',
-          'line-height': h + 'px'
-        });
+        return update_active_size(h);
       },
       stop: set_timers
     });

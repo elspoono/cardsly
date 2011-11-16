@@ -419,16 +419,11 @@ $ ->
   ###############
   # Changing font size for those thumbnail guys
   #
-  update_size = (size_change) ->
-    $t = $ this
+  update_active_size = (new_h) ->
     $active_items = $card.find '.active'
     $active_items.each ->
       $active_item = $ this
       #
-      #
-      h = $active_item.height()
-      #
-      new_h = h + size_change
       #
       # Update it all
       $active_item.css
@@ -436,8 +431,19 @@ $ ->
         'line-height': new_h + 'px'
         'height': new_h + 'px'
       #
-      $font_size_indicator.html new_h
-      $font_size_slider.slider 'value', new_h
+    $font_size_indicator.html new_h
+    $font_size_slider.slider 'value', new_h
+
+  update_size = (size_change) ->
+    $t = $ this
+    #
+    $active_items = $card.find '.active'
+    h = $active_items.height()
+    #
+    new_h = h + size_change
+    #
+    update_active_size new_h
+    #
     set_timers()
   #
   $fonts.find('.increase').click -> update_size 1
@@ -447,14 +453,9 @@ $ ->
     max: 150
     step: 5
     slide: (e, ui) ->
-      $active_items = $card.find '.active'
-      $active_items.each ->
-        $active_item = $ this
-        $active_item.css
-          'font-size': ui.value + 'px'
-          'line-height': ui.value + 'px'
-          'height': ui.value + 'px'
-      $font_size_indicator.html ui.value
+      #
+      update_active_size ui.value
+      #
       set_timers()
   #
   ##############
@@ -541,6 +542,7 @@ $ ->
     #
     # Set it up and make it active
     $t = $ this
+    new_h = $t.height()
     $pa = $card.find '.active'
     $pa.removeClass 'active' if not shift_pressed
     $t.addClass 'active'
@@ -556,6 +558,10 @@ $ ->
       hex: active_theme.theme_templates[active_view].lines[index].color
     $selected = $font_family.find('option[value="' + active_theme.theme_templates[active_view].lines[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
+    #
+    #
+    $font_size_indicator.html new_h
+    $font_size_slider.slider 'value', new_h
   #
   # Highlighting and making a line the active one
   $qr.mousedown ->
@@ -603,9 +609,7 @@ $ ->
     resize: (e, ui) ->
       $t = $(ui.element)
       h = $t.height()
-      $t.css
-        'font-size': h + 'px'
-        'line-height': h + 'px'
+      update_active_size h
     stop: set_timers
   #
   # Dragging and dropping functions for the qr code
