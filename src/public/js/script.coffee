@@ -221,7 +221,7 @@ $.create_card_from_theme = (theme) ->
   #
   #
   for pos,i in theme_template.lines
-    $li = $ '<div>' + $.line_copy[i] + '</div>'
+    $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
     $li.appendTo($my_card).css
       position: 'absolute'
       top: pos.y/100 * 90

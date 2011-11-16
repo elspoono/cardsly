@@ -609,6 +609,30 @@ input
 //
 .add_new
   float right
+.home_designer
+  .card
+    width 505px
+    height 280px
+    padding 10px
+    margin 0 auto
+    position relative
+    .qr
+      position absolute
+      canvas
+        position absolute
+        z-index 351
+      .background
+        position absolute
+        z-index 350
+    input
+      border 1px solid transparent
+      border-bottom 1px solid $c_bg_light
+      padding 0
+      margin 0
+      background none
+      overflow visible
+
+
 .designer
   margin-bottom 60px
   .card
@@ -622,16 +646,13 @@ input
     position relative
     z-index 1
     .qr
+      position absolute
       canvas
         position absolute
         z-index 351
       .background
         position absolute
         z-index 350
-      border 1px solid transparent
-      display block
-      position absolute
-      margin 0
     //These are the text fields that are being manipulated in the admin
     .line
       border 1px solid transparent

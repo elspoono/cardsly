@@ -780,6 +780,32 @@ input {
 .add_new {
   float: right;
 }
+.home_designer .card {
+  width: 505px;
+  height: 280px;
+  padding: 10px;
+  margin: 0 auto;
+  position: relative;
+}
+.home_designer .card .qr {
+  position: absolute;
+}
+.home_designer .card .qr canvas {
+  position: absolute;
+  z-index: 351;
+}
+.home_designer .card .qr .background {
+  position: absolute;
+  z-index: 350;
+}
+.home_designer .card input {
+  border: 1px solid transparent;
+  border-bottom: 1px solid #908575;
+  padding: 0;
+  margin: 0;
+  background: none;
+  overflow: visible;
+}
 .designer {
   margin-bottom: 60px;
 }
@@ -795,10 +821,7 @@ input {
   z-index: 1;
 }
 .designer .card .qr {
-  border: 1px solid transparent;
-  display: block;
   position: absolute;
-  margin: 0;
 }
 .designer .card .qr canvas {
   position: absolute;
