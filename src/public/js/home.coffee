@@ -36,6 +36,66 @@ $ ->
   # Hide all the stuff to hide
   $lis.hide()
   $phone_scanner.hide()
+  $categories = $ '.categories'
+  #
+  #
+  active_theme = false
+
+
+
+  
+  ##############
+  #
+  # The Themes
+  #
+  $.ajax
+    url: '/get-themes'
+    success: (all_data) ->
+      all_themes = all_data.themes
+      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      for theme in all_themes
+        #
+        #
+        #
+        $my_card = $.create_card_from_theme theme
+        
+        # Push the whole thing to categories
+        $.add_card_to_category $my_card, theme
+      #
+      #
+      # Click the first theme
+      $categories.find('.card:first').click()
+    error: ->
+      $.load_alert
+        content: 'Error loading themes. Please try again later.'
+  $('.category .card').live 'click', () ->
+    $t = $ this
+    theme = $t.data 'theme'
+    if active_theme._id
+      $a = $ '.category .card'
+      $a.each ->
+        $t = $ this
+        if $t.data('theme') and $t.data('theme')._id == active_theme._id
+          $t.data 'theme', active_theme
+    if theme
+      load_theme theme
+      history = [theme]
+  #
+  #
+  #
+  # END The Themes
+  #
+  #
+  ##############
+
+  load_theme = (theme) ->
+    console.log theme
+
+
+
+
+
+
 
   #
   #

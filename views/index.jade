@@ -101,35 +101,7 @@
             input.nth_9
             input.nth_10
             input.nth_11
-      
-      .category.active
-        h4 Professional
-        ul.gallery
-          - for i in ['black-red','blue-boxes','Gnome','purple-blue','green-grid','hello','white-purple','prime-grid']
-            li.card(class=i)
-              img(src='/images/qr.png').qr
-              ul.content
-                - for (i=0; i<=6; i++)
-                  li
-
-      .category
-        h4 Modern
-        ul.gallery
-          - for i in ['retroish','stripes','tri-color','vertical-gray']
-            li.card(class=i)
-              img(src='/images/qr.png').qr
-              ul.content
-                - for (i=0; i<=6; i++)
-                  li
-      .category
-        h4 Other
-        ul.gallery
-          - for i in ['purple-blue','green-grid','retroish','stripes','tri-color','vertical-gray']
-            li.card(class=i)
-              img(src='/images/qr.png').qr
-              ul.content
-                - for (i=0; i<=6; i++)
-                  li
+      .categories
   .clear
 .section
   .cell_bg
