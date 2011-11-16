@@ -780,7 +780,9 @@ app.post '/save-form', (req, res) ->
   Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
 
   ###
-  req.session.savedInputs = req.body.inputs.split '`~`'
+  # Put it into a nice pretty JSON object 
+  params = JSON.parse req.rawBody
+  req.session.savedInputs = params
   res.send
     success: true
 #

@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -208,6 +208,7 @@
       });
       return false;
     });
+    input_timer = 0;
     $lines.each(function(i) {
       var $t;
       $t = $(this);
@@ -223,7 +224,26 @@
         $input.focus().select();
         $input.keyup(function() {
           update_cards(i, this.value);
-          return $t.html(this.value);
+          $t.html(this.value);
+          clearTimeout(input_timer);
+          return input_timer = setTimeout(function() {
+            /*
+                        # TODO
+                        #
+                        # this.value should have a .replace ',' '\,'
+                        # on it so that we can use a comma character and escape anything.
+                        # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+            */
+            var values;
+            values = $.makeArray($lines.map(function() {
+              return $(this).html();
+            }));
+            $.ajax({
+              url: '/save-form',
+              data: JSON.stringify(values)
+            });
+            return false;
+          }, 1000);
         });
         remove_input = function(e) {
           var $target;

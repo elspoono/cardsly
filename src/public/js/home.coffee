@@ -279,7 +279,7 @@ $ ->
       content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
 
-
+  input_timer = 0
   #
   # Form Fields
   $lines.each (i) ->
@@ -296,6 +296,22 @@ $ ->
       $input.keyup ->
         update_cards i, this.value
         $t.html this.value
+        clearTimeout input_timer
+        input_timer = setTimeout ->
+            ###
+            # TODO
+            #
+            # this.value should have a .replace ',' '\,'
+            # on it so that we can use a comma character and escape anything.
+            # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+            ###
+            values = $.makeArray $lines.map -> 
+              $(this).html()
+            $.ajax
+              url: '/save-form'
+              data: JSON.stringify values
+            false
+          ,1000
 
       remove_input = (e) ->
         $target = $ e.target
