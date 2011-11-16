@@ -60,13 +60,10 @@
               .color.qr_color2
             li
               label Opacity
-              select.qr_color2_alpha
-                - for(var i=0; i<=100; i++)
-                  option(value=i/100)
-                    =i
+              .qr_color2_alpha
             li
               label Border Style
-              select.qr_radius
+              select.qr_radius(size='2',rows='2')
                 option(value=0) square
                 option(value=10) round
         .buttons

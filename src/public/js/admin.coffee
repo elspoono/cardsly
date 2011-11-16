@@ -465,11 +465,15 @@ $ ->
   ###############
   # Changing QR Extras
   #
-  $qr_color2_alpha.change ->
-    $t = $ this
-    $qr_bg.fadeTo 0, $t.val()
-    active_theme.theme_templates[active_view].qr.color2_alpha = $t.val()
-    set_timers()
+  $qr_color2_alpha.slider
+    min: 0
+    max: 100
+    step: 5
+    slide: (e, ui) ->
+      #
+      $qr_bg.fadeTo 0, ui.value/100
+      active_theme.theme_templates[active_view].qr.color2_alpha = ui.value/100
+      set_timers()
   #
   $qr_radius.change ->
     $t = $ this
@@ -916,7 +920,7 @@ $ ->
       hex: theme_template.qr.color2
     #
     # Get the QR alpha and radius ready
-    $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr 'selected', 'selected'
+    $qr_color2_alpha.slider 'value', theme_template.qr.color2_alpha*100
     $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr 'selected', 'selected'
   #
   #

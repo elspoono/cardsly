@@ -332,12 +332,15 @@
         return set_timers();
       }
     });
-    $qr_color2_alpha.change(function() {
-      var $t;
-      $t = $(this);
-      $qr_bg.fadeTo(0, $t.val());
-      active_theme.theme_templates[active_view].qr.color2_alpha = $t.val();
-      return set_timers();
+    $qr_color2_alpha.slider({
+      min: 0,
+      max: 100,
+      step: 5,
+      slide: function(e, ui) {
+        $qr_bg.fadeTo(0, ui.value / 100);
+        active_theme.theme_templates[active_view].qr.color2_alpha = ui.value / 100;
+        return set_timers();
+      }
     });
     $qr_radius.change(function() {
       var $t;
@@ -741,7 +744,7 @@
       $qr_color2.trigger('color_update', {
         hex: theme_template.qr.color2
       });
-      $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr('selected', 'selected');
+      $qr_color2_alpha.slider('value', theme_template.qr.color2_alpha * 100);
       return $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr('selected', 'selected');
     };
     $;

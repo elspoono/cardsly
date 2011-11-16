@@ -940,6 +940,10 @@ input {
   width: 180px;
   display: block;
 }
+.designer .options .qr_color2_alpha {
+  height: 10px;
+  margin: 5px 0 15px 0;
+}
 .designer .options .buttons .button {
   height: 20px;
   width: 80px;
