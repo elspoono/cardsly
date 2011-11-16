@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $web_button, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_family, update_size, _i, _j, _len, _len2, _ref;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_button, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -37,21 +37,29 @@
     $qr_color2_alpha = $qrs.find('.qr_color2_alpha');
     $all_colors = $('.color');
     $save_button = $designer.find('.buttons .save');
-    $twelve_button = $designer.find('.views .twelve');
-    $web_button = $designer.find('.views .web');
-    $six_button = $designer.find('.views .six');
+    $views = $designer.find('.views');
+    $twelve_button = $views.find('.twelve');
+    $web_button = $views.find('.web');
+    $six_button = $views.find('.six');
     $dForm = $designer.find('form');
     $upload = $dForm.find('[type=file]');
-    card_height = $card.outerHeight();
-    card_width = $card.outerWidth();
-    card_inner_height = $card.height();
-    card_inner_width = $card.width();
     active_theme = false;
     active_view = 0;
     shift_pressed = false;
     ctrl_pressed = false;
     history = [];
     redo_history = [];
+    card_height = 0;
+    card_width = 0;
+    card_inner_height = 0;
+    card_inner_width = 0;
+    update_card_size = function() {
+      card_height = $card.outerHeight();
+      card_width = $card.outerWidth();
+      card_inner_height = $card.height();
+      return card_inner_width = $card.width();
+    };
+    update_card_size();
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
@@ -250,7 +258,7 @@
           'font-family': $t.val()
         });
         index = $active_item.prevAll().length;
-        return active_theme.theme_templates[0].lines[index].font_family = $t.val();
+        return active_theme.theme_templates[active_view].lines[index].font_family = $t.val();
       });
       return set_timers();
     };
@@ -266,7 +274,7 @@
           'text-align': align
         });
         index = $active_item.prevAll().length;
-        active_theme.theme_templates[0].lines[index].text_align = align;
+        active_theme.theme_templates[active_view].lines[index].text_align = align;
         return set_timers();
       });
     };
@@ -305,7 +313,7 @@
       var $t;
       $t = $(this);
       $qr_bg.fadeTo(0, $t.val());
-      active_theme.theme_templates[0].qr.color2_alpha = $t.val();
+      active_theme.theme_templates[active_view].qr.color2_alpha = $t.val();
       return set_timers();
     });
     $qr_radius.change(function() {
@@ -314,7 +322,7 @@
       $qr_bg.css({
         'border-radius': $t.val() + 'px'
       });
-      active_theme.theme_templates[0].qr.radius = $t.val();
+      active_theme.theme_templates[active_view].qr.radius = $t.val();
       return set_timers();
     });
     change_tab = function(tab_class) {
@@ -361,9 +369,9 @@
       index = $t.prevAll().length;
       $font_family[0].selectedIndex = null;
       $font_color.trigger('color_update', {
-        hex: active_theme.theme_templates[0].lines[index].color
+        hex: active_theme.theme_templates[active_view].lines[index].color
       });
-      $selected = $font_family.find('option[value="' + active_theme.theme_templates[0].lines[index].font_family + '"]');
+      $selected = $font_family.find('option[value="' + active_theme.theme_templates[active_view].lines[index].font_family + '"]');
       return $selected.focus().attr('selected', 'selected');
     });
     $qr.mousedown(function() {
@@ -465,24 +473,24 @@
       var i, line, line_pos, qr_pos, _len3, _ref2, _results;
       qr_pos = get_position($qr);
       active_theme.category = $cat.val();
-      active_theme.theme_templates[0].color1 = $color1.data('hex');
-      active_theme.theme_templates[0].color2 = $color2.data('hex');
-      active_theme.theme_templates[0].qr = {
+      active_theme.theme_templates[active_view].color1 = $color1.data('hex');
+      active_theme.theme_templates[active_view].color2 = $color2.data('hex');
+      active_theme.theme_templates[active_view].qr = {
         x: qr_pos.x,
         y: qr_pos.y,
         h: qr_pos.h,
         w: qr_pos.w,
         color1: $qr_color1.data('hex'),
         color2: $qr_color2.data('hex'),
-        color2_alpha: active_theme.theme_templates[0].qr.color2_alpha,
-        radius: active_theme.theme_templates[0].qr.radius
+        color2_alpha: active_theme.theme_templates[active_view].qr.color2_alpha,
+        radius: active_theme.theme_templates[active_view].qr.radius
       };
-      _ref2 = active_theme.theme_templates[0].lines;
+      _ref2 = active_theme.theme_templates[active_view].lines;
       _results = [];
       for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
         line = _ref2[i];
         line_pos = get_position($lines.filter(':eq(' + i + ')'));
-        _results.push(active_theme.theme_templates[0].lines[i] = {
+        _results.push(active_theme.theme_templates[active_view].lines[i] = {
           x: line_pos.x,
           y: line_pos.y,
           h: line_pos.h,
@@ -522,7 +530,7 @@
     };
     $.s3_result = function(s3_id) {
       if (!no_theme() && s3_id) {
-        active_theme.theme_templates[0].s3_id = s3_id;
+        active_theme.theme_templates[active_view].s3_id = s3_id;
         set_timers();
         return $card.css({
           background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
@@ -581,34 +589,46 @@
       ]
     };
     load_theme = function(theme) {
-      var $li, i, pos, theme_template, _len3, _ref2;
-      theme_template = theme.theme_templates[0];
-      active_theme = theme;
+      var $li, i, line, new_line, pos, theme_template, _k, _len3, _len4, _ref2, _ref3;
+      theme_template = theme.theme_templates[active_view];
+      /*
+          #
+          Here is where we create the new theme template if none exists
+          #
+          - if 1 do bleh
+          - if 2 do blah
+          #
+      */
+      if (!theme_template) {
+        if (active_view === 2) {
+          theme_template = $.extend(true, {}, theme.theme_templates[0]);
+          delete theme_template._id;
+        }
+        if (active_view === 1) {
+          theme_template = $.extend(true, {}, theme.theme_templates[0]);
+          delete theme_template._id;
+          _ref2 = theme_template.lines;
+          for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
+            line = _ref2[_k];
+            $.extend(true, line, {
+              h: line.h / 2,
+              w: line.w / 2
+            });
+            new_line = $.extend(true, {}, line);
+            new_line.x = 100 - new_line.x - new_line.w;
+            theme_template.lines.push(new_line);
+          }
+          theme_template.qr.h = theme_template.qr.h / 2;
+          theme_template.qr.w = theme_template.qr.w / 2;
+        }
+        theme.theme_templates[active_view] = theme_template;
+      }
       if (theme.not_saved) {
         $save_button.stop(true, true).show();
       } else {
         $save_button.stop(true, true).hide();
       }
-      $qr.show().css({
-        top: theme_template.qr.y / 100 * card_height,
-        left: theme_template.qr.x / 100 * card_width,
-        height: theme_template.qr.h / 100 * card_height,
-        width: theme_template.qr.h / 100 * card_height
-      });
-      $qr.find('canvas').css({
-        height: theme_template.qr.h / 100 * card_height,
-        width: theme_template.qr.h / 100 * card_height
-      });
-      $qr_bg.css({
-        'border-radius': theme_template.qr.radius + 'px',
-        height: theme_template.qr.h / 100 * card_height,
-        width: theme_template.qr.w / 100 * card_width,
-        background: '#' + theme_template.qr.color2
-      });
-      $qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
-      $qr.draw_qr({
-        color: theme_template.qr.color1
-      });
+      active_theme = theme;
       if (theme_template.s3_id) {
         $card.css({
           background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
@@ -618,9 +638,56 @@
           background: '#FFFFFF'
         });
       }
-      _ref2 = theme_template.lines;
-      for (i = 0, _len3 = _ref2.length; i < _len3; i++) {
-        pos = _ref2[i];
+      if (active_view === 2) {
+        $card.css;
+        $card.css({
+          height: 140,
+          width: 252,
+          margin: '0 126px',
+          padding: 5,
+          'background-repeat': 'repeat-y',
+          'background-size': '100%'
+        });
+        update_card_size();
+        $card.css({
+          height: 290
+        });
+      } else {
+        $card.css({
+          height: 280,
+          width: 505,
+          padding: 10,
+          margin: 0
+        });
+        update_card_size();
+      }
+      $qr.hide();
+      $lines.hide();
+      if (active_view === 0 || active_view === 1) {
+        $qr.show().css({
+          top: theme_template.qr.y / 100 * card_height,
+          left: theme_template.qr.x / 100 * card_width,
+          height: theme_template.qr.h / 100 * card_height,
+          width: theme_template.qr.h / 100 * card_height
+        });
+        $qr.find('canvas').css({
+          height: theme_template.qr.h / 100 * card_height,
+          width: theme_template.qr.h / 100 * card_height
+        });
+        $qr_bg.css({
+          'border-radius': theme_template.qr.radius + 'px',
+          height: theme_template.qr.h / 100 * card_height,
+          width: theme_template.qr.w / 100 * card_width,
+          background: '#' + theme_template.qr.color2
+        });
+        $qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
+        $qr.draw_qr({
+          color: theme_template.qr.color1
+        });
+      }
+      _ref3 = theme_template.lines;
+      for (i = 0, _len4 = _ref3.length; i < _len4; i++) {
+        pos = _ref3[i];
         $li = $lines.eq(i);
         $li.show().css({
           top: pos.y / 100 * card_height,
@@ -650,16 +717,7 @@
       $qr_color2_alpha.find('[value="' + theme_template.qr.color2_alpha + '"]').attr('selected', 'selected');
       return $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr('selected', 'selected');
     };
-    $twelve_button.click(function() {
-      return $.load_alert({
-        content: 'Coming Soon'
-      });
-    });
-    $web_button.click(function() {
-      return $.load_alert({
-        content: 'Coming Soon'
-      });
-    });
+    $;
     $('.add_new').click(function() {
       var $new_card, temp_theme;
       temp_theme = $.extend(true, {}, default_theme);
@@ -671,6 +729,16 @@
       $new_card.data('theme', temp_theme);
       $('.categories .category[category=]').append($new_card);
       return $new_card.click();
+    });
+    $view_buttons = $views.find('div');
+    $view_buttons.click(function() {
+      var $t, index;
+      $t = $(this);
+      $view_buttons.removeClass('active');
+      $t.addClass('active');
+      index = $t.prevAll().length;
+      active_view = index;
+      return load_theme(active_theme);
     });
     $save_button.click(function() {
       if (no_theme()) return false;

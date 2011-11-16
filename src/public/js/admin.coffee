@@ -61,9 +61,12 @@ $ ->
   #
   #
   $save_button = $designer.find '.buttons .save'
-  $twelve_button = $designer.find '.views .twelve'
-  $web_button = $designer.find '.views .web'
-  $six_button = $designer.find '.views .six'
+  #
+  #
+  $views = $designer.find '.views'
+  $twelve_button = $views.find '.twelve'
+  $web_button = $views.find '.web'
+  $six_button = $views.find '.six'
   #
   #
   # The form
@@ -75,16 +78,22 @@ $ ->
 
 
   # Set some constants
-  card_height = $card.outerHeight()
-  card_width = $card.outerWidth()
-  card_inner_height = $card.height()
-  card_inner_width = $card.width()
   active_theme = false
   active_view = 0
   shift_pressed = false
   ctrl_pressed = false
   history = []
   redo_history = []
+  card_height = 0
+  card_width = 0
+  card_inner_height = 0
+  card_inner_width = 0
+  update_card_size = ->
+    card_height = $card.outerHeight()
+    card_width = $card.outerWidth()
+    card_inner_height = $card.height()
+    card_inner_width = $card.width()
+  update_card_size()
   #
   
   ##############
@@ -368,7 +377,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.theme_templates[0].lines[index].font_family = $t.val()
+      active_theme.theme_templates[active_view].lines[index].font_family = $t.val()
     set_timers()
   #
   $font_family.change update_family
@@ -391,7 +400,7 @@ $ ->
       #
       # Find it's index relative to it's peers
       index = $active_item.prevAll().length
-      active_theme.theme_templates[0].lines[index].text_align = align
+      active_theme.theme_templates[active_view].lines[index].text_align = align
       set_timers()
   #
   $fonts.find('.left').click -> update_align 'left'
@@ -435,14 +444,14 @@ $ ->
   $qr_color2_alpha.change ->
     $t = $ this
     $qr_bg.fadeTo 0, $t.val()
-    active_theme.theme_templates[0].qr.color2_alpha = $t.val()
+    active_theme.theme_templates[active_view].qr.color2_alpha = $t.val()
     set_timers()
   #
   $qr_radius.change ->
     $t = $ this
     $qr_bg.css
       'border-radius': $t.val() + 'px'
-    active_theme.theme_templates[0].qr.radius = $t.val()
+    active_theme.theme_templates[active_view].qr.radius = $t.val()
     set_timers()
   #
   ##############
@@ -521,8 +530,8 @@ $ ->
     index = $t.prevAll().length
     $font_family[0].selectedIndex = null
     $font_color.trigger 'color_update'
-      hex: active_theme.theme_templates[0].lines[index].color
-    $selected = $font_family.find('option[value="' + active_theme.theme_templates[0].lines[index].font_family + '"]')
+      hex: active_theme.theme_templates[active_view].lines[index].color
+    $selected = $font_family.find('option[value="' + active_theme.theme_templates[active_view].lines[index].font_family + '"]')
     $selected.focus().attr 'selected', 'selected'
   #
   # Highlighting and making a line the active one
@@ -648,22 +657,22 @@ $ ->
     #
     # Set the theme start
     active_theme.category = $cat.val()
-    active_theme.theme_templates[0].color1 = $color1.data 'hex'
-    active_theme.theme_templates[0].color2 = $color2.data 'hex'
-    active_theme.theme_templates[0].qr =
+    active_theme.theme_templates[active_view].color1 = $color1.data 'hex'
+    active_theme.theme_templates[active_view].color2 = $color2.data 'hex'
+    active_theme.theme_templates[active_view].qr =
       x: qr_pos.x
       y: qr_pos.y
       h: qr_pos.h
       w: qr_pos.w
       color1: $qr_color1.data 'hex'
       color2: $qr_color2.data 'hex'
-      color2_alpha: active_theme.theme_templates[0].qr.color2_alpha
-      radius: active_theme.theme_templates[0].qr.radius
+      color2_alpha: active_theme.theme_templates[active_view].qr.color2_alpha
+      radius: active_theme.theme_templates[active_view].qr.radius
     #
     #
-    for line,i in active_theme.theme_templates[0].lines
+    for line,i in active_theme.theme_templates[active_view].lines
       line_pos = get_position $lines.filter ':eq(' + i + ')'
-      active_theme.theme_templates[0].lines[i] =
+      active_theme.theme_templates[active_view].lines[i] =
         x: line_pos.x
         y: line_pos.y
         h: line_pos.h
@@ -707,7 +716,7 @@ $ ->
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
   $.s3_result = (s3_id) ->
     if not no_theme() and s3_id
-      active_theme.theme_templates[0].s3_id = s3_id
+      active_theme.theme_templates[active_view].s3_id = s3_id
       set_timers()
       $card.css
         background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
@@ -759,29 +768,45 @@ $ ->
     #
     #
     # Set Constants
-    theme_template = theme.theme_templates[0]
+    theme_template = theme.theme_templates[active_view]
+    #
+    #
+    ###
+    #
+    Here is where we create the new theme template if none exists
+    #
+    - if 1 do bleh
+    - if 2 do blah
+    #
+    ###
+    if !theme_template
+      if active_view is 2
+        theme_template = $.extend true, {}, theme.theme_templates[0]
+        delete theme_template._id
+      if active_view is 1
+        theme_template = $.extend true, {}, theme.theme_templates[0]
+        delete theme_template._id
+        for line in theme_template.lines
+          $.extend true, line,
+            h: line.h/2
+            w: line.w/2
+          new_line = $.extend true, {}, line
+          new_line.x = 100-new_line.x-new_line.w
+          theme_template.lines.push new_line
+        theme_template.qr.h = theme_template.qr.h/2
+        theme_template.qr.w = theme_template.qr.w/2
+      theme.theme_templates[active_view] = theme_template
+    #
+    #
+    # show or hide save button
+    if theme.not_saved then $save_button.stop(true,true).show() else $save_button.stop(true,true).hide() 
+    #
+    #
     # set this theme as the active_theme
     active_theme = theme
     #
-    if theme.not_saved then $save_button.stop(true,true).show() else $save_button.stop(true,true).hide() 
     #
-    # Show the qr code and set it to the right place
-    $qr.show().css
-      top: theme_template.qr.y/100 * card_height
-      left: theme_template.qr.x/100 * card_width
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
-    $qr.find('canvas').css
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
-    $qr_bg.css
-      'border-radius': theme_template.qr.radius+'px'
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.w/100 * card_width
-      background: '#'+theme_template.qr.color2
-    $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
-    $qr.draw_qr
-      color: theme_template.qr.color1
+    #
     #
     # Card Background
     if theme_template.s3_id
@@ -790,6 +815,49 @@ $ ->
     else
       $card.css
         background: '#FFFFFF'
+    if active_view is 2
+      $card.css
+      $card.css
+        height: 140
+        width: 252
+        margin: '0 126px'
+        padding: 5
+        'background-repeat': 'repeat-y'
+        'background-size': '100%'
+      update_card_size()
+      $card.css
+        height: 290
+    else
+      $card.css
+        height: 280
+        width: 505
+        padding: 10
+        margin: 0
+      update_card_size()
+    #
+    #
+    $qr.hide()
+    $lines.hide()
+    #
+    # Show the qr code and set it to the right place
+    if active_view is 0 or active_view is 1
+      $qr.show().css
+        top: theme_template.qr.y/100 * card_height
+        left: theme_template.qr.x/100 * card_width
+        height: theme_template.qr.h/100 * card_height
+        width: theme_template.qr.h/100 * card_height
+      $qr.find('canvas').css
+        height: theme_template.qr.h/100 * card_height
+        width: theme_template.qr.h/100 * card_height
+      $qr_bg.css
+        'border-radius': theme_template.qr.radius+'px'
+        height: theme_template.qr.h/100 * card_height
+        width: theme_template.qr.w/100 * card_width
+        background: '#'+theme_template.qr.color2
+      $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
+      $qr.draw_qr
+        color: theme_template.qr.color1
+    #
     #
     # Move all the lines and their shit
     for pos,i in theme_template.lines
@@ -822,12 +890,7 @@ $ ->
   #
   #
   #
-  $twelve_button.click ->
-    $.load_alert
-      content: 'Coming Soon'
-  $web_button.click ->
-    $.load_alert
-      content: 'Coming Soon'
+  $
   #
   #
   #
@@ -856,6 +919,16 @@ $ ->
   #
   #
   #
+  $view_buttons = $views.find 'div'
+  $view_buttons.click ->
+    $t = $ this
+    $view_buttons.removeClass 'active'
+    $t.addClass 'active'
+    #
+    index = $t.prevAll().length
+    active_view = index
+    #
+    load_theme active_theme
   #
   #
   #
