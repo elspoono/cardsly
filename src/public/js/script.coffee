@@ -824,7 +824,7 @@ $ ->
       $s.fadeOut 500, ->
         $s.html 'You are now logged in, please continue.'
         $s.fadeIn 1000
-      $('.login a').attr('href','/logout').html 'Logout'
+      #$('.login a').attr('href','/logout').html 'Logout'
   #
   #
   #
