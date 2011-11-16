@@ -360,6 +360,60 @@ input
 
 // This is the list of cards that are being chosen by the user.
 // Sections
+// Card List
+.card_table
+  display block
+  width auto
+  border 1px solid $c_bg_dark
+.row_header
+  display block
+  width 700px
+  magin 0 auto 0 auto
+  .cell_selectorh
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_card_numberh
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_purchase_dateh
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_actionh
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+.body_rows
+  display block
+  width 500px
+  magin 0 auto 0 auto
+  .cell_selector
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_card_number
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_purchase_date
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+  .cell_action
+    float left
+    display block
+    border 1px solid $c_bg_dark
+    padding 15px
+
 .card_list
   th,td
     text-align left
@@ -383,8 +437,10 @@ input
   width 380px
   float left
 .section.right
-  width 300px
-  float right
+  right 0px
+  cursor pointer
+  position fixed
+  z-index 500
 .section.first
   margin-top gap(4)
 .cell_content

@@ -1031,6 +1031,9 @@ $ ->
       ] 
     false
   #
+  # Cards Page Selector
+  
+
   #
   # The floaty guy behind the gallery selection
   $gs = $ '.gallery_select'

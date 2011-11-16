@@ -1,49 +1,50 @@
 .clear
 .section.left
-  .cell-bg
-  .cell-content
-    table.card-list
-      tr
-        th
+  .cell_bg
+  .cell_content
+    .card_table
+      .row_header
+        .cell_selectorh
           input(type='checkbox')
-        th Purchase Date
-        th Card #
-        th Action
-      tr
-        td
-          input(type='checkbox')
-        td 10/23/11
-        td 1
-        td Message
-      tr
-        td
-          input(type='checkbox')
-        td 10/23/11
-        td 2
-        td Message
-      tr
-        td
-          input(type='checkbox')
-        td 10/23/11
-        td 3
-        td Message
-      tr
-        td
-          input(type='checkbox')
-        td 11/07/11
-        td 4
-        td Contact Card
-      tr
-        td
-          input(type='checkbox')
-        td 11/07/11
-        td 5
-        td Contact Card
+        .cell_card_numberh
+          p card #
+        .cell_purchase_dateh
+          p Purchase Date
+        .cell_actionh
+          p Action
+      .body_rows
+        .card1
+          .cell_selector
+            input(type='checkbox')
+          .cell_card_number
+            p 1
+          .cell_purchase_date
+            p 11/18/2001
+          .cell_action
+            p Link
+        .card2
+          .cell_selector
+            input(type='checkbox')
+          .cell_card_number
+            p 2
+          .cell_purchase_date
+            p 11/18/2001
+          .cell_action
+            p Message
+        .card3
+          .cell_selector
+            input(type='checkbox')
+          .cell_card_number
+            p 3
+          .cell_purchase_date
+            p 11/18/2001
+          .cell_action
+            p File
           
 
 .section.right
-  .cell-bg
-  .cell-content
+  .cell_bg
+  .cell_content
     h3 Edit Card Stuff
     .text-fields
       p Link to:
