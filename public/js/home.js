@@ -7,7 +7,7 @@
   - Gallery selection on the home page
   
   */  $(function() {
-    var $biz_cards, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -20,7 +20,8 @@
     $card = $designer.find('.card');
     $qr = $card.find('.qr');
     $qr_bg = $qr.find('.background');
-    $lines = $card.find('input');
+    $lines = $card.find('.line');
+    $body = $(document);
     active_theme = false;
     active_view = 0;
     card_height = 0;
@@ -214,33 +215,29 @@
       var $t;
       $t = $(this);
       $t.data('timer', 0);
-      $t.click(function() {
-        return $t.select();
-      });
-      return $t.keyup(function() {
-        update_cards(i, this.value);
-        clearTimeout($t.data('timer'));
-        $t.data('timer', setTimeout(function() {
-          /*
-                    # TODO
-                    #
-                    # this.value should have a .replace ',' '\,'
-                    # on it so that we can use a comma character and escape anything.
-                    # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-                    */
-          var array_oF_inpUt_values;
-          array_oF_inpUt_values = $.makeArray($lines.map(function() {
-            return this.value;
-          }));
-          $.ajax({
-            url: '/save-form',
-            data: {
-              inputs: array_oF_inpUt_values.join('`~`')
-            }
-          });
-          return false;
-        }, 1000));
-        return false;
+      return $t.click(function() {
+        var $input, remove_input, style;
+        style = $t.attr('style');
+        $input = $('<input class="line" />');
+        $input.attr('style', style);
+        $input.val($t.html());
+        $t.after($input);
+        $t.hide();
+        $input.focus().select();
+        $input.keyup(function() {
+          update_cards(i, this.value);
+          return $t.html(this.value);
+        });
+        remove_input = function(e) {
+          var $target;
+          $target = $(e.target);
+          if ($target[0] !== $t[0] && $target[0] !== $input[0]) {
+            $body.unbind('click', remove_input);
+            $input.remove();
+            return $t.show();
+          }
+        };
+        return $body.bind('click', remove_input);
       });
     });
     /*
@@ -273,14 +270,12 @@
         if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
           $mc.data('didLoad', true);
           time_lapse = 0;
-          $lines.each(function(rowNumber) {
-            return update_cards(rowNumber, this.value);
-          });
           return $lines.each(function(rowNumber) {
             var $t, j, timers, v;
             $t = $(this);
-            v = $t.val();
+            v = $t.val() || $t.html();
             $t.val('');
+            update_cards(rowNumber, v);
             return timers = (function() {
               var _ref, _results;
               _results = [];
@@ -290,7 +285,7 @@
                   timer = setTimeout(function() {
                     var v_substring;
                     v_substring = v.substr(0, j);
-                    $t.val(v_substring);
+                    $t.html(v_substring);
                     return update_cards(rowNumber, v_substring);
                   }, time_lapse * 70);
                   time_lapse++;
