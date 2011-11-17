@@ -526,7 +526,7 @@ $ ->
           $biz_cards.stop(true,true).css
             top: biz_begin
           my_repeatable_function()
-        , 10000
+        , 12000
       
         #
     #

@@ -394,7 +394,7 @@
               top: biz_begin
             });
             return my_repeatable_function();
-          }, 10000);
+          }, 12000);
         }
       }
     };
