@@ -199,7 +199,7 @@
     $categories = $('.categories');
     $category = $categories.find('.category[category="' + theme.category + '"]');
     if ($category.length === 0) {
-      $category = $('<div class="category" category="' + theme.category + '"><h4>' + (theme.category || '(no category)') + '</h4><div class="cards"></div></div>');
+      $category = $('<div class="category" category="' + theme.category + '"><h4>' + (theme.category || '(no category)') + '<div class="arrow_container"><div class="arrow"></div></div></h4><div class="cards"></div></div>');
       $categories.prepend($category);
     }
     return $category.find('.cards').prepend($my_card);

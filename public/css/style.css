@@ -1202,8 +1202,29 @@ input {
   border-radius: 5px;
   border-bottom: 1px solid #524641;
 }
+.category .arrow_container {
+  opacity: 0.5;
+  filter: alpha ( opacity = 50 );
+  float: right;
+  border: 2px solid #d8cfc5;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.category .arrow {
+  margin: 6px;
+  border: 6px solid transparent;
+  border-top: 6px solid #d8cfc5;
+  border-bottom: none;
+}
 .category.active .gallery {
   display: block;
+}
+.category.active .arrow {
+  margin: 3px 9px;
+  border: 6px solid transparent;
+  border-right: 6px solid #d8cfc5;
+  border-left: none;
 }
 .gallery {
   overflow: hidden;
