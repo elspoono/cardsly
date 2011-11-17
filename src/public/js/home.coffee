@@ -533,7 +533,8 @@ $ ->
   #
   #
   #
-  my_repeatable_function()
+  $(window).load ->
+    my_repeatable_function()
   ###
   Shopping Cart Stuff
   ###
