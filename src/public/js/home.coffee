@@ -491,8 +491,8 @@ $ ->
       frame_time = frame_time + 400
       quick_time = 50
     if frame_time <= 500 
-      frame_time = 6000
-      quick_time = 300
+      frame_time = 4000
+      quick_time = 200
     #
   #
   #

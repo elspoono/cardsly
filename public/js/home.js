@@ -359,8 +359,8 @@
         quick_time = 50;
       }
       if (frame_time <= 500) {
-        frame_time = 6000;
-        return quick_time = 300;
+        frame_time = 4000;
+        return quick_time = 200;
       }
     };
     my_repeatable_function();
