@@ -19,6 +19,7 @@
     , "everyauth": ">=0.0.1"
     , "knox": ">=0.0.1"
     , "connect-form": ">=0.0.1"
+    , "formidable": ">=0.0.1"
     , "loggly": ">=0.0.1"
   },
   "devDependencies": {
