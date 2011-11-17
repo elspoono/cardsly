@@ -302,7 +302,7 @@
     frame_time = 4000;
     quick_time = 200;
     my_repeatable_function = function() {
-      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, timer;
+      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, timer, wait_delay;
       $guy_im_fading_out = $imgs.filter(':eq(' + current_num + ')');
       $my_next_guy = $imgs.filter(':eq(' + (current_num + 1) + ')');
       $label_away = $labels.filter(':eq(' + current_num + ')');
@@ -325,16 +325,18 @@
       }, quick_time);
       $phone_scanner.stop(true, true);
       $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
+      wait_delay = quick_time * 3;
+      if (wait_delay <= 200) wait_delay = 0;
       $my_next_guy.show().css({
         'margin-left': 233
       });
-      $my_next_guy.delay(quick_time * 3).animate({
+      $my_next_guy.delay(wait_delay).animate({
         'margin-left': 0
       }, quick_time);
       $label_to.show().css({
         'margin-left': 233
       });
-      $label_to.delay(quick_time * 3).animate({
+      $label_to.delay(wait_delay).animate({
         'margin-left': 0
       }, quick_time);
       biz_delay = quick_time * 4;

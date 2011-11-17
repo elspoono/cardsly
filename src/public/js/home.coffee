@@ -447,14 +447,18 @@ $ ->
     $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time)
     #
     # STEP 3: Bring things in
+    #
+    wait_delay = quick_time*3
+    if wait_delay <= 200
+      wait_delay = 0
     $my_next_guy.show().css
       'margin-left': 233
-    $my_next_guy.delay(quick_time*3).animate
+    $my_next_guy.delay(wait_delay).animate
       'margin-left': 0
     ,quick_time
     $label_to.show().css
       'margin-left': 233
-    $label_to.delay(quick_time*3).animate
+    $label_to.delay(wait_delay).animate
       'margin-left': 0
     ,quick_time
     #
