@@ -209,7 +209,7 @@
   $.add_card_to_category = function($my_card, theme) {
     var $categories, $category;
     $categories = $('.categories');
-    $category = $categories.find('.category[category=' + theme.category + ']');
+    $category = $categories.find('.category[category="' + theme.category + '"]');
     if ($category.length === 0) {
       $category = $('<div class="category" category="' + theme.category + '"><h4>' + (theme.category || '(no category)') + '</h4><div class="cards"></div></div>');
       $categories.prepend($category);

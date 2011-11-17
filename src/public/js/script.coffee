@@ -242,7 +242,7 @@ $.add_card_to_category = ($my_card, theme) ->
   $categories = $ '.categories'
   #
   # Find an existing category
-  $category = $categories.find('.category[category=' + theme.category + ']')
+  $category = $categories.find('.category[category="' + theme.category + '"]')
   #
   # If that category doesn't exist yet
   if $category.length == 0

@@ -949,7 +949,13 @@ $ ->
     $new_card.css
       background: '#FFF'
     $new_card.data 'theme', temp_theme
-    $('.categories .category[category=]').append $new_card
+    $my_cat = $ '.categories .category[category=]'
+    if $my_cat.length is 0
+      $my_cat = $ '<div class="category" category=""><h4>(no category)</h4><div class="cards"></div></div>'
+      $categories.prepend $my_cat
+    $my_cat.find('.cards').prepend $new_card
+    $my_cat.find('h4').click()
+    $my_cat.find('h4').click()
     $new_card.click()
   #
   #
@@ -985,7 +991,7 @@ $ ->
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()
         $.add_card_to_category $new_card, active_theme
-        $new_card.click()
+        $new_card.closest('.category').find('h4').click()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
@@ -1006,7 +1012,7 @@ $ ->
             execute_save ->
               close_loading()
               $('.category .card.active').remove()
-              $('.category .card:first').click()
+              $('.category:first h4').click()
           close_func()
         },{
         class: 'gray'

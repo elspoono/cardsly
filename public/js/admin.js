@@ -740,7 +740,7 @@
       return $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr('selected', 'selected');
     };
     $('.add_new').click(function() {
-      var $new_card, temp_theme;
+      var $my_cat, $new_card, temp_theme;
       temp_theme = $.extend(true, {}, default_theme);
       history = [temp_theme];
       $new_card = $('<div class="card" />');
@@ -748,7 +748,14 @@
         background: '#FFF'
       });
       $new_card.data('theme', temp_theme);
-      $('.categories .category[category=]').append($new_card);
+      $my_cat = $('.categories .category[category=]');
+      if ($my_cat.length === 0) {
+        $my_cat = $('<div class="category" category=""><h4>(no category)</h4><div class="cards"></div></div>');
+        $categories.prepend($my_cat);
+      }
+      $my_cat.find('.cards').prepend($new_card);
+      $my_cat.find('h4').click();
+      $my_cat.find('h4').click();
       return $new_card.click();
     });
     $view_buttons = $views.find('div');
@@ -775,7 +782,7 @@
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();
           $.add_card_to_category($new_card, active_theme);
-          return $new_card.click();
+          return $new_card.closest('.category').find('h4').click();
         });
       });
     });
@@ -794,7 +801,7 @@
                 return execute_save(function() {
                   close_loading();
                   $('.category .card.active').remove();
-                  return $('.category .card:first').click();
+                  return $('.category:first h4').click();
                 });
               });
               return close_func();
