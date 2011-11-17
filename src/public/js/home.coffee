@@ -389,15 +389,30 @@ $ ->
   #
   #
   # DRAW SOME QR CODES
-  $biz_cards.find('li').each (i) ->
-    $t = $ this
-    $my_qr = $t.find '.qr'
-
+  for i in [0..20]
+    $li = $ '<li />'
+    $my_qr = $ '<div class="qr" />'
+    $img = $ '<img src="/images/biz_card1.png">'
     $my_qr.qr
-      url: 'http://cards.ly/'
-      height: 70
-      width: 70
+      url: 'http://cards.ly/'+Math.random()
+      height: 60
+      width: 60
+    $my_qr.css
+      position: 'absolute'
+      top: 40
+      left: 180
+    $img.css
+      height: 142
+    $li.append $my_qr
+    $li.append $img
+    $biz_cards.append $li
   #
+  #
+  biz_incr = 142+30
+  biz_begin = -20.6*biz_incr
+  $biz_cards.css
+    top: biz_begin
+  $biz_cards.find('li').hide().fadeIn()
   #
   # Find our total length
   iterate_num = $imgs.length
@@ -468,13 +483,14 @@ $ ->
     #
     # reset the[ style to it's default
     biz_delay = quick_time*4
-    if biz_delay <= 250
+    style = 'swing'
+    if biz_delay <= 200
       biz_delay = 0
-    $biz_cards.stop(true,true).css
-      top: -205
+      style = 'linear'
+    $biz_cards.stop(true,true)
     $biz_cards.delay(biz_delay).animate
-      top: 5
-    , frame_time-biz_delay, 'linear'
+      top: parseInt($biz_cards.css('top')) + biz_incr
+    , frame_time-biz_delay, style
     #
     #
     current_num++
@@ -485,19 +501,34 @@ $ ->
     #
     # Create an interval function
     timer = setTimeout my_repeatable_function, frame_time
-
+    #
     frame_time = frame_time - 950
     quick_time = quick_time - 30
     if frame_time <= 500 
       frame_time = frame_time + 850
       quick_time = 50
-    if frame_time <= 100 
-      frame_time = 100
+    if frame_time <= 200 
+      frame_time = 200
       quick_time = 50
       index = $my_next_guy.parent().prevAll().length
       if index is 0
+        clearTimeout timer
         frame_time = 4000
         quick_time = 200
+        $biz_cards.stop(true,true).animate
+          top: parseInt($biz_cards.css('top')) + biz_incr*5.2
+        , 800
+        $my_next_guy.fadeOut(500)
+        $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000)
+        #
+        timer = setTimeout ->
+          $biz_cards.find('li').hide().fadeIn()
+          $biz_cards.stop(true,true).css
+            top: biz_begin
+          my_repeatable_function()
+        , 10000
+      
+        #
     #
   #
   #

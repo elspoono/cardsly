@@ -1495,6 +1495,19 @@ input
   height: 900px;
   z-index: 23;
 }
+.slides .slide,
+.slide_bg .slide {
+  padding: 100px 25px 0 25px;
+  text-align: center;
+  color: #eee;
+  display: none;
+}
+.slides .slide em,
+.slide_bg .slide em {
+  text-decoration: underline;
+  color: #56a3da;
+  font-style: normal;
+}
 .slides img,
 .slide_bg img {
   position: absolute;
@@ -1515,7 +1528,7 @@ input
 }
 .biz_cards {
   top: -205px;
-  left: 50px;
+  left: 80px;
   position: absolute;
   z-index: 20;
 }
@@ -1523,16 +1536,12 @@ input
   margin: 30px 0;
   position: relative;
 }
-.biz_cards li .qr {
-  position: absolute;
-  top: 50px;
-  left: 225px;
-}
 .phone_scanner {
   position: absolute;
   left: 320px;
   bottom: 330px;
   z-index: 21;
+  display: none;
 }
 .loading_screen {
   position: absolute;

@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $imgs, $labels, $lines, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $img, $imgs, $labels, $li, $lines, $loading_screen, $mc, $my_qr, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, biz_begin, biz_incr, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, i, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -286,23 +286,40 @@
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
       });
     };
-    $biz_cards.find('li').each(function(i) {
-      var $my_qr, $t;
-      $t = $(this);
-      $my_qr = $t.find('.qr');
-      return $my_qr.qr({
-        url: 'http://cards.ly/',
-        height: 70,
-        width: 70
+    for (i = 0; i <= 20; i++) {
+      $li = $('<li />');
+      $my_qr = $('<div class="qr" />');
+      $img = $('<img src="/images/biz_card1.png">');
+      $my_qr.qr({
+        url: 'http://cards.ly/' + Math.random(),
+        height: 60,
+        width: 60
       });
+      $my_qr.css({
+        position: 'absolute',
+        top: 40,
+        left: 180
+      });
+      $img.css({
+        height: 142
+      });
+      $li.append($my_qr);
+      $li.append($img);
+      $biz_cards.append($li);
+    }
+    biz_incr = 142 + 30;
+    biz_begin = -20.6 * biz_incr;
+    $biz_cards.css({
+      top: biz_begin
     });
+    $biz_cards.find('li').hide().fadeIn();
     iterate_num = $imgs.length;
     current_num = 0;
     $loading_screen.hide();
     frame_time = 4000;
     quick_time = 200;
     my_repeatable_function = function() {
-      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, index, timer, wait_delay;
+      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, index, style, timer, wait_delay;
       $guy_im_fading_out = $imgs.filter(':eq(' + current_num + ')');
       $my_next_guy = $imgs.filter(':eq(' + (current_num + 1) + ')');
       $label_away = $labels.filter(':eq(' + current_num + ')');
@@ -340,13 +357,15 @@
         'margin-left': 0
       }, quick_time);
       biz_delay = quick_time * 4;
-      if (biz_delay <= 250) biz_delay = 0;
-      $biz_cards.stop(true, true).css({
-        top: -205
-      });
+      style = 'swing';
+      if (biz_delay <= 200) {
+        biz_delay = 0;
+        style = 'linear';
+      }
+      $biz_cards.stop(true, true);
       $biz_cards.delay(biz_delay).animate({
-        top: 5
-      }, frame_time - biz_delay, 'linear');
+        top: parseInt($biz_cards.css('top')) + biz_incr
+      }, frame_time - biz_delay, style);
       current_num++;
       if (current_num === iterate_num) current_num = 0;
       timer = setTimeout(my_repeatable_function, frame_time);
@@ -356,13 +375,26 @@
         frame_time = frame_time + 850;
         quick_time = 50;
       }
-      if (frame_time <= 100) {
-        frame_time = 100;
+      if (frame_time <= 200) {
+        frame_time = 200;
         quick_time = 50;
         index = $my_next_guy.parent().prevAll().length;
         if (index === 0) {
+          clearTimeout(timer);
           frame_time = 4000;
-          return quick_time = 200;
+          quick_time = 200;
+          $biz_cards.stop(true, true).animate({
+            top: parseInt($biz_cards.css('top')) + biz_incr * 5.2
+          }, 800);
+          $my_next_guy.fadeOut(500);
+          $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000);
+          return timer = setTimeout(function() {
+            $biz_cards.find('li').hide().fadeIn();
+            $biz_cards.stop(true, true).css({
+              top: biz_begin
+            });
+            return my_repeatable_function();
+          }, 10000);
         }
       }
     };
