@@ -398,7 +398,9 @@
         }
       }
     };
-    my_repeatable_function();
+    $(window).load(function() {
+      return my_repeatable_function();
+    });
     /*
       Shopping Cart Stuff
     */

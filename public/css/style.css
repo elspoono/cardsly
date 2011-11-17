@@ -453,7 +453,8 @@ input {
   z-index: 20;
 }
 .img_loader {
-  display: none;
+  visibility: hidden;
+  position: absolute;
 }
 .clear {
   clear: both;
