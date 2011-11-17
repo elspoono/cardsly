@@ -321,8 +321,6 @@ $ ->
         hex: options.hex
       $t.css
         background: '#' + options.hex
-    $t.focus ->
-      $t.ColorPickerSetColor $t.val()
     $t.ColorPicker
       livePreview: true
       onChange: (hsb, hex, rgb) ->
@@ -330,7 +328,7 @@ $ ->
           hex: hex
           timer: true
       onShow: (colpkr) ->
-        $t.blur()
+        $t.ColorPickerSetColor $t.data 'hex'
         
   #
   ###############

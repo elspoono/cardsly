@@ -278,7 +278,8 @@
       var $q, $s;
       $q = $('.quantity input:checked');
       $s = $('.shipping_method input:checked');
-      return $('.order_total .price').html('$' + $q.val() * 1 + $s.val() * 1);
+      console.log($q, $s);
+      return $('.order_total .price').html('$' + (($q.val() * 1) + ($s.val() * 1)));
     });
     $win = $(window);
     $mc = $('.home_designer');
