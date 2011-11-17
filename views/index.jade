@@ -4,47 +4,79 @@
   .cell_content.home_slides
     img.phone_frame(src='/images/phone-frame.png')
     img.phone_bar(src='images/iphone_bar.png')
+    .slide_bg
     ul.slides
       li
+        .slide Link to anything with cards.ly
+        img
+        label anything
+      li
         img(src='/images/1.png')
+        label presentations
       li
         img(src='/images/2.png')
+        label shopping
       li
         img(src='/images/3.png')
+        label music
       li
         img(src='/images/4.png')
+        label profiles
       li
         img(src='/images/5.png')
+        label books
       li
         img(src='/images/6.png')
+        label videos
       li
         img(src='/images/7.png')
+        label itunes
       li
         img(src='/images/8.png')
+        label facebook
       li
         img(src='/images/9.png')
+        label wikipedia
       li
         img(src='/images/10.png')
+        label twitter
       li
         img(src='/images/11.png')
+        label etsy
       li
         img(src='/images/12.png')
+        label maps
       li
         img(src='/images/13.png')
+        label blogging
       li
         img(src='/images/14.png')
+        label facebook
       li
         img(src='/images/15.png')
+        label auctions
       li
         img(src='/images/16.png')
+        label deals
       li
         img(src='/images/17.png')
+        label auctions
       li
         img(src='/images/18.png')
+        label websites
       li
         img(src='/images/19.png')
+        label yelp
       li
-        img(src='/images/20.png')
+        .slide 
+          p Connect yourself to 
+          p
+            em deep links
+          p with
+          p
+            span.cardsly cards
+              span.alt .ly
+        img
     ul.phone_scanner
       li
         img(src='/images/phone_scanner.png')
@@ -53,26 +85,6 @@
         img(src='images/safari_loading.png')
     .container_slides
       ul.biz_cards
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-        li
-          .qr
-          img(src='/images/biz_card1.png')
-
-
     .clear
 .gallery_select
 .design_container
@@ -81,15 +93,18 @@
     .cell_content
       h3 Step 1 : Design Your Cards
       p.subtitle Please type your name (hit enter to go to next line):
+      .active_view
+        if session && session.saved_form && session.saved_form.active_view
+          =session.saved_form.active_view
       .home_designer
         .card
           .qr
             .background
-          if session && session.savedInputs
+          if session && session.saved_form && session.saved_form.values
             .content
-              - for(var i=0; i<session.savedInputs.length; i++)
+              - for(var i=0; i<session.saved_form.values.length; i++)
                 .line
-                  =session.savedInputs[i]
+                  =session.saved_form.values[i]
           else
             .content.defaults
               .line John Stamos
@@ -102,8 +117,14 @@
               .line
               .line
               .line
-              .line
-              .line
+      .home_options
+
+        .views
+          .toggle
+            .disabled
+              .option.six.active 6
+              .option.twelve 10
+          .subtitle (field layout)
       .categories
   .clear
 .section

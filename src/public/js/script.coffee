@@ -242,19 +242,20 @@ $.add_card_to_category = ($my_card, theme) ->
   $categories = $ '.categories'
   #
   # Find an existing category
-  $category = $categories.find('.category[category=' + theme.category + ']')
+  $category = $categories.find('.category[category="' + theme.category + '"]')
   #
   # If that category doesn't exist yet
   if $category.length == 0
     #
     # Create it
-    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
+    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + (theme.category||'(no category)') + '</h4><div class="cards"></div></div>'
     #
     # And add it to the categories list
     $categories.prepend $category
   #
+  #
   # Finally add it
-  $category.find('h4').after $my_card
+  $category.find('.cards').prepend $my_card
 #
 #
 #
@@ -1059,16 +1060,16 @@ $ ->
   #
   # 
   # Category Expand/Collapse
-  $('.category h4').click () ->
+  $('.category h4').live 'click', () ->
     $t = $ this
     $c = $t.closest '.category'
-    $g = $c.find '.gallery'
+    $g = $c.find '.cards'
     $a = $ '.category.active'
     if !$c.hasClass 'active'
       $a.removeClass('active')
-      $a.find('.gallery').show().slideUp 400
+      $a.find('.cards').show().slideUp 400
       $gs.hide()
-      $c.find('.gallery').slideDown 400, ->
+      $c.find('.cards').slideDown 400, ->
         $gs.show()
         $c.find('.card:first').click()
       $c.addClass('active')

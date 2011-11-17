@@ -865,6 +865,21 @@ input {
   overflow: visible;
   position: absolute;
 }
+.active_view {
+  display: none;
+}
+.home_options {
+  width: 525px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.home_options .views {
+  float: left;
+  text-align: center;
+}
+.home_options .views .subtitle {
+  margin-top: -5px;
+}
 .designer {
   margin-bottom: 60px;
 }
@@ -1035,23 +1050,40 @@ input {
   float: left;
   overflow: hidden;
 }
-.designer .views .six,
-.designer .views .twelve,
-.designer .views .web {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
+.toggle {
+  overflow: hidden;
+  background: #524641;
+  margin: 10px 0;
+  padding: 2px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+}
+.toggle .disabled {
+  overflow: hidden;
+  background: #908575;
+  background: rgba(144,133,117,0.50);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+.toggle .option {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
   cursor: pointer;
   float: left;
-  border: 2px solid #524641;
-  margin: 15px 15px 15px 0;
-  background: #524641;
-  background: rgba(82,70,65,0.60);
+  background: none;
+  color: #908575;
 }
-.designer .views .active {
-  background: #524641;
-  background: rgba(82,70,65,0.20);
+.toggle .active {
+  color: #eee;
+  background: #908575;
+  background: rgba(144,133,117,0.80);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .web_bg,
 .web_fg {
@@ -1083,6 +1115,12 @@ input {
 }
 .categories .category {
   overflow: hidden;
+}
+.categories .category .cards {
+  display: none;
+}
+.categories .category.active .cards {
+  display: block;
 }
 .categories .card {
   cursor: pointer;
@@ -1447,33 +1485,63 @@ input
 .home_slides {
   overflow: hidden;
 }
-.slides {
+.slides,
+.slide_bg {
   position: absolute;
+  overflow: hidden;
   left: 473px;
   top: 126px;
+  width: 233px;
+  height: 900px;
+  z-index: 23;
 }
-.slides li {
+.slides .slide,
+.slide_bg .slide {
+  padding: 100px 25px 0 25px;
+  text-align: center;
+  color: #eee;
+  display: none;
+}
+.slides .slide em,
+.slide_bg .slide em {
+  text-decoration: underline;
+  color: #56a3da;
+  font-style: normal;
+}
+.slides img,
+.slide_bg img {
   position: absolute;
+  display: none;
+}
+.slides label,
+.slide_bg label {
+  display: none;
+  top: 460px;
+  position: absolute;
+  width: 233px;
+  text-align: center;
+}
+.slide_bg {
+  background: #000;
+  height: 356px;
+  z-index: 22;
 }
 .biz_cards {
   top: -205px;
-  left: 30px;
+  left: 80px;
   position: absolute;
+  z-index: 20;
 }
 .biz_cards li {
   margin: 30px 0;
   position: relative;
 }
-.biz_cards li .qr {
-  position: absolute;
-  top: 50px;
-  left: 225px;
-}
 .phone_scanner {
   position: absolute;
-  left: 300px;
+  left: 320px;
   bottom: 330px;
-  z-index: 0;
+  z-index: 21;
+  display: none;
 }
 .loading_screen {
   position: absolute;

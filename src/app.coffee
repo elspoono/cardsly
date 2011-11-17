@@ -782,7 +782,7 @@ app.post '/save-form', (req, res) ->
   ###
   # Put it into a nice pretty JSON object 
   params = JSON.parse req.rawBody
-  req.session.savedInputs = params
+  req.session.saved_form = params
   res.send
     success: true
 #

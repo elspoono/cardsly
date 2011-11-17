@@ -34,7 +34,7 @@ $ ->
   #
   # Stuff inside the designer itself
   $qr = $card.find '.qr'
-  $qr_bg = $qr.find('.background')
+  $qr_bg = $qr.find '.background'
   $content = $card.find '.content'
   $content.append('<div class="line">' + line + '</div>') for line in $.line_copy
   $lines = $content.find '.line'
@@ -101,6 +101,16 @@ $ ->
   update_card_size()
   #
   
+
+
+
+
+
+
+
+
+
+
   ##############
   #
   # The Themes
@@ -109,7 +119,7 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      $categories.html ''
       for theme in all_themes
         #
         #
@@ -121,7 +131,7 @@ $ ->
       #
       #
       # Click the first theme
-      $categories.find('.card:first').click()
+      $categories.find('.category:first h4').click()
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -144,6 +154,15 @@ $ ->
   #
   #
   ##############
+
+
+
+
+
+
+
+
+
 
   ##############
   #
@@ -309,11 +328,9 @@ $ ->
   # *
   # *
   # *
-
   ##############
   # Colors pickers for ... ... .... ... picking colors.
   #
-
   $all_colors.each ->
     $t = $ this
     $t.bind 'color_update', (e, options) ->
@@ -328,8 +345,7 @@ $ ->
           hex: hex
           timer: true
       onShow: (colpkr) ->
-        $t.ColorPickerSetColor $t.data 'hex'
-        
+        $t.ColorPickerSetColor $t.data 'hex'     
   #
   ###############
 
@@ -933,16 +949,21 @@ $ ->
     $new_card.css
       background: '#FFF'
     $new_card.data 'theme', temp_theme
-    $('.categories .category[category=]').append $new_card
+    $my_cat = $ '.categories .category[category=]'
+    if $my_cat.length is 0
+      $my_cat = $ '<div class="category" category=""><h4>(no category)</h4><div class="cards"></div></div>'
+      $categories.prepend $my_cat
+    $my_cat.find('.cards').prepend $new_card
+    $my_cat.find('h4').click()
+    $my_cat.find('h4').click()
     $new_card.click()
   #
   #
   #
-  #
-  $view_buttons = $views.find 'div'
+  $view_buttons = $ '.views .option'
   $view_buttons.click ->
     $t = $ this
-    $view_buttons.removeClass 'active'
+    $view_buttons.filter('.active').removeClass 'active'
     $t.addClass 'active'
     #
     index = $t.prevAll().length
@@ -969,7 +990,7 @@ $ ->
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()
         $.add_card_to_category $new_card, active_theme
-        $new_card.click()
+        $new_card.closest('.category').find('h4').click()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
@@ -990,7 +1011,7 @@ $ ->
             execute_save ->
               close_loading()
               $('.category .card.active').remove()
-              $('.category .card:first').click()
+              $('.category:first h4').click()
           close_func()
         },{
         class: 'gray'

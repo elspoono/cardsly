@@ -681,7 +681,17 @@ input
       background none
       overflow visible
       position absolute
-
+.active_view
+  display none
+.home_options
+  width 525px
+  margin 0 auto
+  overflow hidden
+  .views
+    float left
+    text-align center
+    .subtitle
+      margin-top -5px
 
 .designer
   margin-bottom 60px
@@ -801,18 +811,29 @@ input
   .views
     float left
     overflow hidden
-    .six,.twelve,.web
-      width 50px
-      height 50px
-      line-height 50px
-      text-align center
-      cursor pointer
-      float left
-      border 2px solid $c_bg_dark
-      margin 15px 15px 15px 0
-      alpha_bg($c_bg_dark, .6)
-    .active
-      alpha_bg($c_bg_dark, .2)
+.toggle
+  overflow hidden
+  background $c_bg_dark
+  margin 10px 0
+  padding 2px
+  border_radius(12px)
+  .disabled
+    overflow hidden
+    alpha_bg($c_bg_light,.5)
+    border_radius(10px)
+  .option
+    width 40px
+    height 40px
+    line-height 40px
+    text-align center
+    cursor pointer
+    float left
+    background none
+    color $c_bg_light
+  .active
+    color $c_light
+    alpha_bg($c_bg_light,.8)
+    border_radius(10px)
 //
 .web_bg,.web_fg
   position absolute
@@ -829,6 +850,11 @@ input
   overflow hidden
   .category
     overflow hidden
+    .cards
+      display none
+  .category.active
+    .cards
+      display block
   .card
     cursor pointer
     overflow hidden
@@ -1125,30 +1151,52 @@ input value=["Send Feedback"]
 .home_slides
   overflow hidden
 
-.slides
+.slides,.slide_bg
   position absolute
+  overflow hidden
   left 473px
   top 126px
-  li
+  width 233px
+  height 900px
+  z-index 23
+  .slide
+    padding 100px 25px 0 25px
+    text-align center
+    color $c_light
+    display none
+    em
+      text-decoration underline
+      color $c_logo_alt
+      font-style normal
+  img
     position absolute
+    display none
+  label
+    display none
+    top 460px
+    position absolute
+    width 233px
+    text-align center
+.slide_bg
+  background $c_black
+  height 356px
+  z-index 22
 
 .biz_cards
   top -205px
-  left 30px
+  left 80px
   position absolute
+  z-index 20
   li
     margin 30px 0
     position relative
-    .qr
-      position absolute
-      top 50px
-      left 225px
 
 .phone_scanner
   position absolute
-  left 300px
+  left 320px
   bottom 330px
-  z-index 0
+  z-index 21
+  display none
 .loading_screen
   position absolute
   padding 20px

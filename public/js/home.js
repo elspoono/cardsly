@@ -1,19 +1,21 @@
-(function() {
+
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
-  
-  */  $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
+  */
+
+  $(function() {
+    var $biz_cards, $body, $card, $categories, $designer, $img, $imgs, $labels, $li, $lines, $loading_screen, $mc, $my_qr, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, biz_begin, biz_incr, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, i, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
-    $lis = $slides.find('li');
+    $imgs = $slides.find('img');
+    $labels = $slides.find('label');
     $loading_screen = $('.loading_screen');
-    $lis.hide();
+    $imgs.hide();
     $phone_scanner.hide();
     $designer = $('.home_designer');
     $categories = $('.categories');
@@ -21,6 +23,7 @@
     $qr = $card.find('.qr');
     $qr_bg = $qr.find('.background');
     $lines = $card.find('.line');
+    $view_buttons = $('.views .option');
     $body = $(document);
     active_theme = false;
     active_view = 0;
@@ -39,22 +42,26 @@
     setTimeout(function() {
       return WebFont.load({
         google: {
-          families: ["IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin"]
+          families: ["IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin"]
         }
       });
-    }, 3000);
+    }, 5000);
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $my_card, all_themes, theme, _i, _len;
+        var $active_view, $my_card, all_themes, theme, _i, _len;
         all_themes = all_data.themes;
-        $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
+        $categories.html('');
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
           $my_card = $.create_card_from_theme(theme);
           $.add_card_to_category($my_card, theme);
         }
-        return $categories.find('.card:first').click();
+        $categories.find('.category:first h4').click();
+        $active_view = $('.active_view');
+        if ($active_view.html()) {
+          return $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+        }
       },
       error: function() {
         return $.load_alert({
@@ -166,65 +173,39 @@
       }
       return _results;
     };
-    $biz_cards.find('li').each(function(i) {
-      var $my_qr, $t;
-      $t = $(this);
-      $my_qr = $t.find('.qr');
-      return $my_qr.qr({
-        url: 'http://cards.ly/' + Math.random(),
-        height: 70,
-        width: 70
-      });
-    });
-    iterate_num = $lis.length;
-    current_num = 0;
-    my_repeatable_function = function() {
-      var $guy_im_fading_out, $my_next_guy;
-      $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
-      $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
-      if (!$my_next_guy.length) {
-        $my_next_guy = $lis.filter(':first');
-      }
-      $guy_im_fading_out.stop(true, true).delay(200).fadeOut(50);
-      $loading_screen.stop(true, true).fadeIn(400).delay(100).fadeOut(400);
-      $my_next_guy.stop(true, true).delay(600).fadeIn(500);
-      $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
-      $biz_cards.stop(true, true);
-      $biz_cards.delay(500).animate({
-        top: 5
-      }, 3500, 'linear', function() {
-        return $biz_cards.css({
-          top: -205
-        });
-      });
-      current_num++;
-      if (current_num === iterate_num) {
-        return current_num = 0;
-      }
-    };
-    setInterval(my_repeatable_function, 4000);
-    my_repeatable_function();
-    /*
-      Shopping Cart Stuff
-      */
-    item_name = '100 cards';
-    $('.checkout').click(function() {
-      $.load_alert({
-        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
-      });
-      return false;
-    });
     input_timer = 0;
+    set_timers = function() {
+      clearTimeout(input_timer);
+      return input_timer = setTimeout(function() {
+        /*
+                # TODO
+                #
+                # this.value should have a .replace ',' '\,'
+                # on it so that we can use a comma character and escape anything.
+                # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+        */
+        var values;
+        values = $.makeArray($lines.map(function() {
+          return $(this).html();
+        }));
+        $.ajax({
+          url: '/save-form',
+          data: JSON.stringify({
+            values: values,
+            active_view: active_view
+          })
+        });
+        return false;
+      }, 1000);
+    };
+    shift_pressed = false;
     $lines.each(function(i) {
       var $t;
       $t = $(this);
       $t.data('timer', 0);
       return $t.click(function() {
         var $input, remove_input, style;
-        if (i === 5) {
-          active_view = 1;
-          load_theme(active_theme);
-        }
+        if (i === 6) $view_buttons.filter(':last').click();
         style = $t.attr('style');
         $input = $('<input class="line" />');
         $input.attr('style', style);
@@ -232,32 +213,32 @@
         $t.after($input);
         $t.hide();
         $input.focus().select();
-        $input.keyup(function(e) {
-          if (e.keyCode === 13) {
-            $t.nextAll('div:first').click();
+        $input.keydown(function(e) {
+          var $next;
+          if (e.keyCode === 16) shift_pressed = true;
+          if (e.keyCode === 13 || e.keyCode === 9) {
+            e.preventDefault();
+            $next = $t.nextAll('div:visible:first');
+            if (shift_pressed) {
+              $next = $t.prev();
+              if (!$next.length) $next = $lines.filter(':visible:last');
+            } else {
+              /*
+                          Uncomment this to allow entering to 10 mode
+                          if i is 5
+                            $next = $t.nextAll('div:first')
+              */
+              if (!$next.length) $next = $lines.filter(':first');
+            }
+            $next.click();
             return false;
           }
+        });
+        $input.keyup(function(e) {
+          if (e.keyCode === 16) shift_pressed = false;
           update_cards(i, this.value);
           $t.html(this.value);
-          clearTimeout(input_timer);
-          return input_timer = setTimeout(function() {
-            /*
-                        # TODO
-                        #
-                        # this.value should have a .replace ',' '\,'
-                        # on it so that we can use a comma character and escape anything.
-                        # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-                        */
-            var values;
-            values = $.makeArray($lines.map(function() {
-              return $(this).html();
-            }));
-            $.ajax({
-              url: '/save-form',
-              data: JSON.stringify(values)
-            });
-            return false;
-          }, 1000);
+          return set_timers();
         });
         remove_input = function(e) {
           var $target;
@@ -273,7 +254,7 @@
     });
     /*
       # Radio Button Clicking Stuff
-      */
+    */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
@@ -283,11 +264,21 @@
     });
     $win = $(window);
     $mc = $('.home_designer');
+    $view_buttons.click(function() {
+      var $t, index;
+      $t = $(this);
+      $view_buttons.filter('.active').removeClass('active');
+      $t.addClass('active');
+      index = $t.prevAll().length;
+      active_view = index;
+      load_theme(active_theme);
+      return set_timers();
+    });
     /*
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-      */
+    */
     update_cards = function(rowNumber, value) {
       return $('.categories .card').each(function() {
         var $t;
@@ -295,40 +286,127 @@
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
       });
     };
-    return $win.scroll(function() {
-      var newWinH, time_lapse;
-      newWinH = $win.height() + $win.scrollTop();
-      if ($mc.length) {
-        if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
-          $mc.data('didLoad', true);
-          time_lapse = 0;
-          return $lines.each(function(rowNumber) {
-            var $t, j, timers, v;
-            $t = $(this);
-            v = $t.val() || $t.html();
-            $t.val('');
-            update_cards(rowNumber, v);
-            return timers = (function() {
-              var _ref, _results;
-              _results = [];
-              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
-                _results.push((function(j) {
-                  var timer;
-                  timer = setTimeout(function() {
-                    var v_substring;
-                    v_substring = v.substr(0, j);
-                    $t.html(v_substring);
-                    return update_cards(rowNumber, v_substring);
-                  }, time_lapse * 70);
-                  time_lapse++;
-                  return timer;
-                })(j));
-              }
-              return _results;
-            })();
-          });
+    for (i = 0; i <= 20; i++) {
+      $li = $('<li />');
+      $my_qr = $('<div class="qr" />');
+      $img = $('<img src="/images/biz_card1.png">');
+      $my_qr.qr({
+        url: 'http://cards.ly/' + Math.random(),
+        height: 60,
+        width: 60
+      });
+      $my_qr.css({
+        position: 'absolute',
+        top: 40,
+        left: 180
+      });
+      $img.css({
+        height: 142
+      });
+      $li.append($my_qr);
+      $li.append($img);
+      $biz_cards.append($li);
+    }
+    biz_incr = 142 + 30;
+    biz_begin = -20.6 * biz_incr;
+    $biz_cards.css({
+      top: biz_begin
+    });
+    $biz_cards.find('li').hide().fadeIn();
+    iterate_num = $imgs.length;
+    current_num = 0;
+    $loading_screen.hide();
+    frame_time = 4000;
+    quick_time = 200;
+    my_repeatable_function = function() {
+      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, index, style, timer, wait_delay;
+      $guy_im_fading_out = $imgs.filter(':eq(' + current_num + ')');
+      $my_next_guy = $imgs.filter(':eq(' + (current_num + 1) + ')');
+      $label_away = $labels.filter(':eq(' + current_num + ')');
+      $label_to = $labels.filter(':eq(' + (current_num + 1) + ')');
+      if (!$my_next_guy.length) {
+        $my_next_guy = $imgs.filter(':first');
+        $label_to = $labels.filter(':first');
+      }
+      $label_away.stop(true, true).show().css({
+        'margin-left': 0
+      });
+      $label_away.animate({
+        'margin-left': -233
+      }, quick_time);
+      $guy_im_fading_out.stop(true, true).show().css({
+        'margin-left': 0
+      });
+      $guy_im_fading_out.animate({
+        'margin-left': -233
+      }, quick_time);
+      $phone_scanner.stop(true, true);
+      $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
+      wait_delay = quick_time * 3;
+      if (wait_delay <= 200) wait_delay = 0;
+      $my_next_guy.show().css({
+        'margin-left': 233
+      });
+      $my_next_guy.delay(wait_delay).animate({
+        'margin-left': 0
+      }, quick_time);
+      $label_to.show().css({
+        'margin-left': 233
+      });
+      $label_to.delay(wait_delay).animate({
+        'margin-left': 0
+      }, quick_time);
+      biz_delay = quick_time * 4;
+      style = 'swing';
+      if (biz_delay <= 200) {
+        biz_delay = 0;
+        style = 'linear';
+      }
+      $biz_cards.stop(true, true);
+      $biz_cards.delay(biz_delay).animate({
+        top: parseInt($biz_cards.css('top')) + biz_incr
+      }, frame_time - biz_delay, style);
+      current_num++;
+      if (current_num === iterate_num) current_num = 0;
+      timer = setTimeout(my_repeatable_function, frame_time);
+      frame_time = frame_time - 950;
+      quick_time = quick_time - 30;
+      if (frame_time <= 500) {
+        frame_time = frame_time + 850;
+        quick_time = 50;
+      }
+      if (frame_time <= 200) {
+        frame_time = 200;
+        quick_time = 50;
+        index = $my_next_guy.parent().prevAll().length;
+        if (index === 0) {
+          clearTimeout(timer);
+          frame_time = 4000;
+          quick_time = 200;
+          $biz_cards.stop(true, true).animate({
+            top: parseInt($biz_cards.css('top')) + biz_incr * 5.2
+          }, 800);
+          $my_next_guy.fadeOut(500);
+          $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000);
+          return timer = setTimeout(function() {
+            $biz_cards.find('li').hide().fadeIn();
+            $biz_cards.stop(true, true).css({
+              top: biz_begin
+            });
+            return my_repeatable_function();
+          }, 10000);
         }
       }
+    };
+    my_repeatable_function();
+    /*
+      Shopping Cart Stuff
+    */
+    item_name = '100 cards';
+    return $('.checkout').click(function() {
+      $.load_alert({
+        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
+      });
+      return false;
     });
   });
-}).call(this);
