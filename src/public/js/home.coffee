@@ -312,6 +312,7 @@ $ ->
       ,1000
   #
   # Form Fields
+  shift_pressed = false
   $lines.each (i) ->
     $t = $ this
     $t.data 'timer', 0
@@ -326,16 +327,28 @@ $ ->
       $t.hide()
       $input.focus().select()
       $input.keydown (e) ->
+        if e.keyCode is 16
+          shift_pressed = true
         if e.keyCode is 13 or e.keyCode is 9
           e.preventDefault()
-          $next = $t.nextAll('div:first:visible')
-          if i is 5
-            $next = $t.nextAll('div:first')
-          if not $next.length
-            $next = $lines.filter(':first')
+          $next = $t.nextAll('div:visible:first')
+          if shift_pressed
+            $next = $t.prev()
+            if not $next.length
+              $next = $lines.filter(':visible:last')
+          else
+            ###
+            Uncomment this to allow entering to 10 mode
+            if i is 5
+              $next = $t.nextAll('div:first')
+            ###
+            if not $next.length
+              $next = $lines.filter(':first')
           $next.click()
           return false
       $input.keyup (e) ->
+        if e.keyCode is 16
+          shift_pressed = false
         update_cards i, this.value
         $t.html this.value
         set_timers()

@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, set_timers, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, set_timers, shift_pressed, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -241,6 +241,7 @@
         return false;
       }, 1000);
     };
+    shift_pressed = false;
     $lines.each(function(i) {
       var $t;
       $t = $(this);
@@ -257,16 +258,27 @@
         $input.focus().select();
         $input.keydown(function(e) {
           var $next;
+          if (e.keyCode === 16) shift_pressed = true;
           if (e.keyCode === 13 || e.keyCode === 9) {
             e.preventDefault();
-            $next = $t.nextAll('div:first:visible');
-            if (i === 5) $next = $t.nextAll('div:first');
-            if (!$next.length) $next = $lines.filter(':first');
+            $next = $t.nextAll('div:visible:first');
+            if (shift_pressed) {
+              $next = $t.prev();
+              if (!$next.length) $next = $lines.filter(':visible:last');
+            } else {
+              /*
+                          Uncomment this to allow entering to 10 mode
+                          if i is 5
+                            $next = $t.nextAll('div:first')
+              */
+              if (!$next.length) $next = $lines.filter(':first');
+            }
             $next.click();
             return false;
           }
         });
         $input.keyup(function(e) {
+          if (e.keyCode === 16) shift_pressed = false;
           update_cards(i, this.value);
           $t.html(this.value);
           return set_timers();
