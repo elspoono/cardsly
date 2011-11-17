@@ -708,7 +708,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
+    var $a, $am, $body, $feedback_a, $gs, $hidden_email, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -962,11 +962,11 @@
         right: '-45px'
       }, 250);
     });
+    $hidden_email = $('user.email');
+    console.log($hidden_email.val());
     $feedback_a.click(function() {
-      var $hidden_email;
-      $.load_modal;
-      $hidden_email = $('.hidden_email', {
-        content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
+      $.load_modal({
+        content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40"></p></div>',
         width: 400,
         height: 300,
         buttons: [

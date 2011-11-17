@@ -191,6 +191,9 @@ input {
   line-height: 27px;
   padding-right: 0;
 }
+.small_nav .account_link .hidden_email {
+  display: none;
+}
 .small_nav .account_link .gear {
   height: 28px;
   float: right;
