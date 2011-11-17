@@ -1,4 +1,4 @@
-
+(function() {
   /*
   
   Theme admin
@@ -6,9 +6,8 @@
   - All the theme designer stuff
   
   - Plus maybe some similar stuff to home page gallery selection
-  */
-
-  $(function() {
+  
+  */  $(function() {
     var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_size, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
@@ -168,28 +167,46 @@
           $active_item = $(this);
           if (c === 38 || c === 40) {
             new_top = parseInt($active_item.css('top'));
-            if (c === 38) new_top -= shift_amount;
-            if (c === 40) new_top += shift_amount;
+            if (c === 38) {
+              new_top -= shift_amount;
+            }
+            if (c === 40) {
+              new_top += shift_amount;
+            }
             top_bound = (card_height - card_inner_height) / 2;
             bottom_bound = top_bound + card_inner_height - $active_item.outerHeight();
-            if (new_top < top_bound) new_top = top_bound;
-            if (new_top > bottom_bound) new_top = bottom_bound;
+            if (new_top < top_bound) {
+              new_top = top_bound;
+            }
+            if (new_top > bottom_bound) {
+              new_top = bottom_bound;
+            }
             $active_item.css('top', new_top);
             set_timers();
           }
           if (c === 37 || c === 39) {
             new_left = parseInt($active_item.css('left'));
-            if (c === 37) new_left -= shift_amount;
-            if (c === 39) new_left += shift_amount;
+            if (c === 37) {
+              new_left -= shift_amount;
+            }
+            if (c === 39) {
+              new_left += shift_amount;
+            }
             top_bound = (card_width - card_inner_width) / 2;
             bottom_bound = top_bound + card_inner_width - $active_item.outerWidth();
-            if (new_left < top_bound) new_left = top_bound;
-            if (new_left > bottom_bound) new_left = bottom_bound;
+            if (new_left < top_bound) {
+              new_left = top_bound;
+            }
+            if (new_left > bottom_bound) {
+              new_left = bottom_bound;
+            }
             $active_item.css('left', new_left);
             return set_timers();
           }
         });
-        if (c === 38 || c === 40 || c === 39 || c === 37) return false;
+        if (c === 38 || c === 40 || c === 39 || c === 37) {
+          return false;
+        }
       }
     });
     $body.keyup(function(e) {
@@ -238,19 +255,25 @@
         index = $active_item.prevAll().length;
         return active_theme.theme_templates[active_view].lines[index].color = options.hex;
       });
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     $qr_color1.bind('color_update', function(e, options) {
       $qr.draw_qr({
         color: options.hex
       });
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     $qr_color2.bind('color_update', function(e, options) {
       $qr_bg.css({
         background: '#' + options.hex
       });
-      if (options.timer) return set_timers();
+      if (options.timer) {
+        return set_timers();
+      }
     });
     update_family = function() {
       var $active_items, $t;
@@ -387,7 +410,9 @@
       $t = $(this);
       new_h = $t.height();
       $pa = $card.find('.active');
-      if (!shift_pressed) $pa.removeClass('active');
+      if (!shift_pressed) {
+        $pa.removeClass('active');
+      }
       $t.addClass('active');
       $body.bind('click', unfocus_highlight);
       change_tab('.font_style');
@@ -476,7 +501,9 @@
       width = parseInt($t.width());
       left = parseInt($t.css('left'));
       top = parseInt($t.css('top'));
-      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) return false;
+      if (isNaN(height) || isNaN(width) || isNaN(top) || isNaN(left)) {
+        return false;
+      }
       return result = {
         h: Math.round(height / card_height * 10000) / 100,
         w: Math.round(width / card_width * 10000) / 100,
@@ -533,13 +560,17 @@
               message: 'Error saving.'
             });
           }
-          if (next) return next(serverResponse);
+          if (next) {
+            return next(serverResponse);
+          }
         },
         error: function() {
           $designer.find('.save').show_tooltip({
             message: 'Error saving.'
           });
-          if (next) return next();
+          if (next) {
+            return next();
+          }
         }
       });
     };
@@ -613,7 +644,7 @@
           - if 1 do bleh
           - if 2 do blah
           #
-      */
+          */
       if (!theme_template) {
         if (active_view === 2) {
           theme_template = $.extend(true, {}, theme.theme_templates[0]);
@@ -762,7 +793,9 @@
       return load_theme(active_theme);
     });
     $save_button.click(function() {
-      if (no_theme()) return false;
+      if (no_theme()) {
+        return false;
+      }
       return $.load_loading({}, function(close_loading) {
         return execute_save(function(result) {
           var $new_card;
@@ -780,7 +813,9 @@
       });
     });
     return $designer.find('.buttons .delete').click(function() {
-      if (no_theme()) return false;
+      if (no_theme()) {
+        return false;
+      }
       return $.load_modal({
         content: '<p>Are you sure you want to permanently delete this template?</p>',
         height: 160,
@@ -810,3 +845,4 @@
       });
     });
   });
+}).call(this);
