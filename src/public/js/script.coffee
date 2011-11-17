@@ -248,7 +248,7 @@ $.add_card_to_category = ($my_card, theme) ->
   if $category.length == 0
     #
     # Create it
-    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + (theme.category||'(no category)') + '</h4><div class="cards"></div></div>'
+    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + (theme.category||'(no category)') + '<div class="arrow_container"><div class="arrow"></div></div></h4><div class="cards"></div></div>'
     #
     # And add it to the categories list
     $categories.prepend $category
