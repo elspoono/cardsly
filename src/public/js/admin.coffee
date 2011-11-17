@@ -34,7 +34,7 @@ $ ->
   #
   # Stuff inside the designer itself
   $qr = $card.find '.qr'
-  $qr_bg = $qr.find('.background')
+  $qr_bg = $qr.find '.background'
   $content = $card.find '.content'
   $content.append('<div class="line">' + line + '</div>') for line in $.line_copy
   $lines = $content.find '.line'
@@ -101,6 +101,16 @@ $ ->
   update_card_size()
   #
   
+
+
+
+
+
+
+
+
+
+
   ##############
   #
   # The Themes
@@ -109,7 +119,7 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      $categories.html ''
       for theme in all_themes
         #
         #
@@ -121,7 +131,7 @@ $ ->
       #
       #
       # Click the first theme
-      $categories.find('.card:first').click()
+      $categories.find('.category:first h4').click()
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -144,6 +154,15 @@ $ ->
   #
   #
   ##############
+
+
+
+
+
+
+
+
+
 
   ##############
   #
@@ -309,11 +328,9 @@ $ ->
   # *
   # *
   # *
-
   ##############
   # Colors pickers for ... ... .... ... picking colors.
   #
-
   $all_colors.each ->
     $t = $ this
     $t.bind 'color_update', (e, options) ->
@@ -328,8 +345,7 @@ $ ->
           hex: hex
           timer: true
       onShow: (colpkr) ->
-        $t.ColorPickerSetColor $t.data 'hex'
-        
+        $t.ColorPickerSetColor $t.data 'hex'     
   #
   ###############
 

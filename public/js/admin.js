@@ -69,13 +69,13 @@
       success: function(all_data) {
         var $my_card, all_themes, theme, _j, _len2;
         all_themes = all_data.themes;
-        $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
+        $categories.html('');
         for (_j = 0, _len2 = all_themes.length; _j < _len2; _j++) {
           theme = all_themes[_j];
           $my_card = $.create_card_from_theme(theme);
           $.add_card_to_category($my_card, theme);
         }
-        return $categories.find('.card:first').click();
+        return $categories.find('.category:first h4').click();
       },
       error: function() {
         return $.load_alert({

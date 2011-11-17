@@ -90,7 +90,7 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      $categories.html ''
       for theme in all_themes
         #
         #
@@ -102,7 +102,7 @@ $ ->
       #
       #
       # Click the first theme
-      $categories.find('.card:first').click()
+      $categories.find('.category:first h4').click()
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'

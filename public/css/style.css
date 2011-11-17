@@ -1081,6 +1081,12 @@ input {
 .categories .category {
   overflow: hidden;
 }
+.categories .category .cards {
+  display: none;
+}
+.categories .category.active .cards {
+  display: block;
+}
 .categories .card {
   cursor: pointer;
   overflow: hidden;
