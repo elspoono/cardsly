@@ -486,17 +486,18 @@ $ ->
     # Create an interval function
     timer = setTimeout my_repeatable_function, frame_time
 
-    frame_time = frame_time - 700
+    frame_time = frame_time - 950
     quick_time = quick_time - 30
-    if frame_time <= 2000 
-      frame_time = frame_time + 250
-      quick_time = quick_time + 10
-    if frame_time <= 1000 
-      frame_time = frame_time + 400
-      quick_time = 50
     if frame_time <= 500 
-      frame_time = 4000
-      quick_time = 200
+      frame_time = frame_time + 850
+      quick_time = 50
+    if frame_time <= 100 
+      frame_time = 100
+      quick_time = 50
+      index = $my_next_guy.parent().prevAll().length
+      if index is 0
+        frame_time = 4000
+        quick_time = 200
     #
   #
   #

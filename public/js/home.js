@@ -302,7 +302,7 @@
     frame_time = 4000;
     quick_time = 200;
     my_repeatable_function = function() {
-      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, timer, wait_delay;
+      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, biz_delay, index, timer, wait_delay;
       $guy_im_fading_out = $imgs.filter(':eq(' + current_num + ')');
       $my_next_guy = $imgs.filter(':eq(' + (current_num + 1) + ')');
       $label_away = $labels.filter(':eq(' + current_num + ')');
@@ -350,19 +350,20 @@
       current_num++;
       if (current_num === iterate_num) current_num = 0;
       timer = setTimeout(my_repeatable_function, frame_time);
-      frame_time = frame_time - 700;
+      frame_time = frame_time - 950;
       quick_time = quick_time - 30;
-      if (frame_time <= 2000) {
-        frame_time = frame_time + 250;
-        quick_time = quick_time + 10;
-      }
-      if (frame_time <= 1000) {
-        frame_time = frame_time + 400;
+      if (frame_time <= 500) {
+        frame_time = frame_time + 850;
         quick_time = 50;
       }
-      if (frame_time <= 500) {
-        frame_time = 4000;
-        return quick_time = 200;
+      if (frame_time <= 100) {
+        frame_time = 100;
+        quick_time = 50;
+        index = $my_next_guy.parent().prevAll().length;
+        if (index === 0) {
+          frame_time = 4000;
+          return quick_time = 200;
+        }
       }
     };
     my_repeatable_function();
