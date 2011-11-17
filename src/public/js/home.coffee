@@ -463,11 +463,14 @@ $ ->
     # STEP 4: Start the biz cards again
     #
     # reset the[ style to it's default
+    biz_delay = quick_time*4
+    if biz_delay <= 250
+      biz_delay = 0
     $biz_cards.stop(true,true).css
       top: -205
-    $biz_cards.delay(quick_time*4).animate
+    $biz_cards.delay(biz_delay).animate
       top: 5
-    , frame_time-quick_time*4, 'linear'
+    , frame_time-biz_delay, 'linear'
     #
     #
     current_num++
@@ -479,14 +482,14 @@ $ ->
     # Create an interval function
     timer = setTimeout my_repeatable_function, frame_time
 
-    frame_time = frame_time - 500
+    frame_time = frame_time - 700
     quick_time = quick_time - 30
     if frame_time <= 2000 
       frame_time = frame_time + 250
       quick_time = quick_time + 10
     if frame_time <= 1000 
-      frame_time = frame_time + 225
-      quick_time = 10
+      frame_time = frame_time + 400
+      quick_time = 50
     if frame_time <= 500 
       frame_time = 4000
       quick_time = 200
