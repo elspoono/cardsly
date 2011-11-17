@@ -1,13 +1,12 @@
-
+(function() {
   /*
   
   All the stuff for the admin template designer
   is probably going to be in this section right here.
   
   ok.
-  */
-
-  $(function() {
+  
+  */  $(function() {
     var $new_password, $new_password2, $old_password, $set_new_password, successful_password_change;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
@@ -96,3 +95,4 @@
       });
     };
   });
+}).call(this);
