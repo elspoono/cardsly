@@ -29,11 +29,12 @@ $ ->
   $biz_cards = $ '.biz_cards'
   $slides = $ '.slides'
   $phone_scanner = $ '.phone_scanner'
-  $lis = $slides.find 'li'
+  $imgs = $slides.find 'img'
+  $labels = $slides.find 'label'
   $loading_screen = $ '.loading_screen'
   #
   # Hide all the stuff to hide
-  $lis.hide()
+  $imgs.hide()
   $phone_scanner.hide()
   $designer = $ '.home_designer'
   $categories = $ '.categories'
@@ -76,7 +77,7 @@ $ ->
   # Loading Them
   setTimeout ->
     WebFont.load google:
-      families: [ "IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
+      families: [ "IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
   ,3000
   #
   #
@@ -419,51 +420,103 @@ $ ->
     $my_qr = $t.find '.qr'
 
     $my_qr.qr
-      url: 'http://cards.ly/' + Math.random()
+      url: 'http://cards.ly/'
       height: 70
       width: 70
   #
   #
   # Find our total length
-  iterate_num = $lis.length
+  iterate_num = $imgs.length
   current_num = 0
   #
   #
   $loading_screen.hide()
+  frame_time = 4000
+  quick_time = 200
   #
   my_repeatable_function = ->
     #
     #
-    $guy_im_fading_out = $lis.filter ':eq(' + current_num + ')'
-    $my_next_guy = $lis.filter ':eq(' + (current_num+1) + ')'
+    $guy_im_fading_out = $imgs.filter ':eq(' + current_num + ')'
+    $my_next_guy = $imgs.filter ':eq(' + (current_num+1) + ')'
+    #
+    $label_away = $labels.filter ':eq(' + (current_num) + ')'
+    $label_to = $labels.filter ':eq(' + (current_num+1) + ')'
     #
     #
     if not $my_next_guy.length
-      $my_next_guy = $lis.filter(':first')
+      $my_next_guy = $imgs.filter(':first')
+      $label_to = $labels.filter(':first')
     #
     #
-    $guy_im_fading_out.stop(true,true).slideUp 200
-    #$loading_screen.stop(true,true).delay(900).slideDown(200).delay(200).fadeOut(1)
-
-    $my_next_guy.stop(true,true).delay(1000).slideDown 200
     #
-    $phone_scanner.stop(true,true).delay(200).fadeIn(100).delay(600).fadeOut(100)
+    # STEP 1: Stop
+    #
+    # - stop the biz cards, slide stuff out
+    #
+    $label_away.stop(true,true).show().css
+      'margin-left': 0
+    $label_away.animate
+      'margin-left': -233
+    ,quick_time
+    $guy_im_fading_out.stop(true,true).show().css
+      'margin-left': 0
+    $guy_im_fading_out.animate
+      'margin-left': -233
+    ,quick_time
+    $phone_scanner.stop(true,true)
     #
     #
-    $biz_cards.stop(true,true).delay(1500).animate
+    #
+    # STEP 2: Flash The Light
+    #
+    $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time)
+    #
+    # STEP 3: Bring things in
+    $my_next_guy.show().css
+      'margin-left': 233
+    $my_next_guy.delay(quick_time*3).animate
+      'margin-left': 0
+    ,quick_time
+    $label_to.show().css
+      'margin-left': 233
+    $label_to.delay(quick_time*3).animate
+      'margin-left': 0
+    ,quick_time
+    #
+    #
+    #
+    # STEP 4: Start the biz cards again
+    #
+    # reset the[ style to it's default
+    $biz_cards.stop(true,true).css
+      top: -205
+    $biz_cards.delay(quick_time*4).animate
       top: 5
-    , 3500, 'linear', ->
-      # reset the style to it's default
-      $biz_cards.css
-        top: -205
+    , frame_time-quick_time*4, 'linear'
     #
     #
     current_num++
     current_num = 0 if current_num == iterate_num
-  #
-  #
-  # Create an interval function
-  setInterval my_repeatable_function, 5000
+    #
+    #
+    #
+    #
+    # Create an interval function
+    timer = setTimeout my_repeatable_function, frame_time
+
+    frame_time = frame_time - 500
+    quick_time = quick_time - 30
+    if frame_time <= 2000 
+      frame_time = frame_time + 250
+      quick_time = quick_time + 10
+    if frame_time <= 1000 
+      frame_time = frame_time + 225
+      quick_time = 10
+    if frame_time <= 500 
+      frame_time = 4000
+      quick_time = 200
+    #
   #
   #
   #

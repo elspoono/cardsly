@@ -1485,20 +1485,31 @@ input
 .home_slides {
   overflow: hidden;
 }
-.slide_bg {
-  background: #000;
-  height: 356px;
-  width: 233px;
-}
 .slides,
 .slide_bg {
   position: absolute;
+  overflow: hidden;
   left: 473px;
   top: 126px;
+  width: 233px;
+  height: 900px;
 }
-.slides li,
-.slide_bg li {
+.slides img,
+.slide_bg img {
   position: absolute;
+  display: none;
+}
+.slides label,
+.slide_bg label {
+  display: none;
+  top: 460px;
+  position: absolute;
+  width: 233px;
+  text-align: center;
+}
+.slide_bg {
+  background: #000;
+  height: 356px;
 }
 .biz_cards {
   top: -205px;

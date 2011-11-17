@@ -8,13 +8,14 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, set_timers, shift_pressed, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $imgs, $labels, $lines, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
-    $lis = $slides.find('li');
+    $imgs = $slides.find('img');
+    $labels = $slides.find('label');
     $loading_screen = $('.loading_screen');
-    $lis.hide();
+    $imgs.hide();
     $phone_scanner.hide();
     $designer = $('.home_designer');
     $categories = $('.categories');
@@ -41,7 +42,7 @@
     setTimeout(function() {
       return WebFont.load({
         google: {
-          families: ["IM+Fell+English+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin"]
+          families: ["IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin"]
         }
       });
     }, 3000);
@@ -325,33 +326,76 @@
       $t = $(this);
       $my_qr = $t.find('.qr');
       return $my_qr.qr({
-        url: 'http://cards.ly/' + Math.random(),
+        url: 'http://cards.ly/',
         height: 70,
         width: 70
       });
     });
-    iterate_num = $lis.length;
+    iterate_num = $imgs.length;
     current_num = 0;
     $loading_screen.hide();
+    frame_time = 4000;
+    quick_time = 200;
     my_repeatable_function = function() {
-      var $guy_im_fading_out, $my_next_guy;
-      $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
-      $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
-      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
-      $guy_im_fading_out.stop(true, true).slideUp(200);
-      $my_next_guy.stop(true, true).delay(1000).slideDown(200);
-      $phone_scanner.stop(true, true).delay(200).fadeIn(100).delay(600).fadeOut(100);
-      $biz_cards.stop(true, true).delay(1500).animate({
-        top: 5
-      }, 3500, 'linear', function() {
-        return $biz_cards.css({
-          top: -205
-        });
+      var $guy_im_fading_out, $label_away, $label_to, $my_next_guy, timer;
+      $guy_im_fading_out = $imgs.filter(':eq(' + current_num + ')');
+      $my_next_guy = $imgs.filter(':eq(' + (current_num + 1) + ')');
+      $label_away = $labels.filter(':eq(' + current_num + ')');
+      $label_to = $labels.filter(':eq(' + (current_num + 1) + ')');
+      if (!$my_next_guy.length) {
+        $my_next_guy = $imgs.filter(':first');
+        $label_to = $labels.filter(':first');
+      }
+      $label_away.stop(true, true).show().css({
+        'margin-left': 0
       });
+      $label_away.animate({
+        'margin-left': -233
+      }, quick_time);
+      $guy_im_fading_out.stop(true, true).show().css({
+        'margin-left': 0
+      });
+      $guy_im_fading_out.animate({
+        'margin-left': -233
+      }, quick_time);
+      $phone_scanner.stop(true, true);
+      $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
+      $my_next_guy.show().css({
+        'margin-left': 233
+      });
+      $my_next_guy.delay(quick_time * 3).animate({
+        'margin-left': 0
+      }, quick_time);
+      $label_to.show().css({
+        'margin-left': 233
+      });
+      $label_to.delay(quick_time * 3).animate({
+        'margin-left': 0
+      }, quick_time);
+      $biz_cards.stop(true, true).css({
+        top: -205
+      });
+      $biz_cards.delay(quick_time * 4).animate({
+        top: 5
+      }, frame_time - quick_time * 4, 'linear');
       current_num++;
-      if (current_num === iterate_num) return current_num = 0;
+      if (current_num === iterate_num) current_num = 0;
+      timer = setTimeout(my_repeatable_function, frame_time);
+      frame_time = frame_time - 500;
+      quick_time = quick_time - 30;
+      if (frame_time <= 2000) {
+        frame_time = frame_time + 250;
+        quick_time = quick_time + 10;
+      }
+      if (frame_time <= 1000) {
+        frame_time = frame_time + 225;
+        quick_time = 10;
+      }
+      if (frame_time <= 500) {
+        frame_time = 4000;
+        return quick_time = 200;
+      }
     };
-    setInterval(my_repeatable_function, 5000);
     my_repeatable_function();
     /*
       Shopping Cart Stuff
