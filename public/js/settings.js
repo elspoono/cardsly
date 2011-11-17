@@ -7,7 +7,7 @@
   ok.
   
   */  $(function() {
-    var $new_password, $new_password2, $set_new_password;
+    var $new_password, $new_password2, $old_password, $set_new_password, successful_password_change;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
       $t = $(this);
@@ -39,17 +39,21 @@
       }, 1000));
     });
     false;
+    $old_password = $('.current_password');
     $set_new_password = $('.set_new_password');
     $new_password = $('.new_password');
     $new_password2 = $('.new_password2');
-    return $set_new_password.submit(function() {
+    $set_new_password.submit(function() {
       var err;
       err = false;
+      if ($old.password.val() !== req.user.password_encrypted) {
+        err = 'Please Enter the correct current password';
+      }
       if ($new_password.val() === '' || $new_password2.val() === '') {
         err = 'Please enter your new password twice.';
       } else if ($new_password.val() !== $new_password2.val()) {
         err = 'I\'m sorry, I don\'t think those passwords match.';
-      } else if (password.val().length < 4) {
+      } else if ($new_password.val().length < 4) {
         err = 'Password should be a little longer, at least 4 characters.';
       }
       if (err) {
@@ -57,35 +61,38 @@
           content: err
         });
       } else {
-        form_close();
         $.load_loading({}, function(loading_close) {
           return $.ajax({
             url: '/change-password',
             data: {
               new_password: $new_password.val(),
-              new_password2: $new_password2.val()({
-                success: function(data) {
-                  loading_close();
-                  if (data.err) {
-                    return $.load_alert({
-                      content: data.err
-                    });
-                  } else {
-                    return successful_password_change();
-                  }
-                },
-                error: function(err) {
-                  loading_close();
-                  return $.load_alert({
-                    content: 'Our apologies. A server error occurred.'
-                  });
-                }
-              })
+              new_password2: $new_password2.val()
+            },
+            success: function(data) {
+              loading_close();
+              if (data.err) {
+                return $.load_alert({
+                  content: data.err
+                });
+              } else {
+                return successful_password_change();
+              }
+            },
+            error: function(err) {
+              loading_close();
+              return $.load_alert({
+                content: 'Our apologies. A server error occurred.'
+              });
             }
           });
         });
       }
       return false;
     });
+    return successful_password_change = function() {
+      return $.load_alert({
+        content: 'Pasword Changed'
+      });
+    };
   });
 }).call(this);

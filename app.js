@@ -522,7 +522,10 @@
       It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
       Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
     
-      */    req.session.savedInputs = req.body.inputs.split('`~`');
+      */
+    var params;
+    params = JSON.parse(req.rawBody);
+    req.session.saved_form = params;
     return res.send({
       success: true
     });
@@ -616,7 +619,7 @@
     });
   });
   app.post('/change-password', function(req, res, next) {
-    req.user.password_encrypted = encrypted(req.body.password);
+    req.user.password_encrypted = encrypted(req.body.new_password);
     return req.user.save(function(err, data) {
       return res.send({
         success: 'True'

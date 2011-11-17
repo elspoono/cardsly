@@ -68,13 +68,13 @@
       success: function(all_data) {
         var $my_card, all_themes, theme, _j, _len2;
         all_themes = all_data.themes;
-        $categories.html('<div class="category" category=""><h4>(no category)</h4></div>');
+        $categories.html('');
         for (_j = 0, _len2 = all_themes.length; _j < _len2; _j++) {
           theme = all_themes[_j];
           $my_card = $.create_card_from_theme(theme);
           $.add_card_to_category($my_card, theme);
         }
-        return $categories.find('.card:first').click();
+        return $categories.find('.category:first h4').click();
       },
       error: function() {
         return $.load_alert({
@@ -131,6 +131,7 @@
         ctrl_pressed = true;
       }
       if (ctrl_pressed && !shift_pressed && e.keyCode === 90) {
+        e.preventDefault();
         current_theme = history.pop();
         new_theme = history[history.length - 1];
         if (new_theme) {
@@ -146,6 +147,7 @@
         }
       }
       if (ctrl_pressed && shift_pressed && e.keyCode === 90) {
+        e.preventDefault();
         new_theme = redo_history.pop();
         if (new_theme) {
           history.push(new_theme);
@@ -227,9 +229,6 @@
           background: '#' + options.hex
         });
       });
-      $t.focus(function() {
-        return $t.ColorPickerSetColor($t.val());
-      });
       return $t.ColorPicker({
         livePreview: true,
         onChange: function(hsb, hex, rgb) {
@@ -239,7 +238,7 @@
           });
         },
         onShow: function(colpkr) {
-          return $t.blur();
+          return $t.ColorPickerSetColor($t.data('hex'));
         }
       });
     });
@@ -403,8 +402,7 @@
       } else {
         $card.find('.active').removeClass('active');
         $body.unbind('click', unfocus_highlight);
-        change_tab('.defaults');
-        return false;
+        return change_tab('.defaults');
       }
     };
     $lines.mousedown(function(e) {
@@ -496,15 +494,6 @@
     });
     $upload.change(function() {
       return $dForm.submit();
-    });
-    $('.theme_1,.theme_2').click(function() {
-      var $c, $t;
-      $t = $(this);
-      $c = $t.closest('.card');
-      $c.click();
-      $('.theme_1,.theme_2').removeClass('active');
-      $t.addClass('active');
-      return false;
     });
     get_position = function($t) {
       var height, left, result, top, width;
@@ -668,17 +657,20 @@
           for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
             line = _ref2[_k];
             $.extend(true, line, {
-              h: line.h / 2,
-              w: line.w / 2
+              h: line.h / 1.5,
+              w: line.w / 1.5
             });
             new_line = $.extend(true, {}, line);
             new_line.x = 100 - new_line.x - new_line.w;
             theme_template.lines.push(new_line);
           }
-          theme_template.qr.h = theme_template.qr.h / 2;
-          theme_template.qr.w = theme_template.qr.w / 2;
+          theme_template.qr.h = theme_template.qr.h / 1.5;
+          theme_template.qr.w = theme_template.qr.w / 1.5;
         }
         theme.theme_templates[active_view] = theme_template;
+      }
+      if (active_view === 1 && theme.theme_templates[active_view].lines.length > 10) {
+        theme.theme_templates[active_view].lines.splice(10, 5);
       }
       if (theme.not_saved) {
         $save_button.stop(true, true).show();
@@ -778,9 +770,8 @@
       $qr_color2_alpha.slider('value', theme_template.qr.color2_alpha * 100);
       return $qr_radius.find('[value=' + theme_template.qr.radius + ']').attr('selected', 'selected');
     };
-    $;
     $('.add_new').click(function() {
-      var $new_card, temp_theme;
+      var $my_cat, $new_card, temp_theme;
       temp_theme = $.extend(true, {}, default_theme);
       history = [temp_theme];
       $new_card = $('<div class="card" />');
@@ -788,14 +779,21 @@
         background: '#FFF'
       });
       $new_card.data('theme', temp_theme);
-      $('.categories .category[category=]').append($new_card);
+      $my_cat = $('.categories .category[category=]');
+      if ($my_cat.length === 0) {
+        $my_cat = $('<div class="category" category=""><h4>(no category)</h4><div class="cards"></div></div>');
+        $categories.prepend($my_cat);
+      }
+      $my_cat.find('.cards').prepend($new_card);
+      $my_cat.find('h4').click();
+      $my_cat.find('h4').click();
       return $new_card.click();
     });
-    $view_buttons = $views.find('div');
+    $view_buttons = $('.views .option');
     $view_buttons.click(function() {
       var $t, index;
       $t = $(this);
-      $view_buttons.removeClass('active');
+      $view_buttons.filter('.active').removeClass('active');
       $t.addClass('active');
       index = $t.prevAll().length;
       active_view = index;
@@ -817,7 +815,7 @@
           $new_card.data('theme', active_theme);
           $('.category .card.active').remove();
           $.add_card_to_category($new_card, active_theme);
-          return $new_card.click();
+          return $new_card.closest('.category').find('h4').click();
         });
       });
     });
@@ -838,7 +836,7 @@
                 return execute_save(function() {
                   close_loading();
                   $('.category .card.active').remove();
-                  return $('.category .card:first').click();
+                  return $('.category:first h4').click();
                 });
               });
               return close_func();

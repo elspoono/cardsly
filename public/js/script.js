@@ -21,7 +21,7 @@
   });
   $window = $(window);
   $.fx.speeds._default = 300;
-  $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'speciality', 'title', 'apt. #666', 'New York', 'fb.com/my_facebook', '@my_twitter'];
+  $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
   if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
     document.location.href = '/splash';
   }
@@ -177,7 +177,7 @@
     _ref = theme_template.lines;
     for (i = 0, _len = _ref.length; i < _len; i++) {
       pos = _ref[i];
-      $li = $('<div>' + $.line_copy[i] + '</div>');
+      $li = $('<div class="line">' + $.line_copy[i] + '</div>');
       $li.appendTo($my_card).css({
         position: 'absolute',
         top: pos.y / 100 * 90,
@@ -197,12 +197,12 @@
   $.add_card_to_category = function($my_card, theme) {
     var $categories, $category;
     $categories = $('.categories');
-    $category = $categories.find('.category[category=' + theme.category + ']');
+    $category = $categories.find('.category[category="' + theme.category + '"]');
     if ($category.length === 0) {
-      $category = $('<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>');
+      $category = $('<div class="category" category="' + theme.category + '"><h4>' + (theme.category || '(no category)') + '<div class="arrow_container"><div class="arrow"></div></div></h4><div class="cards"></div></div>');
       $categories.prepend($category);
     }
-    return $category.find('h4').after($my_card);
+    return $category.find('.cards').prepend($my_card);
   };
   /*
    * 
@@ -708,7 +708,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
       */
-    var $a, $am, $body, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
+    var $a, $am, $body, $email_text, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -740,12 +740,14 @@
     $a.one('click', expand_menu);
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design_button').click(function() {
-      if (path !== '/') {
+      if (path !== '/' && path !== '/home') {
         document.location.href = '/#design-button';
       } else {
         $('html,body').animate({
           scrollTop: $('.section:eq(1)').offset().top
-        }, 500);
+        }, 500, function() {
+          return $('.home_designer .line:first').click();
+        });
       }
       return false;
     });
@@ -759,11 +761,10 @@
         return document.location.href = '/admin';
       } else {
         $s = $('.signins');
-        $s.fadeOut(500, function() {
+        return $s.fadeOut(500, function() {
           $s.html('You are now logged in, please continue.');
           return $s.fadeIn(1000);
         });
-        return $('.login a').attr('href', '/logout').html('Logout');
       }
     };
     /*
@@ -961,9 +962,11 @@
         right: '-45px'
       }, 250);
     });
+    $email_text = $('.hidden_email');
+    console.log($email_text.text());
     $feedback_a.click(function() {
       $.load_modal({
-        content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>',
+        content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40" value="' + ($email_text.text()) + '"></p></div>',
         width: 400,
         height: 300,
         buttons: [
@@ -1029,17 +1032,17 @@
         });
       }
     });
-    $('.category h4').click(function() {
+    $('.category h4').live('click', function() {
       var $c, $g, $t;
       $t = $(this);
       $c = $t.closest('.category');
-      $g = $c.find('.gallery');
+      $g = $c.find('.cards');
       $a = $('.category.active');
       if (!$c.hasClass('active')) {
         $a.removeClass('active');
-        $a.find('.gallery').show().slideUp(400);
+        $a.find('.cards').show().slideUp(400);
         $gs.hide();
-        $c.find('.gallery').slideDown(400, function() {
+        $c.find('.cards').slideDown(400, function() {
           $gs.show();
           return $c.find('.card:first').click();
         });

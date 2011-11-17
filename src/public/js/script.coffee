@@ -39,10 +39,8 @@ $.line_copy = [
   '57 Bakers, Edwarstonville'
   '555.555.5555'
   'New York'
-  'speciality'
-  'title'
-  'apt. #666'
-  'New York'
+  'Apt. #666'
+  'M thru F - 10 to 7'
   'fb.com/my_facebook'
   '@my_twitter'
 ]
@@ -221,7 +219,7 @@ $.create_card_from_theme = (theme) ->
   #
   #
   for pos,i in theme_template.lines
-    $li = $ '<div>' + $.line_copy[i] + '</div>'
+    $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
     $li.appendTo($my_card).css
       position: 'absolute'
       top: pos.y/100 * 90
@@ -244,19 +242,20 @@ $.add_card_to_category = ($my_card, theme) ->
   $categories = $ '.categories'
   #
   # Find an existing category
-  $category = $categories.find('.category[category=' + theme.category + ']')
+  $category = $categories.find('.category[category="' + theme.category + '"]')
   #
   # If that category doesn't exist yet
   if $category.length == 0
     #
     # Create it
-    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + theme.category + '</h4></div>'
+    $category = $ '<div class="category" category="' + theme.category + '"><h4>' + (theme.category||'(no category)') + '<div class="arrow_container"><div class="arrow"></div></div></h4><div class="cards"></div></div>'
     #
     # And add it to the categories list
     $categories.prepend $category
   #
+  #
   # Finally add it
-  $category.find('h4').after $my_card
+  $category.find('.cards').prepend $my_card
 #
 #
 #
@@ -323,10 +322,10 @@ $.fn.show_tooltip = (options) ->
 $.load_modal = (options, next) ->
 
   scrollbar_width = $.scrollbar_width()
-  modal = $('<div class="modal" />')
-  win = $('<div class="window" />')
-  close = $('<div class="close" />')
-  $body = $(document)
+  modal = $ '<div class="modal" />'
+  win = $ '<div class="window" />'
+  close = $ '<div class="close" />'
+  $body = $ document
 
   settings =
     width: 500
@@ -794,13 +793,14 @@ $ ->
   #
   # Get Started Button Scroll
   $('.design_button').click ->
-    if path != '/'
+    if path isnt '/' and path isnt '/home'
       document.location.href = '/#design-button'
     else
       $('html,body').animate
         scrollTop: $('.section:eq(1)').offset().top
-      ,
-      500
+        500
+        ->
+          $('.home_designer .line:first').click()
     false
   #
   #
@@ -825,7 +825,7 @@ $ ->
       $s.fadeOut 500, ->
         $s.html 'You are now logged in, please continue.'
         $s.fadeIn 1000
-      $('.login a').attr('href','/logout').html 'Logout'
+      #$('.login a').attr('href','/logout').html 'Logout'
   #
   #
   #
@@ -998,9 +998,11 @@ $ ->
   #
   #
   #Feedback Button
+  $email_text = $ '.hidden_email'
+  console.log $email_text.text()
   $feedback_a.click () ->
     $.load_modal
-      content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email" cols="40"></p></div>'
+      content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40" value="'+($email_text.text())+'"></p></div>'
       width: 400
       height: 300
       buttons: [
@@ -1031,6 +1033,9 @@ $ ->
       ] 
     false
   #
+  # Cards Page Selector
+  
+
   #
   # The floaty guy behind the gallery selection
   $gs = $ '.gallery_select'
@@ -1055,16 +1060,16 @@ $ ->
   #
   # 
   # Category Expand/Collapse
-  $('.category h4').click () ->
+  $('.category h4').live 'click', () ->
     $t = $ this
     $c = $t.closest '.category'
-    $g = $c.find '.gallery'
+    $g = $c.find '.cards'
     $a = $ '.category.active'
     if !$c.hasClass 'active'
       $a.removeClass('active')
-      $a.find('.gallery').show().slideUp 400
+      $a.find('.cards').show().slideUp 400
       $gs.hide()
-      $c.find('.gallery').slideDown 400, ->
+      $c.find('.cards').slideDown 400, ->
         $gs.show()
         $c.find('.card:first').click()
       $c.addClass('active')

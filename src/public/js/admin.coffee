@@ -34,7 +34,7 @@ $ ->
   #
   # Stuff inside the designer itself
   $qr = $card.find '.qr'
-  $qr_bg = $qr.find('.background')
+  $qr_bg = $qr.find '.background'
   $content = $card.find '.content'
   $content.append('<div class="line">' + line + '</div>') for line in $.line_copy
   $lines = $content.find '.line'
@@ -101,6 +101,16 @@ $ ->
   update_card_size()
   #
   
+
+
+
+
+
+
+
+
+
+
   ##############
   #
   # The Themes
@@ -109,7 +119,7 @@ $ ->
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
-      $categories.html '<div class="category" category=""><h4>(no category)</h4></div>'
+      $categories.html ''
       for theme in all_themes
         #
         #
@@ -121,7 +131,7 @@ $ ->
       #
       #
       # Click the first theme
-      $categories.find('.card:first').click()
+      $categories.find('.category:first h4').click()
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -144,6 +154,15 @@ $ ->
   #
   #
   ##############
+
+
+
+
+
+
+
+
+
 
   ##############
   #
@@ -208,6 +227,7 @@ $ ->
     #
     # Undo 
     if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      e.preventDefault()
       current_theme = history.pop()
       new_theme = history[history.length-1]
       if new_theme
@@ -221,6 +241,7 @@ $ ->
     #
     # Redo
     if ctrl_pressed and shift_pressed and e.keyCode is 90
+      e.preventDefault()
       new_theme = redo_history.pop()
       if new_theme
         history.push new_theme
@@ -307,11 +328,9 @@ $ ->
   # *
   # *
   # *
-
   ##############
   # Colors pickers for ... ... .... ... picking colors.
   #
-
   $all_colors.each ->
     $t = $ this
     $t.bind 'color_update', (e, options) ->
@@ -319,8 +338,6 @@ $ ->
         hex: options.hex
       $t.css
         background: '#' + options.hex
-    $t.focus ->
-      $t.ColorPickerSetColor $t.val()
     $t.ColorPicker
       livePreview: true
       onChange: (hsb, hex, rgb) ->
@@ -328,8 +345,7 @@ $ ->
           hex: hex
           timer: true
       onShow: (colpkr) ->
-        $t.blur()
-        
+        $t.ColorPickerSetColor $t.data 'hex'     
   #
   ###############
 
@@ -539,7 +555,6 @@ $ ->
       $card.find('.active').removeClass 'active'
       $body.unbind 'click', unfocus_highlight
       change_tab '.defaults'
-      return false
   #
   # Highlighting and making a line the active one
   $lines.mousedown (e) ->
@@ -644,21 +659,6 @@ $ ->
   # On upload selection, submit that form
   $upload.change ->
     $dForm.submit()
-
-  #
-  # 6 and 12 selectors in the thumbnails
-  $('.theme_1,.theme_2').click ->
-    $t = $ this
-    $c = $t.closest '.card'
-
-    $c.click()
-
-    # Actual Switch the classes
-    $('.theme_1,.theme_2').removeClass 'active'
-    $t.addClass 'active'
-
-    # always return false to prevent href from going anywhere
-    false
 
   #
   # Helper Function for getting the position in percentage from an elements top, left, height and width
@@ -819,14 +819,16 @@ $ ->
         delete theme_template._id
         for line in theme_template.lines
           $.extend true, line,
-            h: line.h/2
-            w: line.w/2
+            h: line.h/1.5
+            w: line.w/1.5
           new_line = $.extend true, {}, line
           new_line.x = 100-new_line.x-new_line.w
           theme_template.lines.push new_line
-        theme_template.qr.h = theme_template.qr.h/2
-        theme_template.qr.w = theme_template.qr.w/2
+        theme_template.qr.h = theme_template.qr.h/1.5
+        theme_template.qr.w = theme_template.qr.w/1.5
       theme.theme_templates[active_view] = theme_template
+    if active_view is 1 and theme.theme_templates[active_view].lines.length > 10
+      theme.theme_templates[active_view].lines.splice 10,5
     #
     #
     # show or hide save button
@@ -925,7 +927,6 @@ $ ->
   #
   #
   #
-  $
   #
   #
   #
@@ -948,16 +949,21 @@ $ ->
     $new_card.css
       background: '#FFF'
     $new_card.data 'theme', temp_theme
-    $('.categories .category[category=]').append $new_card
+    $my_cat = $ '.categories .category[category=]'
+    if $my_cat.length is 0
+      $my_cat = $ '<div class="category" category=""><h4>(no category)</h4><div class="cards"></div></div>'
+      $categories.prepend $my_cat
+    $my_cat.find('.cards').prepend $new_card
+    $my_cat.find('h4').click()
+    $my_cat.find('h4').click()
     $new_card.click()
   #
   #
   #
-  #
-  $view_buttons = $views.find 'div'
+  $view_buttons = $ '.views .option'
   $view_buttons.click ->
     $t = $ this
-    $view_buttons.removeClass 'active'
+    $view_buttons.filter('.active').removeClass 'active'
     $t.addClass 'active'
     #
     index = $t.prevAll().length
@@ -984,7 +990,7 @@ $ ->
         $new_card.data 'theme', active_theme
         $('.category .card.active').remove()
         $.add_card_to_category $new_card, active_theme
-        $new_card.click()
+        $new_card.closest('.category').find('h4').click()
   #
   # On delete click
   $designer.find('.buttons .delete').click ->
@@ -1005,7 +1011,7 @@ $ ->
             execute_save ->
               close_loading()
               $('.category .card.active').remove()
-              $('.category .card:first').click()
+              $('.category:first h4').click()
           close_func()
         },{
         class: 'gray'

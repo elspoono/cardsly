@@ -780,7 +780,9 @@ app.post '/save-form', (req, res) ->
   Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
 
   ###
-  req.session.savedInputs = req.body.inputs.split '`~`'
+  # Put it into a nice pretty JSON object 
+  params = JSON.parse req.rawBody
+  req.session.saved_form = params
   res.send
     success: true
 #
@@ -878,7 +880,7 @@ app.post '/create-user', (req,res,next) ->
 #
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  req.user.password_encrypted = encrypted(req.body.password);
+  req.user.password_encrypted = encrypted(req.body.new_password);
   req.user.save (err,data) ->
     res.send
       success: 'True'
