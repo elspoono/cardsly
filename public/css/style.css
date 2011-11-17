@@ -1493,6 +1493,7 @@ input
   top: 126px;
   width: 233px;
   height: 900px;
+  z-index: 23;
 }
 .slides img,
 .slide_bg img {
@@ -1510,11 +1511,13 @@ input
 .slide_bg {
   background: #000;
   height: 356px;
+  z-index: 22;
 }
 .biz_cards {
   top: -205px;
-  left: 30px;
+  left: 50px;
   position: absolute;
+  z-index: 20;
 }
 .biz_cards li {
   margin: 30px 0;
@@ -1527,9 +1530,9 @@ input
 }
 .phone_scanner {
   position: absolute;
-  left: 300px;
+  left: 320px;
   bottom: 330px;
-  z-index: 0;
+  z-index: 21;
 }
 .loading_screen {
   position: absolute;
