@@ -78,7 +78,7 @@ $ ->
   setTimeout ->
     WebFont.load google:
       families: [ "IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
-  ,3000
+  ,5000
   #
   #
   # END GOOGLE FONTS
@@ -369,32 +369,6 @@ $ ->
     $('.categories .card').each -> 
       $t = $ this
       $t.find('.line:eq('+rowNumber+')').html value
-
-
-  # On the window scroll event ...
-  $win.scroll ->
-
-    # Get the new bottom of the window position
-    newWinH = $win.height()+$win.scrollTop()
-    if $mc.length
-      # If the main card bottom is now visible
-      if $mc.offset().top+$mc.height() < newWinH && !$mc.data 'didLoad'
-        $mc.data 'didLoad', true
-        time_lapse = 0
-        $lines.each (rowNumber) ->
-          $t = $ this
-          v = $t.val() || $t.html()
-          $t.val ''
-          update_cards rowNumber, v
-          timers = for j in [0..v.length]
-            do (j) ->
-              timer = setTimeout ->
-                v_substring = v.substr 0,j
-                $t.html v_substring
-                update_cards rowNumber, v_substring
-              ,time_lapse*70
-              time_lapse++
-              timer
 
 
 

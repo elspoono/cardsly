@@ -45,7 +45,7 @@
           families: ["IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin"]
         }
       });
-    }, 3000);
+    }, 5000);
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
@@ -286,41 +286,6 @@
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
       });
     };
-    $win.scroll(function() {
-      var newWinH, time_lapse;
-      newWinH = $win.height() + $win.scrollTop();
-      if ($mc.length) {
-        if ($mc.offset().top + $mc.height() < newWinH && !$mc.data('didLoad')) {
-          $mc.data('didLoad', true);
-          time_lapse = 0;
-          return $lines.each(function(rowNumber) {
-            var $t, j, timers, v;
-            $t = $(this);
-            v = $t.val() || $t.html();
-            $t.val('');
-            update_cards(rowNumber, v);
-            return timers = (function() {
-              var _ref, _results;
-              _results = [];
-              for (j = 0, _ref = v.length; 0 <= _ref ? j <= _ref : j >= _ref; 0 <= _ref ? j++ : j--) {
-                _results.push((function(j) {
-                  var timer;
-                  timer = setTimeout(function() {
-                    var v_substring;
-                    v_substring = v.substr(0, j);
-                    $t.html(v_substring);
-                    return update_cards(rowNumber, v_substring);
-                  }, time_lapse * 70);
-                  time_lapse++;
-                  return timer;
-                })(j));
-              }
-              return _results;
-            })();
-          });
-        }
-      }
-    });
     $biz_cards.find('li').each(function(i) {
       var $my_qr, $t;
       $t = $(this);
