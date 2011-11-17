@@ -389,7 +389,7 @@ $ ->
   #
   #
   # DRAW SOME QR CODES
-  for i in [0..20]
+  for i in [0..$imgs.length]
     $li = $ '<li />'
     $my_qr = $ '<div class="qr" />'
     $img = $ '<img src="/images/biz_card1.png">'
@@ -409,7 +409,7 @@ $ ->
   #
   #
   biz_incr = 142+30
-  biz_begin = -20.6*biz_incr
+  biz_begin = (-$imgs.length-1)*biz_incr
   $biz_cards.css
     top: biz_begin
   $biz_cards.find('li').hide().fadeIn()
@@ -516,8 +516,8 @@ $ ->
         frame_time = 4000
         quick_time = 200
         $biz_cards.stop(true,true).animate
-          top: parseInt($biz_cards.css('top')) + biz_incr*5.2
-        , 800
+          top: parseInt($biz_cards.css('top')) + biz_incr*6
+        , 1200
         $my_next_guy.fadeOut(500)
         $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000)
         #
