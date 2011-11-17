@@ -387,7 +387,7 @@
             top: parseInt($biz_cards.css('top')) + biz_incr * 6
           }, 1200);
           $my_next_guy.fadeOut(500);
-          $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000);
+          $('.slide:last').stop(true, true).delay(500).fadeIn(2000).delay(5500).fadeOut(2000);
           return timer = setTimeout(function() {
             $biz_cards.find('li').hide().fadeIn();
             $biz_cards.stop(true, true).css({

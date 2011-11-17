@@ -210,13 +210,12 @@
 
     .signins
       if user
-        p.subtitle I see you've already signed in.
         p
-          | Welcome back 
+          | Ordering cards for 
           =user.name
           =user.email
       else
-        p.subtitle With cards.ly you can sign in at anytime from any browser to add a custom message to the QR code on any card. Connect with a social network to secure this editing feature, or create a cards.ly username and password.
+        p
           .socials
             p
               | I want to sign in to 
