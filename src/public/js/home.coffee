@@ -447,12 +447,10 @@ $ ->
 
     $my_next_guy.stop(true,true).delay(1000).slideDown 200
     #
-    $phone_scanner.stop(true,true).delay(100).fadeIn(100).delay(800).fadeOut(100)
+    $phone_scanner.stop(true,true).delay(200).fadeIn(100).delay(600).fadeOut(100)
     #
     #
-    $biz_cards.stop(true,true)
-    #
-    $biz_cards.delay(1500).animate
+    $biz_cards.stop(true,true).delay(1500).animate
       top: 5
     , 3500, 'linear', ->
       # reset the style to it's default
