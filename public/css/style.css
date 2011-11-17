@@ -1485,12 +1485,19 @@ input
 .home_slides {
   overflow: hidden;
 }
-.slides {
+.slide_bg {
+  background: #000;
+  height: 356px;
+  width: 233px;
+}
+.slides,
+.slide_bg {
   position: absolute;
   left: 473px;
   top: 126px;
 }
-.slides li {
+.slides li,
+.slide_bg li {
   position: absolute;
 }
 .biz_cards {

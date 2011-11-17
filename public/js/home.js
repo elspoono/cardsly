@@ -172,50 +172,6 @@
       }
       return _results;
     };
-    $biz_cards.find('li').each(function(i) {
-      var $my_qr, $t;
-      $t = $(this);
-      $my_qr = $t.find('.qr');
-      return $my_qr.qr({
-        url: 'http://cards.ly/' + Math.random(),
-        height: 70,
-        width: 70
-      });
-    });
-    iterate_num = $lis.length;
-    current_num = 0;
-    my_repeatable_function = function() {
-      var $guy_im_fading_out, $my_next_guy;
-      $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
-      $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
-      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
-      $guy_im_fading_out.stop(true, true).delay(200).fadeOut(50);
-      $loading_screen.stop(true, true).fadeIn(400).delay(100).fadeOut(400);
-      $my_next_guy.stop(true, true).delay(600).fadeIn(500);
-      $phone_scanner.stop(true, true).fadeIn(300).fadeOut(300);
-      $biz_cards.stop(true, true);
-      $biz_cards.delay(500).animate({
-        top: 5
-      }, 3500, 'linear', function() {
-        return $biz_cards.css({
-          top: -205
-        });
-      });
-      current_num++;
-      if (current_num === iterate_num) return current_num = 0;
-    };
-    setInterval(my_repeatable_function, 4000);
-    my_repeatable_function();
-    /*
-      Shopping Cart Stuff
-    */
-    item_name = '100 cards';
-    $('.checkout').click(function() {
-      $.load_alert({
-        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
-      });
-      return false;
-    });
     input_timer = 0;
     set_timers = function() {
       clearTimeout(input_timer);
@@ -329,7 +285,7 @@
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
       });
     };
-    return $win.scroll(function() {
+    $win.scroll(function() {
       var newWinH, time_lapse;
       newWinH = $win.height() + $win.scrollTop();
       if ($mc.length) {
@@ -363,5 +319,49 @@
           });
         }
       }
+    });
+    $biz_cards.find('li').each(function(i) {
+      var $my_qr, $t;
+      $t = $(this);
+      $my_qr = $t.find('.qr');
+      return $my_qr.qr({
+        url: 'http://cards.ly/' + Math.random(),
+        height: 70,
+        width: 70
+      });
+    });
+    iterate_num = $lis.length;
+    current_num = 0;
+    $loading_screen.hide();
+    my_repeatable_function = function() {
+      var $guy_im_fading_out, $my_next_guy;
+      $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
+      $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
+      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
+      $guy_im_fading_out.stop(true, true).slideUp(200);
+      $my_next_guy.stop(true, true).delay(1000).slideDown(200);
+      $phone_scanner.stop(true, true).delay(100).fadeIn(100).delay(800).fadeOut(100);
+      $biz_cards.stop(true, true);
+      $biz_cards.delay(1500).animate({
+        top: 5
+      }, 3500, 'linear', function() {
+        return $biz_cards.css({
+          top: -205
+        });
+      });
+      current_num++;
+      if (current_num === iterate_num) return current_num = 0;
+    };
+    setInterval(my_repeatable_function, 5000);
+    my_repeatable_function();
+    /*
+      Shopping Cart Stuff
+    */
+    item_name = '100 cards';
+    return $('.checkout').click(function() {
+      $.load_alert({
+        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
+      });
+      return false;
     });
   });

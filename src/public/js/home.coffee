@@ -135,6 +135,24 @@ $ ->
   #
   ##############
 
+
+
+
+
+
+
+
+
+  ##################################################################
+  #
+  # THEME SELECTING AND SWITCHING
+  #
+  #
+  # - load_theme loads the selected theme in the main card designer area
+  #
+  # - timer events save form fields periodically to server
+  #
+  #
   load_theme = (theme) ->
     #
     # Set Constants
@@ -214,82 +232,10 @@ $ ->
         fontFamily: pos.font_family
         textAlign: pos.text_align
         color: '#'+pos.color
-
-
-
-
-
-
-  #
-  #
-  # DRAW SOME QR CODES
-  $biz_cards.find('li').each (i) ->
-    $t = $ this
-    $my_qr = $t.find '.qr'
-
-    $my_qr.qr
-      url: 'http://cards.ly/' + Math.random()
-      height: 70
-      width: 70
-  #
-  #
-  # Find our total length
-  iterate_num = $lis.length
-  current_num = 0
-  #
-  #
-  my_repeatable_function = ->
-    #
-    #
-    $guy_im_fading_out = $lis.filter ':eq(' + current_num + ')'
-    $my_next_guy = $lis.filter ':eq(' + (current_num+1) + ')'
-    #
-    #
-    if not $my_next_guy.length
-      $my_next_guy = $lis.filter(':first')
-    #
-    #
-    $guy_im_fading_out.stop(true,true).delay(200).fadeOut 50
-    $loading_screen.stop(true,true).fadeIn(400).delay(100).fadeOut(400)
-
-    $my_next_guy.stop(true,true).delay(600).fadeIn 500
-    #
-    $phone_scanner.stop(true,true).fadeIn(300).fadeOut(300)
-    #
-    #
-    $biz_cards.stop(true,true)
-    #
-    $biz_cards.delay(500).animate
-      top: 5
-    , 3500, 'linear', ->
-      # reset the style to it's default
-      $biz_cards.css
-        top: -205
-    #
-    #
-    current_num++
-    current_num = 0 if current_num == iterate_num
-  #
-  #
-  # Create an interval function
-  setInterval my_repeatable_function, 4000
   #
   #
   #
-  my_repeatable_function()
-  ###
-  Shopping Cart Stuff
-  ###
   #
-  # Default Item Name
-  item_name = '100 cards'
-  #
-  # Checkout button action, default error for now.
-  $('.checkout').click () ->
-    $.load_alert
-      content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
-    false
-
   input_timer = 0
   set_timers = ->
     clearTimeout input_timer
@@ -310,6 +256,9 @@ $ ->
             active_view: active_view
         false
       ,1000
+  #
+  #
+  #
   #
   # Form Fields
   shift_pressed = false
@@ -360,7 +309,26 @@ $ ->
           $input.remove()
           $t.show()
       $body.bind 'click', remove_input
-  
+  #
+  #
+  #
+  #
+  #
+  # END THEME SELECTION
+  #
+  #
+  #
+  #
+  #
+  #############################################################
+
+
+
+
+
+
+
+
   ###
   # Radio Button Clicking Stuff
   ###
@@ -426,3 +394,100 @@ $ ->
               ,time_lapse*70
               time_lapse++
               timer
+
+
+
+
+
+
+
+
+  ##################################################################
+  #
+  # HOME PAGE ANIMATIONS
+  #
+  #
+  # - the biz card sliding up and down and
+  # - the phone flashing and changing
+  #
+  #
+  #
+  #
+  # DRAW SOME QR CODES
+  $biz_cards.find('li').each (i) ->
+    $t = $ this
+    $my_qr = $t.find '.qr'
+
+    $my_qr.qr
+      url: 'http://cards.ly/' + Math.random()
+      height: 70
+      width: 70
+  #
+  #
+  # Find our total length
+  iterate_num = $lis.length
+  current_num = 0
+  #
+  #
+  $loading_screen.hide()
+  #
+  my_repeatable_function = ->
+    #
+    #
+    $guy_im_fading_out = $lis.filter ':eq(' + current_num + ')'
+    $my_next_guy = $lis.filter ':eq(' + (current_num+1) + ')'
+    #
+    #
+    if not $my_next_guy.length
+      $my_next_guy = $lis.filter(':first')
+    #
+    #
+    $guy_im_fading_out.stop(true,true).slideUp 200
+    #$loading_screen.stop(true,true).delay(900).slideDown(200).delay(200).fadeOut(1)
+
+    $my_next_guy.stop(true,true).delay(1000).slideDown 200
+    #
+    $phone_scanner.stop(true,true).delay(100).fadeIn(100).delay(800).fadeOut(100)
+    #
+    #
+    $biz_cards.stop(true,true)
+    #
+    $biz_cards.delay(1500).animate
+      top: 5
+    , 3500, 'linear', ->
+      # reset the style to it's default
+      $biz_cards.css
+        top: -205
+    #
+    #
+    current_num++
+    current_num = 0 if current_num == iterate_num
+  #
+  #
+  # Create an interval function
+  setInterval my_repeatable_function, 5000
+  #
+  #
+  #
+  my_repeatable_function()
+  ###
+  Shopping Cart Stuff
+  ###
+  #
+  # Default Item Name
+  item_name = '100 cards'
+  #
+  # Checkout button action, default error for now.
+  $('.checkout').click () ->
+    $.load_alert
+      content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
+    false
+  #
+  #
+  #
+  #
+  #
+  # END HOME PAGE ANIMATIONS
+  #
+  #
+  ##################################################################
