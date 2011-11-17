@@ -409,7 +409,7 @@ $ ->
   #
   #
   biz_incr = 142+30
-  biz_begin = (-$imgs.length-1)*biz_incr
+  biz_begin = (-$imgs.length-.75)*biz_incr
   $biz_cards.css
     top: biz_begin
   $biz_cards.find('li').hide().fadeIn()
@@ -519,14 +519,14 @@ $ ->
           top: parseInt($biz_cards.css('top')) + biz_incr*6
         , 1200
         $my_next_guy.fadeOut(500)
-        $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000)
+        $('.slide:last').stop(true,true).delay(500).fadeIn(2000).delay(5500).fadeOut(2000)
         #
         timer = setTimeout ->
           $biz_cards.find('li').hide().fadeIn()
           $biz_cards.stop(true,true).css
             top: biz_begin
           my_repeatable_function()
-        , 10000
+        , 12000
       
         #
     #
