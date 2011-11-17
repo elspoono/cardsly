@@ -409,7 +409,7 @@ $ ->
   #
   #
   biz_incr = 142+30
-  biz_begin = (-$imgs.length-1)*biz_incr
+  biz_begin = (-$imgs.length-.75)*biz_incr
   $biz_cards.css
     top: biz_begin
   $biz_cards.find('li').hide().fadeIn()
