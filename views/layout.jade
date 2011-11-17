@@ -48,6 +48,8 @@ body
                   =user.name
                 else if user.email
                   =user.email
+                .hidden_email
+                  user.email
                 .gear
                   img(src='/images/buttons/gear.png')
               ul.account_menu

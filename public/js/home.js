@@ -1,13 +1,12 @@
-
+(function() {
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
-  */
-
-  $(function() {
+  
+  */  $(function() {
     var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
@@ -183,7 +182,9 @@
       var $guy_im_fading_out, $my_next_guy;
       $guy_im_fading_out = $lis.filter(':eq(' + current_num + ')');
       $my_next_guy = $lis.filter(':eq(' + (current_num + 1) + ')');
-      if (!$my_next_guy.length) $my_next_guy = $lis.filter(':first');
+      if (!$my_next_guy.length) {
+        $my_next_guy = $lis.filter(':first');
+      }
       $guy_im_fading_out.stop(true, true).delay(200).fadeOut(50);
       $loading_screen.stop(true, true).fadeIn(400).delay(100).fadeOut(400);
       $my_next_guy.stop(true, true).delay(600).fadeIn(500);
@@ -197,13 +198,15 @@
         });
       });
       current_num++;
-      if (current_num === iterate_num) return current_num = 0;
+      if (current_num === iterate_num) {
+        return current_num = 0;
+      }
     };
     setInterval(my_repeatable_function, 4000);
     my_repeatable_function();
     /*
       Shopping Cart Stuff
-    */
+      */
     item_name = '100 cards';
     $('.checkout').click(function() {
       $.load_alert({
@@ -244,7 +247,7 @@
                         # this.value should have a .replace ',' '\,'
                         # on it so that we can use a comma character and escape anything.
                         # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-            */
+                        */
             var values;
             values = $.makeArray($lines.map(function() {
               return $(this).html();
@@ -270,7 +273,7 @@
     });
     /*
       # Radio Button Clicking Stuff
-    */
+      */
     $('.quantity input,.shipping_method input').bind('click change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
@@ -284,7 +287,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-    */
+      */
     update_cards = function(rowNumber, value) {
       return $('.categories .card').each(function() {
         var $t;
@@ -328,3 +331,4 @@
       }
     });
   });
+}).call(this);
