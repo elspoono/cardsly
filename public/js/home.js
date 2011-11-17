@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $lines, $lis, $loading_screen, $mc, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, current_num, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, set_timers, update_card_size, update_cards;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -22,6 +22,7 @@
     $qr = $card.find('.qr');
     $qr_bg = $qr.find('.background');
     $lines = $card.find('.line');
+    $view_buttons = $('.views .option');
     $body = $(document);
     active_theme = false;
     active_view = 0;
@@ -47,7 +48,7 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $my_card, all_themes, theme, _i, _len;
+        var $active_view, $my_card, all_themes, theme, _i, _len;
         all_themes = all_data.themes;
         $categories.html('');
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
@@ -55,7 +56,11 @@
           $my_card = $.create_card_from_theme(theme);
           $.add_card_to_category($my_card, theme);
         }
-        return $categories.find('.category:first h4').click();
+        $categories.find('.category:first h4').click();
+        $active_view = $('.active_view');
+        if ($active_view.html()) {
+          return $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+        }
       },
       error: function() {
         return $.load_alert({
@@ -212,16 +217,37 @@
       return false;
     });
     input_timer = 0;
+    set_timers = function() {
+      clearTimeout(input_timer);
+      return input_timer = setTimeout(function() {
+        /*
+                # TODO
+                #
+                # this.value should have a .replace ',' '\,'
+                # on it so that we can use a comma character and escape anything.
+                # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+        */
+        var values;
+        values = $.makeArray($lines.map(function() {
+          return $(this).html();
+        }));
+        $.ajax({
+          url: '/save-form',
+          data: JSON.stringify({
+            values: values,
+            active_view: active_view
+          })
+        });
+        return false;
+      }, 1000);
+    };
     $lines.each(function(i) {
       var $t;
       $t = $(this);
       $t.data('timer', 0);
       return $t.click(function() {
         var $input, remove_input, style;
-        if (i === 5) {
-          active_view = 1;
-          load_theme(active_theme);
-        }
+        if (i === 6) $view_buttons.filter(':last').click();
         style = $t.attr('style');
         $input = $('<input class="line" />');
         $input.attr('style', style);
@@ -229,32 +255,21 @@
         $t.after($input);
         $t.hide();
         $input.focus().select();
-        $input.keyup(function(e) {
-          if (e.keyCode === 13) {
-            $t.nextAll('div:first').click();
+        $input.keydown(function(e) {
+          var $next;
+          if (e.keyCode === 13 || e.keyCode === 9) {
+            e.preventDefault();
+            $next = $t.nextAll('div:first:visible');
+            if (i === 5) $next = $t.nextAll('div:first');
+            if (!$next.length) $next = $lines.filter(':first');
+            $next.click();
             return false;
           }
+        });
+        $input.keyup(function(e) {
           update_cards(i, this.value);
           $t.html(this.value);
-          clearTimeout(input_timer);
-          return input_timer = setTimeout(function() {
-            /*
-                        # TODO
-                        #
-                        # this.value should have a .replace ',' '\,'
-                        # on it so that we can use a comma character and escape anything.
-                        # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-            */
-            var values;
-            values = $.makeArray($lines.map(function() {
-              return $(this).html();
-            }));
-            $.ajax({
-              url: '/save-form',
-              data: JSON.stringify(values)
-            });
-            return false;
-          }, 1000);
+          return set_timers();
         });
         remove_input = function(e) {
           var $target;
@@ -280,6 +295,16 @@
     });
     $win = $(window);
     $mc = $('.home_designer');
+    $view_buttons.click(function() {
+      var $t, index;
+      $t = $(this);
+      $view_buttons.filter('.active').removeClass('active');
+      $t.addClass('active');
+      index = $t.prevAll().length;
+      active_view = index;
+      load_theme(active_theme);
+      return set_timers();
+    });
     /*
       Update Cards
     

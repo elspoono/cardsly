@@ -42,6 +42,9 @@ $ ->
   $qr_bg = $qr.find '.background'
   $lines = $card.find '.line'
   #
+
+  $view_buttons = $ '.views .option'
+  #
   $body = $ document
   #
   #
@@ -103,6 +106,12 @@ $ ->
       #
       # Click the first theme
       $categories.find('.category:first h4').click()
+      #
+      # Restore active view
+      $active_view = $ '.active_view'
+      if $active_view.html()
+        $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
+
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -282,15 +291,33 @@ $ ->
     false
 
   input_timer = 0
+  set_timers = ->
+    clearTimeout input_timer
+    input_timer = setTimeout ->
+        ###
+        # TODO
+        #
+        # this.value should have a .replace ',' '\,'
+        # on it so that we can use a comma character and escape anything.
+        # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
+        ###
+        values = $.makeArray $lines.map -> 
+          $(this).html()
+        $.ajax
+          url: '/save-form'
+          data: JSON.stringify 
+            values: values
+            active_view: active_view
+        false
+      ,1000
   #
   # Form Fields
   $lines.each (i) ->
     $t = $ this
     $t.data 'timer', 0
     $t.click -> 
-      if i is 5
-        active_view = 1
-        load_theme active_theme
+      if i is 6
+        $view_buttons.filter(':last').click()
       style = $t.attr 'style'
       $input = $ '<input class="line" />'
       $input.attr 'style', style
@@ -298,28 +325,20 @@ $ ->
       $t.after $input
       $t.hide()
       $input.focus().select()
-      $input.keyup (e) ->
-        if e.keyCode is 13
-          $t.nextAll('div:first').click()
+      $input.keydown (e) ->
+        if e.keyCode is 13 or e.keyCode is 9
+          e.preventDefault()
+          $next = $t.nextAll('div:first:visible')
+          if i is 5
+            $next = $t.nextAll('div:first')
+          if not $next.length
+            $next = $lines.filter(':first')
+          $next.click()
           return false
+      $input.keyup (e) ->
         update_cards i, this.value
         $t.html this.value
-        clearTimeout input_timer
-        input_timer = setTimeout ->
-            ###
-            # TODO
-            #
-            # this.value should have a .replace ',' '\,'
-            # on it so that we can use a comma character and escape anything.
-            # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-            ###
-            values = $.makeArray $lines.map -> 
-              $(this).html()
-            $.ajax
-              url: '/save-form'
-              data: JSON.stringify values
-            false
-          ,1000
+        set_timers()
 
       remove_input = (e) ->
         $target = $ e.target
@@ -344,6 +363,20 @@ $ ->
   $win = $ window
   $mc = $ '.home_designer'
   
+
+
+  #
+  #
+  $view_buttons.click ->
+    $t = $ this
+    $view_buttons.filter('.active').removeClass 'active'
+    $t.addClass 'active'
+    #
+    index = $t.prevAll().length
+    active_view = index
+    #
+    load_theme active_theme
+    set_timers()
 
   ###
   Update Cards

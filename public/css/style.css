@@ -865,6 +865,21 @@ input {
   overflow: visible;
   position: absolute;
 }
+.active_view {
+  display: none;
+}
+.home_options {
+  width: 525px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.home_options .views {
+  float: left;
+  text-align: center;
+}
+.home_options .views .subtitle {
+  margin-top: -5px;
+}
 .designer {
   margin-bottom: 60px;
 }
@@ -1035,23 +1050,40 @@ input {
   float: left;
   overflow: hidden;
 }
-.designer .views .six,
-.designer .views .twelve,
-.designer .views .web {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
+.toggle {
+  overflow: hidden;
+  background: #524641;
+  margin: 10px 0;
+  padding: 2px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+}
+.toggle .disabled {
+  overflow: hidden;
+  background: #908575;
+  background: rgba(144,133,117,0.50);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+.toggle .option {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
   cursor: pointer;
   float: left;
-  border: 2px solid #524641;
-  margin: 15px 15px 15px 0;
-  background: #524641;
-  background: rgba(82,70,65,0.60);
+  background: none;
+  color: #908575;
 }
-.designer .views .active {
-  background: #524641;
-  background: rgba(82,70,65,0.20);
+.toggle .active {
+  color: #eee;
+  background: #908575;
+  background: rgba(144,133,117,0.80);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 .web_bg,
 .web_fg {

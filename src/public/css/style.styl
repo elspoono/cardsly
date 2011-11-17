@@ -681,7 +681,17 @@ input
       background none
       overflow visible
       position absolute
-
+.active_view
+  display none
+.home_options
+  width 525px
+  margin 0 auto
+  overflow hidden
+  .views
+    float left
+    text-align center
+    .subtitle
+      margin-top -5px
 
 .designer
   margin-bottom 60px
@@ -801,18 +811,29 @@ input
   .views
     float left
     overflow hidden
-    .six,.twelve,.web
-      width 50px
-      height 50px
-      line-height 50px
-      text-align center
-      cursor pointer
-      float left
-      border 2px solid $c_bg_dark
-      margin 15px 15px 15px 0
-      alpha_bg($c_bg_dark, .6)
-    .active
-      alpha_bg($c_bg_dark, .2)
+.toggle
+  overflow hidden
+  background $c_bg_dark
+  margin 10px 0
+  padding 2px
+  border_radius(12px)
+  .disabled
+    overflow hidden
+    alpha_bg($c_bg_light,.5)
+    border_radius(10px)
+  .option
+    width 40px
+    height 40px
+    line-height 40px
+    text-align center
+    cursor pointer
+    float left
+    background none
+    color $c_bg_light
+  .active
+    color $c_light
+    alpha_bg($c_bg_light,.8)
+    border_radius(10px)
 //
 .web_bg,.web_fg
   position absolute

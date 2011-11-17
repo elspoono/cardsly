@@ -598,7 +598,7 @@
     */
     var params;
     params = JSON.parse(req.rawBody);
-    req.session.savedInputs = params;
+    req.session.saved_form = params;
     return res.send({
       success: true
     });

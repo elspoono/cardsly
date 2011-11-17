@@ -960,11 +960,10 @@ $ ->
   #
   #
   #
-  #
-  $view_buttons = $views.find 'div'
+  $view_buttons = $ '.views .option'
   $view_buttons.click ->
     $t = $ this
-    $view_buttons.removeClass 'active'
+    $view_buttons.filter('.active').removeClass 'active'
     $t.addClass 'active'
     #
     index = $t.prevAll().length
