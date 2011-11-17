@@ -998,11 +998,11 @@ $ ->
   #
   #
   #Feedback Button
-  $hidden_email = $ 'user.email'
-  console.log $hidden_email.val()
+  $email_text = $ '.hidden_email'
+  console.log $email_text.text()
   $feedback_a.click () ->
     $.load_modal
-      content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40"></p></div>'
+      content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40" value="'+($email_text.text())+'"></p></div>'
       width: 400
       height: 300
       buttons: [
