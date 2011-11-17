@@ -301,13 +301,13 @@
       $img = $('<img src="/images/biz_card1.png">');
       $my_qr.qr({
         url: 'http://cards.ly/' + Math.random(),
-        height: 60,
-        width: 60
+        height: 44,
+        width: 44
       });
       $my_qr.css({
         position: 'absolute',
-        top: 40,
-        left: 180
+        top: 56,
+        left: 185
       });
       $img.css({
         height: 142
