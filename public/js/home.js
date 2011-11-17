@@ -8,7 +8,7 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $card, $categories, $designer, $img, $imgs, $labels, $li, $lines, $loading_screen, $mc, $my_qr, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, biz_begin, biz_incr, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, i, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards;
+    var $biz_cards, $body, $card, $categories, $designer, $img, $imgs, $labels, $li, $lines, $loading_screen, $mc, $my_qr, $phone_scanner, $qr, $qr_bg, $slides, $view_buttons, $win, active_theme, active_view, biz_begin, biz_incr, card_height, card_inner_height, card_inner_width, card_width, current_num, frame_time, i, input_timer, item_name, iterate_num, load_theme, my_repeatable_function, quick_time, set_timers, shift_pressed, update_card_size, update_cards, _ref;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
@@ -286,7 +286,7 @@
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
       });
     };
-    for (i = 0; i <= 20; i++) {
+    for (i = 0, _ref = $imgs.length; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
       $li = $('<li />');
       $my_qr = $('<div class="qr" />');
       $img = $('<img src="/images/biz_card1.png">');
@@ -308,7 +308,7 @@
       $biz_cards.append($li);
     }
     biz_incr = 142 + 30;
-    biz_begin = -20.6 * biz_incr;
+    biz_begin = (-$imgs.length - 1) * biz_incr;
     $biz_cards.css({
       top: biz_begin
     });
@@ -384,8 +384,8 @@
           frame_time = 4000;
           quick_time = 200;
           $biz_cards.stop(true, true).animate({
-            top: parseInt($biz_cards.css('top')) + biz_incr * 5.2
-          }, 800);
+            top: parseInt($biz_cards.css('top')) + biz_incr * 6
+          }, 1200);
           $my_next_guy.fadeOut(500);
           $('.slide:last').delay(500).fadeIn(2000).delay(5500).fadeOut(2000);
           return timer = setTimeout(function() {
