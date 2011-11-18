@@ -63,7 +63,7 @@ geo = require('geo')
 #
 #
 require 'coffee-script'
-PDFDocument = require 'pdfkit'
+#PDFDocument = require 'pdfkit'
 #
 nodemailer = require 'nodemailer'
 #
