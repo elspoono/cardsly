@@ -88,12 +88,11 @@ parsed.cleaned = db_uri.replace /^[^:]*:\/\//ig, ''
 parsed.path = parsed.cleaned.replace /^[^\/]*\//ig, ''
 parsed.full_host = parsed.cleaned.replace /\/.*$/ig, ''
 parsed.host_port = parsed.full_host.replace /^[^@]*@/ig, ''
-parsed.auth = parsed.full_host.replace /@[^@]*$/ig, ''
 parsed.split = parsed.host_port.split /:/
 parsed.hostname = parsed.split[0]
 parsed.port = parsed.split[1]
 
-console.log 'PARSED', util.inspect parsed
+console.log parsed
 mongodb = require 'mongodb'
 dbAuth = {}
 if parsed.full_host.match /@/
@@ -114,7 +113,9 @@ object_id = schema.ObjectId
 #
 # This store is for the session
 session_store = new mongoStore
-  url: db_uri
+  db: db
+  username: dbAuth.username
+  password: dbAuth.password
 #
 #
 #
