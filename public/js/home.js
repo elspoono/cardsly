@@ -67,7 +67,7 @@
           $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
         }
         if ($active_theme) {
-          $active_theme.closest('.category').find('h4').click();
+          $active_theme.closest('.category').addClass('active');
           $active_theme.click();
         } else {
           $categories.find('.category:first h4').click();
