@@ -60,17 +60,25 @@
 
   console.log(db_uri);
 
-  parsed = {
-    hostname: db_uri.replace(/(^[^:]*:\/\/|:[^:]*$)/ig, ''),
-    port: db_uri.replace(/(^[^:]*:\/\/[^:]*:|\/.*)/ig, ''),
-    path: db_uri.replace(/(^[^:]*:\/\/[^\/]*\/)/ig, '')
-  };
+  parsed = {};
+
+  parsed.cleaned = db_uri.replace(/^[^:]*:\/\//ig, '');
+
+  parsed.path = parsed.cleaned.replace(/^[^\/]*\//ig, '');
+
+  parsed.full_host = parsed.cleaned.replace(/\/.*$/ig, '');
+
+  parsed.host_port = parsed.full_host.replace(/^[^@]*@/ig, '');
+
+  parsed.auth = parsed.full_host.replace(/@[^@]*/ig, '');
+
+  console.log(parsed);
 
   mongodb = require('mongodb');
 
   dbAuth = {};
 
-  if (parsed.auth) {
+  if (parsed.full_host.match(/@/)) {
     auth = parsed.auth.split(':', 2);
     dbAuth.username = auth[0];
     dbAuth.password = auth[1];
