@@ -70,7 +70,11 @@
 
   parsed.host_port = parsed.full_host.replace(/^[^@]*@/ig, '');
 
-  parsed.auth = parsed.full_host.replace(/@[^@]*/ig, '');
+  parsed.split = parsed.full_host.split(':', 2);
+
+  parsed.hostname = parsed.split[0];
+
+  parsed.port = parsed.split[1];
 
   console.log(parsed);
 
