@@ -68,10 +68,13 @@
         }
         if ($active_theme) {
           $active_theme.closest('.category').find('h4').click();
-          return $active_theme.click();
+          $active_theme.click();
         } else {
-          return $categories.find('.category:first h4').click();
+          $categories.find('.category:first h4').click();
         }
+        return $lines.each(function(i) {
+          return update_cards(i, $(this).html());
+        });
       },
       error: function() {
         return $.load_alert({
@@ -210,6 +213,18 @@
         return false;
       }, 1000);
     };
+    /*
+      Update Cards
+    
+      This is used each time we need to update all the cards on the home page with the new content that's typed in.
+    */
+    update_cards = function(rowNumber, value) {
+      return $('.categories .card').each(function() {
+        var $t;
+        $t = $(this);
+        return $t.find('.line:eq(' + rowNumber + ')').html(value);
+      });
+    };
     shift_pressed = false;
     $lines.each(function(i) {
       var $t;
@@ -286,18 +301,6 @@
       load_theme(active_theme);
       return set_timers();
     });
-    /*
-      Update Cards
-    
-      This is used each time we need to update all the cards on the home page with the new content that's typed in.
-    */
-    update_cards = function(rowNumber, value) {
-      return $('.categories .card').each(function() {
-        var $t;
-        $t = $(this);
-        return $t.find('.line:eq(' + rowNumber + ')').html(value);
-      });
-    };
     for (i = 0, _ref = $imgs.length; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
       $li = $('<li />');
       $my_qr = $('<div class="qr" />');

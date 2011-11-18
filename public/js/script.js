@@ -1,32 +1,41 @@
 (function() {
+
   /*
   
   This file is everywhere on the site
   
   - We put a lot of library functions in it
   - As well as things that need to happen on every page
-  
   */
+
   /*
    * 
    * Set settings / defaults
    * 
    * AJAX defaults
    * some constants
-   * 
+   *
   */
+
   var $window, date_format;
+
   $.ajaxSetup({
     type: 'POST'
   });
+
   $window = $(window);
+
   $.fx.speeds._default = 300;
+
   $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
+
   if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
     document.location.href = '/splash';
   }
+
   /*
   */
+
   $.fn.prep_qr = function(options) {
     var settings;
     settings = {
@@ -34,9 +43,7 @@
     };
     return this.each(function(i) {
       var $canvas, $t, count, qrcode, scale, size;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       $canvas = $('<canvas />');
       $t.append($canvas);
@@ -60,6 +67,7 @@
       }
     });
   };
+
   $.fn.draw_qr = function(options) {
     var settings;
     settings = {
@@ -67,9 +75,7 @@
     };
     return this.each(function(i) {
       var $t, c, count, ctx, cutHex, hexToB, hexToG, hexToR, qrcode, r, scale, size, _ref, _results;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       qrcode = $t.data('qrcode');
       count = qrcode.getModuleCount();
@@ -99,7 +105,11 @@
           var _ref2, _results2;
           _results2 = [];
           for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-            _results2.push(qrcode.isDark(c, r) ? ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale) : void 0);
+            if (qrcode.isDark(c, r)) {
+              _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
+            } else {
+              _results2.push(void 0);
+            }
           }
           return _results2;
         })());
@@ -107,6 +117,7 @@
       return _results;
     });
   };
+
   $.fn.qr = function(options) {
     var settings;
     settings = {
@@ -117,9 +128,7 @@
     };
     return this.each(function(i) {
       var $t;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       $t.prep_qr({
         url: settings.url
@@ -137,6 +146,7 @@
       });
     });
   };
+
   /*
     * 
     *
@@ -144,6 +154,7 @@
     *
     *
   */
+
   $.create_card_from_theme = function(theme) {
     var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme_template, _len, _ref;
     theme_template = theme.theme_templates[0];
@@ -194,6 +205,7 @@
       background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
     });
   };
+
   $.add_card_to_category = function($my_card, theme) {
     var $categories, $category;
     $categories = $('.categories');
@@ -204,6 +216,7 @@
     }
     return $category.find('.cards').prepend($my_card);
   };
+
   /*
    * 
    * 
@@ -212,8 +225,9 @@
    * - does a little tooltip dealy bob on any element
    *
    * - usually used for form inputs
-   * 
+   *
   */
+
   $.fn.show_tooltip = function(options) {
     var settings;
     settings = {
@@ -221,15 +235,11 @@
     };
     return this.each(function(i) {
       var $t, data, offset, toRemove, tooltip, _i, _len;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       offset = $t.offset();
       data = $t.data('tooltips');
-      if (!data) {
-        data = [];
-      }
+      if (!data) data = [];
       if (settings.message) {
         tooltip = $('<div class="tooltip" />');
         tooltip.html(settings.message);
@@ -254,19 +264,20 @@
       /*
       
               TODO : Make the animation in a custom slide up / slide down thing with $.animate
-      
-          */
+      */
       return tooltip.stop(true, true).fadeIn().delay(4000).fadeOut();
     });
   };
+
   /*
      * 
      * Modal Handling Functions
      * 
      * Basic load
      * 
-     * 
+     *
   */
+
   $.load_modal = function(options, next) {
     var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, width, win, _fn, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
@@ -279,9 +290,7 @@
       height: 235,
       closeText: 'close'
     };
-    if (options) {
-      $.extend(settings, options);
-    }
+    if (options) $.extend(settings, options);
     $('iframe').css('visibility', 'hidden');
     my_next = function() {
       $window.unbind('scroll resize', resize_event);
@@ -299,25 +308,17 @@
       return win.fadeOut(function() {
         win.remove();
         $('iframe').css('visibility', '');
-        if ($('.window').length === 0) {
-          return $('#container').show();
-        }
+        if ($('.window').length === 0) return $('#container').show();
       });
     };
-    if (settings.closeText) {
-      close.html(settings.closeText);
-    }
-    if (settings.content) {
-      win.html(settings.content);
-    }
+    if (settings.closeText) close.html(settings.closeText);
+    if (settings.content) win.html(settings.content);
     if (settings.height) {
       win.css({
         'min-height': settings.height
       });
     }
-    if (settings.width) {
-      win.width(settings.width);
-    }
+    if (settings.width) win.width(settings.width);
     buttons = $('<div class="buttons" />');
     /*
       Loop through the buttons passed in.
@@ -334,7 +335,7 @@
           action: function(){ alert('Button 2 clicked')}
         }
       ]
-      */
+    */
     if (settings.buttons) {
       _ref = settings.buttons;
       _fn = function(i) {
@@ -415,19 +416,19 @@
       win.fadeIn();
       close.fadeIn();
     }
-    if (next) {
-      next(my_next);
-    }
+    if (next) next(my_next);
     return resize_event();
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Loading (Subclass of $.load_modal)
    * 
-   * 
+   *
   */
+
   $.load_loading = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -442,14 +443,16 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Confirm (Subclass of $.load_modal)
    * like javascript confirm()
-   * 
+   *
   */
+
   $.load_confirm = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -464,14 +467,16 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Alert (Subclass of $.load_modal)
    * like javascript alert()
-   * 
+   *
   */
+
   $.load_alert = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -500,6 +505,7 @@
     }
     return $.load_modal(modified_options, next);
   };
+
   /*
    * jQuery Scrollbar Width v1.0
    * 
@@ -507,6 +513,7 @@
    * Licensed under LGPL v3.0
    * http:#www.gnu.org/licenses/lgpl-3.0.txt
   */
+
   $.scrollbar_width = function() {
     var $body, w;
     if (!$._scrollbar_width) {
@@ -514,14 +521,13 @@
       w = $body.css('overflow', 'hidden').width();
       $body.css('overflow', 'scroll');
       w -= $body.width();
-      if (!w) {
-        w = $body.width() - $body[0].clientWidth;
-      }
+      if (!w) w = $body.width() - $body[0].clientWidth;
       $body.css('overflow', '');
       $._scrollbar_width = w;
     }
     return $._scrollbar_width;
   };
+
   /*
   #http:#stevenlevithan.com/assets/misc/date.format.js
    * Date Format 1.2.3
@@ -536,12 +542,18 @@
    * The date defaults to the current date/time.
    * The mask defaults to date_format.masks.default.
   */
+
   date_format = (function() {
     var pad, timezone, timezoneClip, token;
+
     function date_format() {}
+
     token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g;
+
     timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g;
+
     timezoneClip = /[^-+\dA-Z]/g;
+
     pad = function(val, len) {
       val = String(val);
       len = len || 2;
@@ -550,6 +562,7 @@
       }
       return val;
     };
+
     date_format.prototype.format = function(date, mask, utc) {
       var D, H, L, M, d, dF, flags, m, o, s, y, _;
       dF = date_format.prototype;
@@ -558,9 +571,7 @@
         date = void 0;
       }
       date = date ? new Date(date) : new Date;
-      if (isNaN(date)) {
-        throw SyntaxError("invalid date");
-      }
+      if (isNaN(date)) throw SyntaxError("invalid date");
       mask = String(dF.masks[mask] || mask || dF.masks["default"]);
       if (mask.slice(0, 4) === "UTC:") {
         mask = mask.slice(4);
@@ -615,6 +626,7 @@
         }
       });
     };
+
     date_format.prototype.masks = {
       "default": "ddd mmm dd yyyy HH:MM:ss",
       shortDate: "m/d/yy",
@@ -629,17 +641,22 @@
       isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
       isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
     };
+
     date_format.prototype.i18n = {
       dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
+
     return date_format;
+
   })();
+
   Date.prototype.format = function(mask, utc) {
     var a;
     a = new date_format;
     return a.format(this, mask, utc);
   };
+
   /*
    * jQuery Cookie plugin
    *
@@ -649,13 +666,12 @@
    * http://www.gnu.org/licenses/gpl.html
    *
   */
+
   jQuery.cookie = function(key, value, options) {
     var days, decode, result, t;
     if (arguments.length > 1 && String(value) !== "[object Object]") {
       options = jQuery.extend({}, options);
-      if (value === null || value === void 0) {
-        options.expires = -1;
-      }
+      if (value === null || value === void 0) options.expires = -1;
       if (typeof options.expires === 'number') {
         days = options.expires;
         t = options.expires = new Date();
@@ -674,6 +690,7 @@
       return null;
     }
   };
+
   $.fn.box_rotate = function(options) {
     var settings;
     settings = {
@@ -681,9 +698,7 @@
     };
     return this.each(function(i) {
       var $t, degrees, rotate;
-      if (options) {
-        $.extend(settings, options);
-      }
+      if (options) $.extend(settings, options);
       $t = $(this);
       degrees = settings.degrees;
       rotate = Math.floor((degrees / 360) * 100) / 100;
@@ -696,6 +711,7 @@
       });
     });
   };
+
   /*
   The 
   $ ->
@@ -703,11 +719,12 @@
     Means everything under him (like me, indented here)
     WILL be done on document ready event.
   */
+
   $(function() {
     /*
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
-      */
+    */
     var $a, $am, $body, $email_text, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
@@ -761,15 +778,16 @@
         return document.location.href = '/admin';
       } else {
         $s = $('.signins');
-        return $s.fadeOut(500, function() {
+        $s.fadeOut(500, function() {
           $s.html('You are now logged in, please continue.');
           return $s.fadeIn(1000);
         });
+        return $('.small_nav .login').html('<a href="/logout">Logout</a>');
       }
     };
     /*
       Login stuff
-      */
+    */
     monitor_for_complete = function(opened_window) {
       var checkTimer;
       $.cookie('success_login', null);
@@ -1059,4 +1077,5 @@
       return $(this).removeClass('click');
     });
   });
+
 }).call(this);

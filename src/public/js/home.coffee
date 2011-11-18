@@ -123,6 +123,8 @@ $ ->
         $categories.find('.category:first h4').click()
       #
       #
+      $lines.each (i) ->
+        update_cards i, $(this).html()
 
     error: ->
       $.load_alert
@@ -271,6 +273,15 @@ $ ->
         false
       ,1000
   #
+  ###
+  Update Cards
+
+  This is used each time we need to update all the cards on the home page with the new content that's typed in.
+  ###
+  update_cards = (rowNumber, value) ->
+    $('.categories .card').each -> 
+      $t = $ this
+      $t.find('.line:eq('+rowNumber+')').html value
   #
   #
   #
@@ -279,6 +290,7 @@ $ ->
   $lines.each (i) ->
     $t = $ this
     $t.data 'timer', 0
+    
     $t.click -> 
       if i is 6
         $view_buttons.filter(':last').click()
@@ -373,15 +385,6 @@ $ ->
     load_theme active_theme
     set_timers()
 
-  ###
-  Update Cards
-
-  This is used each time we need to update all the cards on the home page with the new content that's typed in.
-  ###
-  update_cards = (rowNumber, value) ->
-    $('.categories .card').each -> 
-      $t = $ this
-      $t.find('.line:eq('+rowNumber+')').html value
 
 
 
