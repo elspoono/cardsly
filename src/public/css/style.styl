@@ -96,6 +96,20 @@ border_radius_top_only(n)
   border-top-right-radius n
   -moz-border-radius-topright n
   -webkit-border-top-right-radius n
+border_radius_bottom_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+  border-bottom-right-radius n
+  -moz-border-radius-bottomright n
+  -webkit-border-bottom-right-radius n
+border_radius_except_bottom_left(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-bottom-left-radius 0
+  -moz-border-radius-bottomleft 0
+  -webkit-border-bottom-left-radius 0
 
 // Transparency
 opacity(n)
@@ -596,6 +610,11 @@ input
     width 230px
   .right,.righter
     margin-left 20px
+  .address_result
+  label
+    cursor pointer
+    color $c_light
+    relative_size(.65)
 
 .order_total
   .title,.price,.subtitle
@@ -682,17 +701,31 @@ input
       overflow visible
       white-space nowrap
       position absolute
+  .card_container
+    padding 10px
+    width 525px
+    margin 0 auto
+    alpha_bg($c_bg_dark,.2)
+    border_radius_except_bottom_left(10px)
 .active_view,.active_theme_id
   display none
 .home_options
-  width 525px
+  width 545px
   margin 0 auto
   overflow hidden
   .views
     float left
     text-align center
-    .subtitle
-      margin-top -5px
+    alpha_bg($c_bg_dark,.2)
+    padding 10px
+    border_radius_bottom_only(10px)
+    overflow hidden
+    .toggle
+      width 80px
+      margin 0 auto
+  .subtitle
+    margin-bottom 3px
+    relative_size(.8)
 
 .designer
   margin-bottom 60px
@@ -814,13 +847,13 @@ input
     overflow hidden
 .toggle
   overflow hidden
-  background $c_bg_dark
+  gradient($c_logo_alt,darken($c_logo_alt,20))
   margin 10px 0
   padding 2px
   border_radius(12px)
   .disabled
     overflow hidden
-    alpha_bg($c_bg_light,.5)
+    gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
     border_radius(10px)
   .option
     width 40px
@@ -830,11 +863,11 @@ input
     cursor pointer
     float left
     background none
-    color $c_bg_light
+    color $c_logo_alt
   .active
     color $c_light
-    alpha_bg($c_bg_light,.8)
-    border_radius(10px)
+    alpha_bg($c_logo_alt,.8)
+    border_radius(9px)
 //
 .web_bg,.web_fg
   position absolute
@@ -966,8 +999,12 @@ label
     display block
     float none
   label
-    color $c_bg_dark
+    color $c_light
     relative_size(.65)
+    cursor default
+  .subtitle
+    relative_size(.5)
+    margin-left 5px
 .radio_text_fields
   relative_size(1)
   margin -30px 0 15px 0
@@ -1169,15 +1206,22 @@ input value=["Send Feedback"]
       text-decoration underline
       color $c_logo_alt
       font-style normal
+    realtive_size(1.5)
   img
     position absolute
     display none
   label
     display none
-    top 460px
+    top 270px
     position absolute
     width 233px
     text-align center
+    z-index 24
+    alpha_bg($c_black,.8)
+    color $c_light
+    height 80px
+    relative_size(1.8)
+    line-height 80px
 .slide_bg
   background $c_black
   height 356px

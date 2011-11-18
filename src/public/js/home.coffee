@@ -43,8 +43,16 @@ $ ->
   $qr_bg = $qr.find '.background'
   $lines = $card.find '.line'
   #
-
+  #
   $view_buttons = $ '.views .option'
+  #
+  #
+  # The form stuff at the bottom
+  $quantity = $('.quantity')
+  $shipping_method = $('.shipping_method')
+  $address = $('.address')
+  $city = $('.city')
+  #
   #
   $body = $ document
   #
@@ -110,10 +118,6 @@ $ ->
         $.add_card_to_category $my_card, theme
       #
       #
-      # Restore active view
-      $active_view = $ '.active_view'
-      if $active_view.html()
-        $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
       #
       # Restore active theme
       if $active_theme
@@ -121,6 +125,13 @@ $ ->
         $active_theme.click()
       else
         $categories.find('.category:first h4').click()
+      #
+      #
+      # Restore active view
+      $active_view = $ '.active_view'
+      if $active_view.html()
+        $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
+      #
       #
       #
       $lines.each (i) ->
@@ -360,12 +371,34 @@ $ ->
   ###
   #
   # Radio Select
-  $('.quantity input,.shipping_method input').bind 'click change', () ->
+  $('.quantity input,.shipping_method input').bind 'change', () ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
-    console.log $q, $s
     $('.order_total .price').html '$' + (($q.val()*1) + ($s.val()*1))
-
+    #
+    #
+    #
+    set_timers()
+  #
+  #
+  #
+  $address.keyup ->
+    $t = $ this
+    v = $t.val()
+    if v is ''
+      $t.show_tooltip
+        message: 'Please enter a street address'
+  #
+  #
+  $city.keyup ->
+    $t = $ this
+    v = $t.val()
+    if v is ''
+      $t.show_tooltip
+        message: 'Please enter zip code'
+  #
+  #
+  #
   # Window and Main Card to use later
   $win = $ window
   $mc = $ '.home_designer'
@@ -531,6 +564,9 @@ $ ->
         clearTimeout timer
         frame_time = 4000
         quick_time = 200
+        $label_to.stop(true,true).css
+          'margin-left': 0
+        $label_to.delay(2000).fadeOut(3000)
         $biz_cards.stop(true,true).animate
           top: parseInt($biz_cards.css('top')) + biz_incr*6
         , 1200

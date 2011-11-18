@@ -12,16 +12,16 @@
         label anything
       li
         img(src='/images/8.png')
-        label facebook profile
+        label facebook
       li
         img(src='/images/1.png')
-        label a presentation
+        label presentations
       li
         img(src='/images/19.png')
-        label restaurant review
+        label reviews
       li
         img(src='/images/9.png')
-        label wikipedia article
+        label wikipedia
       li
         img(src='/images/2.png')
         label shopping
@@ -115,34 +115,34 @@
         if session && session.saved_form && session.saved_form.active_theme_id
           =session.saved_form.active_theme_id
       .home_designer
-        .card
-          .qr
-            .background
-          if session && session.saved_form && session.saved_form.values
-            .content
-              - for(var i=0; i<session.saved_form.values.length; i++)
+        .card_container
+          .card
+            .qr
+              .background
+            if session && session.saved_form && session.saved_form.values
+              .content
+                - for(var i=0; i<session.saved_form.values.length; i++)
+                  .line
+                    =session.saved_form.values[i]
+            else
+              .content.defaults
+                .line John Stamos
+                .line Uncle Jesse
+                .line 555.555.5555
+                .line john@stamos.com
                 .line
-                  =session.saved_form.values[i]
-          else
-            .content.defaults
-              .line John Stamos
-              .line Uncle Jesse
-              .line 555.555.5555
-              .line john@stamos.com
-              .line
-              .line
-              .line
-              .line
-              .line
-              .line
+                .line
+                .line
+                .line
+                .line
+                .line
       .home_options
-
         .views
+          .subtitle Number of Fields
           .toggle
             .disabled
               .option.six.active 6
               .option.twelve 10
-          .subtitle (field layout)
       .categories
   .clear
 .section
@@ -154,31 +154,31 @@
         li
           p Quantity:
         li
-          input(type='radio',name='quantity',value='10',checked='checked')
-          label 100 cards for $10
+          input(type='radio',name='quantity',value='10',checked='checked',id='quantity_1')
+          label(for='quantity_1') 100 cards for $10
             .subtitle 10 cents per card
         li
-          input(type='radio',name='quantity',value='20')
-          label 250 cards for $20
+          input(type='radio',name='quantity',value='20',id='quantity_2')
+          label(for='quantity_2') 250 cards for $20
             .subtitle 8 cents per card
         li
-          input(type='radio',name='quantity',value='30')
-          label 500 cards for $30
+          input(type='radio',name='quantity',value='30',id='quantity_3')
+          label(for='quantity_3') 500 cards for $30
             .subtitle 6 cents per card
         li
-          input(type='radio',name='quantity',value='60')
-          label 1500 cards for $60
+          input(type='radio',name='quantity',value='60',id='quantity_4')
+          label(for='quantity_4') 1500 cards for $60
             .subtitle 4 cents per card
       ul.radio_text_fields.right.shipping_method
         li
           p Speed:
         li
-          input(type='radio',name='shipping_method',value='0',checked='checked')
-          label USPS Priority Mail for $0
+          input(type='radio', name='shipping_method', value='0',checked='checked', id='shipping_method_1')
+          label(for='shipping_method_1') USPS Priority Mail for $0
             .subtitle 1-3 days
         li
-          input(type='radio',name='shipping_method',value='25')
-          label USPS Express Mail for $25
+          input(type='radio', name='shipping_method', value='25', id='shipping_method_2')
+          label(for='shipping_method_2') USPS Express Mail for $25
             .subtitle overnight
       ul.text_fields.shipping.righter
         li
@@ -187,15 +187,16 @@
           label Address Line 1
           input.address(placeholder='123 Fake St')
         li
-          label Address Line 2
-          input.address_2(placeholder='Apt 2032')
+          label P.O. Box
+          input.city(placeholder='90210'))
+          .subtitle shipping to u.s. only for now
         li
-          label City
-          input.city(placeholder='Cityville')
+          label City, State or Zip
+          input.city(placeholder='90210'))
+          .subtitle shipping to u.s. only for now
         li
-          label State
-          input.state(placeholder='State')
-          .subtitle U.S. Addresses only right now
+          .address_result
+          .subtitle Address I found
       .clear
 
     .img_loader

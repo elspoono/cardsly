@@ -760,6 +760,13 @@ input {
 .order_details .righter {
   margin-left: 20px;
 }
+.order_details .address_result,
+.order_details label {
+  cursor: pointer;
+  color: #eee;
+  font-size: 13.65px;
+  line-height: 1.5em;
+}
 .order_total .title,
 .order_total .price,
 .order_total .subtitle {
@@ -866,21 +873,50 @@ input {
   white-space: nowrap;
   position: absolute;
 }
+.home_designer .card_container {
+  padding: 10px;
+  width: 525px;
+  margin: 0 auto;
+  background: #524641;
+  background: rgba(82,70,65,0.20);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+}
 .active_view,
 .active_theme_id {
   display: none;
 }
 .home_options {
-  width: 525px;
+  width: 545px;
   margin: 0 auto;
   overflow: hidden;
 }
 .home_options .views {
   float: left;
   text-align: center;
+  background: #524641;
+  background: rgba(82,70,65,0.20);
+  padding: 10px;
+  border-bottom-left-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  overflow: hidden;
 }
-.home_options .views .subtitle {
-  margin-top: -5px;
+.home_options .views .toggle {
+  width: 80px;
+  margin: 0 auto;
+}
+.home_options .subtitle {
+  margin-bottom: 3px;
+  font-size: 16.8px;
+  line-height: 1.5em;
 }
 .designer {
   margin-bottom: 60px;
@@ -1054,7 +1090,18 @@ input {
 }
 .toggle {
   overflow: hidden;
-  background: #524641;
+  background-color: #56a3da;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #56a3da, #2470a6);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #56a3da, #2470a6);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #56a3da, #2470a6);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #56a3da, #2470a6);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #56a3da, #2470a6);
   margin: 10px 0;
   padding: 2px;
   -webkit-border-radius: 12px;
@@ -1063,8 +1110,18 @@ input {
 }
 .toggle .disabled {
   overflow: hidden;
-  background: #908575;
-  background: rgba(144,133,117,0.50);
+  background-color: #2470a6;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2470a6), to(#123752));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #2470a6, #123752);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #2470a6, #123752);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #2470a6, #123752);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #2470a6, #123752);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #2470a6, #123752);
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
@@ -1077,15 +1134,15 @@ input {
   cursor: pointer;
   float: left;
   background: none;
-  color: #908575;
+  color: #56a3da;
 }
 .toggle .active {
   color: #eee;
-  background: #908575;
-  background: rgba(144,133,117,0.80);
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  background: #56a3da;
+  background: rgba(86,163,218,0.80);
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
 }
 .web_bg,
 .web_fg {
@@ -1272,9 +1329,15 @@ label .subtitle {
   float: none;
 }
 .shipping label {
-  color: #524641;
+  color: #eee;
   font-size: 13.65px;
   line-height: 1.5em;
+  cursor: default;
+}
+.shipping .subtitle {
+  font-size: 10.5px;
+  line-height: 1.5em;
+  margin-left: 5px;
 }
 .radio_text_fields {
   font-size: 21px;
@@ -1518,10 +1581,18 @@ input
 .slides label,
 .slide_bg label {
   display: none;
-  top: 460px;
+  top: 270px;
   position: absolute;
   width: 233px;
   text-align: center;
+  z-index: 24;
+  background: #000;
+  background: rgba(0,0,0,0.80);
+  color: #eee;
+  height: 80px;
+  font-size: 37.800000000000004px;
+  line-height: 1.5em;
+  line-height: 80px;
 }
 .slide_bg {
   background: #000;
