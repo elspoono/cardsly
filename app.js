@@ -58,8 +58,6 @@
 
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
 
-  console.log(db_uri);
-
   parsed = {};
 
   parsed.cleaned = db_uri.replace(/^[^:]*:\/\//ig, '');
@@ -76,7 +74,7 @@
 
   parsed.port = parsed.split[1];
 
-  console.log(parsed);
+  console.log('PARSED', util.inspect(parsed));
 
   mongodb = require('mongodb');
 

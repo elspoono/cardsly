@@ -82,7 +82,6 @@ nodemailer.SMTP =
 # url set
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
 
-console.log db_uri
 # parse the url
 parsed = {}
 parsed.cleaned = db_uri.replace /^[^:]*:\/\//ig, ''
@@ -93,7 +92,7 @@ parsed.split = parsed.host_port.split /:/
 parsed.hostname = parsed.split[0]
 parsed.port = parsed.split[1]
 
-console.log parsed
+console.log 'PARSED', util.inspect parsed
 mongodb = require 'mongodb'
 dbAuth = {}
 if parsed.full_host.match /@/
