@@ -89,7 +89,7 @@ parsed.cleaned = db_uri.replace /^[^:]*:\/\//ig, ''
 parsed.path = parsed.cleaned.replace /^[^\/]*\//ig, ''
 parsed.full_host = parsed.cleaned.replace /\/.*$/ig, ''
 parsed.host_port = parsed.full_host.replace /^[^@]*@/ig, ''
-parsed.split = parsed.full_host.split(':', 2)
+parsed.split = parsed.host_port.split /:/
 parsed.hostname = parsed.split[0]
 parsed.port = parsed.split[1]
 
