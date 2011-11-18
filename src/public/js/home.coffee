@@ -95,23 +95,36 @@ $ ->
     success: (all_data) ->
       all_themes = all_data.themes
       $categories.html ''
+      active_theme_id = $('.active_theme_id').html()
+      $active_theme = false
       for theme in all_themes
         #
         #
         #
         $my_card = $.create_card_from_theme theme
         
+        if active_theme_id and theme._id is active_theme_id
+          $active_theme = $my_card
+
         # Push the whole thing to categories
         $.add_card_to_category $my_card, theme
       #
-      #
-      # Click the first theme
-      $categories.find('.category:first h4').click()
       #
       # Restore active view
       $active_view = $ '.active_view'
       if $active_view.html()
         $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
+      #
+      # Restore active theme
+      if $active_theme
+        $active_theme.closest('.category').addClass('active')
+        $active_theme.click()
+      else
+        $categories.find('.category:first h4').click()
+      #
+      #
+      $lines.each (i) ->
+        update_cards i, $(this).html()
 
     error: ->
       $.load_alert
@@ -128,6 +141,7 @@ $ ->
     if theme
       load_theme theme
       history = [theme]
+      set_timers()
   #
   #
   #
@@ -255,9 +269,19 @@ $ ->
           data: JSON.stringify 
             values: values
             active_view: active_view
+            active_theme_id: active_theme._id
         false
       ,1000
   #
+  ###
+  Update Cards
+
+  This is used each time we need to update all the cards on the home page with the new content that's typed in.
+  ###
+  update_cards = (rowNumber, value) ->
+    $('.categories .card').each -> 
+      $t = $ this
+      $t.find('.line:eq('+rowNumber+')').html value
   #
   #
   #
@@ -266,6 +290,7 @@ $ ->
   $lines.each (i) ->
     $t = $ this
     $t.data 'timer', 0
+    
     $t.click -> 
       if i is 6
         $view_buttons.filter(':last').click()
@@ -360,15 +385,6 @@ $ ->
     load_theme active_theme
     set_timers()
 
-  ###
-  Update Cards
-
-  This is used each time we need to update all the cards on the home page with the new content that's typed in.
-  ###
-  update_cards = (rowNumber, value) ->
-    $('.categories .card').each -> 
-      $t = $ this
-      $t.find('.line:eq('+rowNumber+')').html value
 
 
 

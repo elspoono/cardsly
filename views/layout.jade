@@ -43,7 +43,7 @@ body
         ul.small_nav
           if user
             li.account_link
-              a(href='/profile')
+              a(href='/settings')
                 if user.name
                   =user.name
                 else if user.email
@@ -58,7 +58,7 @@ body
                 li
                   a(href='/logout') Logout
           else
-            li
+            li.login
                a(href='/login') Login
           li
              a(href='/about') About
