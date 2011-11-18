@@ -863,6 +863,7 @@ input {
   margin: 0;
   background: none;
   overflow: visible;
+  white-space: nowrap;
   position: absolute;
 }
 .active_view,
