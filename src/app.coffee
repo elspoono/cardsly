@@ -104,6 +104,7 @@ mongoose.connect db_uri
 schema = mongoose.Schema
 object_id = schema.ObjectId
 #
+console.log db_uri
 # This store is for the session
 session_store = new mongoStore
   db: db
