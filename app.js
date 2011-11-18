@@ -58,6 +58,8 @@
 
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
 
+  console.log(db_uri);
+
   parsed = {
     hostname: db_uri.replace(/(^[^:]*:\/\/|:[^:]*$)/ig, ''),
     port: db_uri.replace(/(^[^:]*:\/\/[^:]*:|\/.*)/ig, ''),

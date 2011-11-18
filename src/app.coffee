@@ -81,6 +81,8 @@ nodemailer.SMTP =
 # DATABASE
 # url set
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
+
+console.log db_uri
 # parse the url
 parsed = 
   hostname: db_uri.replace /(^[^:]*:\/\/|:[^:]*$)/ig, ''
@@ -104,7 +106,6 @@ mongoose.connect db_uri
 schema = mongoose.Schema
 object_id = schema.ObjectId
 #
-console.log db_uri
 # This store is for the session
 session_store = new mongoStore
   db: db
