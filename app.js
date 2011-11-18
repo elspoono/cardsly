@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, redis_store, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -392,9 +392,19 @@
 
   redis_store = require('connect-redis')(connect);
 
-  console.log('REDIS URL: ', process.env.REDISTOGO_URL);
+  options = {};
 
-  session_store = new redis_store;
+  if (process.env.REDISTOGO_URL) {
+    options = {
+      host: process.env.REDISTOGO_URL.replace(/.*@([^:]*).*/ig, '$1'),
+      port: process.env.REDISTOGO_URL.replace(/.*@.*:([^\/]*).*/ig, '$1'),
+      pass: process.env.REDISTOGO_URL.replace(/.*:.*:(.*)@.*/ig, '$1')
+    };
+  }
+
+  console.log(options);
+
+  session_store = new redis_store(options);
 
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
