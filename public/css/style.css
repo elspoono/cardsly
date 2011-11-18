@@ -1562,10 +1562,12 @@ input
 }
 .slides .slide,
 .slide_bg .slide {
-  padding: 100px 25px 0 25px;
+  padding: 0 25px 0 25px;
   text-align: center;
   color: #eee;
   display: none;
+  font-size: 31.5px;
+  line-height: 1.5em;
 }
 .slides .slide em,
 .slide_bg .slide em {
