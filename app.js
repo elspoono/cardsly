@@ -68,13 +68,15 @@
 
   parsed.host_port = parsed.full_host.replace(/^[^@]*@/ig, '');
 
+  parsed.auth = parsed.full_host.replace(/@[^@]*$/ig, '');
+
   parsed.split = parsed.host_port.split(/:/);
 
   parsed.hostname = parsed.split[0];
 
   parsed.port = parsed.split[1];
 
-  console.log(parsed);
+  console.log('PARSED', util.inspect(parsed));
 
   mongodb = require('mongodb');
 
@@ -103,9 +105,7 @@
   object_id = schema.ObjectId;
 
   session_store = new mongoStore({
-    db: db,
-    username: dbAuth.username,
-    password: dbAuth.password
+    url: db_uri
   });
 
   /*
