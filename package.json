@@ -7,7 +7,7 @@
     "jade": ">= 0.0.1",
     "stylus": ">= 0.13.9",
     "coffee-script": ">= 1.1.2"
-    , "connect-mongodb": ">= 1.0.0"
+    , "connect-mongo": ">= 1.0.0"
     , "mongodb": ">= 0.0.1"
     , "mongoose": ">= 0.0.1"
     , "bcrypt": ">=0.0.1"

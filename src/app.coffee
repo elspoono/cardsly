@@ -84,7 +84,7 @@ db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://local
 #
 #
 # This library is for the database store for the session
-mongoStore = require 'connect-mongodb'
+mongoStore = require 'connect-mongo'
 #
 # Mongoose is for everyone 
 mongoose = require 'mongoose'

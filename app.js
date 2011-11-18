@@ -58,7 +58,7 @@
 
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
 
-  mongoStore = require('connect-mongodb');
+  mongoStore = require('connect-mongo');
 
   mongoose = require('mongoose');
 
