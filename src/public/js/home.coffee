@@ -95,23 +95,34 @@ $ ->
     success: (all_data) ->
       all_themes = all_data.themes
       $categories.html ''
+      active_theme_id = $('.active_theme_id').html()
+      $active_theme = false
       for theme in all_themes
         #
         #
         #
         $my_card = $.create_card_from_theme theme
         
+        if active_theme_id and theme._id is active_theme_id
+          $active_theme = $my_card
+
         # Push the whole thing to categories
         $.add_card_to_category $my_card, theme
       #
-      #
-      # Click the first theme
-      $categories.find('.category:first h4').click()
       #
       # Restore active view
       $active_view = $ '.active_view'
       if $active_view.html()
         $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
+      #
+      # Restore active theme
+      if $active_theme
+        $active_theme.closest('.category').find('h4').click()
+        $active_theme.click()
+      else
+        $categories.find('.category:first h4').click()
+      #
+      #
 
     error: ->
       $.load_alert
@@ -128,6 +139,7 @@ $ ->
     if theme
       load_theme theme
       history = [theme]
+      set_timers()
   #
   #
   #
@@ -255,6 +267,7 @@ $ ->
           data: JSON.stringify 
             values: values
             active_view: active_view
+            active_theme_id: active_theme._id
         false
       ,1000
   #

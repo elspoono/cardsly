@@ -49,18 +49,28 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $active_view, $my_card, all_themes, theme, _i, _len;
+        var $active_theme, $active_view, $my_card, active_theme_id, all_themes, theme, _i, _len;
         all_themes = all_data.themes;
         $categories.html('');
+        active_theme_id = $('.active_theme_id').html();
+        $active_theme = false;
         for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
           theme = all_themes[_i];
           $my_card = $.create_card_from_theme(theme);
+          if (active_theme_id && theme._id === active_theme_id) {
+            $active_theme = $my_card;
+          }
           $.add_card_to_category($my_card, theme);
         }
-        $categories.find('.category:first h4').click();
         $active_view = $('.active_view');
         if ($active_view.html()) {
-          return $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+          $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+        }
+        if ($active_theme) {
+          $active_theme.closest('.category').find('h4').click();
+          return $active_theme.click();
+        } else {
+          return $categories.find('.category:first h4').click();
         }
       },
       error: function() {
@@ -84,7 +94,8 @@
       }
       if (theme) {
         load_theme(theme);
-        return history = [theme];
+        history = [theme];
+        return set_timers();
       }
     });
     load_theme = function(theme) {
@@ -192,7 +203,8 @@
           url: '/save-form',
           data: JSON.stringify({
             values: values,
-            active_view: active_view
+            active_view: active_view,
+            active_theme_id: active_theme._id
           })
         });
         return false;

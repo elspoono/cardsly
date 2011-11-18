@@ -11,8 +11,17 @@
         img
         label anything
       li
+        img(src='/images/8.png')
+        label facebook profile
+      li
         img(src='/images/1.png')
-        label presentations
+        label a presentation
+      li
+        img(src='/images/19.png')
+        label restaurant review
+      li
+        img(src='/images/9.png')
+        label wikipedia article
       li
         img(src='/images/2.png')
         label shopping
@@ -31,12 +40,6 @@
       li
         img(src='/images/7.png')
         label itunes
-      li
-        img(src='/images/8.png')
-        label facebook
-      li
-        img(src='/images/9.png')
-        label wikipedia
       li
         img(src='/images/10.png')
         label twitter
@@ -64,9 +67,6 @@
       li
         img(src='/images/18.png')
         label websites
-      li
-        img(src='/images/19.png')
-        label yelp
       li
         img(src='/images/20.png')
         label web comic
@@ -111,6 +111,9 @@
       .active_view
         if session && session.saved_form && session.saved_form.active_view
           =session.saved_form.active_view
+      .active_theme_id
+        if session && session.saved_form && session.saved_form.active_theme_id
+          =session.saved_form.active_theme_id
       .home_designer
         .card
           .qr
