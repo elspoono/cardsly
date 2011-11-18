@@ -81,28 +81,8 @@ nodemailer.SMTP =
 # DATABASE
 # url set
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
-
-# parse the url
-parsed = {}
-parsed.cleaned = db_uri.replace /^[^:]*:\/\//ig, ''
-parsed.path = parsed.cleaned.replace /^[^\/]*\//ig, ''
-parsed.full_host = parsed.cleaned.replace /\/.*$/ig, ''
-parsed.host_port = parsed.full_host.replace /^[^@]*@/ig, ''
-parsed.auth = parsed.full_host.replace /@[^@]*$/ig, ''
-parsed.split = parsed.host_port.split /:/
-parsed.hostname = parsed.split[0]
-parsed.port = parsed.split[1]
-
-console.log 'PARSED', util.inspect parsed
-mongodb = require 'mongodb'
-dbAuth = {}
-if parsed.full_host.match /@/
-  auth = parsed.auth.split(':', 2)
-  dbAuth.username = auth[0]
-  dbAuth.password = auth[1]
-Db = mongodb.Db
-Server = mongodb.Server
-db = new Db(parsed.path, new Server(parsed.hostname, parsed.port))
+#
+#
 # This library is for the database store for the session
 mongoStore = require 'connect-mongodb'
 #

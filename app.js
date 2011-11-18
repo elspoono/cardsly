@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Db, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -57,42 +57,6 @@
   };
 
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
-
-  parsed = {};
-
-  parsed.cleaned = db_uri.replace(/^[^:]*:\/\//ig, '');
-
-  parsed.path = parsed.cleaned.replace(/^[^\/]*\//ig, '');
-
-  parsed.full_host = parsed.cleaned.replace(/\/.*$/ig, '');
-
-  parsed.host_port = parsed.full_host.replace(/^[^@]*@/ig, '');
-
-  parsed.auth = parsed.full_host.replace(/@[^@]*$/ig, '');
-
-  parsed.split = parsed.host_port.split(/:/);
-
-  parsed.hostname = parsed.split[0];
-
-  parsed.port = parsed.split[1];
-
-  console.log('PARSED', util.inspect(parsed));
-
-  mongodb = require('mongodb');
-
-  dbAuth = {};
-
-  if (parsed.full_host.match(/@/)) {
-    auth = parsed.auth.split(':', 2);
-    dbAuth.username = auth[0];
-    dbAuth.password = auth[1];
-  }
-
-  Db = mongodb.Db;
-
-  Server = mongodb.Server;
-
-  db = new Db(parsed.path, new Server(parsed.hostname, parsed.port));
 
   mongoStore = require('connect-mongodb');
 
