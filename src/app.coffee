@@ -513,7 +513,9 @@ EXPRESS APPLICATION CONFIG
 #
 connect = require 'connect'
 redis_store = require('connect-redis') connect
-console.log process.env.REDISTOGO_URL
+
+console.log 'REDIS URL: ', process.env.REDISTOGO_URL
+
 session_store = new redis_store
 #
 # ## App configurations
