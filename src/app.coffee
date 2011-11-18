@@ -83,18 +83,11 @@ nodemailer.SMTP =
 db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging'
 #
 #
-# This library is for the database store for the session
-mongoStore = require 'connect-mongo'
-#
 # Mongoose is for everyone 
 mongoose = require 'mongoose'
 mongoose.connect db_uri
 schema = mongoose.Schema
 object_id = schema.ObjectId
-#
-# This store is for the session
-session_store = new mongoStore
-  url: db_uri
 #
 #
 #
@@ -518,6 +511,10 @@ EXPRESS APPLICATION CONFIG
 ###
 #
 #
+connect = require 'connect'
+redis_store = require('connect-redis') connect
+console.log process.env.REDISTOGO_URL
+session_store = new redis_store
 #
 # ## App configurations
 # ### Global app settings
