@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, url, user_schema, util, view_schema;
+  var Db, PDFDocument, Promise, Server, app, auth, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, db, dbAuth, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongoStore, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongodb, mongoose, nodemailer, object_id, parsed, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -60,9 +60,11 @@
 
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
 
-  url = require('url');
-
-  parsed = url.parse(db_uri);
+  parsed = {
+    hostname: db_uri.replace(/(^[^:]*:\/\/|:[^:]*$)/ig, ''),
+    port: db_uri.replace(/(^[^:]*:\/\/[^:]*:|\/.*)/ig, ''),
+    path: db_uri.replace(/(^[^:]*:\/\/[^\/]*\/)/ig, '')
+  };
 
   mongodb = require('mongodb');
 
@@ -78,7 +80,7 @@
 
   Server = mongodb.Server;
 
-  db = new Db(parsed.pathname.replace(/^\//, ''), new Server(parsed.hostname, parsed.port));
+  db = new Db(parsed.path, new Server(parsed.hostname, parsed.port));
 
   mongoStore = require('connect-mongodb');
 
