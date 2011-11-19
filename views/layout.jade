@@ -16,8 +16,6 @@ html
     link(rel='stylesheet', href='/css/mobile.css', media='(max-width:840px)')
     link(rel='stylesheet', href='/css/pepper-grinder/jquery-ui-1.8.16.custom.css')
     link(rel='stylesheet', href='/js/libs/colorpicker/css/colorpicker.css')
-    //if lt IE 10
-      link(rel='stylesheet', href='/css/ie.css')
     script
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-25705975-2']);
@@ -90,3 +88,24 @@ html
       #main(role='main')
         != body
     include footer
+    #pageflip
+      a(href='#')
+        img(src='/images/home.png', alt='')
+        .content_container
+          .content
+            #prompt
+    link(rel='stylesheet', href='/css/ie.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js')
+
+    style
+      .chromeFrameInstallDefaultStyle {
+        width: 100%; /* default is 800px */
+      }
+ 
+    script
+      window.attachEvent("onload", function() {
+        CFInstall.check({
+          mode: "inline", // the default
+          node: "prompt"
+        });
+      });

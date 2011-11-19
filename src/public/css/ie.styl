@@ -1,42 +1,48 @@
-$base-font-size = 21px
-$base-line-height = 1.5
+$base_font_px = 21px
+$base_line_height = 1.5
 
-$base-gap = $base-font-size * $base-line-height
+$base_gap = $base_font_px * $base_line_height
 
-/* Font-families */
-$base-font-family = 'Ubuntu', sans-serif
-$display-font-family = 'Maven Pro', sans-serif
+/* Font_families */
+$base_font_family = 'Ubuntu', sans-serif
+$display_font_family = 'Maven Pro', sans-serif
 
 /***********************************
  *
  * Color Definitions
  *
  ***********************************/
-$c-light = #EEEEEE
-$c-mid-cool = #AAAAAA
-$c-dark-cool = #111111
-$c-mid-warm = #FFFFFF
-$c-dark-warm = #333333
-$c-black = #000000
 
-$c-bg-dark = #524641//#006E9F
-$c-bg-light = #908575//#006E9F
-$c-logo-light = #f05a23//#f37b4f
-$c-logo-alt = #56A3DA
+// These list the default colors that we are using on the website
+$c_light = #EEEEEE
+$c_mid_cool = #AAAAAA
+$c_dark_cool = #111111
+$c_mid_warm = #FFFFFF
+$c_dark_warm = #333333
+$c_black = #000000
+$c_blue = #3ea9f5
 
-$c-go = #23f067
+$c_bg_dark = #524641 //#006E9F
+$c_bg_light = #908575 //#006E9F
+$c_logo_light = #f05a23 //#f37b4f
+$c_logo_alt = #56A3DA
 
-$c-background = lighten($c-light, 10%)
-$c-body-bg = #cfbea8
-$c-font = $c-dark-warm
-$c-highlight = $c-mid-warm
+//This one is mainly used on the top small nav bar and is the darkest on the site
+$c_extra_dark = #3a322f
 
-$c-link = $c-mid-cool
-$c-link-hover = $c-mid-warm
-$c-link-visited = $c-mid-cool
-$c-link-active = $c-mid-cool
+$c_go = #23f067
 
-$c-a-nav = #d8cfc5
+$c_background = lighten($c_light, 10%)
+$c_body_bg = #cfbea8
+$c_font = $c_dark_warm
+$c_highlight = $c_mid_warm
+
+$c_link = $c_mid_cool
+$c_link_hover = $c_mid_warm
+$c_link_visited = $c_mid_cool
+$c_link_active = $c_mid_cool
+
+$c_a_nav = #d8cfc5
 
 
 /********************************
@@ -46,46 +52,64 @@ $c-a-nav = #d8cfc5
  ********************************/
 
 // CHAM builtin style functions
-relative-size($size-multiplier, $set-line-height=true)
-  $font-size = unit($base-font-size * $size-multiplier, 'px')
-  font-size $font-size
-  if $set-line-height
-    line-height unit($base-line-height / $font-size, 'em')
+relative_size($size_multiplier, $set_line_height=true)
+  $font_px = unit($base_font_px * $size_multiplier, 'px')
+  font-size $font_px
+  if $set_line_height
+    line-height unit($base_line_height / $font_px, 'em')
 gap($multiplier)
-  return $base-gap * $multiplier
+  return $base_gap * $multiplier
 
 // Alpha Background
-alpha-bg(color,n)
+alpha_bg(color,n)
   background rgb(color);
   background rgba(color,n);
 
 // Shadow
-box-shadow(n = gap(.25), color = $c-dark-warm, b = n)
+box_shadow(n = gap(.25), color = $c_dark_warm, b = n)
   -moz-box-shadow n n b color
   -webkit-box-shadow n n b color
   box-shadow n n b color
-text-shadow(n = gap(.1), color = $c-dark-warm, b = n)
+text_shadow(n = gap(.1), color = $c_dark_warm, b = n)
   text-shadow n n b color
 
 // Rounded Corners
-border-radius(n = gap(.5))
+border_radius(n = gap(.5))
   -webkit-border-radius n
   -moz-border-radius n
   border-radius n
-border-radius-except-top-right(n)
+border_radius_bottom_left_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+border_radius_except_top_right(n)
   -webkit-border-radius n
   -moz-border-radius n
   border-radius n
   border-top-right-radius 0
   -moz-border-radius-topright 0
   -webkit-border-top-right-radius 0
-border-radius-top-only(n)
+border_radius_top_only(n)
   border-top-left-radius n
   -moz-border-radius-topleft n
   -webkit-border-top-left-radius n
   border-top-right-radius n
   -moz-border-radius-topright n
   -webkit-border-top-right-radius n
+border_radius_bottom_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+  border-bottom-right-radius n
+  -moz-border-radius-bottomright n
+  -webkit-border-bottom-right-radius n
+border_radius_except_bottom_left(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-bottom-left-radius 0
+  -moz-border-radius-bottomleft 0
+  -webkit-border-bottom-left-radius 0
 
 // Transparency
 opacity(n)
@@ -99,11 +123,37 @@ absolute()
   left 0
 
 // Resize Ratio
-transform-scale(width=0.5,height=width)
-  -webkit-transform: scale(height, width);
+transform_scale(width=0.5,height=width)
+  _webkit-transform: scale(height, width);
   -moz-transform: scale(height, width);
   -ms-transform: scale(height, width);
   transform: scale(height, width);
+
+// Rotate (pass in degrees)
+box_rotate(degrees=7.5deg)
+  -webkit-transform rotate(degrees)
+  -moz-transform rotate(degrees)
+  -ms-transform rotate(degrees)  
+  -o-transform rotate(degrees)  
+  transform rotate(degrees)
+  zoom 1
+
+// Background Gradient from 1 color at top to another color at bottom
+gradient(color1=$c_background,color2=$c_background,alpha=1)
+  color1 = rgba(color1, alpha)
+  background-color color2
+  background-image -webkit-gradient(linear, left top, left bottom, from(color1), to(color2)) /* Saf4+, Chrome */
+  background-image -webkit-linear-gradient(top, color1, color2) /* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image -moz-linear-gradient(top, color1, color2) /* FF3.6 */
+  background-image -ms-linear-gradient(top, color1, color2) /* IE10 */
+  background-image -o-linear-gradient(top, color1, color2) /* Opera 11.10+ */
+  background-image linear-gradient(top, color1, color2)
+
+/********************************
+ *
+ * END LIBRARY FUNCTIONS
+ *
+ ********************************/
 
 //
 //
@@ -125,6 +175,16 @@ transform-scale(width=0.5,height=width)
 //
 //
 //
+.feedback
+  a
+    margin-right -35px
+    @css{
+      filter: progid:DXImageTransform.Microsoft.Matrix(                     M11=6.123031769111886e-17, M12=1, M21=-1, M22=6.123031769111886e-17, sizingMethod='auto expand');
+    }
+.chromeFrameOverlayUnderlay
+  opacity(.6)
+  margin-top -80px
+  background $c_black !important
 //
 //
 //
