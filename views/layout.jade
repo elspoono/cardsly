@@ -88,24 +88,19 @@ html
       #main(role='main')
         != body
     include footer
-    #pageflip
-      a(href='#')
-        img(src='/images/home.png', alt='')
-        .content_container
-          .content
-            #prompt
-    link(rel='stylesheet', href='/css/ie.css')
-    script(src='http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js')
+    //if IE lt 9
+      link(rel='stylesheet', href='/css/ie.css')
+      script(src='http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js')
 
-    style
-      .chromeFrameInstallDefaultStyle {
-        width: 100%; /* default is 800px */
-      }
- 
-    script
-      window.attachEvent("onload", function() {
-        CFInstall.check({
-          mode: "inline", // the default
-          node: "prompt"
+      style
+        .chromeFrameInstallDefaultStyle {
+          width: 100%; /* default is 800px */
+        }
+   
+      script
+        window.attachEvent("onload", function() {
+          CFInstall.check({
+            mode: "overlay", // the default
+            node: "prompt"
+          });
         });
-      });

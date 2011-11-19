@@ -725,7 +725,7 @@
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
     */
-    var $a, $am, $body, $content, $content_container, $email_text, $feedback_a, $gs, $pageflip, $pf_img, close_menu, expand_menu, monitor_for_complete, path, successful_login;
+    var $a, $am, $body, $email_text, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -1067,7 +1067,7 @@
         return $c.addClass('active');
       }
     });
-    $('.button').live('mouseenter', function() {
+    return $('.button').live('mouseenter', function() {
       return $(this).addClass('hover');
     }).live('mouseleave', function() {
       return $(this).removeClass('hover');
@@ -1075,45 +1075,6 @@
       return $(this).addClass('click');
     }).live('mouseup', function() {
       return $(this).removeClass('click');
-    });
-    $pageflip = $('#pageflip');
-    $pf_img = $pageflip.find('img');
-    $content_container = $pageflip.find('.content_container');
-    $content = $pageflip.find('.content');
-    return $pageflip.hover(function() {
-      $pf_img.stop(true, false).animate({
-        width: 539,
-        height: 518
-      }, 1000);
-      $content_container.stop(true, false).animate({
-        width: 690,
-        height: 690,
-        top: -350,
-        right: -350
-      }, 1000);
-      return $content.stop(true, false).animate({
-        width: 539,
-        height: 518,
-        top: 466,
-        right: 84
-      }, 1000);
-    }, function() {
-      $pf_img.stop(true, false).animate({
-        width: 114,
-        height: 119
-      }, 400);
-      $content_container.stop(true, false).animate({
-        width: 172,
-        height: 172,
-        top: -98,
-        right: -86
-      }, 400);
-      return $content.stop(true, false).animate({
-        width: 110,
-        height: 110,
-        top: 117,
-        right: 22
-      }, 400);
     });
   });
 
