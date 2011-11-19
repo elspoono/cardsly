@@ -29,10 +29,6 @@
 
   $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
 
-  if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
-    document.location.href = '/splash';
-  }
-
   /*
   */
 
@@ -668,7 +664,7 @@
   */
 
   jQuery.cookie = function(key, value, options) {
-    var days, decode, result, t;
+    var days, decode, regex, result, t;
     if (arguments.length > 1 && String(value) !== "[object Object]") {
       options = jQuery.extend({}, options);
       if (value === null || value === void 0) options.expires = -1;
@@ -678,13 +674,14 @@
         t.setDate(t.getDate() + days);
       }
       value = String(value);
-      document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : 'path=/', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+      document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '; path=/', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
     }
     options = value || {};
     decode = options.raw ? function(s) {
       return s;
     } : decodeURIComponent;
-    if ((result = new RegExp('(?:^| )' + encodeURIComponent(key) + '=([^]*)').exec(document.cookie))) {
+    regex = '(?:^|; )' + encodeURIComponent(key) + '=([^;]*)';
+    if ((result = new RegExp(regex).exec(document.cookie))) {
       return decode(result[1]);
     } else {
       return null;
@@ -721,11 +718,17 @@
   */
 
   $(function() {
+    var $a, $am, $body, $email_text, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
+    if (document.location.href.match(/#bypass_splash/i)) {
+      $.cookie('bypass_splash', true);
+    }
+    if ($.browser.msie && parseInt($.browser.version, 10) < 8 && !document.location.href.match(/splash/) && !$.cookie('bypass_splash')) {
+      document.location.href = '/splash';
+    }
     /*
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
     */
-    var $a, $am, $body, $email_text, $feedback_a, $gs, close_menu, expand_menu, monitor_for_complete, path, successful_login;
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -969,20 +972,29 @@
     $feedback_a.mouseover(function() {
       var $feedback;
       $feedback = $('.feedback');
-      return $feedback.stop(true, false).animate({
-        right: '-37px'
-      }, 250);
+      if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
+        return console.log('Do something for IE7 here');
+      } else {
+        return $feedback.stop(true, false).animate({
+          right: '-37px'
+        }, 250);
+      }
     });
     $feedback_a.mouseout(function() {
       var $feedback;
       $feedback = $('.feedback');
-      return $feedback.stop(true, false).animate({
-        right: '-45px'
-      }, 250);
+      if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
+        return console.log('Do something for IE7 here');
+      } else {
+        return $feedback.stop(true, false).animate({
+          right: '-45px'
+        }, 250);
+      }
     });
     $email_text = $('.hidden_email');
     console.log($email_text.text());
-    $feedback_a.click(function() {
+    $feedback_a.click(function(e) {
+      e.preventDefault();
       $.load_modal({
         content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40" value="' + ($email_text.text()) + '"></p></div>',
         width: 400,

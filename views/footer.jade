@@ -77,11 +77,6 @@ script
   }
   _kms('//i.kissmetrics.com/i.js');_kms('//doug1izaerwt3.cloudfront.net/9d1117801d4df63bf079c74f1c957bf5881311a1.1.js');
 script(src='//cdn.optimizely.com/js/13629231.js')
-//
-//
-// Wow, IE downloads everything
-// So google won't load anything, unless we chunk it up into segments of 6 or less
-link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC|Julee|Syncopate|Gravitas+One|Quicksand')
-link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Vast+Shadow|Smokum|Ovo|Amatic+SC|Rancho|Poly')
-link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Chivo|Prata|Abril+Fatface|Ultra')
-link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister|Carter+One|Luckiest+Guy|Gruppo|Slackey')
+//if IE lt 9
+  link(rel='stylesheet', href='/css/ie.css')
+  script(src='/js/libs/PIE.js')

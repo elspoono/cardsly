@@ -435,7 +435,11 @@
       }
     };
     $(window).load(function() {
-      return my_repeatable_function();
+      if ($.browser.msie && parseInt($.browser.version, 10) < 8) {
+        return console.log('Do something for IE7 here');
+      } else {
+        return my_repeatable_function();
+      }
     });
     /*
       Shopping Cart Stuff

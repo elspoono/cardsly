@@ -44,12 +44,6 @@ $.line_copy = [
   'fb.com/my_facebook'
   '@my_twitter'
 ]
-#
-# Redirect non compatible browsers *IMMEDIATELLY*
-if $.browser.msie and parseInt($.browser.version, 10)<8
-    document.location.href = '/splash'
-#
-#
 
 
 
@@ -694,7 +688,7 @@ jQuery.cookie = (key, value, options) ->
       encodeURIComponent(key), '=',
       if options.raw then value else encodeURIComponent(value),
       if options.expires then '; expires=' + options.expires.toUTCString() else '', # use expires attribute, max-age is not supported by IE
-      if options.path then '; path=' + options.path else 'path=/',
+      if options.path then '; path=' + options.path else '; path=/',
       if options.domain then '; domain=' + options.domain else '',
       if options.secure then '; secure' else ''
     ].join('')
@@ -702,7 +696,8 @@ jQuery.cookie = (key, value, options) ->
   # key and possibly options given, get cookie...
   options = value || {}
   decode =  if options.raw  then (s) ->  s  else decodeURIComponent
-  if (result = new RegExp('(?:^| )' + encodeURIComponent(key) + '=([^]*)').exec(document.cookie)) then decode(result[1]) else null
+  regex = '(?:^|; )' + encodeURIComponent(key) + '=([^;]*)'
+  if (result = new RegExp(regex).exec(document.cookie)) then decode(result[1]) else null
 #
 #
 # Box rotate anything you want a lil bit
@@ -747,6 +742,18 @@ $ ->
 #
 #
 $ ->
+  #
+  #
+  #
+  #
+  if document.location.href.match /#bypass_splash/i
+    $.cookie 'bypass_splash', true
+  #
+  # Redirect non compatible browsers *IMMEDIATELLY*
+  if $.browser.msie and parseInt($.browser.version, 10)<8 and not document.location.href.match(/splash/) and not $.cookie 'bypass_splash'
+      document.location.href = '/splash'
+  #
+  #
   #
   #
   #
@@ -984,14 +991,20 @@ $ ->
   $feedback_a = $ '.feedback a'
   $feedback_a.mouseover () ->
     $feedback = $ '.feedback'
-    $feedback.stop(true,false).animate
-      right: '-37px'
-      ,250
+    if $.browser.msie and parseInt($.browser.version, 10)<9
+      console.log 'Do something for IE7 here'
+    else
+      $feedback.stop(true,false).animate
+        right: '-37px'
+        ,250
   $feedback_a.mouseout () ->
     $feedback = $ '.feedback'
-    $feedback.stop(true,false).animate
-      right: '-45px'
-      ,250
+    if $.browser.msie and parseInt($.browser.version, 10)<9
+      console.log 'Do something for IE7 here'
+    else
+      $feedback.stop(true,false).animate
+        right: '-45px'
+        ,250
   #
   #
   #
@@ -999,7 +1012,8 @@ $ ->
   #Feedback Button
   $email_text = $ '.hidden_email'
   console.log $email_text.text()
-  $feedback_a.click () ->
+  $feedback_a.click (e) ->
+    e.preventDefault()
     $.load_modal
       content: '<div class="feedback_form"><h2>Feedback:</h2><textarea cols="40" rows="10" class="feedback_text" placeholder="Type any feedback you may have here"></textarea><p><h2>Email:</h2><input type="email" class="emailNotUser" placeholder="Please enter your email"cols="40" value="'+($email_text.text())+'"></p></div>'
       width: 400

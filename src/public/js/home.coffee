@@ -568,7 +568,10 @@ $ ->
   #
   #
   $(window).load ->
-    my_repeatable_function()
+    if $.browser.msie and parseInt($.browser.version, 10)<8
+      console.log 'Do something for IE7 here'
+    else
+      my_repeatable_function()
   ###
   Shopping Cart Stuff
   ###

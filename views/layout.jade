@@ -88,6 +88,25 @@ html
       #main(role='main')
         != body
     include footer
+    //
+    //
+    // Wow, IE downloads everything
+    // So google won't load anything, unless we chunk it up into segments of 6 or less
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC|Julee|Syncopate|Gravitas+One|Quicksand')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Vast+Shadow|Smokum|Ovo|Amatic+SC|Rancho|Poly')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Chivo|Prata|Abril+Fatface|Ultra')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister|Carter+One|Luckiest+Guy|Gruppo|Slackey')
     //if IE lt 9
-      link(rel='stylesheet', href='/css/ie.css')
-      script(src='/js/libs/PIE.js')
+      script(src='http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js')
+      style
+        .chromeFrameInstallDefaultStyle {
+          width: 100%; /* default is 800px */
+        }
+      #prompt
+      script
+        window.attachEvent("onload", function() {
+          CFInstall.check({
+            mode: "overlay", // the default
+            node: "prompt"
+          });
+        });
