@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, user_schema, util, view_schema;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, ua_match, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -105,6 +105,20 @@
     secret: 'nyxMQjkM51LkoS2E3V+ijyYZnoIj8IkOtaHw5xUq',
     bucket: 'cardsly'
   });
+
+  ua_match = function(ua) {
+    var match, result, rmozilla, rmsie, ropera, rwebkit;
+    ua = ua.toLowerCase();
+    rwebkit = /(webkit)[ \/]([\w.]+)/;
+    ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/;
+    rmsie = /(msie) ([\w.]+)/;
+    rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
+    match = rwebkit.exec(ua) || ropera.exec(ua) || rmsie.exec(ua) || ua.indexOf('compatible') < 0 && rmozilla.exec(ua) || [];
+    return result = {
+      browser: match[1] || '',
+      version: match[2] || '0'
+    };
+  };
 
   /*
   
@@ -401,8 +415,6 @@
       pass: process.env.REDISTOGO_URL.replace(/.*:.*:(.*)@.*/ig, '$1')
     };
   }
-
-  console.log(options);
 
   session_store = new redis_store(options);
 
@@ -850,11 +862,20 @@
   });
 
   app.get('/home', function(req, res) {
-    return res.render('index', {
-      user: req.user,
-      session: req.session,
-      scripts: ['/js/home.js']
-    });
+    var ua;
+    ua = ua_match(req.header('USER-AGENT'));
+    if (ua.browser === 'msie' && parseInt(ua.version, 10) < 9) {
+      return res.render('ie_home', {
+        user: req.user,
+        session: req.session
+      });
+    } else {
+      return res.render('index', {
+        user: req.user,
+        session: req.session,
+        scripts: ['/js/home.js']
+      });
+    }
   });
 
   /*

@@ -876,58 +876,6 @@ input {
   line-height: 1.5em;
   font-weight: bold;
 }
-.hand_container_container {
-  position: absolute;
-  z-index: 0;
-  top: 200px;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  height: 500px;
-  padding-top: 250px;
-}
-.hand_container_container .hand_container {
-  width: 1000px;
-  display: block;
-  margin: 0 auto;
-  position: relative;
-}
-.hand_container_container .hand_container .card {
-  position: absolute;
-  -webkit-transform: rotate(-15deg);
-  -moz-transform: rotate(-15deg);
-  -ms-transform: rotate(-15deg);
-  -o-transform: rotate(-15deg);
-  transform: rotate(-15deg);
-  zoom: 1;
-  background: url("/images/card-bg-small/scott-qr-blue.png");
-  height: 114px;
-  width: 200px;
-  left: -1px;
-  top: -50px;
-  font-size: 10.5px;
-  line-height: 1.5em;
-}
-.hand_container_container .hand_container .card .content {
-  margin: 5px 10px;
-}
-.hand_container_container .hand_container .card .qr {
-  height: 35px;
-  width: 35px;
-  position: absolute;
-  margin: 15px 0 0 140px;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
-  zoom: 1;
-}
-.hand_container_container .hand_container .hand {
-  position: absolute;
-  top: 0;
-  left: -200px;
-}
 .colorpicker {
   z-index: 500;
 }
@@ -1760,6 +1708,6 @@ input
   overflow: hidden;
   margin: 0px 0px 0px 142px;
 }
-.dbcommercial {
-  margin: 0px 0px 0px 113px;
+p {
+  margin: 20px 0;
 }

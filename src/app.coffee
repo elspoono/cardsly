@@ -145,6 +145,20 @@ knoxClient = knox.createClient
 ###########################################################
 
 
+ua_match =  (ua) ->
+  ua = ua.toLowerCase()
+
+  rwebkit = /(webkit)[ \/]([\w.]+)/
+  ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/
+  rmsie = /(msie) ([\w.]+)/
+  rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/
+
+  match = rwebkit.exec( ua ) or ropera.exec( ua ) or rmsie.exec( ua ) or ua.indexOf('compatible') < 0 and rmozilla.exec( ua ) or []
+
+  result =
+    browser: match[1] or ''
+    version: match[2] or '0'
+
 
 
 
@@ -520,7 +534,6 @@ if process.env.REDISTOGO_URL
     host: process.env.REDISTOGO_URL.replace /.*@([^:]*).*/ig, '$1'
     port: process.env.REDISTOGO_URL.replace /.*@.*:([^\/]*).*/ig, '$1'
     pass: process.env.REDISTOGO_URL.replace /.*:.*:(.*)@.*/ig, '$1'
-console.log options
 session_store = new redis_store options
 #
 # ## App configurations
@@ -961,6 +974,8 @@ check_no_err = (err) ->
     ,302
   !err
 #
+#
+#
 # Home Page
 app.get '/', (req, res) ->
   res.render 'landing-prelaunch'
@@ -1065,12 +1080,19 @@ app.get '/cute-animal', (req, res) ->
 #
 # Landing page prelaunch
 app.get '/home', (req, res) -> 
-  res.render 'index'
-    user: req.user
-    session: req.session
-    scripts:[
-      '/js/home.js'
-    ]
+  ua = ua_match req.header('USER-AGENT')
+
+  if ua.browser is 'msie' and parseInt(ua.version, 10) < 9
+    res.render 'ie_home'
+      user: req.user
+      session: req.session
+  else
+    res.render 'index'
+      user: req.user
+      session: req.session
+      scripts:[
+        '/js/home.js'
+      ]
 #
 #
 #
