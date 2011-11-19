@@ -144,7 +144,7 @@
         height: settings.height,
         width: settings.width
       });
-      if (typeof 'G_vmlCanvasManager' !== 'undefined') {
+      if (typeof G_vmlCanvasManager !== 'undefined') {
         $t.find('canvas')[0].width = settings.width;
         $t.find('canvas')[0].height = settings.height;
         return G_vmlCanvasManager.initElement($t.find('canvas')[0]);

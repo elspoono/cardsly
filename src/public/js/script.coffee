@@ -163,7 +163,7 @@ $.fn.qr = (options) ->
     $t.find('canvas').attr
       height: settings.height
       width: settings.width
-    if typeof('G_vmlCanvasManager') isnt 'undefined'
+    if typeof(G_vmlCanvasManager) isnt 'undefined'
       $t.find('canvas')[0].width = settings.width
       $t.find('canvas')[0].height = settings.height
       G_vmlCanvasManager.initElement($t.find('canvas')[0])
