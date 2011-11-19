@@ -90,17 +90,3 @@ html
     include footer
     //if IE lt 9
       link(rel='stylesheet', href='/css/ie.css')
-      script(src='http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js')
-
-      style
-        .chromeFrameInstallDefaultStyle {
-          width: 100%; /* default is 800px */
-        }
-   
-      script
-        window.attachEvent("onload", function() {
-          CFInstall.check({
-            mode: "overlay", // the default
-            node: "prompt"
-          });
-        });
