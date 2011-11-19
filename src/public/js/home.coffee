@@ -74,26 +74,8 @@ $ ->
 
 
 
-  ##############
-  #
-  # GOOGLE FONTS
-  #
-  # 1. Load them
-  # 2. Make their common names available
-  #
-  #
-  # Loading Them
-  setTimeout ->
-    WebFont.load google:
-      families: [ "IM+Fell+Engimgsh+SC::latin", "Julee::latin", "Syncopate::latin", "Gravitas+One::latin", "Quicksand::latin", "Vast+Shadow::latin", "Smokum::latin", "Ovo::latin", "Amatic+SC::latin", "Rancho::latin", "Poly::latin", "Chivo::latin", "Prata::latin", "Abril+Fatface::latin", "Ultra::latin", "Love+Ya+Like+A+Sister::latin", "Carter+One::latin", "Luckiest+Guy::latin", "Gruppo::latin", "Slackey::latin" ]
-  ,5000
-  #
-  #
-  # END GOOGLE FONTS
-  #
-  ################
 
-  
+
   ##############
   #
   # The Themes

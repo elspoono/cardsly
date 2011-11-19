@@ -58,13 +58,10 @@
         height: size,
         width: size
       });
-      $canvas.attr({
+      return $canvas.attr({
         height: size,
         width: size
       });
-      if (typeof G_vmlCanvasManager !== 'undefined') {
-        return G_vmlCanvasManager.initElement($canvas[0]);
-      }
     });
   };
 
@@ -74,47 +71,50 @@
       color: '000000'
     };
     return this.each(function(i) {
-      var $t, c, count, ctx, cutHex, hexToB, hexToG, hexToR, qrcode, r, scale, size, _ref, _results;
+      var $t, c, canvas, count, ctx, cutHex, hexToB, hexToG, hexToR, qrcode, r, scale, size, _ref, _results;
       if (options) $.extend(settings, options);
       $t = $(this);
       qrcode = $t.data('qrcode');
       count = qrcode.getModuleCount();
       scale = 3;
       size = count * scale + scale * 4;
-      ctx = $t.find('canvas')[0].getContext("2d");
-      hexToR = function(h) {
-        return parseInt((cutHex(h)).substring(0, 2), 16);
-      };
-      hexToG = function(h) {
-        return parseInt((cutHex(h)).substring(2, 4), 16);
-      };
-      hexToB = function(h) {
-        return parseInt((cutHex(h)).substring(4, 6), 16);
-      };
-      cutHex = function(h) {
-        if (h.charAt(0) === "#") {
-          return h.substring(1, 7);
-        } else {
-          return h;
-        }
-      };
-      ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')';
-      _results = [];
-      for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
-        _results.push((function() {
-          var _ref2, _results2;
-          _results2 = [];
-          for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-            if (qrcode.isDark(c, r)) {
-              _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
-            } else {
-              _results2.push(void 0);
-            }
+      canvas = $t.find('canvas')[0];
+      if (canvas && canvas.getContext) {
+        ctx = canvas.getContext("2d");
+        hexToR = function(h) {
+          return parseInt((cutHex(h)).substring(0, 2), 16);
+        };
+        hexToG = function(h) {
+          return parseInt((cutHex(h)).substring(2, 4), 16);
+        };
+        hexToB = function(h) {
+          return parseInt((cutHex(h)).substring(4, 6), 16);
+        };
+        cutHex = function(h) {
+          if (h.charAt(0) === "#") {
+            return h.substring(1, 7);
+          } else {
+            return h;
           }
-          return _results2;
-        })());
+        };
+        ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')';
+        _results = [];
+        for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
+          _results.push((function() {
+            var _ref2, _results2;
+            _results2 = [];
+            for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
+              if (qrcode.isDark(c, r)) {
+                _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
+              } else {
+                _results2.push(void 0);
+              }
+            }
+            return _results2;
+          })());
+        }
+        return _results;
       }
-      return _results;
     });
   };
 

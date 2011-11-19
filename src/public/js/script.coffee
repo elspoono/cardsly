@@ -89,6 +89,7 @@ $.fn.prep_qr = (options) ->
     $canvas = $ '<canvas />'
     $t.append $canvas
     #
+    #
     # QR Code
     qrcode = new QRCode -1, QRErrorCorrectLevel.H
     qrcode.addData settings.url
@@ -109,10 +110,6 @@ $.fn.prep_qr = (options) ->
     $canvas.attr
       height: size
       width: size
-    #
-    # IE Only
-    if typeof G_vmlCanvasManager != 'undefined'
-      G_vmlCanvasManager.initElement $canvas[0]
 #
 $.fn.draw_qr = (options) ->
   settings = 
@@ -130,19 +127,21 @@ $.fn.draw_qr = (options) ->
     scale = 3
     size = count * scale + scale * 4
     #
-    ctx = $t.find('canvas')[0].getContext "2d"
-    #
-    hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
-    hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
-    hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
-    cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+    canvas = $t.find('canvas')[0]
+    if canvas and canvas.getContext
+      ctx = canvas.getContext "2d"
+      #
+      hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
+      hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
+      hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
+      cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
 
-    ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')'
+      ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')'
 
-    # Actual Drawing of the QR Code
-    for r in [0..count-1]
-      for c in [0..count-1]
-        ctx.fillRect r * scale + scale*2, c * scale + scale*2, scale, scale if qrcode.isDark(c,r)
+      # Actual Drawing of the QR Code
+      for r in [0..count-1]
+        for c in [0..count-1]
+          ctx.fillRect r * scale + scale*2, c * scale + scale*2, scale, scale if qrcode.isDark(c,r)
 #
 $.fn.qr = (options) ->
   settings = 
