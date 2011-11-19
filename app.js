@@ -877,6 +877,12 @@
     });
   });
 
+  app.get('/js/libs/PIE', function(req, res, next) {
+    return res.sendfile(__dirname + '/public/js/libs/PIE.htc', {
+      'Content-Type': 'text/x-component'
+    });
+  });
+
   app.get('*', function(req, res, next) {
     return res.send('', {
       Location: '/'

@@ -121,14 +121,17 @@ box_shadow(n = gap(.25), color = $c_dark_warm, b = n)
   -moz-box-shadow n n b color
   -webkit-box-shadow n n b color
   box-shadow n n b color
+  behavior: url('/js/libs/PIE')
 text_shadow(n = gap(.1), color = $c_dark_warm, b = n)
   text-shadow n n b color
+  behavior: url('/js/libs/PIE')
 
 // Rounded Corners
 border_radius(n = gap(.5))
   -webkit-border-radius n
   -moz-border-radius n
   border-radius n
+  behavior: url('/js/libs/PIE')
 border_radius_bottom_left_only(n)
   border-bottom-left-radius n
   -moz-border-radius-bottomleft n
@@ -199,6 +202,8 @@ gradient(color1=$c_background,color2=$c_background,alpha=1)
   background-image -ms-linear-gradient(top, color1, color2) /* IE10 */
   background-image -o-linear-gradient(top, color1, color2) /* Opera 11.10+ */
   background-image linear-gradient(top, color1, color2)
+  -pie-background linear-gradient(top, color1, color2)
+  behavior: url('/js/libs/PIE')
 
 /********************************
  *

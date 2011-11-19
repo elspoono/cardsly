@@ -1133,6 +1133,10 @@ app.get '/error', (req, res) ->
 app.get '/robots.txt', (req, res, next) ->
   res.send 'user-agent: *\nDisallow: ',
     'Content-Type': 'text/plain'
+# Robots.txt to tell google it's cool to crawl
+app.get '/js/libs/PIE', (req, res, next) ->
+  res.sendfile __dirname + '/public/js/libs/PIE.htc',
+    'Content-Type': 'text/x-component'
 #
 #
 # Default Route
