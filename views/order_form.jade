@@ -17,7 +17,7 @@
           .card
             .qr
               .background
-            if session && session.saved_form && session.saved_form.values
+            if session && session.saved_form && session.saved_form.values && session.saved_form.values.length
               .content
                 - for(var i=0; i<session.saved_form.values.length; i++)
                   .line
