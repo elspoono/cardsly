@@ -1107,7 +1107,7 @@ app.get '/thank-you', (req, res) ->
         # Do Error
         console.log 'ERR: ', err
         res.render 'order_form'
-          error_string: 'Something went wrong. Please try again.'
+          error_message: 'Something went wrong. Please try again.'
           user: req.user
           session: req.session
       else
@@ -1129,7 +1129,7 @@ app.get '/thank-you', (req, res) ->
             # Do Error
             console.log 'ERR: ', err
             res.render 'order_form'
-              error_string: 'Something went wrong. Please try again.'
+              error_message: 'Something went wrong. Please try again.'
               user: req.user
               session: req.session
           else
@@ -1160,7 +1160,7 @@ app.get '/thank-you', (req, res) ->
                 # Do Error
                 console.log 'ERR: ', err
                 res.render 'order_form'
-                  error_string: 'Something went wrong. Please try again.'
+                  error_message: 'I couldn\'t reach the credit card company. Please try again.'
                   user: req.user
                   session: req.session
               else
@@ -1169,9 +1169,9 @@ app.get '/thank-you', (req, res) ->
                     user: req.user
                     session: req.session
                 else
-                  console.log purchase.messages
+                  console.log 'CARD ERR: ', purchase.messages
                   res.render 'order_form'
-                    error_messages: purchase.messages
+                    error_message: 'The credit card company told me no for that card information.'
                     user: req.user
                     session: req.session
     #
@@ -1179,7 +1179,7 @@ app.get '/thank-you', (req, res) ->
   else
     console.log 'ERR: ', 'Hit the thank you page without a token.'
     res.render 'order_form'
-      error_string: 'Something went wrong. Please try again.'
+      error_message: 'Something went wrong. Please try again.'
       user: req.user
       session: req.session
     # Do Error

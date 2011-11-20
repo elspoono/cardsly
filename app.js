@@ -888,7 +888,7 @@
         if (err) {
           console.log('ERR: ', err);
           return res.render('order_form', {
-            error_string: 'Something went wrong. Please try again.',
+            error_message: 'Something went wrong. Please try again.',
             user: req.user,
             session: req.session
           });
@@ -907,7 +907,7 @@
             if (err) {
               console.log('ERR: ', err);
               return res.render('order_form', {
-                error_string: 'Something went wrong. Please try again.',
+                error_message: 'Something went wrong. Please try again.',
                 user: req.user,
                 session: req.session
               });
@@ -930,7 +930,7 @@
                 if (err) {
                   console.log('ERR: ', err);
                   return res.render('order_form', {
-                    error_string: 'Something went wrong. Please try again.',
+                    error_message: 'I couldn\'t reach the credit card company. Please try again.',
                     user: req.user,
                     session: req.session
                   });
@@ -941,9 +941,9 @@
                       session: req.session
                     });
                   } else {
-                    console.log(purchase.messages);
+                    console.log('CARD ERR: ', purchase.messages);
                     return res.render('order_form', {
-                      error_messages: purchase.messages,
+                      error_message: 'The credit card company told me no for that card information.',
                       user: req.user,
                       session: req.session
                     });
@@ -957,7 +957,7 @@
     } else {
       console.log('ERR: ', 'Hit the thank you page without a token.');
       return res.render('order_form', {
-        error_string: 'Something went wrong. Please try again.',
+        error_message: 'Something went wrong. Please try again.',
         user: req.user,
         session: req.session
       });
