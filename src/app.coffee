@@ -393,6 +393,8 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #
   promise = new Promise()
   #
+  console.log userMeta
+  #
   userSearch = {}
   if userMeta.publicProfileUrl
     userSearch.name = userMeta.firstName+' '+userMeta.lastName

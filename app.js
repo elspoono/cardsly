@@ -286,6 +286,7 @@
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, userSearch;
     promise = new Promise();
+    console.log(userMeta);
     userSearch = {};
     if (userMeta.publicProfileUrl) {
       userSearch.name = userMeta.firstName + ' ' + userMeta.lastName;
