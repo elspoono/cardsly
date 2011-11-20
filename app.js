@@ -865,24 +865,26 @@
       console.log(payment_method_token);
       console.log(samurai);
       return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
-        return console.log(payment_method);
+        var purchase;
+        console.log(payment_method.lastFourDigits());
+        return purchase = samurai.Processor.purchase(payment_method_token, total, {
+          billing_reference: 'billing data',
+          customer_reference: 'customer data',
+          custom: 'custom data',
+          descriptor: 'descriptor'
+        }, function(err, purchase) {
+          if (err) {
+            return console.log(err);
+          } else {
+            console.log(purchase);
+            console.log(purchase.isSuccess());
+            return res.render('thank-you', {
+              user: req.user,
+              session: req.session
+            });
+          }
+        });
       });
-      /*
-          purchase = samurai.Processor.purchase payment_method_token, total,
-            billing_reference: 'billing data'
-            customer_reference:  'customer data'
-            custom:              'custom data'
-            descriptor:          'descriptor'
-          , (err, purchase) ->
-            if err
-              # Do Error
-              console.log err
-            else
-              console.log purchase.isSuccess()
-              res.render 'thank-you'
-                user: req.user
-                session: req.session
-      */
     } else {
       return console.log('whoops');
     }
