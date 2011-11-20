@@ -944,6 +944,36 @@ app.post '/get-themes', (req,res,next) ->
 #
 #
 #
+app.post '/validate-purchase', (req, res, next) ->
+  console.log req.user
+  console.log req.session
+  #
+  #
+  ###
+  TODO
+
+  - validate we have all their shipping info and the total and all that jazz
+
+  - then save all that jazz in the real database, not in session like it is now
+
+  - then do the attempt at taking their money.
+  ###
+  #
+  if not req.user
+    res.send
+      error: 'Please sign in'
+  else if not req.session.saved_address
+    res.send
+      error: 'Please enter shipping info'
+  else if not req.session.saved_address.full_address
+    res.send
+      error: 'Please check the address'
+  else
+    res.send
+      success: 'true'
+#
+#
+#
 # END POST ROUTES
 #
 #
@@ -1086,6 +1116,8 @@ app.get '/settings', securedPage, (req, res) ->
 #
 #
 #
+#
+#
 #Thank_You Page
 app.get '/thank-you', (req, res) -> 
   payment_method_token = req.query.payment_method_token
@@ -1137,18 +1169,6 @@ app.get '/thank-you', (req, res) ->
             #
             #
             #
-            ###
-            TODO
-
-            - validate we have all their shipping info and the total and all that jazz
-
-            - then save all that jazz in the real database, not in session like it is now
-
-            - then do the attempt at taking their money.
-            ###
-            #
-            #
-            #
             # Try it
             purchase = samurai.Processor.purchase payment_method_token, total,
               billing_reference: 'billing data'
@@ -1160,7 +1180,7 @@ app.get '/thank-you', (req, res) ->
                 # Do Error
                 console.log 'ERR: ', err
                 res.render 'order_form'
-                  error_message: 'I couldn\'t reach the credit card company. Please try again.'
+                  error_message: 'I couldn\'t reach the credit card company just now. Please try again in a moment.'
                   user: req.user
                   session: req.session
               else
@@ -1171,7 +1191,7 @@ app.get '/thank-you', (req, res) ->
                 else
                   console.log 'CARD ERR: ', purchase.messages
                   res.render 'order_form'
-                    error_message: 'The credit card company told me no for that card information.'
+                    error_message: 'I\'m sorry, we couldn\'t process that credit card.'
                     user: req.user
                     session: req.session
     #

@@ -768,10 +768,10 @@ $ ->
   $error = $ '.error'
   if $error.length
     $('html,body').animate
-      scrollTop: $error.offset().top
+      scrollTop: $error.offset().top-50
       500
       ->
-        $error.fadeOut().fadeIn()
+        $error.stop(true,true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn()
 
 
 
@@ -1649,8 +1649,34 @@ $ ->
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
-    $.load_loading()
-    $('.order_total form').submit()
+    $.load_loading {}, (loading_close) ->
+
+        $.ajax
+          url: '/validate-purchase'
+          success: (result) ->
+            loading_close()
+            if result.error
+              if result.error is 'Please sign in'
+                $s = $ '.signins' 
+                $('html,body').animate
+                  scrollTop: $s.offset().top-50
+                  500
+                  ->
+                    $s.stop(true,true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn()
+                    $s.show_tooltip
+                      message: 'Please sign in or create an account.'
+              else
+                $.load_alert
+                  content: result.error
+            else if result.success
+              $('.order_total form').submit()
+            else
+              $.load_alert
+                content: 'Our apoligies, something went wrong, please try again later'
+          error: ->
+            loading_close()
+            $.load_alert
+              content: 'Our apoligies, somethieng went wrong, please try again later'
     false
 
   #

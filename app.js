@@ -769,6 +769,37 @@
     });
   });
 
+  app.post('/validate-purchase', function(req, res, next) {
+    console.log(req.user);
+    console.log(req.session);
+    /*
+      TODO
+    
+      - validate we have all their shipping info and the total and all that jazz
+    
+      - then save all that jazz in the real database, not in session like it is now
+    
+      - then do the attempt at taking their money.
+    */
+    if (!req.user) {
+      return res.send({
+        error: 'Please sign in'
+      });
+    } else if (!req.session.saved_address) {
+      return res.send({
+        error: 'Please enter shipping info'
+      });
+    } else if (!req.session.saved_address.full_address) {
+      return res.send({
+        error: 'Please check the address'
+      });
+    } else {
+      return res.send({
+        success: 'true'
+      });
+    }
+  });
+
   /*
   
   GET ROUTES
@@ -912,15 +943,6 @@
                 session: req.session
               });
             } else {
-              /*
-                          TODO
-              
-                          - validate we have all their shipping info and the total and all that jazz
-              
-                          - then save all that jazz in the real database, not in session like it is now
-              
-                          - then do the attempt at taking their money.
-              */
               return purchase = samurai.Processor.purchase(payment_method_token, total, {
                 billing_reference: 'billing data',
                 customer_reference: 'customer data',
@@ -930,7 +952,7 @@
                 if (err) {
                   console.log('ERR: ', err);
                   return res.render('order_form', {
-                    error_message: 'I couldn\'t reach the credit card company. Please try again.',
+                    error_message: 'I couldn\'t reach the credit card company just now. Please try again in a moment.',
                     user: req.user,
                     session: req.session
                   });
@@ -943,7 +965,7 @@
                   } else {
                     console.log('CARD ERR: ', purchase.messages);
                     return res.render('order_form', {
-                      error_message: 'The credit card company told me no for that card information.',
+                      error_message: 'I\'m sorry, we couldn\'t process that credit card.',
                       user: req.user,
                       session: req.session
                     });

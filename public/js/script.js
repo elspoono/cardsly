@@ -740,9 +740,9 @@
     $error = $('.error');
     if ($error.length) {
       $('html,body').animate({
-        scrollTop: $error.offset().top
+        scrollTop: $error.offset().top - 50
       }, 500, function() {
-        return $error.fadeOut().fadeIn();
+        return $error.stop(true, true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
       });
     }
     /*
@@ -1447,8 +1447,44 @@
     */
     item_name = '100 cards';
     return $('.checkout').click(function() {
-      $.load_loading();
-      $('.order_total form').submit();
+      $.load_loading({}, function(loading_close) {
+        return $.ajax({
+          url: '/validate-purchase',
+          success: function(result) {
+            var $s;
+            loading_close();
+            if (result.error) {
+              if (result.error === 'Please sign in') {
+                $s = $('.signins');
+                return $('html,body').animate({
+                  scrollTop: $s.offset().top - 50
+                }, 500, function() {
+                  $s.stop(true, true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
+                  return $s.show_tooltip({
+                    message: 'Please sign in or create an account.'
+                  });
+                });
+              } else {
+                return $.load_alert({
+                  content: result.error
+                });
+              }
+            } else if (result.success) {
+              return $('.order_total form').submit();
+            } else {
+              return $.load_alert({
+                content: 'Our apoligies, something went wrong, please try again later'
+              });
+            }
+          },
+          error: function() {
+            loading_close();
+            return $.load_alert({
+              content: 'Our apoligies, somethieng went wrong, please try again later'
+            });
+          }
+        });
+      });
       return false;
     });
   });
