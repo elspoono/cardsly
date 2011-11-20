@@ -1100,10 +1100,12 @@ app.get '/thank-you', (req, res) ->
           # Do Error
           console.log err
         else
-          console.log purchase.isSuccess()
-          res.render 'thank-you'
-            user: req.user
-            session: req.session
+          if purchase.isSuccess()
+            res.render 'thank-you'
+              user: req.user
+              session: req.session
+          else
+            console.log purchase
     #
     #
   else

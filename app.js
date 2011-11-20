@@ -876,11 +876,14 @@
           if (err) {
             return console.log(err);
           } else {
-            console.log(purchase.isSuccess());
-            return res.render('thank-you', {
-              user: req.user,
-              session: req.session
-            });
+            if (purchase.isSuccess()) {
+              return res.render('thank-you', {
+                user: req.user,
+                session: req.session
+              });
+            } else {
+              return console.log(purchase);
+            }
           }
         });
       });
