@@ -1225,6 +1225,7 @@ input {
   overflow: hidden;
 }
 .categories .category {
+  margin-bottom: 10px;
   overflow: hidden;
 }
 .categories .category .cards {

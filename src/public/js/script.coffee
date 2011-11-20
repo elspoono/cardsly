@@ -1404,23 +1404,27 @@ $ ->
   set_timers = ->
     clearTimeout input_timer
     input_timer = setTimeout ->
-        ###
-        # TODO
-        #
-        # this.value should have a .replace ',' '\,'
-        # on it so that we can use a comma character and escape anything.
-        # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-        ###
-        values = $.makeArray $lines.map -> 
-          $(this).html()
-        $.ajax
-          url: '/save-form'
-          data: JSON.stringify 
-            values: values
-            active_view: active_view
-            active_theme_id: active_theme._id
-        false
-      ,1000
+      #
+      # Find the values of quantiy and speed
+      $q = $('.quantity input:checked')
+      $s = $('.shipping_method input:checked')
+      #
+      #
+      # Find the values for the card lines from the main designer
+      values = $.makeArray $lines.map -> 
+        $(this).html()
+      #
+      #
+      $.ajax
+        url: '/save-form'
+        data: JSON.stringify 
+          values: values
+          active_view: active_view
+          active_theme_id: active_theme._id
+          quantity: $q.val()*1
+          shipping_method: $s.val()*1
+      false
+    ,1000
   #
   ###
   Update Cards

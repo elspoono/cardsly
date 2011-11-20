@@ -51,20 +51,47 @@
       ul.radio_text_fields.left.quantity
         li
           p Quantity:
+        - quantity = 10
+        if session && session.saved_form && session.saved_form.quantity
+          - quantity = session.saved_form.quantity
         li
-          input(type='radio',name='quantity',value='10',checked='checked',id='quantity_1')
+          input(
+            type='radio'
+            name='quantity'
+            value='10'
+            checked= (quantity==10 ? 'checked' : false)
+            id='quantity_1'
+          )
           label(for='quantity_1') 100 cards for $10
             .subtitle 10 cents per card
         li
-          input(type='radio',name='quantity',value='20',id='quantity_2')
+          input(
+            type='radio'
+            name='quantity'
+            value='20'
+            checked= (quantity==20 ? 'checked' : false)
+            id='quantity_2'
+          )
           label(for='quantity_2') 250 cards for $20
             .subtitle 8 cents per card
         li
-          input(type='radio',name='quantity',value='30',id='quantity_3')
+          input(
+            type='radio'
+            name='quantity'
+            value='30'
+            checked= (quantity==30 ? 'checked' : false)
+            id='quantity_2'
+          )
           label(for='quantity_3') 500 cards for $30
             .subtitle 6 cents per card
         li
-          input(type='radio',name='quantity',value='60',id='quantity_4')
+          input(
+            type='radio'
+            name='quantity'
+            value='60'
+            checked= (quantity==60 ? 'checked' : false)
+            id='quantity_2'
+          )
           label(for='quantity_4') 1500 cards for $60
             .subtitle 4 cents per card
       ul.radio_text_fields.right.shipping_method

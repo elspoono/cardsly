@@ -1261,14 +1261,9 @@
     set_timers = function() {
       clearTimeout(input_timer);
       return input_timer = setTimeout(function() {
-        /*
-                # TODO
-                #
-                # this.value should have a .replace ',' '\,'
-                # on it so that we can use a comma character and escape anything.
-                # more appropriate way to avoid conflicts than the current `~` which may still be randomly hit sometime.
-        */
-        var values;
+        var $q, $s, values;
+        $q = $('.quantity input:checked');
+        $s = $('.shipping_method input:checked');
         values = $.makeArray($lines.map(function() {
           return $(this).html();
         }));
@@ -1277,7 +1272,9 @@
           data: JSON.stringify({
             values: values,
             active_view: active_view,
-            active_theme_id: active_theme._id
+            active_theme_id: active_theme._id,
+            quantity: $q.val() * 1,
+            shipping_method: $s.val() * 1
           })
         });
         return false;
