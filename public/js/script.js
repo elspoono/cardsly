@@ -140,10 +140,6 @@
         height: settings.height,
         width: settings.width
       });
-      $t.find('canvas').attr({
-        height: settings.height,
-        width: settings.width
-      });
       if (typeof G_vmlCanvasManager !== 'undefined') {
         $t.find('canvas')[0].width = settings.width;
         $t.find('canvas')[0].height = settings.height;
