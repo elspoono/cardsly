@@ -901,13 +901,32 @@ input
 .categories
   overflow hidden
   .category
-    margin-bottom 10px
+    margin-top 10px
     overflow hidden
+    .arrow_container
+      float right
+      border 2px solid darken($c_logo_alt,20)
+      border_radius(2px)
+      gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
+    .arrow
+      margin 6px 6px 0 6px
+      border 6px solid transparent
+      border-top 6px solid $c_light
     .cards
       display none
   .category.active
+    h4
+      cursor default
     .cards
       display block
+    .arrow_container
+      border 2px solid darken($c_logo_alt,0)
+      gradient(darken($c_logo_alt,0),darken($c_logo_alt,20))
+    .arrow
+      margin 3px 9px
+      border 6px solid transparent
+      border-right 6px solid $c_light
+      border-left none
   .card
     cursor pointer
     overflow hidden
@@ -916,8 +935,7 @@ input
     margin 15px 20px 15px 10px
     height 90px
     width 158px
-
-
+//
 // General Style to lighten text
 // Checkout Form
 .subtitle
