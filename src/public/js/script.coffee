@@ -28,6 +28,7 @@ This file is everywhere on the site
 ###
 $.ajaxSetup
   type: 'POST'
+  contentType: 'application/json'
 $window = $ window 
 $.fx.speeds._default = 300
 #
@@ -1461,8 +1462,8 @@ $ ->
           values: values
           active_view: active_view
           active_theme_id: active_theme._id
-          quantity: $q.val()*1
-          shipping_method: $s.val()*1
+          quantity: $q.val()
+          shipping_method: $s.val()
       false
     ,1000
   #

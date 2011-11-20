@@ -740,7 +740,7 @@ check_no_err_ajax = (err) ->
 app.post '/save-theme', (req, res) ->
   #
   # Put it into a nice pretty JSON object 
-  params = JSON.parse req.rawBody
+  params = req.body
   #
   # Save it in the session always.
   req.session.theme = params.theme
@@ -806,14 +806,9 @@ app.post '/save-form', (req, res) ->
 
   ###
   # Put it into a nice pretty JSON object 
-  if req.rawBody
-    params = JSON.parse req.rawBody
-    req.session.saved_form = params
-    res.send
-      success: true
-  else
-    res.send
-      error: true
+  req.session.saved_form = req.body
+  res.send
+    success: true
 #
 #
 #

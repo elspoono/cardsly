@@ -569,7 +569,7 @@
 
   app.post('/save-theme', function(req, res) {
     var new_theme, params;
-    params = JSON.parse(req.rawBody);
+    params = req.body;
     req.session.theme = params.theme;
     if (params.do_save) {
       if (params.theme._id) {
@@ -619,19 +619,10 @@
       Like on browser close.
       It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
       Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
-    */
-    var params;
-    if (req.rawBody) {
-      params = JSON.parse(req.rawBody);
-      req.session.saved_form = params;
-      return res.send({
-        success: true
-      });
-    } else {
-      return res.send({
-        error: true
-      });
-    }
+    */    req.session.saved_form = req.body;
+    return res.send({
+      success: true
+    });
   });
 
   app.post('/find-address', function(req, res, next) {

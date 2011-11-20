@@ -1356,6 +1356,9 @@ select {
   height: 90px;
   width: 158px;
 }
+.categories .card .line {
+  white-space: nowrap;
+}
 .subtitle {
   color: #362e2a;
   font-size: 12.6px;
