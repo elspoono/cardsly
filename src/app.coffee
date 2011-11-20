@@ -1084,8 +1084,6 @@ app.get '/thank-you', (req, res) ->
     console.log payment_method_token
     #
     #
-    console.log samurai
-    #
     #
     paymentMethod = samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
       console.log payment_method.lastFourDigits()
@@ -1101,7 +1099,6 @@ app.get '/thank-you', (req, res) ->
           # Do Error
           console.log err
         else
-          console.log purchase
           console.log purchase.isSuccess()
           res.render 'thank-you'
             user: req.user

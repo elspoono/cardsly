@@ -863,7 +863,6 @@
       total = (req.session.saved_form.quantity + req.session.saved_form.shipping_method) * 1;
       console.log(total);
       console.log(payment_method_token);
-      console.log(samurai);
       return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
         var purchase;
         console.log(payment_method.lastFourDigits());
@@ -876,7 +875,6 @@
           if (err) {
             return console.log(err);
           } else {
-            console.log(purchase);
             console.log(purchase.isSuccess());
             return res.render('thank-you', {
               user: req.user,
