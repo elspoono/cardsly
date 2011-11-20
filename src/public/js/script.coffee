@@ -1280,7 +1280,11 @@ $ ->
       #
       #
       #
-
+      #
+      $lines.each (i) ->
+        update_cards i, $(this).html()
+    #
+    #
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'

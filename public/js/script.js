@@ -1148,8 +1148,11 @@
         }
         $active_view = $('.active_view');
         if ($active_view.html()) {
-          return $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+          $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
         }
+        return $lines.each(function(i) {
+          return update_cards(i, $(this).html());
+        });
       },
       error: function() {
         return $.load_alert({
