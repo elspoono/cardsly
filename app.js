@@ -772,15 +772,6 @@
   app.post('/validate-purchase', function(req, res, next) {
     console.log(req.user);
     console.log(req.session);
-    /*
-      TODO
-    
-      - validate we have all their shipping info and the total and all that jazz
-    
-      - then save all that jazz in the real database, not in session like it is now
-    
-      - then do the attempt at taking their money.
-    */
     if (!req.user) {
       return res.send({
         error: 'Please sign in'
@@ -794,9 +785,18 @@
         error: 'Please check the address'
       });
     } else {
+      /*
+          TODO
+          
+          - SAVE THEIR INFO HERE
+      */
       return res.send({
-        success: 'true'
+        success: true
       });
+      /*
+          res.send
+            error: 'Im sorry this page isnt active yet'
+      */
     }
   });
 

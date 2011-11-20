@@ -949,15 +949,6 @@ app.post '/validate-purchase', (req, res, next) ->
   console.log req.session
   #
   #
-  ###
-  TODO
-
-  - validate we have all their shipping info and the total and all that jazz
-
-  - then save all that jazz in the real database, not in session like it is now
-
-  - then do the attempt at taking their money.
-  ###
   #
   if not req.user
     res.send
@@ -969,8 +960,24 @@ app.post '/validate-purchase', (req, res, next) ->
     res.send
       error: 'Please check the address'
   else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
     res.send
-      success: 'true'
+      success: true
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
 #
 #
 #
