@@ -730,12 +730,20 @@
   */
 
   $(function() {
-    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
     if ($.browser.msie && parseInt($.browser.version, 10) < 8 && !document.location.href.match(/splash/) && !$.cookie('bypass_splash')) {
       document.location.href = '/splash';
+    }
+    $error = $('.error');
+    if ($error.length) {
+      $('html,body').animate({
+        scrollTop: $error.offset().top
+      }, 500, function() {
+        return $error.fadeOut().fadeIn();
+      });
     }
     /*
       Profile MENU in the TOP RIGHT

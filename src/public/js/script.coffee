@@ -765,8 +765,13 @@ $ ->
       document.location.href = '/splash'
   #
   #
-
-
+  $error = $ '.error'
+  if $error.length
+    $('html,body').animate
+      scrollTop: $error.offset().top
+      500
+      ->
+        $error.fadeOut().fadeIn()
 
 
 
