@@ -83,9 +83,13 @@ body {
   font-family: 'Ubuntu', sans-serif;
   background: #cfbea8 url("/images/little_pluses.png");
 }
-input {
-  font-size: 21px;
-  line-height: 1.5em;
+input,
+select {
+  font-size: 12px;
+  line-height: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #000;
 }
 #container {
   max-width: 850px;
@@ -662,59 +666,6 @@ input {
   -pie-background: linear-gradient(top, #2d8cd0, #80bae3);
   behavior: url("/js/libs/PIE");
 }
-.checkout.button {
-  background-color: #0ba23d;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
-/* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #23f067, #0ba23d);
-/* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #23f067, #0ba23d);
-/* FF3.6 */
-  background-image: -ms-linear-gradient(top, #23f067, #0ba23d);
-/* IE10 */
-  background-image: -o-linear-gradient(top, #23f067, #0ba23d);
-/* Opera 11.10+ */
-  background-image: linear-gradient(top, #23f067, #0ba23d);
-  -pie-background: linear-gradient(top, #23f067, #0ba23d);
-  behavior: url("/js/libs/PIE");
-  font-size: 33.6px;
-  line-height: 1.5em;
-  width: 200px;
-  text-shadow: 1px 1px 0 #000;
-  behavior: url("/js/libs/PIE");
-}
-.checkout.button.hover {
-  background-color: #0ed24f;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#53f388), to(#0ed24f));
-/* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #53f388, #0ed24f);
-/* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #53f388, #0ed24f);
-/* FF3.6 */
-  background-image: -ms-linear-gradient(top, #53f388, #0ed24f);
-/* IE10 */
-  background-image: -o-linear-gradient(top, #53f388, #0ed24f);
-/* Opera 11.10+ */
-  background-image: linear-gradient(top, #53f388, #0ed24f);
-  -pie-background: linear-gradient(top, #53f388, #0ed24f);
-  behavior: url("/js/libs/PIE");
-}
-.checkout.button.click {
-  background-color: #53f388;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#0ed24f), to(#53f388));
-/* Saf4+, Chrome */
-  background-image: -webkit-linear-gradient(top, #0ed24f, #53f388);
-/* Chrome 10+, Saf5.1+, iOS 5+ */
-  background-image: -moz-linear-gradient(top, #0ed24f, #53f388);
-/* FF3.6 */
-  background-image: -ms-linear-gradient(top, #0ed24f, #53f388);
-/* IE10 */
-  background-image: -o-linear-gradient(top, #0ed24f, #53f388);
-/* Opera 11.10+ */
-  background-image: linear-gradient(top, #0ed24f, #53f388);
-  -pie-background: linear-gradient(top, #0ed24f, #53f388);
-  behavior: url("/js/libs/PIE");
-}
 .design_button.button {
   background-color: #0ba23d;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
@@ -848,7 +799,7 @@ input {
 .order_details .righter {
   float: left;
   margin: 30px 0;
-  width: 230px;
+  width: 250px;
 }
 .order_details .right,
 .order_details .righter {
@@ -864,13 +815,27 @@ input {
 .signins {
   border-top: 1px solid #524641;
 }
-.order_total {
-  overflow: hidden;
-}
 .order_total .details {
   float: right;
-  text-align: center;
-  width: 240px;
+  width: 250px;
+}
+.order_total li {
+  float: left;
+  margin: 0 0 10px 0;
+}
+.order_total li label {
+  display: block;
+  font-size: 14.7px;
+  line-height: 1.5em;
+}
+.order_total .card_number {
+  width: 230px;
+}
+.order_total .expiration {
+  float: right;
+}
+.order_total .cvv {
+  width: 30px;
 }
 .order_total .title {
   border-bottom: 1px solid #524641;
@@ -880,10 +845,19 @@ input {
   font-size: 12.6px;
   line-height: 1.5em;
 }
-.order_total .price {
-  font-size: 42px;
+.order_total .total {
+  margin: 15px 0;
+  font-size: 25.2px;
   line-height: 1.5em;
   font-weight: bold;
+}
+.order_total .total .price {
+  font-weight: normal;
+  display: inline;
+}
+.order_total .card_side {
+  float: left;
+  overflow: hidden;
 }
 .order_total .card {
   float: left;
@@ -895,6 +869,65 @@ input {
 }
 .order_total .card .line {
   white-space: nowrap;
+}
+.order_total .button {
+  float: right;
+  margin: 40px 0 5px 0;
+  display: block;
+  font-weight: normal;
+}
+.checkout.button {
+  background-color: #0ba23d;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #23f067, #0ba23d);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #23f067, #0ba23d);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #23f067, #0ba23d);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #23f067, #0ba23d);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #23f067, #0ba23d);
+  -pie-background: linear-gradient(top, #23f067, #0ba23d);
+  behavior: url("/js/libs/PIE");
+  font-size: 21px;
+  line-height: 1.5em;
+  width: 160px;
+  text-shadow: 1px 1px 0 #000;
+  behavior: url("/js/libs/PIE");
+}
+.checkout.button.hover {
+  background-color: #0ed24f;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#53f388), to(#0ed24f));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #53f388, #0ed24f);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #53f388, #0ed24f);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #53f388, #0ed24f);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #53f388, #0ed24f);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #53f388, #0ed24f);
+  -pie-background: linear-gradient(top, #53f388, #0ed24f);
+  behavior: url("/js/libs/PIE");
+}
+.checkout.button.click {
+  background-color: #53f388;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#0ed24f), to(#53f388));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #0ed24f, #53f388);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #0ed24f, #53f388);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #0ed24f, #53f388);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #0ed24f, #53f388);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #0ed24f, #53f388);
+  -pie-background: linear-gradient(top, #0ed24f, #53f388);
+  behavior: url("/js/libs/PIE");
 }
 .colorpicker {
   z-index: 500;
@@ -1055,6 +1088,7 @@ input {
 .designer .options select {
   font-size: 12.6px;
   line-height: 1.5em;
+  border: 1px solid #000;
   margin-right: 10px;
   float: left;
   width: 70px;
@@ -1483,7 +1517,7 @@ label .subtitle {
   line-height: 1.5em;
 }
 .radio_text_fields input {
-  margin: 10px 10px 0 0;
+  margin: 0px 10px 0 0;
   float: left;
   width: auto;
 }

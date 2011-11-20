@@ -229,8 +229,12 @@ body
   relative_size(.75)
   font-family $base_font_family
   background $c_body_bg url('/images/little_pluses.png')
-input
-  relative_size(1)
+input, select
+  font-size 12px
+  line-height 40px
+  height 40px
+  padding 0 10px
+  border 1px solid $c_black
 // END Base Tag Definitions
 
 
@@ -582,16 +586,6 @@ input
 .button.normal.click
   gradient(darken($c_logo_alt,10),lighten($c_logo_alt,10))
   
-// Checkout Button
-.checkout.button
-  gradient($c_go,darken($c_go,20))
-  relative_size(1.6)
-  width 200px
-  text_shadow(1px,$c_black,0)
-.checkout.button.hover
-  gradient(lighten($c_go,10),darken($c_go,10))
-.checkout.button.click
-  gradient(darken($c_go,10),lighten($c_go,10))
 
 
 // Checkout Button
@@ -662,7 +656,7 @@ input
   .left,.right,.righter
     float left
     margin 30px 0
-    width 230px
+    width 250px
   .right,.righter
     margin-left 20px
   .address_result
@@ -672,21 +666,38 @@ input
     relative_size(.65)
 .signins
   border-top 1px solid $c_bg_dark
-
+//
 .order_total
-  overflow hidden
   .details
     float right
-    text-align center
-    width 240px
+    width 250px
+  li
+    float left
+    margin 0 0 10px 0
+    label
+      display block
+      relative_size(.7)
+  .card_number
+    width 230px
+  .expiration
+    float right
+  .cvv
+    width 30px
   .title
     border-bottom 1px solid $c_bg_dark
     padding-bottom 5px
   .address_result
     relative_size(.6)
-  .price
-    relative_size(2)
+  .total
+    margin 15px 0
+    relative_size(1.2)
     font-weight bold
+    .price
+      font-weight normal
+      display inline
+  .card_side
+    float left
+    overflow hidden
   .card
     float left
     cursor pointer
@@ -696,6 +707,22 @@ input
     width 525px
     .line
       white-space nowrap
+  .button
+    float right
+    margin 40px 0 5px 0
+    display block
+    font-weight normal
+//
+// Checkout Button
+.checkout.button
+  gradient($c_go,darken($c_go,20))
+  relative_size(1)
+  width 160px
+  text_shadow(1px,$c_black,0)
+.checkout.button.hover
+  gradient(lighten($c_go,10),darken($c_go,10))
+.checkout.button.click
+  gradient(darken($c_go,10),lighten($c_go,10))
 
 
 // Generic for colorpicker
@@ -811,6 +838,7 @@ input
         display block
     input,select
       relative_size(.6)
+      border 1px solid $c_black
       margin-right 10px
       float left
       width 70px
@@ -1065,7 +1093,7 @@ label
     color $c_light
     relative_size(.65)
   input
-    margin 10px 10px 0 0
+    margin 0px 10px 0 0
     float left
     width auto
 

@@ -1439,9 +1439,7 @@
     */
     item_name = '100 cards';
     return $('.checkout').click(function() {
-      $.load_alert({
-        content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
-      });
+      $('.order_total form').submit();
       return false;
     });
   });

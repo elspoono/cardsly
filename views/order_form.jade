@@ -189,11 +189,36 @@
   .cell_content
     h3 Step 3: Confirm and Buy
     .order_total
-      .my_card
-      .details
+      .card_side
+        .my_card
         .address_result
           if session && session.saved_address
             !=session.saved_address.full_address
-        .price $10
-        .button.normal.checkout Buy Now!
-        
+      .details
+        .total Total Price: 
+          .price $10
+        form(action='https://api.samurai.feefighters.com/v1/payment_methods',method='POST')
+          input(name='redirect_url', type='hidden', value='http://0.0.0.0:4000/thank-you')
+          input(name='merchant_key', type='hidden', value='89b14db44561382d457b5160')
+          input(name='sandbox', type='hidden', value='true')
+          ul.form
+            li
+              label Card Number
+              input.card_number(name='credit_card[card_number]')
+            li
+              label CVC
+              input.cvv(name='credit_card[cvv]')
+            li.expiration
+              label Expiration
+              select(name='credit_card[expiry_month]')
+                - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+                - for (var i in months)
+                  option(value=i+1)=months[i]
+              select(name='credit_card[expiry_year]')
+                - for (var year = 2011; year<2032; year++)
+                  option(value=year)=year
+          .img_loader
+            input(type='submit',value'Submit')
+        .clear
+        .button.normal.checkout Purchase
+      .clear

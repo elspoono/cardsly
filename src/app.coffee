@@ -56,6 +56,11 @@ im = require 'imagemagick'
 #
 #
 #
+samurai = require 'samurai'
+samurai.setup
+  merchant_key: '89b14db44561382d457b5160'
+  merchant_password: '6a5a0bf8906a6b8b1e577d72'
+  processor_token: '5c44e876a2d1125015a872c3'  
 #
 geo = require('geo')
 #
@@ -1063,11 +1068,40 @@ app.get '/settings', securedPage, (req, res) ->
     ]
 #
 #Thank_You Page
-app.get '/thank_you', (req, res) -> 
-  res.render 'thank_you'
-    user: req.user
-    session: req.session
-    layout: 'layout_landing'
+app.get '/thank-you', (req, res) -> 
+  payment_method_token = req.query.payment_method_token
+  if payment_method_token
+    #
+    #
+    total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
+    console.log total
+    #
+    console.log payment_method_token
+    #
+    console.log samurai
+    #
+    paymentMethod = samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
+      console.log payment_method
+    # Try it
+    ###
+    purchase = samurai.Processor.purchase payment_method_token, total,
+      billing_reference: 'billing data'
+      customer_reference:  'customer data'
+      custom:              'custom data'
+      descriptor:          'descriptor'
+    , (err, purchase) ->
+      if err
+        # Do Error
+        console.log err
+      else
+        console.log purchase.isSuccess()
+        res.render 'thank-you'
+          user: req.user
+          session: req.session
+    ###
+  else
+    console.log 'whoops'
+    # Do Error
 #
 #
 # Splash Page

@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, ua_match, user_schema, util, view_schema;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, ua_match, user_schema, util, view_schema;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -40,6 +40,14 @@
   conf = require('./lib/conf');
 
   im = require('imagemagick');
+
+  samurai = require('samurai');
+
+  samurai.setup({
+    merchant_key: '89b14db44561382d457b5160',
+    merchant_password: '6a5a0bf8906a6b8b1e577d72',
+    processor_token: '5c44e876a2d1125015a872c3'
+  });
 
   geo = require('geo');
 
@@ -848,12 +856,36 @@
     });
   });
 
-  app.get('/thank_you', function(req, res) {
-    return res.render('thank_you', {
-      user: req.user,
-      session: req.session,
-      layout: 'layout_landing'
-    });
+  app.get('/thank-you', function(req, res) {
+    var paymentMethod, payment_method_token, total;
+    payment_method_token = req.query.payment_method_token;
+    if (payment_method_token) {
+      total = (req.session.saved_form.quantity + req.session.saved_form.shipping_method) * 1;
+      console.log(total);
+      console.log(payment_method_token);
+      console.log(samurai);
+      return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
+        return console.log(payment_method);
+      });
+      /*
+          purchase = samurai.Processor.purchase payment_method_token, total,
+            billing_reference: 'billing data'
+            customer_reference:  'customer data'
+            custom:              'custom data'
+            descriptor:          'descriptor'
+          , (err, purchase) ->
+            if err
+              # Do Error
+              console.log err
+            else
+              console.log purchase.isSuccess()
+              res.render 'thank-you'
+                user: req.user
+                session: req.session
+      */
+    } else {
+      return console.log('whoops');
+    }
   });
 
   app.get('/splash', function(req, res) {
