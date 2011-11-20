@@ -198,7 +198,7 @@
         .total Total Price: 
           .price $10
         form(action='https://api.samurai.feefighters.com/v1/payment_methods',method='POST')
-          input(name='redirect_url', type='hidden', value='http://0.0.0.0:4000/thank-you')
+          input(name='redirect_url', type='hidden', value='http://cards.ly/thank-you')
           input(name='merchant_key', type='hidden', value='89b14db44561382d457b5160')
           input(name='sandbox', type='hidden', value='true')
           ul.form
