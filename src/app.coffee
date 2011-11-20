@@ -1086,7 +1086,8 @@ app.get '/thank-you', (req, res) ->
     #
     #
     paymentMethod = samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
-      console.log payment_method.lastFourDigits()
+      console.log payment_method.cardType
+      console.log payment_method.lastFourDigits
       #
       # Try it
       purchase = samurai.Processor.purchase payment_method_token, total,

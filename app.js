@@ -865,7 +865,8 @@
       console.log(payment_method_token);
       return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
         var purchase;
-        console.log(payment_method.lastFourDigits());
+        console.log(payment_method.cardType);
+        console.log(payment_method.lastFourDigits);
         return purchase = samurai.Processor.purchase(payment_method_token, total, {
           billing_reference: 'billing data',
           customer_reference: 'customer data',
