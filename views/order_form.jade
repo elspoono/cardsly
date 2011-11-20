@@ -220,8 +220,7 @@
           .img_loader
             input(type='submit',value'Submit')
         .clear
-        - if typeof(error_message) != 'undefined'
-          - if error_message['processor.cvv_result_code']
-            .error I'm sorry, our credit card processor didn't let me use that credit card number, cvc, and expiration date.
+        if error_message
+          .error=error_message
         .button.normal.checkout Purchase
       .clear

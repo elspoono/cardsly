@@ -447,7 +447,8 @@
     app.set('view options', {
       scripts: [],
       user: false,
-      session: false
+      session: false,
+      error_message: false
     });
     app.use(form({
       keepExtensions: true
@@ -620,11 +621,17 @@
       Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
     */
     var params;
-    params = JSON.parse(req.rawBody);
-    req.session.saved_form = params;
-    return res.send({
-      success: true
-    });
+    if (req.rawBody) {
+      params = JSON.parse(req.rawBody);
+      req.session.saved_form = params;
+      return res.send({
+        success: true
+      });
+    } else {
+      return res.send({
+        error: true
+      });
+    }
   });
 
   app.post('/find-address', function(req, res, next) {
@@ -905,6 +912,15 @@
                 session: req.session
               });
             } else {
+              /*
+                          TODO
+              
+                          - validate we have all their shipping info and the total and all that jazz
+              
+                          - then save all that jazz in the real database, not in session like it is now
+              
+                          - then do the attempt at taking their money.
+              */
               return purchase = samurai.Processor.purchase(payment_method_token, total, {
                 billing_reference: 'billing data',
                 customer_reference: 'customer data',

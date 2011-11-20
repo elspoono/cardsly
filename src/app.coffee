@@ -568,6 +568,7 @@ app.configure ->
     scripts: []
     user: false
     session: false
+    error_message: false
   app.use form
     keepExtensions: true
   app.use express.bodyParser()
@@ -805,10 +806,14 @@ app.post '/save-form', (req, res) ->
 
   ###
   # Put it into a nice pretty JSON object 
-  params = JSON.parse req.rawBody
-  req.session.saved_form = params
-  res.send
-    success: true
+  if req.rawBody
+    params = JSON.parse req.rawBody
+    req.session.saved_form = params
+    res.send
+      success: true
+  else
+    res.send
+      error: true
 #
 #
 #
@@ -1128,6 +1133,20 @@ app.get '/thank-you', (req, res) ->
               user: req.user
               session: req.session
           else
+            #
+            #
+            #
+            #
+            ###
+            TODO
+
+            - validate we have all their shipping info and the total and all that jazz
+
+            - then save all that jazz in the real database, not in session like it is now
+
+            - then do the attempt at taking their money.
+            ###
+            #
             #
             #
             # Try it
