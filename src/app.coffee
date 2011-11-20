@@ -1105,7 +1105,7 @@ app.get '/thank-you', (req, res) ->
               user: req.user
               session: req.session
           else
-            console.log purchase
+            console.log purchase.messages
     #
     #
   else

@@ -882,7 +882,7 @@
                 session: req.session
               });
             } else {
-              return console.log(purchase);
+              return console.log(purchase.messages);
             }
           }
         });
