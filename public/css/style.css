@@ -876,6 +876,12 @@ select {
   display: block;
   font-weight: normal;
 }
+.error {
+  color: #f00;
+  font-weight: bold;
+  background: #908575;
+  border: 1px solid #000;
+}
 .checkout.button {
   background-color: #0ba23d;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
