@@ -54,7 +54,7 @@ $.line_copy = [
 
 
 
-#############################################
+#################################################################
 #
 #
 # BEGIN Re-usable functions for everywhere
@@ -729,7 +729,7 @@ $.fn.box_rotate = (options) ->
 # END Re-usable functions for everywhere
 #
 #
-#############################################
+#################################################################
 
 
 
@@ -748,7 +748,7 @@ $ ->
 $ ->
   #
   #
-  #
+  # FIRST, some redirect
   #
   if document.location.href.match /#bypass_splash/i
     $.cookie 'bypass_splash', true
@@ -758,8 +758,14 @@ $ ->
       document.location.href = '/splash'
   #
   #
+
+
+
+
+
+  #################################################################
   #
-  #
+  # MENU
   #
   #
   ###
@@ -792,6 +798,14 @@ $ ->
   $a.one 'click', expand_menu
   #
   #
+  # END MENU
+  #
+  #################################################################
+
+
+
+
+
   #
   #
   # Path we'll use a few places, it's just the page we're on now, yeah?
@@ -823,8 +837,14 @@ $ ->
     $('.design_button').click()
   #
   #
+
+
+
+
+
+  #################################################################
   #
-  #
+  # LOGIN
   #
   # Successful Login Function
   successful_login = ->
@@ -838,11 +858,6 @@ $ ->
       $('.small_nav .login').html('<a href="/logout">Logout</a>')
   #
   #
-  #
-  #
-  ###
-  Login stuff
-  ###
   #
   #
   # Watch the popup windows every 200ms for when they set a cookie
@@ -896,11 +911,19 @@ $ ->
             content: 'Our apologies. A server error occurred.'
     false
   #
+  # END LOGIN
+  #
+  #################################################################
+
+
+
+
+  #################################################################
   #
   #
+  # New ACCOUNT Creation
   #
   #
-  # New Login Creation
   $('.new').click () ->
     $.load_modal
       content: '<div class="create_form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
@@ -989,7 +1012,22 @@ $ ->
       ,1000
     false
   #
+  # END New Account
   #
+  #################################################################
+
+
+
+
+
+
+
+
+
+
+  #################################################################
+  #
+  # FEEDBACK BUTTON STUFF
   #
   #
   $feedback_a = $ '.feedback a'
@@ -1050,9 +1088,22 @@ $ ->
       ] 
     false
   #
-  # Cards Page Selector
-  
+  # END FEEDBACK
+  #
+  #################################################################
 
+
+
+
+
+
+
+  
+  #################################################################
+  #
+  # CATEGORY SELECTION
+  #
+  # (used on both admin and order form)
   #
   # The floaty guy behind the gallery selection
   $gs = $ '.gallery_select'
@@ -1092,9 +1143,18 @@ $ ->
       $c.addClass('active')
   #
   #
+  #################################################################
+
+
+
+
+
+
+
+  #################################################################
   #
   #
-  #
+  # BUTTONS?
   #
   # Buttons everywhere need hover and click states
   $('.button').live 'mouseenter', ->
@@ -1105,6 +1165,10 @@ $ ->
     $(this).addClass 'click'
   .live 'mouseup', ->
     $(this).removeClass 'click'
+  #
+  # END BUTTONS
+  #
+  #################################################################
 
 
 
@@ -1117,10 +1181,7 @@ $ ->
 
 
   
-  # So everything indented here happens on page load
 
-  # What is the first thing we want to do
-  #
   # Grab all our jQuery guys that we're going to re use
   # (this is effectively instantiating classes)
   $designer = $ '.home_designer'
@@ -1163,9 +1224,17 @@ $ ->
 
 
 
+
+
+
+
+
+
+
+
   ##############
   #
-  # The Themes
+  # LOADING the themes
   #
   $.ajax
     url: '/get-themes'
@@ -1435,6 +1504,26 @@ $ ->
 
 
 
+
+
+
+
+
+
+
+
+  #############################################################
+  #
+  #
+  # ORDER FORM STUFF
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
   ###
   # Radio Button Clicking Stuff
   ###
@@ -1471,9 +1560,10 @@ $ ->
   # Window and Main Card to use later
   $win = $ window
   $mc = $ '.home_designer'
-  
-
-
+  #
+  #
+  #
+  #
   #
   #
   $view_buttons.click ->
@@ -1498,3 +1588,18 @@ $ ->
     $.load_alert
       content: '<p>In development.<p>Please check back <span style="text-decoration:line-through;">next week</span> <span style="text-decoration:line-through;">later this week</span> next wednesday.<p>(November 9th 2011)'
     false
+
+  #
+  #
+  #
+  #
+  # END ORDER FORM STUFF
+  #
+  #############################################################
+
+
+
+
+
+
+

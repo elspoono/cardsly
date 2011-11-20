@@ -793,9 +793,6 @@
         return $('.small_nav .login').html('<a href="/logout">Logout</a>');
       }
     };
-    /*
-      Login stuff
-    */
     monitor_for_complete = function(opened_window) {
       var checkTimer;
       $.cookie('success_login', null);
