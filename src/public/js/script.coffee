@@ -886,7 +886,7 @@ $ ->
     monitor_for_complete window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
   $('.facebook').click () ->
-    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=size.height0'
+    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=900'
     false
   $('.linkedin').click () ->
     monitor_for_complete window.open 'auth/linkedin', 'auth', 'height=300,width=400'

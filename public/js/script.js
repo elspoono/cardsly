@@ -821,7 +821,7 @@
       return false;
     });
     $('.facebook').click(function() {
-      monitor_for_complete(window.open('auth/facebook', 'auth', 'height=400,width=size.height0'));
+      monitor_for_complete(window.open('auth/facebook', 'auth', 'height=400,width=900'));
       return false;
     });
     $('.linkedin').click(function() {
