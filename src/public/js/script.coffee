@@ -179,7 +179,13 @@ $.fn.qr = (options) ->
 #
 #
 # helper function to create styled card
-$.create_card_from_theme = (theme) ->
+$.create_card_from_theme = (theme, size) ->
+  #
+  #
+  if !size
+    size = 
+      height: 90
+      width: 158
   #
   # Set Constants
   theme_template = theme.theme_templates[0]
@@ -196,21 +202,21 @@ $.create_card_from_theme = (theme) ->
   #
   $my_qr.qr
     color: theme_template.qr.color1
-    height: theme_template.qr.h/100 * 90
-    width: theme_template.qr.w/100 * 158
+    height: theme_template.qr.h/100 * size.height
+    width: theme_template.qr.w/100 * size.width
   $my_qr.find('canvas').css
     zIndex: 150
     position: 'absolute'
   $my_qr.css
     position: 'absolute'
-    top: theme_template.qr.y/100 * 90
-    left: theme_template.qr.x/100 * 158
+    top: theme_template.qr.y/100 * size.height
+    left: theme_template.qr.x/100 * size.width
   $my_qr_bg.css
     zIndex: 140
     position: 'absolute'
     'border-radius': theme_template.qr.radius+'px'
-    height: theme_template.qr.h/100 * 90
-    width: theme_template.qr.w/100 * 158
+    height: theme_template.qr.h/100 * size.height
+    width: theme_template.qr.w/100 * size.width
     background: '#' + theme_template.qr.color2
   $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
   #
@@ -219,11 +225,11 @@ $.create_card_from_theme = (theme) ->
     $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
     $li.appendTo($my_card).css
       position: 'absolute'
-      top: pos.y/100 * 90
-      left: pos.x/100 * 158
-      width: (pos.w/100 * 158) + 'px'
-      fontSize: (pos.h/100 * 90) + 'px'
-      lineHeight: (pos.h/100 * 90) + 'px'
+      top: pos.y/100 * size.height
+      left: pos.x/100 * size.width
+      width: (pos.w/100 * size.width) + 'px'
+      fontSize: (pos.h/100 * size.height) + 'px'
+      lineHeight: (pos.h/100 * size.height) + 'px'
       fontFamily: pos.font_family
       textAlign: pos.text_align
       color: '#'+pos.color
@@ -231,7 +237,7 @@ $.create_card_from_theme = (theme) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
+    background: 'url(\'http://cdn.cards.ly/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -304,6 +310,7 @@ $.fn.show_tooltip = (options) ->
 
     ###
     tooltip.stop(true,true).fadeIn().delay(4000).fadeOut()
+    $t.data 'tooltip', tooltip
 #
 #
 #
@@ -879,7 +886,7 @@ $ ->
     monitor_for_complete window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
   $('.facebook').click () ->
-    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=900'
+    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=size.height0'
     false
   $('.linkedin').click () ->
     monitor_for_complete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
@@ -1199,6 +1206,7 @@ $ ->
   $quantity = $('.quantity')
   $shipping_method = $('.shipping_method')
   $address = $('.address')
+  $address_result = $('.address_result')
   $city = $('.city')
   #
   #
@@ -1272,8 +1280,6 @@ $ ->
       #
       #
       #
-      $lines.each (i) ->
-        update_cards i, $(this).html()
 
     error: ->
       $.load_alert
@@ -1364,6 +1370,8 @@ $ ->
     $qr.hide()
     $lines.hide()
     #
+    #
+    #
     # Show the qr code and set it to the right place
     $qr.show().css
       top: theme_template.qr.y/100 * card_height
@@ -1396,6 +1404,29 @@ $ ->
         fontFamily: pos.font_family
         textAlign: pos.text_align
         color: '#'+pos.color
+    #
+    #
+    # For the home page, show the selected card at the bottom
+    $active_card = $.create_card_from_theme active_theme,
+      height: 300
+      width: 525
+    $('.my_card').children().remove()
+    $('.my_card').append $active_card
+    $active_card.find('.qr canvas').css
+      left: 0
+      margin: 0
+    #
+    #
+    #
+    ###
+    TODO
+
+    - this probably doesn't need to update every time. Could make page faster not doing this.
+    ###
+    #
+    #
+    $lines.each (i) ->
+      update_cards i, $(this).html()
   #
   #
   #
@@ -1432,7 +1463,7 @@ $ ->
   This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
   update_cards = (rowNumber, value) ->
-    $('.categories .card').each -> 
+    $('.categories .card').add('.order_total .card').each -> 
       $t = $ this
       $t.find('.line:eq('+rowNumber+')').html value
   #
@@ -1543,21 +1574,41 @@ $ ->
     set_timers()
   #
   #
+  address_timer = 0
+  set_address_timer = ->
+    clearTimeout address_timer
+    address_timer = setTimeout ->
+      address = $address.val()
+      city = $city.val()
+      if address is ''
+        $address.show_tooltip
+          message:'Please enter a street address'
+      else if city is ''
+        $address.data('tooltip').stop().hide() if $address.data 'tooltip'
+        $city.show_tooltip
+          message:'Please enter a city or zip code'
+      else
+        $address.data('tooltip').stop().hide() if $address.data 'tooltip'
+        $city.data('tooltip').stop().hide() if $city.data 'tooltip'
+        $address_result.html 'Searching for real address ...'
+      
+        $.ajax
+          url: '/find-address'
+          data:
+            address: address
+            city: city
+          success: (result) ->
+            if result.full_address
+              $address_result.html result.full_address
+            else
+              $address_result.html 'Not found - try again?'
+          error: ->
+            $address_result.html address+'<br>'+city
+
+    ,1000
   #
-  $address.keyup ->
-    $t = $ this
-    v = $t.val()
-    if v is ''
-      $t.show_tooltip
-        message: 'Please enter a street address'
-  #
-  #
-  $city.keyup ->
-    $t = $ this
-    v = $t.val()
-    if v is ''
-      $t.show_tooltip
-        message: 'Please enter zip code'
+  $address.keyup set_address_timer
+  $city.keyup set_address_timer
   #
   #
   #

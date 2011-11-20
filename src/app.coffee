@@ -793,6 +793,19 @@ app.post '/save-form', (req, res) ->
 #
 #
 #
+app.post '/find-address', (req, res, next) ->
+  geo.geocoder geo.google, req.body.address+' '+req.body.city, false, (full_address, latitude, longitude, details) ->
+    console.log full_address, latitude, longitude, details
+    full_address = full_address.replace /,/, '<br>'
+    req.session.saved_address =
+      address: req.body.address
+      city: req.body.city
+      full_address: full_address
+      latitude: latitude
+      longitude: longitude
+      details: details
+    res.send
+      full_address: full_address
 #
 #
 #

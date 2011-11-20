@@ -1,3 +1,4 @@
 ./views/*
 ./public/*
 ./src/public/*
+*.rdb

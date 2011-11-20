@@ -107,14 +107,17 @@ $ ->
     #
     # - stop the biz cards, slide stuff out
     #
+    wait_delay = quick_time*3
+    if wait_delay <= 150
+      wait_delay = 0
     $label_away.stop(true,true).show().css
       'margin-left': 0
-    $label_away.animate
+    $label_away.delay(wait_delay).animate
       'margin-left': -233
     ,quick_time
     $guy_im_fading_out.stop(true,true).show().css
       'margin-left': 0
-    $guy_im_fading_out.animate
+    $guy_im_fading_out.delay(wait_delay).animate
       'margin-left': -233
     ,quick_time
     $phone_scanner.stop(true,true)
@@ -127,7 +130,7 @@ $ ->
     #
     # STEP 3: Bring things in
     #
-    wait_delay = quick_time*3
+    wait_delay = quick_time*4
     if wait_delay <= 200
       wait_delay = 0
     $my_next_guy.show().css

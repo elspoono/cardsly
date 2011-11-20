@@ -156,8 +156,14 @@
     *
   */
 
-  $.create_card_from_theme = function(theme) {
+  $.create_card_from_theme = function(theme, size) {
     var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme_template, _len, _ref;
+    if (!size) {
+      size = {
+        height: 90,
+        width: 158
+      };
+    }
     theme_template = theme.theme_templates[0];
     $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
     $my_card.data('theme', theme);
@@ -165,8 +171,8 @@
     $my_qr_bg = $my_qr.find('.background');
     $my_qr.qr({
       color: theme_template.qr.color1,
-      height: theme_template.qr.h / 100 * 90,
-      width: theme_template.qr.w / 100 * 158
+      height: theme_template.qr.h / 100 * size.height,
+      width: theme_template.qr.w / 100 * size.width
     });
     $my_qr.find('canvas').css({
       zIndex: 150,
@@ -174,15 +180,15 @@
     });
     $my_qr.css({
       position: 'absolute',
-      top: theme_template.qr.y / 100 * 90,
-      left: theme_template.qr.x / 100 * 158
+      top: theme_template.qr.y / 100 * size.height,
+      left: theme_template.qr.x / 100 * size.width
     });
     $my_qr_bg.css({
       zIndex: 140,
       position: 'absolute',
       'border-radius': theme_template.qr.radius + 'px',
-      height: theme_template.qr.h / 100 * 90,
-      width: theme_template.qr.w / 100 * 158,
+      height: theme_template.qr.h / 100 * size.height,
+      width: theme_template.qr.w / 100 * size.width,
       background: '#' + theme_template.qr.color2
     });
     $my_qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
@@ -192,18 +198,18 @@
       $li = $('<div class="line">' + $.line_copy[i] + '</div>');
       $li.appendTo($my_card).css({
         position: 'absolute',
-        top: pos.y / 100 * 90,
-        left: pos.x / 100 * 158,
-        width: (pos.w / 100 * 158) + 'px',
-        fontSize: (pos.h / 100 * 90) + 'px',
-        lineHeight: (pos.h / 100 * 90) + 'px',
+        top: pos.y / 100 * size.height,
+        left: pos.x / 100 * size.width,
+        width: (pos.w / 100 * size.width) + 'px',
+        fontSize: (pos.h / 100 * size.height) + 'px',
+        lineHeight: (pos.h / 100 * size.height) + 'px',
         fontFamily: pos.font_family,
         textAlign: pos.text_align,
         color: '#' + pos.color
       });
     }
     return $my_card.css({
-      background: 'url(\'http://cdn.cards.ly/158x90/' + theme_template.s3_id + '\')'
+      background: 'url(\'http://cdn.cards.ly/' + size.width + 'x' + size.height + '/' + theme_template.s3_id + '\')'
     });
   };
 
@@ -266,7 +272,8 @@
       
               TODO : Make the animation in a custom slide up / slide down thing with $.animate
       */
-      return tooltip.stop(true, true).fadeIn().delay(4000).fadeOut();
+      tooltip.stop(true, true).fadeIn().delay(4000).fadeOut();
+      return $t.data('tooltip', tooltip);
     });
   };
 
@@ -723,7 +730,7 @@
   */
 
   $(function() {
-    var $a, $address, $am, $body, $card, $categories, $city, $designer, $email_text, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
@@ -814,7 +821,7 @@
       return false;
     });
     $('.facebook').click(function() {
-      monitor_for_complete(window.open('auth/facebook', 'auth', 'height=400,width=900'));
+      monitor_for_complete(window.open('auth/facebook', 'auth', 'height=400,width=size.height0'));
       return false;
     });
     $('.linkedin').click(function() {
@@ -1100,6 +1107,7 @@
     $quantity = $('.quantity');
     $shipping_method = $('.shipping_method');
     $address = $('.address');
+    $address_result = $('.address_result');
     $city = $('.city');
     $body = $(document);
     active_theme = false;
@@ -1140,11 +1148,8 @@
         }
         $active_view = $('.active_view');
         if ($active_view.html()) {
-          $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+          return $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
         }
-        return $lines.each(function(i) {
-          return update_cards(i, $(this).html());
-        });
       },
       error: function() {
         return $.load_alert({
@@ -1172,7 +1177,7 @@
       }
     });
     load_theme = function(theme) {
-      var $li, i, line, new_line, pos, theme_template, _i, _len, _len2, _ref, _ref2, _results;
+      var $active_card, $li, i, line, new_line, pos, theme_template, _i, _len, _len2, _ref, _ref2;
       theme_template = theme.theme_templates[active_view];
       if (!theme_template) {
         if (active_view === 2) {
@@ -1239,11 +1244,10 @@
         color: theme_template.qr.color1
       });
       _ref2 = theme_template.lines;
-      _results = [];
       for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
         pos = _ref2[i];
         $li = $lines.eq(i);
-        _results.push($li.show().css({
+        $li.show().css({
           top: pos.y / 100 * card_height,
           left: pos.x / 100 * card_width,
           width: (pos.w / 100 * card_width) + 'px',
@@ -1253,9 +1257,26 @@
           fontFamily: pos.font_family,
           textAlign: pos.text_align,
           color: '#' + pos.color
-        }));
+        });
       }
-      return _results;
+      $active_card = $.create_card_from_theme(active_theme, {
+        height: 300,
+        width: 525
+      });
+      $('.my_card').children().remove();
+      $('.my_card').append($active_card);
+      $active_card.find('.qr canvas').css({
+        left: 0,
+        margin: 0
+      });
+      /*
+          TODO
+      
+          - this probably doesn't need to update every time. Could make page faster not doing this.
+      */
+      return $lines.each(function(i) {
+        return update_cards(i, $(this).html());
+      });
     };
     input_timer = 0;
     set_timers = function() {
@@ -1286,7 +1307,7 @@
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
     */
     update_cards = function(rowNumber, value) {
-      return $('.categories .card').each(function() {
+      return $('.categories .card').add('.order_total .card').each(function() {
         var $t;
         $t = $(this);
         return $t.find('.line:eq(' + rowNumber + ')').html(value);
@@ -1356,26 +1377,48 @@
       $('.order_total .price').html('$' + (($q.val() * 1) + ($s.val() * 1)));
       return set_timers();
     });
-    $address.keyup(function() {
-      var $t, v;
-      $t = $(this);
-      v = $t.val();
-      if (v === '') {
-        return $t.show_tooltip({
-          message: 'Please enter a street address'
-        });
-      }
-    });
-    $city.keyup(function() {
-      var $t, v;
-      $t = $(this);
-      v = $t.val();
-      if (v === '') {
-        return $t.show_tooltip({
-          message: 'Please enter zip code'
-        });
-      }
-    });
+    address_timer = 0;
+    set_address_timer = function() {
+      clearTimeout(address_timer);
+      return address_timer = setTimeout(function() {
+        var address, city;
+        address = $address.val();
+        city = $city.val();
+        if (address === '') {
+          return $address.show_tooltip({
+            message: 'Please enter a street address'
+          });
+        } else if (city === '') {
+          if ($address.data('tooltip')) $address.data('tooltip').stop().hide();
+          return $city.show_tooltip({
+            message: 'Please enter a city or zip code'
+          });
+        } else {
+          if ($address.data('tooltip')) $address.data('tooltip').stop().hide();
+          if ($city.data('tooltip')) $city.data('tooltip').stop().hide();
+          $address_result.html('Searching for real address ...');
+          return $.ajax({
+            url: '/find-address',
+            data: {
+              address: address,
+              city: city
+            },
+            success: function(result) {
+              if (result.full_address) {
+                return $address_result.html(result.full_address);
+              } else {
+                return $address_result.html('Not found - try again?');
+              }
+            },
+            error: function() {
+              return $address_result.html(address + '<br>' + city);
+            }
+          });
+        }
+      }, 1000);
+    };
+    $address.keyup(set_address_timer);
+    $city.keyup(set_address_timer);
     $win = $(window);
     $mc = $('.home_designer');
     $view_buttons.click(function() {

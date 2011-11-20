@@ -46,7 +46,7 @@
 .section
   .cell_bg
   .cell_content
-    h3 Step 2 : Purchase
+    h3 Step 2 : Select quantity and sign in
     .order_details
       ul.radio_text_fields.left.quantity
         li
@@ -97,31 +97,50 @@
       ul.radio_text_fields.right.shipping_method
         li
           p Speed:
+        - shipping_method = 0
+        if session && session.saved_form && session.saved_form.shipping_method
+          - shipping_method = session.saved_form.shipping_method
         li
-          input(type='radio', name='shipping_method', value='0',checked='checked', id='shipping_method_1')
+          input(
+            type='radio'
+            name='shipping_method'
+            value='0'
+            checked= (shipping_method==0 ? 'checked' : false)
+            id='shipping_method_1'
+          )
           label(for='shipping_method_1') USPS Priority Mail for $0
             .subtitle 1-3 days
         li
-          input(type='radio', name='shipping_method', value='25', id='shipping_method_2')
+          input(
+            type='radio'
+            name='shipping_method'
+            value='25'
+            checked= (shipping_method==25 ? 'checked' : false)
+            id='shipping_method_2'
+          )
           label(for='shipping_method_2') USPS Express Mail for $25
             .subtitle overnight
       ul.text_fields.shipping.righter
         li
           p Shipped To:
         li
-          label Address Line 1
-          input.address(placeholder='123 Fake St')
+          label Address
+          input.address(
+            placeholder='221 Baker, Suite B'
+            value= (session.saved_address ? session.saved_address.address : '')
+          )
         li
-          label P.O. Box
-          input.city(placeholder='90210'))
-          .subtitle shipping to u.s. only for now
-        li
-          label City, State or Zip
-          input.city(placeholder='90210'))
-          .subtitle shipping to u.s. only for now
+          label City or Zip
+          input.city(
+            placeholder='90210'
+            value= (session.saved_address ? session.saved_address.city : '')
+          )
         li
           .address_result
-            | 123 Fake St
+            if session && session.saved_address
+              span.subtitle We will ship the cards to here:
+              br
+              !=session.saved_address.full_address
       .clear
 
     .img_loader
@@ -147,7 +166,7 @@
         p
           .socials
             p
-              | I want to sign in to 
+              | Sign in to 
               span.cardsly cards
                 span.alt .ly
               | &nbsp;with:
@@ -160,16 +179,21 @@
             a.button.google(href='/auth/google')
               span Google
             .clear
-            p -or-
+            p Or, alternatively, create a username and password:
           .local
             a.button.new(href='#')
               span Create a username and password
-              span.subtitle username and password
             .clear
-      
+.section
+  .cell_bg
+  .cell_content
+    h3 Step 3: Confirm and Buy
     .order_total
-      .title It costs this much
-      .price $10
-      .button.normal.checkout Buy Now
-      .subtitle checkout with paypal
+      .my_card
+      .details
+        .address_result
+          if session && session.saved_address
+            !=session.saved_address.full_address
+        .price $10
+        .button.normal.checkout Buy Now!
         

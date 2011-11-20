@@ -604,6 +604,24 @@
     });
   });
 
+  app.post('/find-address', function(req, res, next) {
+    return geo.geocoder(geo.google, req.body.address + ' ' + req.body.city, false, function(full_address, latitude, longitude, details) {
+      console.log(full_address, latitude, longitude, details);
+      full_address = full_address.replace(/,/, '<br>');
+      req.session.saved_address = {
+        address: req.body.address,
+        city: req.body.city,
+        full_address: full_address,
+        latitude: latitude,
+        longitude: longitude,
+        details: details
+      };
+      return res.send({
+        full_address: full_address
+      });
+    });
+  });
+
   app.post('/check-email', function(req, res, next) {
     var handleReturn, params;
     params = req.body || {};

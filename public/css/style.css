@@ -861,20 +861,40 @@ input {
   font-size: 13.65px;
   line-height: 1.5em;
 }
-.order_total .title,
-.order_total .price,
-.order_total .subtitle {
+.signins {
+  border-top: 1px solid #524641;
+}
+.order_total {
+  overflow: hidden;
+}
+.order_total .details {
+  float: right;
   text-align: center;
+  width: 240px;
 }
 .order_total .title {
   border-bottom: 1px solid #524641;
   padding-bottom: 5px;
 }
+.order_total .address_result {
+  font-size: 12.6px;
+  line-height: 1.5em;
+}
 .order_total .price {
-  padding: 15px;
   font-size: 42px;
   line-height: 1.5em;
   font-weight: bold;
+}
+.order_total .card {
+  float: left;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  height: 300px;
+  width: 525px;
+}
+.order_total .card .line {
+  white-space: nowrap;
 }
 .colorpicker {
   z-index: 500;
@@ -1448,7 +1468,6 @@ label .subtitle {
 .shipping .subtitle {
   font-size: 10.5px;
   line-height: 1.5em;
-  margin-left: 5px;
 }
 .radio_text_fields {
   font-size: 21px;

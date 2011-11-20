@@ -670,17 +670,32 @@ input
     cursor pointer
     color $c_light
     relative_size(.65)
+.signins
+  border-top 1px solid $c_bg_dark
 
 .order_total
-  .title,.price,.subtitle
+  overflow hidden
+  .details
+    float right
     text-align center
+    width 240px
   .title
     border-bottom 1px solid $c_bg_dark
     padding-bottom 5px
+  .address_result
+    relative_size(.6)
   .price
-    padding 15px
     relative_size(2)
     font-weight bold
+  .card
+    float left
+    cursor pointer
+    overflow hidden
+    position relative
+    height 300px
+    width 525px
+    .line
+      white-space nowrap
 
 
 // Generic for colorpicker
@@ -1041,7 +1056,6 @@ label
     cursor default
   .subtitle
     relative_size(.5)
-    margin-left 5px
 .radio_text_fields
   relative_size(1)
   margin -30px 0 15px 0
