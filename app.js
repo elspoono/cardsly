@@ -153,6 +153,13 @@
     custom_1: String,
     custom_2: String,
     custom_3: String,
+    payment_method: {
+      token: String,
+      cardType: String,
+      lastFourDigits: String,
+      expiry_month: String,
+      expiry_year: String
+    },
     date_added: {
       type: Date,
       "default": Date.now
@@ -402,6 +409,13 @@
     });
     return promise;
   });
+
+  /*
+  TODO
+  
+  For middleware
+  - Make the session and user objects sent on every request sent automatically instead of being something we have to pass each time to the jade.
+  */
 
   /*
   
@@ -864,31 +878,73 @@
       console.log(total);
       console.log(payment_method_token);
       return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
-        var purchase;
-        console.log(payment_method.cardType);
-        console.log(payment_method.lastFourDigits);
-        return purchase = samurai.Processor.purchase(payment_method_token, total, {
-          billing_reference: 'billing data',
-          customer_reference: 'customer data',
-          custom: 'custom data',
-          descriptor: 'descriptor'
-        }, function(err, purchase) {
-          if (err) {
-            return console.log(err);
-          } else {
-            if (purchase.isSuccess()) {
-              return res.render('thank-you', {
+        if (err) {
+          console.log('ERR: ', err);
+          return res.render('order_form', {
+            error_string: 'Something went wrong. Please try again.',
+            user: req.user,
+            session: req.session
+          });
+        } else {
+          console.log(payment_method.cardType);
+          console.log(payment_method.lastFourDigits);
+          req.user.payment_method = {
+            token: payment_method_token,
+            cardType: payment_method.cardType,
+            lastFourDigits: payment_method.lastFourDigits,
+            expiry_month: payment_method.expiry_month,
+            expiry_year: payment_method.expiry_year
+          };
+          return req.user.save(function(err, saved_user) {
+            var purchase;
+            if (err) {
+              console.log('ERR: ', err);
+              return res.render('order_form', {
+                error_string: 'Something went wrong. Please try again.',
                 user: req.user,
                 session: req.session
               });
             } else {
-              return console.log(purchase.messages);
+              return purchase = samurai.Processor.purchase(payment_method_token, total, {
+                billing_reference: 'billing data',
+                customer_reference: 'customer data',
+                custom: 'custom data',
+                descriptor: 'descriptor'
+              }, function(err, purchase) {
+                if (err) {
+                  console.log('ERR: ', err);
+                  return res.render('order_form', {
+                    error_string: 'Something went wrong. Please try again.',
+                    user: req.user,
+                    session: req.session
+                  });
+                } else {
+                  if (purchase.isSuccess()) {
+                    return res.render('thank-you', {
+                      user: req.user,
+                      session: req.session
+                    });
+                  } else {
+                    console.log(purchase.messages);
+                    return res.render('order_form', {
+                      error_messages: purchase.messages,
+                      user: req.user,
+                      session: req.session
+                    });
+                  }
+                }
+              });
             }
-          }
-        });
+          });
+        }
       });
     } else {
-      return console.log('whoops');
+      console.log('ERR: ', 'Hit the thank you page without a token.');
+      return res.render('order_form', {
+        error_string: 'Something went wrong. Please try again.',
+        user: req.user,
+        session: req.session
+      });
     }
   });
 

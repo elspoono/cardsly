@@ -1439,6 +1439,7 @@
     */
     item_name = '100 cards';
     return $('.checkout').click(function() {
+      $.load_loading();
       $('.order_total form').submit();
       return false;
     });

@@ -1644,6 +1644,7 @@ $ ->
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
+    $.load_loading()
     $('.order_total form').submit()
     false
 

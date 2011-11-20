@@ -208,6 +208,12 @@ user_schema = new schema
   custom_1: String
   custom_2: String
   custom_3: String
+  payment_method:
+    token: String
+    cardType: String
+    lastFourDigits: String
+    expiry_month: String
+    expiry_year: String
   date_added:
     type: Date
     default: Date.now
@@ -508,7 +514,13 @@ everyauth.google.fetchOAuthUser (accessToken) ->
 
 
 
+###
+TODO
 
+For middleware
+- Make the session and user objects sent on every request sent automatically instead of being something we have to pass each time to the jade.
+
+###
 
 
 
@@ -1086,30 +1098,71 @@ app.get '/thank-you', (req, res) ->
     #
     #
     paymentMethod = samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
-      console.log payment_method.cardType
-      console.log payment_method.lastFourDigits
-      #
-      # Try it
-      purchase = samurai.Processor.purchase payment_method_token, total,
-        billing_reference: 'billing data'
-        customer_reference:  'customer data'
-        custom:              'custom data'
-        descriptor:          'descriptor'
-      , (err, purchase) ->
-        if err
-          # Do Error
-          console.log err
-        else
-          if purchase.isSuccess()
-            res.render 'thank-you'
+      if err
+        # Do Error
+        console.log 'ERR: ', err
+        res.render 'order_form'
+          error_string: 'Something went wrong. Please try again.'
+          user: req.user
+          session: req.session
+      else
+        #
+        #
+        console.log payment_method.cardType
+        console.log payment_method.lastFourDigits
+        #
+        req.user.payment_method = 
+          token: payment_method_token
+          cardType: payment_method.cardType
+          lastFourDigits: payment_method.lastFourDigits
+          expiry_month: payment_method.expiry_month
+          expiry_year: payment_method.expiry_year
+        #
+        #
+        req.user.save (err, saved_user) ->
+          if err
+            # Do Error
+            console.log 'ERR: ', err
+            res.render 'order_form'
+              error_string: 'Something went wrong. Please try again.'
               user: req.user
               session: req.session
           else
-            console.log purchase.messages
+            #
+            #
+            # Try it
+            purchase = samurai.Processor.purchase payment_method_token, total,
+              billing_reference: 'billing data'
+              customer_reference:  'customer data'
+              custom:              'custom data'
+              descriptor:          'descriptor'
+            , (err, purchase) ->
+              if err
+                # Do Error
+                console.log 'ERR: ', err
+                res.render 'order_form'
+                  error_string: 'Something went wrong. Please try again.'
+                  user: req.user
+                  session: req.session
+              else
+                if purchase.isSuccess()
+                  res.render 'thank-you'
+                    user: req.user
+                    session: req.session
+                else
+                  console.log purchase.messages
+                  res.render 'order_form'
+                    error_messages: purchase.messages
+                    user: req.user
+                    session: req.session
     #
     #
   else
-    console.log 'whoops'
+    console.log 'ERR: ', 'Hit the thank you page without a token.'
+    res.render 'order_form'
+      error_string: 'Something went wrong. Please try again.'
+      user: req.user
+      session: req.session
     # Do Error
 #
 #
