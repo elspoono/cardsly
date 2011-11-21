@@ -1060,10 +1060,16 @@ app.post '/create-user', (req,res,next) ->
 #
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  req.user.password_encrypted = encrypted(req.body.new_password);
-  req.user.save (err,data) ->
-    res.send
-      success: 'True'
+  if req.user.password_encrypted == encrypted(req.body.current_password)
+    console.log 1
+    req.user.password_encrypted = encrypted(req.body.new_password);
+    req.user.save (err,data) ->
+      res.send
+        success: 'True'
+  else
+    console.log 2
+    
+#   
 #
 #
 #
@@ -1224,6 +1230,7 @@ app.get '/cards', securedPage, (req, res) ->
   res.render 'cards'
     user: req.user
     session: req.session
+    thankyou: req.params.thankyou
 #
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->

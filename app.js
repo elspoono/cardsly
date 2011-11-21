@@ -786,12 +786,17 @@
     });
   });
   app.post('/change-password', function(req, res, next) {
-    req.user.password_encrypted = encrypted(req.body.new_password);
-    return req.user.save(function(err, data) {
-      return res.send({
-        success: 'True'
+    if (req.user.password_encrypted === encrypted(req.body.current_password)) {
+      console.log(1);
+      req.user.password_encrypted = encrypted(req.body.new_password);
+      return req.user.save(function(err, data) {
+        return res.send({
+          success: 'True'
+        });
       });
-    });
+    } else {
+      return console.log(2);
+    }
   });
   app.post('/get-user', function(req, res, next) {
     console.log('USER: ', req.user);
@@ -903,7 +908,8 @@
   app.get('/cards', securedPage, function(req, res) {
     return res.render('cards', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      thankyou: req.params.thankyou
     });
   });
   app.get('/admin', securedAdminPage, function(req, res, next) {
