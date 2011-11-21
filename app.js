@@ -941,6 +941,7 @@
                 descriptor: 'descriptor'
               }, function(err, purchase) {
                 if (err) {
+                  console.log('PURCHASE: ', purchase);
                   console.log('ERR: ', err);
                   return res.render('order_form', {
                     error_message: 'I couldn\'t reach the credit card company just now. Please try again in a moment.',

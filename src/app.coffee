@@ -1180,6 +1180,7 @@ app.get '/thank-you', (req, res) ->
             , (err, purchase) ->
               if err
                 # Do Error
+                console.log 'PURCHASE: ', purchase
                 console.log 'ERR: ', err
                 res.render 'order_form'
                   error_message: 'I couldn\'t reach the credit card company just now. Please try again in a moment.'
