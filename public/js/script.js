@@ -731,7 +731,7 @@
   */
 
   $(function() {
-    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
@@ -1418,11 +1418,13 @@
     /*
       # Radio Button Clicking Stuff
     */
+    amount = 10;
     $('.quantity input,.shipping_method input').bind('change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
       $s = $('.shipping_method input:checked');
-      $('.order_total .price').html('$' + (($q.val() * 1) + ($s.val() * 1)));
+      amount = ($q.val() * 1) + ($s.val() * 1);
+      $('.order_total .price').html('$' + amount);
       return set_timers();
     });
     address_timer = 0;
@@ -1483,6 +1485,7 @@
       Shopping Cart Stuff
     */
     item_name = '100 cards';
+    Stripe.setPublishableKey('pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw');
     return $('.checkout').click(function() {
       $.load_loading({}, function(loading_close) {
         return $.ajax({
@@ -1507,11 +1510,52 @@
                 });
               }
             } else if (result.success) {
-              if ($('.existing_payment').length) {
-                return document.location.href = '/thank-you';
-              } else {
-                return $('.order_total form').submit();
-              }
+              return Stripe.createToken({
+                number: $('.card_number').val(),
+                cvc: $('.cvv').val(),
+                exp_month: $('.card_expiry_month').val(),
+                exp_year: $('.card_expiry_year').val()
+              }, amount, function(status, response) {
+                if (status === 200) {
+                  console.log(status, response);
+                  return $.ajax({
+                    url: '/confirm-purchase',
+                    data: JSON.stringify({
+                      stripe_id: response
+                    }),
+                    success: function(result) {
+                      loading_close();
+                      if (result.err) {
+                        return $.load_alert({
+                          content: result.err
+                        });
+                      } else {
+                        return document.location.href = '/cards/thank-you';
+                      }
+                    },
+                    error: function() {
+                      loading_close();
+                      return $.load_alert({
+                        content: 'Our apoligies, somethieng went wrong, please try again later'
+                      });
+                    }
+                  });
+                } else {
+                  loading_close();
+                  return $.load_alert({
+                    content: 'I\'m sorry, I couldn\'t process that card information.<br>Please double check the cvc and expiration date.'
+                  });
+                }
+              });
+              /*
+              
+                            THIS IS THE SAMURAI INTEGRATION
+              
+                            if $('.existing_payment').length
+                              document.location.href = '/thank-you'
+                            else
+                              $('.order_total form').submit()
+              */
             } else {
               loading_close();
               return $.load_alert({

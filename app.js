@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -916,6 +916,58 @@
       if (check_no_err_ajax(err)) {
         return res.send({
           themes: themes
+        });
+      }
+    });
+  });
+
+  stripe = require('stripe')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+
+  app.post('/confirm-purchase', function(req, res, next) {
+    return valid_new_url(function(err, url) {
+      var order;
+      if (err) {
+        console.log('ERR: ', err);
+        return res.send({
+          err: err
+        });
+      } else {
+        order = new mongo_order;
+        order.order_number = url;
+        order.user_id = req.user._id;
+        order.theme_id = req.session.saved_form.active_theme_id;
+        order.status = 'Charged';
+        order.quantity = req.session.saved_form.quantity;
+        order.shipping_method = req.session.saved_form.shipping_method;
+        order.values = req.session.saved_form.values;
+        order.address = req.session.saved_address.address;
+        order.city = req.session.saved_address.city;
+        order.full_address = req.session.saved_address.full_address;
+        return order.save(function(err, new_order) {
+          if (err) {
+            console.log('ERR: ', err);
+            return res.send({
+              err: err
+            });
+          } else {
+            return stripe.charges.create({
+              currency: 'USD',
+              amount: new_order.quantity * 1 + new_order.shipping_method * 1,
+              customer: req.body.stripe_id,
+              description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+            }, function(err, customer) {
+              if (err) {
+                return res.send({
+                  err: err
+                });
+              } else {
+                console.log('CUSTOMER: ', customer);
+                return res.send({
+                  order_id: new_order._id
+                });
+              }
+            });
+          }
         });
       }
     });

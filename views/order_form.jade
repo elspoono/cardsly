@@ -237,11 +237,11 @@
               input.cvv(name='credit_card[cvv]')
             li.expiration
               label Expiration
-              select(name='credit_card[expiry_month]')
+              select.card_expiry_month(name='credit_card[expiry_month]')
                 - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
                 - for (var i in months)
                   option(value=i+1)=months[i]
-              select(name='credit_card[expiry_year]')
+              select.card_expiry_year(name='credit_card[expiry_year]')
                 - for (var year = 2011; year<2032; year++)
                   option(value=year)=year
           .img_loader

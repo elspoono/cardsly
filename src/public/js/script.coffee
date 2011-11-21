@@ -1609,11 +1609,13 @@ $ ->
   # Radio Button Clicking Stuff
   ###
   #
+  amount = 10
   # Radio Select
   $('.quantity input,.shipping_method input').bind 'change', () ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
-    $('.order_total .price').html '$' + (($q.val()*1) + ($s.val()*1))
+    amount = ($q.val()*1) + ($s.val()*1)
+    $('.order_total .price').html '$' + amount
     #
     #
     #
@@ -1684,6 +1686,13 @@ $ ->
   # Default Item Name
   item_name = '100 cards'
   #
+  #
+  # Production
+  #Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
+  #
+  # Test
+  Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
+  #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
     $.load_loading {}, (loading_close) ->
@@ -1706,10 +1715,43 @@ $ ->
                 $.load_alert
                   content: result.error
             else if result.success
+              Stripe.createToken
+                  number: $('.card_number').val()
+                  cvc: $('.cvv').val()
+                  exp_month: $('.card_expiry_month').val()
+                  exp_year: $('.card_expiry_year').val()
+              , amount, (status, response) ->
+                if status is 200
+                  console.log status, response
+                  $.ajax
+                    url: '/confirm-purchase'
+                    data: JSON.stringify
+                      stripe_id: response
+                    success: (result) ->
+                      loading_close()
+                      if result.err
+                        $.load_alert
+                          content: result.err
+                      else
+                        document.location.href = '/cards/thank-you'
+                    error: ->
+                      loading_close()
+                      $.load_alert
+                        content: 'Our apoligies, somethieng went wrong, please try again later'
+                else
+                  loading_close()
+                  $.load_alert
+                    content: 'I\'m sorry, I couldn\'t process that card information.<br>Please double check the cvc and expiration date.'
+              
+              ###
+
+              THIS IS THE SAMURAI INTEGRATION
+
               if $('.existing_payment').length
                 document.location.href = '/thank-you'
               else
                 $('.order_total form').submit()
+              ###
             else
               loading_close()
               $.load_alert
