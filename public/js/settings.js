@@ -40,25 +40,21 @@
     });
     false;
     $('.set_new_password').submit(function() {
-      var new_password2;
-      new_password2 = $('.new_password2').val();
-      $.load_loading({}, function(loading_close) {
-        var err;
-        err = false;
-        if ($old.password.val() !== req.user.password_encrypted) {
-          err = 'Please Enter the correct current password';
-        } else if ($new_password.val() === '' || $new_password2.val() === '') {
-          err = 'Please enter your new password twice.';
-        } else if ($new_password.val() !== $new_password2.val()) {
-          err = 'I\'m sorry, I don\'t think those passwords match.';
-        } else if ($new_password.val().length < 4) {
-          err = 'Password should be a little longer, at least 4 characters.';
-        }
-        if (err) {
-          return $.load_alert({
-            content: err
-          });
-        } else {
+      var err;
+      err = false;
+      if ($('.new_password').val() === '' || $('.new_password2').val() === '') {
+        err = 'Please enter your new password twice.';
+      } else if ($('.new_password').val() !== $('.new_password2').val()) {
+        err = 'I\'m sorry, I don\'t think those passwords match.';
+      } else if ($('.new_password').val() < 4) {
+        err = 'Password should be a little longer, at least 4 characters.';
+      }
+      if (err) {
+        $.load_alert({
+          content: err
+        });
+      } else {
+        $.load_loading({}, function(loading_close) {
           return $.ajax({
             url: '/change-password',
             data: JSON.stringify({
@@ -72,7 +68,7 @@
                   content: data.err
                 });
               } else {
-                return successful_login();
+                return successful_password_change();
               }
             },
             error: function(err) {
@@ -82,8 +78,8 @@
               });
             }
           });
-        }
-      });
+        });
+      }
       return false;
     });
     return successful_password_change = function() {
