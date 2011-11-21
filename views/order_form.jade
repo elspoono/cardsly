@@ -210,7 +210,7 @@
             .last_4
               | **** - **** - **** - 
               =user.payment_method.last_four_digits
-            .small.button.gray Remove Card
+            .small.button.gray Use New Card
         form(action='https://api.samurai.feefighters.com/v1/payment_methods',method='POST')
           input(name='redirect_url', type='hidden', value='http://cards.ly/thank-you')
           input(name='merchant_key', type='hidden', value='89b14db44561382d457b5160')

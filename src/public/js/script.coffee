@@ -1681,7 +1681,7 @@ $ ->
                 $.load_alert
                   content: result.error
             else if result.success
-              if $existing_payment.length
+              if $('.existing_payment').length
                 document.location.href = '/thank-you'
               else
                 $('.order_total form').submit()

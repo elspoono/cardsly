@@ -1478,7 +1478,7 @@
                 });
               }
             } else if (result.success) {
-              if ($existing_payment.length) {
+              if ($('.existing_payment').length) {
                 return document.location.href = '/thank-you';
               } else {
                 return $('.order_total form').submit();
