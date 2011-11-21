@@ -40,50 +40,22 @@
     });
     false;
     $('.set_new_password').submit(function() {
-      var new_password2;
-      new_password2 = $('.new_password2').val();
-      $.load_loading({}, function(loading_close) {
-        var err;
-        err = false;
-        if ($old.password.val() !== req.user.password_encrypted) {
-          err = 'Please Enter the correct current password';
-        } else if ($new_password.val() === '' || $new_password2.val() === '') {
-          err = 'Please enter your new password twice.';
-        } else if ($new_password.val() !== $new_password2.val()) {
-          err = 'I\'m sorry, I don\'t think those passwords match.';
-        } else if ($new_password.val().length < 4) {
-          err = 'Password should be a little longer, at least 4 characters.';
-        }
-        if (err) {
-          return $.load_alert({
-            content: err
-          });
-        } else {
-          return $.ajax({
-            url: '/change-password',
-            data: JSON.stringify({
-              old_password: $('.current_passowrd').val(),
-              new_password: $('.new_password').val()
-            }),
-            success: function(data) {
-              loading_close();
-              if (data.err) {
-                return $.load_alert({
-                  content: data.err
-                });
-              } else {
-                return successful_login();
-              }
-            },
-            error: function(err) {
-              loading_close();
-              return $.load_alert({
-                content: 'Our apologies. A server error occurred.'
-              });
-            }
-          });
-        }
-      });
+      var err;
+      err = false;
+      if ($('.new_password').val() === '' || $('.new_password2').val() === '') {
+        err = 'Please enter your new password twice.';
+      } else if ($('.new_password').val() !== $('.new_password2').val()) {
+        err = 'I\'m sorry, I don\'t think those passwords match.';
+      } else if ($('.new_password').val() < 4) {
+        err = 'Password should be a little longer, at least 4 characters.';
+      }
+      if (err) {
+        $.load_alert({
+          content: err
+        });
+      } else {
+        console.log(5);
+      }
       return false;
     });
     return successful_password_change = function() {
