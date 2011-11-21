@@ -56,7 +56,7 @@ $ ->
       $.load_loading {}, (loading_close) ->
         $.ajax
           url: '/change-password'
-          data:
+          data: JSON.stringify
             new_password: $new_password.val()
             new_password2: $new_password2.val()
           success: (data) ->

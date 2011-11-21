@@ -841,10 +841,10 @@
       $.load_loading({}, function(loading_close) {
         return $.ajax({
           url: '/login',
-          data: {
+          data: JSON.stringify({
             email: $('.email_login').val(),
             password: $('.password_login').val()
-          },
+          }),
           success: function(data) {
             loading_close();
             if (data.err) {
@@ -893,10 +893,10 @@
                 return $.load_loading({}, function(loading_close) {
                   return $.ajax({
                     url: '/create-user',
-                    data: {
+                    data: JSON.stringify({
                       email: email.val(),
                       password: password.val()
-                    },
+                    }),
                     success: function(data) {
                       loading_close();
                       if (data.err) {
@@ -931,9 +931,9 @@
             $t.removeClass('error').addClass('valid');
             return $.ajax({
               url: '/check-email',
-              data: {
+              data: JSON.stringify({
                 email: $t.val()
-              },
+              }),
               success: function(full_responsE) {
                 if (full_responsE.count === 0) {
                   $t.removeClass('error').addClass('valid');
@@ -1025,10 +1025,10 @@
               return $.load_loading({}, function(loading_close) {
                 return $.ajax({
                   url: '/send-feedback',
-                  data: {
+                  data: JSON.stringify({
                     content: $('.feedback_text').val(),
                     email: $('.emailNotUser').val()
-                  },
+                  }),
                   success: function(data) {
                     loading_close();
                     if (data.err) {
@@ -1411,10 +1411,10 @@
           $address_result.html('Searching for real address ...');
           return $.ajax({
             url: '/find-address',
-            data: {
+            data: JSON.stringify({
               address: address,
               city: city
-            },
+            }),
             success: function(result) {
               if (result.full_address) {
                 return $address_result.html(result.full_address);

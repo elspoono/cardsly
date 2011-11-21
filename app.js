@@ -1002,10 +1002,16 @@
   });
 
   app.get('/home', function(req, res) {
-    var ua;
-    ua = ua_match(req.header('USER-AGENT'));
+    var ua, ua_string;
+    ua_string = req.header('USER-AGENT');
+    ua = ua_match(ua_string);
     if (ua.browser === 'msie' && parseInt(ua.version, 10) < 9) {
-      return res.render('ie_home', {
+      return res.render('simple_home', {
+        user: req.user,
+        session: req.session
+      });
+    } else if (ua_string.match(/mobile/i)) {
+      return res.render('simple_home', {
         user: req.user,
         session: req.session
       });

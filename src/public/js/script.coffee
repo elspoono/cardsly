@@ -908,7 +908,7 @@ $ ->
     $.load_loading {}, (loading_close) ->
       $.ajax
         url: '/login'
-        data:
+        data: JSON.stringify
           email: $('.email_login').val()
           password: $('.password_login').val()
         success: (data) ->
@@ -961,7 +961,7 @@ $ ->
             $.load_loading {}, (loading_close) ->
               $.ajax
                 url: '/create-user'
-                data:
+                data: JSON.stringify
                   email: email.val()
                   password: password.val()
                 success: (data) ->
@@ -987,7 +987,7 @@ $ ->
           $t.removeClass('error').addClass 'valid'
           $.ajax
             url: '/check-email'
-            data:
+            data: JSON.stringify
               email: $t.val()
             success: (full_responsE) ->
               if full_responsE.count==0
@@ -1081,7 +1081,7 @@ $ ->
           $.load_loading {}, (loading_close) ->
             $.ajax
               url: '/send-feedback'
-              data:
+              data: JSON.stringify
                 content: $('.feedback_text').val()
                 email: $('.emailNotUser').val()
               success: (data) ->
@@ -1458,7 +1458,7 @@ $ ->
       #
       $.ajax
         url: '/save-form'
-        data: JSON.stringify 
+        data: JSON.stringify
           values: values
           active_view: active_view
           active_theme_id: active_theme._id
@@ -1604,7 +1604,7 @@ $ ->
       
         $.ajax
           url: '/find-address'
-          data:
+          data: JSON.stringify
             address: address
             city: city
           success: (result) ->

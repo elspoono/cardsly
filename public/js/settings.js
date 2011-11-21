@@ -65,10 +65,10 @@
         $.load_loading({}, function(loading_close) {
           return $.ajax({
             url: '/change-password',
-            data: {
+            data: JSON.stringify({
               new_password: $new_password.val(),
               new_password2: $new_password2.val()
-            },
+            }),
             success: function(data) {
               loading_close();
               if (data.err) {

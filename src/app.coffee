@@ -1232,10 +1232,15 @@ app.get '/cute-animal', (req, res) ->
 #
 # Landing page prelaunch
 app.get '/home', (req, res) -> 
-  ua = ua_match req.header('USER-AGENT')
+  ua_string = req.header('USER-AGENT')
+  ua = ua_match ua_string
 
   if ua.browser is 'msie' and parseInt(ua.version, 10) < 9
-    res.render 'ie_home'
+    res.render 'simple_home'
+      user: req.user
+      session: req.session
+  else if ua_string.match /mobile/i
+    res.render 'simple_home'
       user: req.user
       session: req.session
   else
