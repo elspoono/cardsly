@@ -416,9 +416,9 @@
 
   everyauth.linkedin.redirectPath('/success');
 
-  everyauth.google.appId('90634622438.apps.googleusercontent.com');
+  everyauth.google.appId('www.cards.ly');
 
-  everyauth.google.appSecret('Bvpnj5wXiakpkOnwmXyy4vDj');
+  everyauth.google.appSecret('V8EVkLLvKfEuk2D4LrBOjZPh');
 
   everyauth.google.findOrCreateUser(handleGoodResponse);
 
