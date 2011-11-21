@@ -1202,6 +1202,15 @@ check_no_err = (err) ->
   !err
 #
 #
+app.get '*', (req,res,next) ->
+  headers = req.headers
+  if headers['x-real-ip'] and headers['x-forwarded-proto'] isnt 'https'
+    res.send '',
+      Location: 'https://www.cards.ly'+req.url
+    , 302
+  else
+    next()
+
 #
 # Home Page
 app.get '/', (req, res) ->
