@@ -921,7 +921,7 @@
     });
   });
 
-  stripe = require('stripe')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+  stripe = require('./installed_modules/stripe')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
 
   app.post('/confirm-purchase', function(req, res, next) {
     return valid_new_url(function(err, url) {
@@ -944,24 +944,28 @@
         order.city = req.session.saved_address.city;
         order.full_address = req.session.saved_address.full_address;
         return order.save(function(err, new_order) {
+          var amount;
           if (err) {
             console.log('ERR: ', err);
             return res.send({
               err: err
             });
           } else {
+            amount = new_order.quantity * 1 + new_order.shipping_method * 1;
+            console.log('AMOUNT: ', amount);
             return stripe.charges.create({
-              currency: 'USD',
-              amount: new_order.quantity * 1 + new_order.shipping_method * 1,
+              currency: 'usd',
+              amount: amount * 100,
               customer: req.body.stripe_id,
               description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
             }, function(err, customer) {
+              console.log('CUSTOMER: ', customer);
               if (err) {
+                console.log('ERR: ', err);
                 return res.send({
-                  err: err
+                  err: customer.error.message
                 });
               } else {
-                console.log('CUSTOMER: ', customer);
                 return res.send({
                   order_id: new_order._id
                 });

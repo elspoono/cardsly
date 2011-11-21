@@ -1097,10 +1097,10 @@ app.post '/get-themes', (req,res,next) ->
 #
 # Production
 #
-#stripe = require('stripe') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
+#stripe = require('./installed_modules/stripe') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
-stripe = require('stripe') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+stripe = require('./installed_modules/stripe') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
@@ -1128,17 +1128,20 @@ app.post '/confirm-purchase', (req, res, next) ->
           res.send
             err: err
         else
+          amount = new_order.quantity*1 + new_order.shipping_method*1
+          console.log 'AMOUNT: ', amount
           stripe.charges.create
-            currency: 'USD'
-            amount: new_order.quantity*1 + new_order.shipping_method*1
+            currency: 'usd'
+            amount: amount*100
             customer: req.body.stripe_id
             description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
           , (err, customer) ->
+            console.log 'CUSTOMER: ', customer
             if err
+              console.log 'ERR: ', err
               res.send
-                err: err
+                err: customer.error.message
             else
-              console.log 'CUSTOMER: ', customer
               res.send
                 order_id: new_order._id
 #

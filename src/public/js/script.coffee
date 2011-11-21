@@ -1715,6 +1715,7 @@ $ ->
                 $.load_alert
                   content: result.error
             else if result.success
+              console.log 'AMOUNT: ', amount
               Stripe.createToken
                   number: $('.card_number').val()
                   cvc: $('.cvv').val()

@@ -1510,6 +1510,7 @@
                 });
               }
             } else if (result.success) {
+              console.log('AMOUNT: ', amount);
               return Stripe.createToken({
                 number: $('.card_number').val(),
                 cvc: $('.cvv').val(),
