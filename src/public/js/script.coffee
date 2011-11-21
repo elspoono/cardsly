@@ -1655,8 +1655,8 @@ $ ->
         $.ajax
           url: '/validate-purchase'
           success: (result) ->
-            loading_close()
             if result.error
+              loading_close()
               if result.error is 'Please sign in'
                 $s = $ '.signins' 
                 $('html,body').animate
@@ -1672,6 +1672,7 @@ $ ->
             else if result.success
               $('.order_total form').submit()
             else
+              loading_close()
               $.load_alert
                 content: 'Our apoligies, something went wrong, please try again later'
           error: ->
