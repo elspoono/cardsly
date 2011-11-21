@@ -744,7 +744,7 @@ $ ->
       active_theme.theme_templates[active_view].s3_id = s3_id
       set_timers()
       $card.css
-        background: 'url(\'http://cdn.cards.ly/525x300/' + s3_id + '\')'
+        background: 'url(\'//d3eo3eito2cquu.cloudfront.net//525x300/' + s3_id + '\')'
     else
       $.load_alert
         content: 'I had trouble saving that image, please try again later.'

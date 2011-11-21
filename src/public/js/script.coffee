@@ -238,7 +238,7 @@ $.create_card_from_theme = (theme, size) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'http://cdn.cards.ly/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
+    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -1390,7 +1390,7 @@ $ ->
     # Card Background
     if theme_template.s3_id
       $card.css
-        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
+        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme_template.s3_id + '\')'
     else
       $card.css
         background: '#FFFFFF'
