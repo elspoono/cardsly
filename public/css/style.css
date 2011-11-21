@@ -812,9 +812,6 @@ select {
   font-size: 13.65px;
   line-height: 1.5em;
 }
-.signins {
-  border-top: 1px solid #524641;
-}
 .order_total .details {
   float: right;
   width: 250px;

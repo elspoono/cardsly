@@ -46,7 +46,7 @@
 .section
   .cell_bg
   .cell_content
-    h3 Step 2 : Select quantity and sign in
+    h3 Step 2 : Select Details and Shipping
     .order_details
       ul.radio_text_fields.left.quantity
         li
@@ -155,7 +155,10 @@
       .twitter.click
       .linkedin.click
       .new.click
-
+.section
+  .cell_bg
+  .cell_content
+    h3 Step 3: Sign In
     .signins
       if user
         p
@@ -166,10 +169,7 @@
         p
           .socials
             p
-              | Sign in to 
-              span.cardsly cards
-                span.alt .ly
-              | &nbsp;with:
+              | Sign in with your existing social account:
             a.button.twitter(href='/auth/twitter')
               span Twitter
             a.button.facebook(href='/auth/facebook')
@@ -179,7 +179,7 @@
             a.button.google(href='/auth/google')
               span Google
             .clear
-            p Or, alternatively, create a username and password:
+            p Or, create a new account:
           .local
             a.button.new(href='#')
               span Create a username and password
@@ -187,7 +187,7 @@
 .section
   .cell_bg
   .cell_content
-    h3 Step 3: Confirm and Buy
+    h3 Step 4: Confirm and Buy
     .order_total
       .card_side
         .my_card
