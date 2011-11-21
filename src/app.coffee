@@ -1060,16 +1060,10 @@ app.post '/create-user', (req,res,next) ->
 #
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  if req.user.password_encrypted == encrypted(req.body.current_password)
-    console.log 1
-    req.user.password_encrypted = encrypted(req.body.new_password);
-    req.user.save (err,data) ->
-      res.send
-        success: 'True'
-  else
-    console.log 2
-    
-#   
+  req.user.password_encrypted = encrypted(req.body.new_password);
+  req.user.save (err,data) ->
+    res.send
+      success: 'True'
 #
 #
 #
@@ -1106,7 +1100,7 @@ app.post '/get-themes', (req,res,next) ->
 #stripe = require('./installed_modules/stripe') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
-stripe = require('./installed_modules/stripe') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
@@ -1286,16 +1280,28 @@ app.get '/success', (req, res) ->
     user: req.user
     session: req.session
 #
+# Get the order information
+get_order_info = (req, res, next) ->
+  mongo_order.find
+    user_id: req.user._id
+  , (err, orders) ->
+    if check_no_err err
+      req.orders = orders
+      next()
+#
 # cards Page Mockup
-app.get '/cards', securedPage, (req, res) ->
+app.get '/cards', get_order_info, securedPage, (req, res) ->
   res.render 'cards'
+    orders: req.orders
     user: req.user
     session: req.session
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, (req, res) ->
+app.get '/cards/thank-you', get_order_info, securedPage, (req, res) ->
+  console.log req.orders
   res.render 'cards'
+    orders: req.orders
     user: req.user
     session: req.session
     thankyou: true

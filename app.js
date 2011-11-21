@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -883,17 +883,12 @@
   });
 
   app.post('/change-password', function(req, res, next) {
-    if (req.user.password_encrypted === encrypted(req.body.current_password)) {
-      console.log(1);
-      req.user.password_encrypted = encrypted(req.body.new_password);
-      return req.user.save(function(err, data) {
-        return res.send({
-          success: 'True'
-        });
+    req.user.password_encrypted = encrypted(req.body.new_password);
+    return req.user.save(function(err, data) {
+      return res.send({
+        success: 'True'
       });
-    } else {
-      return console.log(2);
-    }
+    });
   });
 
   app.post('/get-user', function(req, res, next) {
@@ -926,7 +921,7 @@
     });
   });
 
-  stripe = require('./installed_modules/stripe')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+  stripe = require('./stripe_installed.js')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
 
   app.post('/confirm-purchase', function(req, res, next) {
     return valid_new_url(function(err, url) {
@@ -1078,16 +1073,30 @@
     });
   });
 
-  app.get('/cards', securedPage, function(req, res) {
+  get_order_info = function(req, res, next) {
+    return mongo_order.find({
+      user_id: req.user._id
+    }, function(err, orders) {
+      if (check_no_err(err)) {
+        req.orders = orders;
+        return next();
+      }
+    });
+  };
+
+  app.get('/cards', get_order_info, securedPage, function(req, res) {
     return res.render('cards', {
+      orders: req.orders,
       user: req.user,
       session: req.session,
       thankyou: false
     });
   });
 
-  app.get('/cards/thank-you', securedPage, function(req, res) {
+  app.get('/cards/thank-you', get_order_info, securedPage, function(req, res) {
+    console.log(req.orders);
     return res.render('cards', {
+      orders: req.orders,
       user: req.user,
       session: req.session,
       thankyou: true
