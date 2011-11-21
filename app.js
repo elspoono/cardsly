@@ -921,7 +921,7 @@
     });
   });
 
-  stripe = require('./stripe_installed.js')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+  stripe = require('./stripe_installed.js')('SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW');
 
   app.post('/confirm-purchase', function(req, res, next) {
     return valid_new_url(function(err, url) {

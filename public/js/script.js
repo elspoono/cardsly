@@ -1485,7 +1485,7 @@
       Shopping Cart Stuff
     */
     item_name = '100 cards';
-    Stripe.setPublishableKey('pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw');
+    Stripe.setPublishableKey('pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg');
     return $('.checkout').click(function() {
       $.load_loading({}, function(loading_close) {
         return $.ajax({

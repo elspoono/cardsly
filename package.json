@@ -20,7 +20,6 @@
     , "connect-form": ">=0.0.1"
     , "loggly": ">=0.0.1"
     , "samurai": ">=0.0.1"
-    , "stripe": "latest"
   },
   "devDependencies": {
     "vows": ">= 0.5.9"
