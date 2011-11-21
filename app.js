@@ -416,9 +416,9 @@
 
   everyauth.linkedin.redirectPath('/success');
 
-  everyauth.google.appId('90634622438.apps.googleusercontent.com');
+  everyauth.google.appId('90634622438-pn8nk974spacthoc1joflnkqhk9hj60q.apps.googleusercontent.com');
 
-  everyauth.google.appSecret('V8EVkLLvKfEuk2D4LrBOjZPh');
+  everyauth.google.appSecret('7TOwXY-cPbbpgb6u9Y_kSfnX');
 
   everyauth.google.findOrCreateUser(handleGoodResponse);
 
