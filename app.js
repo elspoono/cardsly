@@ -883,12 +883,17 @@
   });
 
   app.post('/change-password', function(req, res, next) {
-    req.user.password_encrypted = encrypted(req.body.new_password);
-    return req.user.save(function(err, data) {
-      return res.send({
-        success: 'True'
+    if (req.user.password_encrypted === encrypted(req.body.current_password)) {
+      console.log(1);
+      req.user.password_encrypted = encrypted(req.body.new_password);
+      return req.user.save(function(err, data) {
+        return res.send({
+          success: 'True'
+        });
       });
-    });
+    } else {
+      return console.log(2);
+    }
   });
 
   app.post('/get-user', function(req, res, next) {
@@ -1076,7 +1081,16 @@
   app.get('/cards', securedPage, function(req, res) {
     return res.render('cards', {
       user: req.user,
-      session: req.session
+      session: req.session,
+      thankyou: false
+    });
+  });
+
+  app.get('/cards/thank-you', securedPage, function(req, res) {
+    return res.render('cards', {
+      user: req.user,
+      session: req.session,
+      thankyou: true
     });
   });
 

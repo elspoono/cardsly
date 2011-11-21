@@ -1857,3 +1857,44 @@ input
 p {
   margin: 20px 0;
 }
+.order_status {
+  border: 1px solid #3a322f;
+  padding: 15px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("/js/libs/PIE");
+}
+.order_status .order_row_top {
+  border: 2px solid #3a322f;
+  padding: 15px;
+  font-size: 20px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("/js/libs/PIE");
+}
+.order_status .order_row_top .order_cell {
+  border: 1px solid #3a322f;
+  padding: 15px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("/js/libs/PIE");
+}
+.order_status .order_row {
+  border: 1px solid #3a322f;
+  padding: 15px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("/js/libs/PIE");
+}
+.order_status .order_row .order_cell {
+  border: 1px solid #3a322f;
+  padding: 15px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("/js/libs/PIE");
+}

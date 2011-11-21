@@ -1,57 +1,24 @@
-.clear
-.section.left
+.section
+  if thankyou
+    .cell_bg
+    .cell_content
+      h2 Thank You!
+        p Dear Awesome Customer, 
+        p At this moment you are our favorite person in the world (until our next order, then you are replaced, sorry ) but be happy cause who knows when that will be!  We appreciate you being an early adopter/hipster.  We are currently working on printing, cutting and making your radical business/personal/fun/whatever the heck you want to do with them cards! If you want to make any changes to your order, please email or call post hast! If a robot answers then you have dialed the wrong number, because we will personally answer your call after a brief message from Scott explaining how rad we are. If your happy and ready to hand out your cards, just sit back and wait because we process orders fast, which means same day shipping, if the mail man hasn't already driven by that is. If you ordered on a weekend, we will ship them out on Monday as we do have lives on the weekend, sometimes.  Seriously though, thanks so much for your order; we are excited for you to be creative in adding and editing whatever you want to those QR codes! let us know how we can help improve the product or any interaction you've had with cards.ly. We really value input as we grow and become more awesomer because of people like you! Your account is all set up so go to cards.ly and play around. You can already edit the QR codes if you have some ideas of links or videos or general info or whateves. But don’t forget that you can do it on the fly so you can personalize a message for a random person you just met! be creative and let us know your rad ideas!
+.section
   .cell_bg
   .cell_content
-    .card_table
-      .row_header
-        .cell_selectorh
-          input(type='checkbox')
-        .cell_card_numberh
-          p card #
-        .cell_purchase_dateh
-          p Purchase Date
-        .cell_actionh
-          p Action
-      .body_rows
-        .card1
-          .cell_selector
-            input(type='checkbox')
-          .cell_card_number
-            p 1
-          .cell_purchase_date
-            p 11/18/2001
-          .cell_action
-            p Link
-        .card2
-          .cell_selector
-            input(type='checkbox')
-          .cell_card_number
-            p 2
-          .cell_purchase_date
-            p 11/18/2001
-          .cell_action
-            p Message
-        .card3
-          .cell_selector
-            input(type='checkbox')
-          .cell_card_number
-            p 3
-          .cell_purchase_date
-            p 11/18/2001
-          .cell_action
-            p Link
-          
+    table.order_status
+      tr.order_row_top
+        td.order_cell Order ID
+        td.order_cell Date Submitted
+        td.order_cell Status
+      tr.order_row
+        td.order_cell # 123
+        td.order_cell 11/21/2011
+        td.order_cell Pending
 
-.section.right
+.section
   .cell_bg
   .cell_content
-    h3 Edit Card Stuff
-    .text-fields
-      p Link to:
-        input
-        span.suggestions e.g. Youtube video or LinkedIn Profile or ...
-      p Custom Message:
-        textarea
-        span.suggestions e.g. "It was nice to meet you Bob"
-    .button.save.normal Save
-.clear
+    p Your Cardsly cards order is being processed and your cards will appear here once your order ships.

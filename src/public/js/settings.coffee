@@ -50,7 +50,7 @@ $ ->
          $.ajax
           url: '/change-password'
           data: JSON.stringify
-            old_password: $('.current_passowrd').val()
+            current_password: $('.current_password').val()
             new_password: $('.new_password').val()
           success: (data) ->
             loading_close()

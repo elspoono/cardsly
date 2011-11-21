@@ -5,22 +5,22 @@
     h2
       =user.email
       =user.name
-    span.subtitle Use this to change your password.
-    p
-    form.current_password
-      ul
-        li
-          label.current_password_text Current Password:
-          input(type='password').current_password
-    form.set_new_password
-      ul
-        li
-          label New:
-          input(type='password').new_password
-        li
-          label Re-type New:
-          input(type='password').new_password2
-      .buttons          
-        input(type='submit', value='Change').button.normal.set_new_password
-      .clear
-.clear
+      span.subtitle Use this to change your password.
+      p
+      form.current_password
+        ul
+          li
+            label.current_password_text Current Password:
+            input(type='password').current_password
+      form.set_new_password
+        ul
+          li
+            label New:
+            input(type='password').new_password
+          li
+            label Re-type New:
+            input(type='password').new_password2
+        .buttons          
+          input(type='submit', value='Change').button.normal.set_new_password
+        .clear
+  .clear
