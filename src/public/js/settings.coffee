@@ -46,7 +46,23 @@ $ ->
     if err
       $.load_alert {content:err}
     else
-      console.log 5
+      $.load_loading {}, (loading_close) ->
+         $.ajax
+          url: '/change-password'
+          data: JSON.stringify
+            old_password: $('.current_passowrd').val()
+            new_password: $('.new_password').val()
+          success: (data) ->
+            loading_close()
+            if data.err
+              $.load_alert
+                content: data.err
+            else
+              successful_password_change()
+          error: (err) ->
+            loading_close()
+            $.load_alert
+              content: 'Our apologies. A server error occurred.'
     false
   #Successful Login Function
   

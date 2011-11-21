@@ -54,7 +54,31 @@
           content: err
         });
       } else {
-        console.log(5);
+        $.load_loading({}, function(loading_close) {
+          return $.ajax({
+            url: '/change-password',
+            data: JSON.stringify({
+              old_password: $('.current_passowrd').val(),
+              new_password: $('.new_password').val()
+            }),
+            success: function(data) {
+              loading_close();
+              if (data.err) {
+                return $.load_alert({
+                  content: data.err
+                });
+              } else {
+                return successful_password_change();
+              }
+            },
+            error: function(err) {
+              loading_close();
+              return $.load_alert({
+                content: 'Our apologies. A server error occurred.'
+              });
+            }
+          });
+        });
       }
       return false;
     });
