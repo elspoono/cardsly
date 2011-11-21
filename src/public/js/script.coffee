@@ -238,7 +238,7 @@ $.create_card_from_theme = (theme, size) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'http://cdn.cards.ly/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
+    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -874,11 +874,22 @@ $ ->
                 content: user.err
             else
               $s = $ '.signins' 
-              $s.fadeOut 500, ->
-                $s.html 'You are now logged in, please continue.'
-                $s.fadeIn 1000
+              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><input type="checkbox" name="do_send" id="do_send" checked="checked" class="do_send"><label for="do_send">Send my order confirmation email to:</label></div><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email or '') + '"></div>'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
-              
+              if user.payyment_method and user.payment_method.last_four_digits
+                #
+                # Hide the form
+                $existing_payment = $ '<div class="existing_payment"><div class="type"></div><div class="expiry">' + user.existing_payment.expiry_month + '/
+' + user.existing_payment.expiry_year + '</div><div class="last_4">**** - **** - **** - 
+' + user.existing_payment.last_four_digits + '</div><div class="small button gray">Use New Card</div></div>'
+                $existing_payment.find('.button').click ->
+                  $existing_payment.remove()
+                  $('.order_total form').show()
+                  false
+                $('.order_total form').hide()
+                #
+              #
+              #
           error: (err) ->
             loading_close()
             $.load_alert
@@ -1379,7 +1390,7 @@ $ ->
     # Card Background
     if theme_template.s3_id
       $card.css
-        background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
+        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme_template.s3_id + '\')'
     else
       $card.css
         background: '#FFFFFF'
@@ -1598,11 +1609,13 @@ $ ->
   # Radio Button Clicking Stuff
   ###
   #
+  amount = 10
   # Radio Select
   $('.quantity input,.shipping_method input').bind 'change', () ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
-    $('.order_total .price').html '$' + (($q.val()*1) + ($s.val()*1))
+    amount = ($q.val()*1) + ($s.val()*1)
+    $('.order_total .price').html '$' + amount
     #
     #
     #
@@ -1673,6 +1686,13 @@ $ ->
   # Default Item Name
   item_name = '100 cards'
   #
+  #
+  # Production
+  #Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
+  #
+  # Test
+  Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
+  #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
     $.load_loading {}, (loading_close) ->
@@ -1695,10 +1715,43 @@ $ ->
                 $.load_alert
                   content: result.error
             else if result.success
+              Stripe.createToken
+                  number: $('.card_number').val()
+                  cvc: $('.cvv').val()
+                  exp_month: $('.card_expiry_month').val()
+                  exp_year: $('.card_expiry_year').val()
+              , amount, (status, response) ->
+                if status is 200
+                  console.log status, response
+                  $.ajax
+                    url: '/confirm-purchase'
+                    data: JSON.stringify
+                      stripe_id: response
+                    success: (result) ->
+                      loading_close()
+                      if result.err
+                        $.load_alert
+                          content: result.err
+                      else
+                        document.location.href = '/cards/thank-you'
+                    error: ->
+                      loading_close()
+                      $.load_alert
+                        content: 'Our apoligies, somethieng went wrong, please try again later'
+                else
+                  loading_close()
+                  $.load_alert
+                    content: 'I\'m sorry, I couldn\'t process that card information.<br>Please double check the cvc and expiration date.'
+              
+              ###
+
+              THIS IS THE SAMURAI INTEGRATION
+
               if $('.existing_payment').length
                 document.location.href = '/thank-you'
               else
                 $('.order_total form').submit()
+              ###
             else
               loading_close()
               $.load_alert

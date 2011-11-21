@@ -503,8 +503,8 @@ everyauth.linkedin.findOrCreateUser handleGoodResponse
 everyauth.linkedin.redirectPath '/success'
 #
 # Google API Key / Config
-everyauth.google.appId '90634622438.apps.googleusercontent.com'
-everyauth.google.appSecret 'Bvpnj5wXiakpkOnwmXyy4vDj'
+everyauth.google.appId '90634622438-pn8nk974spacthoc1joflnkqhk9hj60q.apps.googleusercontent.com'
+everyauth.google.appSecret '7TOwXY-cPbbpgb6u9Y_kSfnX'
 everyauth.google.findOrCreateUser handleGoodResponse
 everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'
 everyauth.google.redirectPath '/success'
@@ -1101,6 +1101,55 @@ app.post '/get-themes', (req,res,next) ->
       res.send
         themes: themes
 #
+# Production
+#
+#stripe = require('stripe') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
+#
+# Test
+stripe = require('stripe') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+#
+#
+app.post '/confirm-purchase', (req, res, next) ->
+
+  valid_new_url (err, url) ->
+    if err
+      console.log 'ERR: ', err
+      res.send
+        err: err
+    else
+      order = new mongo_order
+      order.order_number = url
+      order.user_id = req.user._id
+      order.theme_id = req.session.saved_form.active_theme_id
+      order.status = 'Charged'
+      order.quantity = req.session.saved_form.quantity
+      order.shipping_method = req.session.saved_form.shipping_method
+      order.values = req.session.saved_form.values
+      order.address = req.session.saved_address.address
+      order.city = req.session.saved_address.city
+      order.full_address = req.session.saved_address.full_address
+      order.save (err, new_order) ->
+        if err
+          console.log 'ERR: ', err
+          res.send
+            err: err
+        else
+          stripe.charges.create
+            currency: 'USD'
+            amount: new_order.quantity*1 + new_order.shipping_method*1
+            customer: req.body.stripe_id
+            description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+          , (err, customer) ->
+            if err
+              res.send
+                err: err
+            else
+              console.log 'CUSTOMER: ', customer
+              res.send
+                order_id: new_order._id
+#
+#
+#
 #
 #
 app.post '/validate-purchase', (req, res, next) ->
@@ -1208,6 +1257,15 @@ check_no_err = (err) ->
   !err
 #
 #
+app.get '*', (req,res,next) ->
+  headers = req.headers
+  if headers['x-real-ip'] and headers['x-forwarded-proto'] isnt 'https'
+    res.send '',
+      Location: 'https://www.cards.ly'+req.url
+    , 302
+  else
+    next()
+
 #
 # Home Page
 app.get '/', (req, res) ->

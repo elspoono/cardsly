@@ -1,4 +1,5 @@
 (function() {
+
   /*
   
   THE APPLICATION
@@ -6,38 +7,54 @@
   - pretty much everything server side is in here
   - for now (intentionally for now, not lazy for now)
   - we'll separate it into files later, depending on how it evolves
-  
   */
+
   /*
   
   LIBRARY LOADING
   
   - load in the libraries we'll use
   - do basic config on all of them
-  
   */
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
   });
+
   express = require('express');
+
   http = require('http');
+
   form = require('connect-form');
+
   knox = require('knox');
+
   util = require('util');
+
   fs = require('fs');
+
   app = module.exports = express.createServer();
+
   conf = require('./lib/conf');
+
   im = require('imagemagick');
+
   samurai = require('samurai');
+
   samurai.setup({
     merchant_key: '89b14db44561382d457b5160',
     merchant_password: '6a5a0bf8906a6b8b1e577d72',
     processor_token: '5c44e876a2d1125015a872c3'
   });
+
   geo = require('geo');
+
   require('coffee-script');
+
   nodemailer = require('nodemailer');
+
   nodemailer.SMTP = {
     host: 'smtp.sendgrid.net',
     port: 25,
@@ -46,11 +63,17 @@
     pass: process.env.SENDGRID_PASSWORD,
     domain: process.env.SENDGRID_DOMAIN
   };
+
   db_uri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/staging';
+
   mongoose = require('mongoose');
+
   mongoose.connect(db_uri);
+
   schema = mongoose.Schema;
+
   object_id = schema.ObjectId;
+
   /*
   UTIL
   #
@@ -61,27 +84,36 @@
   #
   console.log util.inspect myVariableIWantToInspect
   */
+
   util = require('util');
+
   bcrypt = require('bcrypt');
+
   encrypted = function(inString) {
     var salt;
     salt = bcrypt.gen_salt_sync(10);
     return bcrypt.encrypt_sync(inString, salt);
   };
+
   compareEncrypted = function(inString, hash) {
     return bcrypt.compare_sync(inString, hash);
   };
+
   everyauth = require('everyauth');
+
   Promise = everyauth.Promise;
+
   /*
   Knox - AMAZON S3 Connector
   Add the api keys and such
   */
+
   knoxClient = knox.createClient({
     key: 'AKIAI2CJEBPY77CQ32AA',
     secret: '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',
     bucket: 'cardsly'
   });
+
   ua_match = function(ua) {
     var match, result, rmozilla, rmsie, ropera, rwebkit;
     ua = ua.toLowerCase();
@@ -95,14 +127,15 @@
       version: match[2] || '0'
     };
   };
+
   /*
   
   DATABASE MODELING
   
   - set up the schemas
   - they's all prefixed with mongo_
-  
   */
+
   user_schema = new schema({
     email: String,
     password_encrypted: String,
@@ -136,6 +169,7 @@
       "default": true
     }
   });
+
   user_schema.static('authenticate', function(email, password, next) {
     if (!email || !password || email === '' || password === '') {
       return next('Please enter an email address and password');
@@ -162,7 +196,9 @@
       });
     }
   });
+
   mongo_user = mongoose.model('users', user_schema);
+
   card_schema = new schema({
     user_id: String,
     print_id: Number,
@@ -177,7 +213,9 @@
       "default": true
     }
   });
+
   mongo_card = mongoose.model('cards', card_schema);
+
   message_schema = new schema({
     include_contact: Boolean,
     content: String,
@@ -191,7 +229,9 @@
       "default": true
     }
   });
+
   mongo_message = mongoose.model('messages', message_schema);
+
   line_schema = new schema({
     order_id: Number,
     color: String,
@@ -202,6 +242,7 @@
     x: Number,
     y: Number
   });
+
   theme_template_schema = new schema({
     qr: {
       color1: String,
@@ -218,6 +259,7 @@
     color2: String,
     s3_id: String
   });
+
   theme_schema = new schema({
     category: String,
     theme_templates: [theme_template_schema],
@@ -234,7 +276,9 @@
       "default": true
     }
   });
+
   mongo_theme = mongoose.model('themes', theme_schema);
+
   status_schema = new schema({
     status: String,
     user_id: String,
@@ -243,6 +287,7 @@
       "default": Date.now
     }
   });
+
   order_schema = new schema({
     order_number: String,
     user_id: String,
@@ -261,13 +306,17 @@
       "default": Date.now
     }
   });
+
   mongo_order = mongoose.model('orders', order_schema);
+
   url_schema = new schema({
     url_string: String,
     user_id: String,
     redirect_to: String
   });
+
   mongo_url = mongoose.model('urls', url_schema);
+
   view_schema = new schema({
     ip_address: String,
     user_agent: String,
@@ -277,14 +326,16 @@
       "default": Date.now
     }
   });
+
   mongo_view = mongoose.model('views', view_schema);
+
   /*
   
   EVERYAUTH CONFIG
   
   - authenticating to 3rd Party Providers
-  
   */
+
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, userSearch;
     promise = new Promise();
@@ -302,9 +353,7 @@
       userSearch.name = userMeta.name;
       userSearch.twitter_url = 'http://twitter.com/#!' + userMeta.screen_name;
     }
-    if (userMeta.email) {
-      userSearch.email = userMeta.email;
-    }
+    if (userMeta.email) userSearch.email = userMeta.email;
     mongo_user.findOne(userSearch, function(err, existinguser) {
       var user;
       if (err) {
@@ -333,31 +382,52 @@
     });
     return promise;
   };
+
   /*
   Create the Everyauth Accessing the user function
   per the "Accessing the user" section of the everyauth README
   */
+
   everyauth.everymodule.findUserById(function(userId, callback) {
     return mongo_user.findById(userId, callback);
   });
+
   everyauth.twitter.consumerKey('I4s77xbnJvV0bHa7wO8zTA');
+
   everyauth.twitter.consumerSecret('7JjalH7ZVkExJumLIDwsc8BkgxGoaxtSlipPmChY0');
+
   everyauth.twitter.findOrCreateUser(handleGoodResponse);
+
   everyauth.twitter.redirectPath('/success');
+
   everyauth.facebook.appId('292309860797409');
+
   everyauth.facebook.appSecret('70bcb1477ede9a706e285f7faafa8e32');
+
   everyauth.facebook.findOrCreateUser(handleGoodResponse);
+
   everyauth.facebook.redirectPath('/success');
+
   everyauth.linkedin.consumerKey('fuj9rhx302d7');
+
   everyauth.linkedin.consumerSecret('pvWmN5CkrdT3GHF3');
+
   everyauth.linkedin.findOrCreateUser(handleGoodResponse);
+
   everyauth.linkedin.redirectPath('/success');
-  everyauth.google.appId('90634622438.apps.googleusercontent.com');
-  everyauth.google.appSecret('Bvpnj5wXiakpkOnwmXyy4vDj');
+
+  everyauth.google.appId('90634622438-pn8nk974spacthoc1joflnkqhk9hj60q.apps.googleusercontent.com');
+
+  everyauth.google.appSecret('7TOwXY-cPbbpgb6u9Y_kSfnX');
+
   everyauth.google.findOrCreateUser(handleGoodResponse);
+
   everyauth.google.scope('https://www.googleapis.com/auth/userinfo.email');
+
   everyauth.google.redirectPath('/success');
+
   rest = require('./node_modules/everyauth/node_modules/restler');
+
   everyauth.google.fetchOAuthUser(function(accessToken) {
     var promise;
     promise = this.Promise();
@@ -377,24 +447,28 @@
     });
     return promise;
   });
+
   /*
   TODO
   
   For middleware
   - Make the session and user objects sent on every request sent automatically instead of being something we have to pass each time to the jade.
-  
   */
+
   /*
   
   EXPRESS APPLICATION CONFIG
   
   - set route defaults
   - configure middleware, etc
-  
   */
+
   connect = require('connect');
+
   redis_store = require('connect-redis')(connect);
+
   options = {};
+
   if (process.env.REDISTOGO_URL) {
     options = {
       host: process.env.REDISTOGO_URL.replace(/.*@([^:]*).*/ig, '$1'),
@@ -402,7 +476,9 @@
       pass: process.env.REDISTOGO_URL.replace(/.*:.*:(.*)@.*/ig, '$1')
     };
   }
+
   session_store = new redis_store(options);
+
   app.configure(function() {
     app.set("views", __dirname + conf.dir.views);
     app.set("view engine", "jade");
@@ -428,42 +504,54 @@
     app.use(express.static(__dirname + conf.dir.public));
     return app.use(everyauth.middleware());
   });
+
   app.configure("development", function() {
     return app.use(express.errorHandler({
       dumpExceptions: true,
       showStack: true
     }));
   });
+
   app.configure("production", function() {
     return app.use(express.errorHandler());
   });
+
   /*
   
   POST ROUTES
   
   - for AJAX stuff mostly
   - maybe other post actions
-  
   */
+
   mrg = require(__dirname + '/mrg');
+
   valid_url_characters = [];
+
   pre_vowels = [['e', 12], ['a', 8], ['o', 7], ['i', 7], ['u', 3], ['y', 2]];
+
   pre_consonants = [['t', 9], ['n', 7], ['s', 6], ['h', 6], ['r', 5], ['d', 4], ['l', 4], ['c', 3], ['m', 2], ['w', 2], ['f', 2], ['g', 2], ['y', 2], ['p', 2], ['b', 2], ['k', 1], ['j', 1], ['x', 1], ['qu', 1], ['z', 1]];
+
   vowels = [];
+
   for (_i = 0, _len = pre_vowels.length; _i < _len; _i++) {
     l = pre_vowels[_i];
     for (i = 1, _ref = l[1]; 1 <= _ref ? i <= _ref : i >= _ref; 1 <= _ref ? i++ : i--) {
       vowels.push(l[0]);
     }
   }
+
   consonants = [];
+
   for (_j = 0, _len2 = pre_consonants.length; _j < _len2; _j++) {
     l = pre_consonants[_j];
     for (i = 1, _ref2 = l[1]; 1 <= _ref2 ? i <= _ref2 : i >= _ref2; 1 <= _ref2 ? i++ : i--) {
       consonants.push(l[0]);
     }
   }
+
   numbers = ['', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   new_url = function() {
     var add_consonant, add_consonant_upper, add_number, add_vowel, c_l, n_l, psuedo, v_l;
     psuedo = '';
@@ -475,16 +563,18 @@
       for (i = 0; i <= 1; i++) {
         psuedo += numbers[Math.round(mrg.generate_real() * n_l)];
       }
-      if (Math.round(mrg.generate_real())) {
-        return psuedo += 0;
-      }
+      if (Math.round(mrg.generate_real())) return psuedo += 0;
     };
     add_consonant_upper = function() {
       var consonant, i, _results;
       _results = [];
       for (i = 0; i <= 0; i++) {
         consonant = consonants[Math.round(mrg.generate_real() * c_l)];
-        _results.push(Math.round(mrg.generate_real()) ? psuedo += consonant : psuedo += consonant.toUpperCase());
+        if (Math.round(mrg.generate_real())) {
+          _results.push(psuedo += consonant);
+        } else {
+          _results.push(psuedo += consonant.toUpperCase());
+        }
       }
       return _results;
     };
@@ -494,7 +584,11 @@
       for (i = 0; i <= 0; i++) {
         vowel = vowels[Math.round(mrg.generate_real() * v_l)];
         psuedo += vowel;
-        _results.push(Math.round(mrg.generate_real()) ? psuedo += vowel : void 0);
+        if (Math.round(mrg.generate_real())) {
+          _results.push(psuedo += vowel);
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     };
@@ -514,15 +608,14 @@
     add_number();
     return psuedo;
   };
+
   valid_new_url = function(next) {
     var try_url;
     try_url = new_url();
     return mongo_url.count({
       url_string: try_url
     }, function(err, count) {
-      if (err) {
-        next(err);
-      }
+      if (err) next(err);
       if (!count) {
         return next(null, try_url);
       } else {
@@ -530,6 +623,7 @@
       }
     });
   };
+
   /*
   for i in [0..100]
     valid_new_url (err, url) ->
@@ -538,6 +632,7 @@
       else
         console.log url
   */
+
   app.post('/upload-image', function(req, res) {
     var s3_fail;
     s3_fail = function(err) {
@@ -569,9 +664,7 @@
                       'Content-Type': 'image/' + ext
                     });
                     knoxReq.on('response', function(awsRes) {
-                      if (awsRes.statusCode !== 200) {
-                        console.log('ERR', awsRes);
-                      }
+                      if (awsRes.statusCode !== 200) console.log('ERR', awsRes);
                       if (size === '525x300') {
                         if (awsRes.statusCode === 200) {
                           return res.send('<script>parent.window.$.s3_result(\'' + fileName + '\');</script>');
@@ -582,9 +675,7 @@
                     });
                     knoxReq.end(buff);
                     return fs.unlink('/tmp/' + size + fileName, function(err) {
-                      if (err) {
-                        return console.log('ERR:', err);
-                      }
+                      if (err) return console.log('ERR:', err);
                     });
                   }
                 });
@@ -602,9 +693,7 @@
               'Content-Type': 'image/' + ext
             });
             knoxReq.on('response', function(res) {
-              if (res.statusCode !== 200) {
-                return console.log('ERR', res);
-              }
+              if (res.statusCode !== 200) return console.log('ERR', res);
             });
             return knoxReq.end(buff);
           });
@@ -614,6 +703,7 @@
       return s3_fail(err);
     }
   });
+
   check_no_err_ajax = function(err) {
     if (err) {
       console.log(err);
@@ -623,6 +713,7 @@
     }
     return !err;
   };
+
   app.post('/save-theme', function(req, res) {
     var new_theme, params;
     params = req.body;
@@ -666,6 +757,7 @@
       }
     }
   });
+
   app.post('/save-form', function(req, res) {
     /*
       TODO
@@ -674,12 +766,12 @@
       Like on browser close.
       It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
       Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
-    
-      */    req.session.saved_form = req.body;
+    */    req.session.saved_form = req.body;
     return res.send({
       success: true
     });
   });
+
   app.post('/find-address', function(req, res, next) {
     return geo.geocoder(geo.google, req.body.address + ' ' + req.body.city, false, function(full_address, latitude, longitude, details) {
       console.log(full_address, latitude, longitude, details);
@@ -697,6 +789,7 @@
       });
     });
   });
+
   app.post('/check-email', function(req, res, next) {
     var handleReturn, params;
     params = req.body || {};
@@ -725,6 +818,7 @@
       email: req.email
     });
   });
+
   app.post('/login', function(req, res, next) {
     return mongo_user.authenticate(req.body.email, req.body.password, function(err, user) {
       if (err || !user) {
@@ -742,6 +836,7 @@
       }
     });
   });
+
   app.post('/send-feedback', function(req, res, next) {
     res.send({
       succesfulFeedback: 'This worked!'
@@ -758,6 +853,7 @@
       }
     });
   });
+
   app.post('/create-user', function(req, res, next) {
     return mongo_user.count({
       email: req.body.email,
@@ -785,6 +881,7 @@
       });
     });
   });
+
   app.post('/change-password', function(req, res, next) {
     if (req.user.password_encrypted === encrypted(req.body.current_password)) {
       console.log(1);
@@ -798,6 +895,7 @@
       return console.log(2);
     }
   });
+
   app.post('/get-user', function(req, res, next) {
     console.log('USER: ', req.user);
     return res.send({
@@ -811,6 +909,7 @@
       }
     });
   });
+
   app.post('/get-themes', function(req, res, next) {
     return mongo_theme.find({
       active: true
@@ -826,6 +925,59 @@
       }
     });
   });
+
+  stripe = require('stripe')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+
+  app.post('/confirm-purchase', function(req, res, next) {
+    return valid_new_url(function(err, url) {
+      var order;
+      if (err) {
+        console.log('ERR: ', err);
+        return res.send({
+          err: err
+        });
+      } else {
+        order = new mongo_order;
+        order.order_number = url;
+        order.user_id = req.user._id;
+        order.theme_id = req.session.saved_form.active_theme_id;
+        order.status = 'Charged';
+        order.quantity = req.session.saved_form.quantity;
+        order.shipping_method = req.session.saved_form.shipping_method;
+        order.values = req.session.saved_form.values;
+        order.address = req.session.saved_address.address;
+        order.city = req.session.saved_address.city;
+        order.full_address = req.session.saved_address.full_address;
+        return order.save(function(err, new_order) {
+          if (err) {
+            console.log('ERR: ', err);
+            return res.send({
+              err: err
+            });
+          } else {
+            return stripe.charges.create({
+              currency: 'USD',
+              amount: new_order.quantity * 1 + new_order.shipping_method * 1,
+              customer: req.body.stripe_id,
+              description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+            }, function(err, customer) {
+              if (err) {
+                return res.send({
+                  err: err
+                });
+              } else {
+                console.log('CUSTOMER: ', customer);
+                return res.send({
+                  order_id: new_order._id
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
   app.post('/validate-purchase', function(req, res, next) {
     console.log(req.user);
     console.log(req.session);
@@ -846,25 +998,25 @@
           TODO
           
           - SAVE THEIR INFO HERE
-      
-          */
+      */
       return res.send({
         success: true
       });
       /*
           res.send
             error: 'Im sorry this page isnt active yet'
-          */
+      */
     }
   });
+
   /*
   
   GET ROUTES
   
   - normal pages
   - anything that's a regular page
-  
   */
+
   securedAdminPage = function(req, res, next) {
     if (req.user && req.user.role === 'admin') {
       return next();
@@ -874,6 +1026,7 @@
       }, 302);
     }
   };
+
   securedPage = function(req, res, next) {
     if (req.user) {
       return next();
@@ -883,6 +1036,7 @@
       }, 302);
     }
   };
+
   check_no_err = function(err) {
     if (err) {
       console.log(err);
@@ -892,6 +1046,19 @@
     }
     return !err;
   };
+
+  app.get('*', function(req, res, next) {
+    var headers;
+    headers = req.headers;
+    if (headers['x-real-ip'] && headers['x-forwarded-proto'] !== 'https') {
+      return res.send('', {
+        Location: 'https://www.cards.ly' + req.url
+      }, 302);
+    } else {
+      return next();
+    }
+  });
+
   app.get('/', function(req, res) {
     return res.render('landing-prelaunch', {
       user: req.user,
@@ -899,12 +1066,14 @@
       layout: 'layout_landing'
     });
   });
+
   app.get('/success', function(req, res) {
     return res.render('success', {
       user: req.user,
       session: req.session
     });
   });
+
   app.get('/cards', securedPage, function(req, res) {
     return res.render('cards', {
       user: req.user,
@@ -912,6 +1081,7 @@
       thankyou: req.params.thankyou
     });
   });
+
   app.get('/admin', securedAdminPage, function(req, res, next) {
     return res.render('admin', {
       user: req.user,
@@ -919,29 +1089,31 @@
       scripts: ['/js/libs/colorpicker/js/colorpicker.js', '/js/libs/excanvas.compiled.js', '/js/admin.js']
     });
   });
+
   app.get('/make-me-admin', securedPage, function(req, res) {
     req.user.role = 'admin';
     return req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-      }
+      if (err) console.log(err);
       return res.send('', {
         Location: '/admin'
       }, 302);
     });
   });
+
   app.get('/login', function(req, res) {
     return res.render('login', {
       user: req.user,
       session: req.session
     });
   });
+
   app.get('/about', function(req, res) {
     return res.render('about', {
       user: req.user,
       session: req.session
     });
   });
+
   app.get('/how-it-works/:whateverComesAfterHowItWorks?', function(req, res) {
     return res.render('how-it-works', {
       user: req.user,
@@ -949,6 +1121,7 @@
       whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks
     });
   });
+
   app.get('/settings', securedPage, function(req, res) {
     return res.render('settings', {
       user: req.user,
@@ -956,6 +1129,7 @@
       scripts: ['/js/settings.js']
     });
   });
+
   app.get('/thank-you', function(req, res) {
     var payment_method_token, total;
     payment_method_token = req.query.payment_method_token;
@@ -1067,6 +1241,7 @@
       });
     }
   });
+
   app.get('/splash', function(req, res) {
     return res.render('splash', {
       user: req.user,
@@ -1074,6 +1249,7 @@
       layout: 'layout_landing'
     });
   });
+
   app.get('/error', function(req, res) {
     return res.render('error', {
       user: req.user,
@@ -1081,6 +1257,7 @@
       layout: 'layout_landing'
     });
   });
+
   app.get('/cute-animal', function(req, res) {
     return res.render('cute-animal', {
       user: req.user,
@@ -1088,6 +1265,7 @@
       layout: 'layout_landing'
     });
   });
+
   app.get('/home', function(req, res) {
     var ua, ua_string;
     ua_string = req.header('USER-AGENT');
@@ -1110,6 +1288,7 @@
       });
     }
   });
+
   app.get('/beepBoop10', function(req, res) {
     var url, urls;
     urls = ['http://facebook.com/elforko', 'http://twitter.com/elspoono', 'http://blog.cards.ly', 'http://elspoono.wordpress.com', 'http://www.meetup.com/webdesignersdevelopers/members/8256239/', 'http://www.slideshare.net/elspoono', 'https://plus.google.com/100278450741153543517/posts', 'http://github.com/elspoono'];
@@ -1118,6 +1297,7 @@
       Location: url
     }, 302);
   });
+
   /*
   
   Generic Routes
@@ -1126,26 +1306,32 @@
   - redirects
   - robots.txt
   - etc
-  
   */
+
   app.get('/error', function(req, res) {
     return res.render('error');
   });
+
   app.get('/robots.txt', function(req, res, next) {
     return res.send('user-agent: *\nDisallow: ', {
       'Content-Type': 'text/plain'
     });
   });
+
   app.get('/js/libs/PIE', function(req, res, next) {
     return res.sendfile(__dirname + '/public/js/libs/PIE.htc', {
       'Content-Type': 'text/x-component'
     });
   });
+
   app.get('*', function(req, res, next) {
     return res.send('', {
       Location: '/'
     }, 301);
   });
+
   app.listen(process.env.PORT || process.env.C9_PORT || 4000);
+
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+
 }).call(this);

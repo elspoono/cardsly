@@ -795,6 +795,24 @@ select {
  * Home Page
  *
  *******************************************/
+.signins .check,
+.signins .email_to_send {
+  width: 200px;
+  margin: 0 auto;
+  display: block;
+}
+.signins .check {
+  overflow: hidden;
+}
+.signins .check input {
+  line-height: 60px;
+  margin-right: 10px;
+  float: left;
+}
+.signins .check label {
+  float: right;
+  width: 170px;
+}
 .order_details .left,
 .order_details .right,
 .order_details .righter {
