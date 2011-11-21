@@ -1566,6 +1566,17 @@ $ ->
   #
   #
   #
+  # Hide the form
+  $existing_payment = $ '.existing_payment'
+  $existing_payment.find('.button').click ->
+    $existing_payment.remove()
+    $('.order_total form').show()
+    false
+  if $existing_payment.length
+    $('.order_total form').hide()
+  #
+  #
+  #
   #
   #
   #
@@ -1670,7 +1681,10 @@ $ ->
                 $.load_alert
                   content: result.error
             else if result.success
-              $('.order_total form').submit()
+              if $existing_payment.length
+                document.location.href = '/thank-you'
+              else
+                $('.order_total form').submit()
             else
               loading_close()
               $.load_alert

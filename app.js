@@ -900,11 +900,14 @@
   });
 
   app.get('/thank-you', function(req, res) {
-    var paymentMethod, payment_method_token, total;
+    var payment_method_token, total;
     payment_method_token = req.query.payment_method_token;
+    if (!payment_method_token && req.user && req.user.payment_method && req.user.payment_method.token) {
+      payment_method_token = req.user.payment_method.token;
+    }
     if (payment_method_token) {
       total = (req.session.saved_form.quantity + req.session.saved_form.shipping_method) * 1;
-      return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
+      return samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
         if (err) {
           console.log('ERR: ', err);
           return res.render('order_form', {

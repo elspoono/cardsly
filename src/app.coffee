@@ -1122,16 +1122,27 @@ app.get '/settings', securedPage, (req, res) ->
 #
 #Thank_You Page
 app.get '/thank-you', (req, res) -> 
+  #
+  # First, we try to grab it from the url
   payment_method_token = req.query.payment_method_token
+  #
+  #
+  # If it's not there, we try to grab it from the database
+  if not payment_method_token and req.user and req.user.payment_method and req.user.payment_method.token
+    payment_method_token = req.user.payment_method.token
+  #
+  #
+  # And if we found it either place, then proceed
   if payment_method_token
     #
     #
-    #
+    # Figure out their total
     total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
     #
     #
+    # Hit up samurai for their payment_method details
     #
-    paymentMethod = samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
+    samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
       if err
         # Do Error
         console.log 'ERR: ', err
@@ -1192,7 +1203,7 @@ app.get '/thank-you', (req, res) ->
                     user: req.user
                     session: req.session
     #
-    #
+    # 
   else
     console.log 'ERR: ', 'Hit the thank you page without a token.'
     res.render 'order_form'

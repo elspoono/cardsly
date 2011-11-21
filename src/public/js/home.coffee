@@ -120,13 +120,13 @@ $ ->
     $guy_im_fading_out.delay(wait_delay).animate
       'margin-left': -233
     ,quick_time
-    $phone_scanner.stop(true,true)
+    $phone_scanner.stop(true,false)
     #
     #
     #
     # STEP 2: Flash The Light
     #
-    $phone_scanner.delay(quick_time).fadeIn(quick_time).delay(quick_time).fadeOut(quick_time)
+    $phone_scanner.fadeIn(quick_time).delay(quick_time).fadeOut(quick_time)
     #
     # STEP 3: Bring things in
     #

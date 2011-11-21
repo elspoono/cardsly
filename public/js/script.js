@@ -731,7 +731,7 @@
   */
 
   $(function() {
-    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
@@ -1379,6 +1379,13 @@
         return $body.bind('click', remove_input);
       });
     });
+    $existing_payment = $('.existing_payment');
+    $existing_payment.find('.button').click(function() {
+      $existing_payment.remove();
+      $('.order_total form').show();
+      return false;
+    });
+    if ($existing_payment.length) $('.order_total form').hide();
     /*
       # Radio Button Clicking Stuff
     */
@@ -1471,7 +1478,11 @@
                 });
               }
             } else if (result.success) {
-              return $('.order_total form').submit();
+              if ($existing_payment.length) {
+                return document.location.href = '/thank-you';
+              } else {
+                return $('.order_total form').submit();
+              }
             } else {
               loading_close();
               return $.load_alert({
