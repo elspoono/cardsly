@@ -23,6 +23,29 @@ $ ->
   $biz_cards = $ '.biz_cards'
   $slides = $ '.slides'
   $phone_scanner = $ '.phone_scanner'
+  imagelist = [
+    ['derek/facebook.png','social']
+    ['recipe.png','recipes']
+    ['derek/flickr.png','photos']
+    ['video.png','videos']
+    ['derek/twitter.png','twitter']
+    ['derek/linkedin.png','linkedIn']
+    ['derek/wordpress.png','blog']
+    ['derek/tumblr.png','tumblr']
+    ['deal.png','deals']
+    ['derek/ebay.png','eBay']
+    ['derek/etsy.png','etsy']
+    ['derek/deviantart.png','art portfolio']
+    ['map.png','maps']
+    ['xkcd.png','web comics']
+    ['review.png','movie reviews']
+    ['derek/yelp.png','yelp']
+    ['article.png','news stories']
+    ['derek/github.png','gitHub']
+    ['derek/meetup.png','meetup']
+  ]
+  for i in imagelist
+    $slides.append '<li><img src="/images/home/'+i[0]+'" /><label>'+i[1]+'</label></li>'
   $imgs = $slides.find 'img'
   $labels = $slides.find 'label'
   $loading_screen = $ '.loading_screen'
@@ -56,7 +79,7 @@ $ ->
   for i in [0..$imgs.length]
     $li = $ '<li />'
     $my_qr = $ '<div class="qr" />'
-    $img = $ '<img src="/images/biz_card1.png">'
+    $img = $ '<img src="/images/home/biz_card.png">'
     $my_qr.qr
       url: 'http://cards.ly/'+Math.random()
       height: 44

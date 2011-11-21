@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, im, knox, knoxClient, line_schema, message_schema, mongo_card, mongo_message, mongo_theme, mongo_user, mongo_view, mongoose, nodemailer, object_id, options, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, theme_schema, theme_template_schema, ua_match, user_schema, util, view_schema;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -279,6 +279,40 @@
 
   mongo_theme = mongoose.model('themes', theme_schema);
 
+  status_schema = new schema({
+    status: String,
+    user_id: String,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    }
+  });
+
+  order_schema = new schema({
+    order_number: String,
+    user_id: String,
+    theme_id: String,
+    status: String,
+    status_history: [status_schema],
+    quantity: Number,
+    shipping_method: Number,
+    tracking_number: String,
+    date_added: {
+      type: Date,
+      "default": Date.now
+    }
+  });
+
+  mongo_order = mongoose.model('orders', order_schema);
+
+  url_schema = new schema({
+    url_string: String,
+    user_id: String,
+    redirect_to: String
+  });
+
+  mongo_url = mongoose.model('urls', url_schema);
+
   view_schema = new schema({
     ip_address: String,
     user_agent: String,
@@ -486,6 +520,116 @@
   - maybe other post actions
   */
 
+  mrg = require(__dirname + '/mrg');
+
+  valid_url_characters = [];
+
+  pre_vowels = [['e', 12], ['a', 8], ['o', 7], ['i', 7], ['u', 3], ['y', 2]];
+
+  pre_consonants = [['t', 9], ['n', 7], ['s', 6], ['h', 6], ['r', 5], ['d', 4], ['l', 4], ['c', 3], ['m', 2], ['w', 2], ['f', 2], ['g', 2], ['y', 2], ['p', 2], ['b', 2], ['k', 1], ['j', 1], ['x', 1], ['qu', 1], ['z', 1]];
+
+  vowels = [];
+
+  for (_i = 0, _len = pre_vowels.length; _i < _len; _i++) {
+    l = pre_vowels[_i];
+    for (i = 1, _ref = l[1]; 1 <= _ref ? i <= _ref : i >= _ref; 1 <= _ref ? i++ : i--) {
+      vowels.push(l[0]);
+    }
+  }
+
+  consonants = [];
+
+  for (_j = 0, _len2 = pre_consonants.length; _j < _len2; _j++) {
+    l = pre_consonants[_j];
+    for (i = 1, _ref2 = l[1]; 1 <= _ref2 ? i <= _ref2 : i >= _ref2; 1 <= _ref2 ? i++ : i--) {
+      consonants.push(l[0]);
+    }
+  }
+
+  numbers = ['', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  new_url = function() {
+    var add_consonant, add_consonant_upper, add_number, add_vowel, c_l, n_l, psuedo, v_l;
+    psuedo = '';
+    c_l = consonants.length - 1;
+    v_l = vowels.length - 1;
+    n_l = numbers.length - 1;
+    add_number = function() {
+      var i;
+      for (i = 0; i <= 1; i++) {
+        psuedo += numbers[Math.round(mrg.generate_real() * n_l)];
+      }
+      if (Math.round(mrg.generate_real())) return psuedo += 0;
+    };
+    add_consonant_upper = function() {
+      var consonant, i, _results;
+      _results = [];
+      for (i = 0; i <= 0; i++) {
+        consonant = consonants[Math.round(mrg.generate_real() * c_l)];
+        if (Math.round(mrg.generate_real())) {
+          _results.push(psuedo += consonant);
+        } else {
+          _results.push(psuedo += consonant.toUpperCase());
+        }
+      }
+      return _results;
+    };
+    add_vowel = function() {
+      var i, vowel, _results;
+      _results = [];
+      for (i = 0; i <= 0; i++) {
+        vowel = vowels[Math.round(mrg.generate_real() * v_l)];
+        psuedo += vowel;
+        if (Math.round(mrg.generate_real())) {
+          _results.push(psuedo += vowel);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+    add_consonant = function() {
+      var i, _results;
+      _results = [];
+      for (i = 0; i <= 0; i++) {
+        _results.push(psuedo += consonants[Math.round(mrg.generate_real() * c_l)]);
+      }
+      return _results;
+    };
+    add_consonant_upper();
+    add_vowel();
+    add_consonant();
+    add_vowel();
+    add_consonant();
+    add_number();
+    return psuedo;
+  };
+
+  valid_new_url = function(next) {
+    var try_url;
+    try_url = new_url();
+    return mongo_url.count({
+      url_string: try_url
+    }, function(err, count) {
+      if (err) next(err);
+      if (!count) {
+        return next(null, try_url);
+      } else {
+        return valid_new_url(next);
+      }
+    });
+  };
+
+  for (i = 0; i <= 100; i++) {
+    valid_new_url(function(err, url) {
+      if (err) {
+        return console.log('ERR: ', err);
+      } else {
+        return console.log(url);
+      }
+    });
+  }
+
   app.post('/upload-image', function(req, res) {
     var s3_fail;
     s3_fail = function(err) {
@@ -494,7 +638,7 @@
     };
     try {
       return req.form.complete(function(err, fields, files) {
-        var ext, fileName, path, size, sizes, _fn, _i, _len;
+        var ext, fileName, path, size, sizes, _fn, _k, _len3;
         if (err) {
           return s3_fail(err);
         } else {
@@ -535,8 +679,8 @@
               }
             });
           };
-          for (_i = 0, _len = sizes.length; _i < _len; _i++) {
-            size = sizes[_i];
+          for (_k = 0, _len3 = sizes.length; _k < _len3; _k++) {
+            size = sizes[_k];
             _fn(size);
           }
           return fs.readFile(path, function(err, buff) {

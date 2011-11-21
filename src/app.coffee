@@ -97,7 +97,6 @@ object_id = schema.ObjectId
 #
 #
 #
-#
 ###
 UTIL
 #
@@ -251,7 +250,6 @@ mongo_user = mongoose.model 'users', user_schema
 #
 #
 #
-#
 # cards
 card_schema = new schema
   user_id: String
@@ -341,7 +339,37 @@ mongo_theme = mongoose.model 'themes', theme_schema
 #
 #
 #
+# Style Field Positions
+status_schema = new schema
+  status: String
+  user_id: String
+  date_added:
+    type: Date
+    default: Date.now
 #
+#
+order_schema = new schema
+  order_number: String
+  user_id: String
+  theme_id: String
+  status: String
+  status_history: [status_schema]
+  quantity: Number
+  shipping_method: Number
+  tracking_number: String
+  date_added:
+    type: Date
+    default: Date.now
+#
+mongo_order = mongoose.model 'orders', order_schema
+#
+#
+url_schema = new schema
+  url_string: String
+  user_id: String
+  redirect_to: String
+#
+mongo_url = mongoose.model 'urls', url_schema
 #
 #
 # Views (for stats)
@@ -644,6 +672,116 @@ POST ROUTES
 - maybe other post actions
 
 ###
+#
+#
+#
+# Post Helper Functions
+#
+#
+#
+#
+#
+#
+# Syllable generation
+#
+# - based on http://en.wikipedia.org/wiki/Letter_frequency
+# - my math shows the current incarnation to generate about 456192000 different possibilities - good enough for now?
+#
+mrg = require(__dirname + '/mrg')
+valid_url_characters = []
+pre_vowels = [
+  ['e',12]
+  ['a',8]
+  ['o',7]
+  ['i',7]
+  ['u',3]
+  ['y',2]
+]
+pre_consonants = [
+  ['t',9]
+  ['n',7]
+  ['s',6]
+  ['h',6]
+  ['r',5]
+  ['d',4]
+  ['l',4]
+  ['c',3]
+  ['m',2]
+  ['w',2]
+  ['f',2]
+  ['g',2]
+  ['y',2]
+  ['p',2]
+  ['b',2]
+  ['k',1]
+  ['j',1]
+  ['x',1]
+  ['qu',1]
+  ['z',1]
+]
+vowels = []
+for l in pre_vowels
+  for i in [1..l[1]]
+    vowels.push l[0]
+consonants = []
+for l in pre_consonants
+  for i in [1..l[1]]
+    consonants.push l[0]
+numbers = ['',1,2,3,4,5,6,7,8,9]
+new_url = () ->
+  psuedo = ''
+  c_l = consonants.length - 1
+  v_l = vowels.length - 1
+  n_l = numbers.length - 1
+  add_number = ->
+    for i in [0..1]
+      psuedo += numbers[Math.round(mrg.generate_real()*n_l)]
+    if Math.round(mrg.generate_real())
+      psuedo += 0
+  add_consonant_upper = ->
+    for i in [0..0]
+      consonant = consonants[Math.round(mrg.generate_real()*c_l)]
+      if Math.round(mrg.generate_real())
+        psuedo += consonant
+      else
+        psuedo += consonant.toUpperCase()
+  add_vowel = ->
+    for i in [0..0]
+      vowel = vowels[Math.round(mrg.generate_real()*v_l)]
+      psuedo += vowel
+      if Math.round(mrg.generate_real())
+        psuedo += vowel
+  add_consonant = ->
+    for i in [0..0]
+      psuedo += consonants[Math.round(mrg.generate_real()*c_l)]
+  add_consonant_upper()
+  add_vowel()
+  add_consonant()
+  add_vowel()
+  add_consonant()
+  add_number()
+  psuedo
+valid_new_url = (next) ->
+  try_url = new_url()
+  mongo_url.count
+    url_string: try_url
+  , (err, count) ->
+    if err
+      next err
+    if not count
+      next null, try_url
+    else
+      valid_new_url next
+
+for i in [0..100]
+  valid_new_url (err, url) ->
+    if err
+      console.log 'ERR: ', err
+    else
+      console.log url
+#
+#
+#
 #
 #
 #

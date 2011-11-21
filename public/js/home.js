@@ -8,10 +8,15 @@
   */
 
   $(function() {
-    var $biz_cards, $body, $img, $imgs, $labels, $li, $loading_screen, $my_qr, $phone_scanner, $slides, biz_begin, biz_incr, current_num, frame_time, i, iterate_num, my_repeatable_function, quick_time, _ref;
+    var $biz_cards, $body, $img, $imgs, $labels, $li, $loading_screen, $my_qr, $phone_scanner, $slides, biz_begin, biz_incr, current_num, frame_time, i, imagelist, iterate_num, my_repeatable_function, quick_time, _i, _len, _ref;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
     $phone_scanner = $('.phone_scanner');
+    imagelist = [['derek/facebook.png', 'social'], ['recipe.png', 'recipes'], ['derek/flickr.png', 'photos'], ['video.png', 'videos'], ['derek/twitter.png', 'twitter'], ['derek/linkedin.png', 'linkedIn'], ['derek/wordpress.png', 'blog'], ['derek/tumblr.png', 'tumblr'], ['deal.png', 'deals'], ['derek/ebay.png', 'eBay'], ['derek/etsy.png', 'etsy'], ['derek/deviantart.png', 'art portfolio'], ['map.png', 'maps'], ['xkcd.png', 'web comics'], ['review.png', 'movie reviews'], ['derek/yelp.png', 'yelp'], ['article.png', 'news stories'], ['derek/github.png', 'gitHub'], ['derek/meetup.png', 'meetup']];
+    for (_i = 0, _len = imagelist.length; _i < _len; _i++) {
+      i = imagelist[_i];
+      $slides.append('<li><img src="/images/home/' + i[0] + '" /><label>' + i[1] + '</label></li>');
+    }
     $imgs = $slides.find('img');
     $labels = $slides.find('label');
     $loading_screen = $('.loading_screen');
@@ -21,7 +26,7 @@
     for (i = 0, _ref = $imgs.length; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
       $li = $('<li />');
       $my_qr = $('<div class="qr" />');
-      $img = $('<img src="/images/biz_card1.png">');
+      $img = $('<img src="/images/home/biz_card.png">');
       $my_qr.qr({
         url: 'http://cards.ly/' + Math.random(),
         height: 44,
