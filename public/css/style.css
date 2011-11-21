@@ -805,12 +805,20 @@ select {
 .order_details .righter {
   margin-left: 20px;
 }
-.order_details .address_result,
-.order_details label {
-  cursor: pointer;
-  color: #eee;
-  font-size: 13.65px;
+.address_container {
+  margin: 20px 0;
+  border: 1px solid #524641;
+  width: 170px;
+  padding: 10px;
+  font-size: 12.6px;
   line-height: 1.5em;
+}
+.address_container h5 {
+  font-weight: bold;
+  margin: -20px -5px 5px -5px;
+  padding-left: 5px;
+  background: #908575;
+  border: 1px solid #524641;
 }
 .order_total .details {
   float: right;
@@ -838,10 +846,6 @@ select {
   border-bottom: 1px solid #524641;
   padding-bottom: 5px;
 }
-.order_total .address_result {
-  font-size: 12.6px;
-  line-height: 1.5em;
-}
 .order_total .total {
   margin: 15px 0;
   font-size: 25.2px;
@@ -855,6 +859,10 @@ select {
 .order_total .card_side {
   float: left;
   overflow: hidden;
+}
+.order_total .my_card {
+  height: 300px;
+  width: 525px;
 }
 .order_total .card {
   float: left;
@@ -1504,10 +1512,6 @@ label .subtitle {
   font-size: 13.65px;
   line-height: 1.5em;
   cursor: default;
-}
-.shipping .subtitle {
-  font-size: 10.5px;
-  line-height: 1.5em;
 }
 .radio_text_fields {
   font-size: 21px;

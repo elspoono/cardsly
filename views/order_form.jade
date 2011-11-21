@@ -136,11 +136,11 @@
             value= (session.saved_address ? session.saved_address.city : '')
           )
         li
-          .address_result
-            if session && session.saved_address
-              span.subtitle We will ship the cards to here:
-              br
-              !=session.saved_address.full_address
+          .address_container
+            h5 Shipping Address
+            .address_result
+              if session && session.saved_address
+                !=session.saved_address.full_address
       .clear
 
     .img_loader
@@ -191,9 +191,11 @@
     .order_total
       .card_side
         .my_card
-        .address_result
-          if session && session.saved_address
-            !=session.saved_address.full_address
+        .address_container
+          h5 Shipping Address
+          .address_result
+            if session && session.saved_address
+              !=session.saved_address.full_address
       .details
         .total Total Price: 
           .price $10
