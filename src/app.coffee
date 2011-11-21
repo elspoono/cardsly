@@ -1288,7 +1288,14 @@ app.get '/cards', securedPage, (req, res) ->
   res.render 'cards'
     user: req.user
     session: req.session
-    thankyou: req.params.thankyou
+    thankyou: false
+#
+# cards Page Mockup
+app.get '/cards/thank-you', securedPage, (req, res) ->
+  res.render 'cards'
+    user: req.user
+    session: req.session
+    thankyou: true
 #
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
