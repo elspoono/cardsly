@@ -797,16 +797,36 @@
       $('.design_button').click();
     }
     successful_login = function() {
-      var $s;
       if (path === '/login') {
         return document.location.href = '/admin';
       } else {
-        $s = $('.signins');
-        $s.fadeOut(500, function() {
-          $s.html('You are now logged in, please continue.');
-          return $s.fadeIn(1000);
+        return $.load_loading({}, function(loading_close) {
+          return $.ajax({
+            url: '/get-user',
+            success: function(user) {
+              var $s;
+              loading_close();
+              if (data.err) {
+                return $.load_alert({
+                  content: data.err
+                });
+              } else {
+                $s = $('.signins');
+                $s.fadeOut(500, function() {
+                  $s.html('You are now logged in, please continue.');
+                  return $s.fadeIn(1000);
+                });
+                return $('.small_nav .login').replaceWith('<li class="account_link"><a href="/settings">' + (user.name || user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>');
+              }
+            },
+            error: function(err) {
+              loading_close();
+              return $.load_alert({
+                content: 'Our apologies. A server error occurred.'
+              });
+            }
+          });
         });
-        return $('.small_nav .login').html('<a href="/logout">Logout</a>');
       }
     };
     monitor_for_complete = function(opened_window) {

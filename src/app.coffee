@@ -1067,6 +1067,21 @@ app.post '/change-password', (req,res,next) ->
 #
 #
 #
+# Get User
+app.post '/get-user', (req,res,next) ->
+  console.log 'USER: ', req.user
+  res.send
+    name: req.user.name
+    email: req.user.email
+    payment_method:
+      card_type: req.user.payment_method.card_type
+      last_four_digits: req.user.payment_method.last_four_digits
+      expiry_month: req.user.payment_method.expiry_month
+      expiry_year: req.user.payment_method.expiry_year
+
+#
+#
+#
 #
 # Get Themes (post route for get themes :)
 app.post '/get-themes', (req,res,next) ->

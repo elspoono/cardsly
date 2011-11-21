@@ -891,6 +891,20 @@
     });
   });
 
+  app.post('/get-user', function(req, res, next) {
+    console.log('USER: ', req.user);
+    return res.send({
+      name: req.user.name,
+      email: req.user.email,
+      payment_method: {
+        card_type: req.user.payment_method.card_type,
+        last_four_digits: req.user.payment_method.last_four_digits,
+        expiry_month: req.user.payment_method.expiry_month,
+        expiry_year: req.user.payment_method.expiry_year
+      }
+    });
+  });
+
   app.post('/get-themes', function(req, res, next) {
     return mongo_theme.find({
       active: true

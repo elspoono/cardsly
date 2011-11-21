@@ -864,11 +864,25 @@ $ ->
     if path == '/login'
       document.location.href = '/admin'
     else
-      $s = $ '.signins' 
-      $s.fadeOut 500, ->
-        $s.html 'You are now logged in, please continue.'
-        $s.fadeIn 1000
-      $('.small_nav .login').html('<a href="/logout">Logout</a>')
+      $.load_loading {}, (loading_close) ->
+        $.ajax
+          url: '/get-user'
+          success: (user) ->
+            loading_close()
+            if data.err
+              $.load_alert
+                content: data.err
+            else
+              $s = $ '.signins' 
+              $s.fadeOut 500, ->
+                $s.html 'You are now logged in, please continue.'
+                $s.fadeIn 1000
+              $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
+              
+          error: (err) ->
+            loading_close()
+            $.load_alert
+              content: 'Our apologies. A server error occurred.'
   #
   #
   #
