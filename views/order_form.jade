@@ -197,8 +197,18 @@
             if session && session.saved_address
               !=session.saved_address.full_address
       .details
-        .total Total Price: 
+        .total Total Price:
           .price $10
+        if user && user.payment_method && user.payment_method.token
+          .existing_payment
+            .type
+              =user.payment_method.cardType
+            .expiry
+              =user.payment_method.expiry_month
+              | /
+              =user.payment_method.expiry_year
+            .last_4
+              =user.payment_method.lastFourDigits
         form(action='https://api.samurai.feefighters.com/v1/payment_methods',method='POST')
           input(name='redirect_url', type='hidden', value='http://cards.ly/thank-you')
           input(name='merchant_key', type='hidden', value='89b14db44561382d457b5160')
