@@ -503,7 +503,7 @@ everyauth.linkedin.findOrCreateUser handleGoodResponse
 everyauth.linkedin.redirectPath '/success'
 #
 # Google API Key / Config
-everyauth.google.appId 'www.cards.ly'
+everyauth.google.appId '90634622438.apps.googleusercontent.com'
 everyauth.google.appSecret 'V8EVkLLvKfEuk2D4LrBOjZPh'
 everyauth.google.findOrCreateUser handleGoodResponse
 everyauth.google.scope 'https://www.googleapis.com/auth/userinfo.email'

@@ -416,7 +416,7 @@
 
   everyauth.linkedin.redirectPath('/success');
 
-  everyauth.google.appId('www.cards.ly');
+  everyauth.google.appId('90634622438.apps.googleusercontent.com');
 
   everyauth.google.appSecret('V8EVkLLvKfEuk2D4LrBOjZPh');
 
