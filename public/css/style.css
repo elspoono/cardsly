@@ -80,7 +80,7 @@ ul {
 body {
   font-size: 15.75px;
   line-height: 1.5em;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Maven Pro', sans-serif;
   background: #cfbea8 url("/images/little_pluses.png");
 }
 input,
@@ -464,6 +464,7 @@ select {
   position: relative;
 }
 .section h3 {
+  font-family: 'Rammetto One', sans-serif;
   border-bottom: 15px solid #908575;
   margin-bottom: 30px;
   padding-bottom: 10px;
@@ -1709,14 +1710,24 @@ input
   float: left;
   margin: 30px;
 }
+.above_phone {
+  width: 376px;
+  margin: 0 0 0 400px;
+}
+.above_phone .right {
+  text-align: right;
+}
+.above_phone h2 {
+  font-family: 'Rammetto One', sans-serif;
+  margin: 15px 0 0 0;
+  font-size: 21px;
+  line-height: 1.5em;
+}
 .phone_frame {
   height: 542px;
   width: 276px;
-  margin: 0 500px;
   display: block;
   position: relative;
-}
-.phone_frame {
   margin: 30px 30px 30px 450px;
   z-index: 300;
 }
@@ -1734,7 +1745,7 @@ input
   position: absolute;
   overflow: hidden;
   left: 473px;
-  top: 126px;
+  top: 217px;
   width: 233px;
   height: 900px;
   z-index: 23;

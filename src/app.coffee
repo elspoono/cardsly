@@ -357,6 +357,10 @@ order_schema = new schema
   quantity: Number
   shipping_method: Number
   tracking_number: String
+  values: [String]
+  address: String
+  city: String
+  full_address: String
   date_added:
     type: Date
     default: Date.now
@@ -772,13 +776,14 @@ valid_new_url = (next) ->
       next null, try_url
     else
       valid_new_url next
-
+###
 for i in [0..100]
   valid_new_url (err, url) ->
     if err
       console.log 'ERR: ', err
     else
       console.log url
+###
 #
 #
 #
@@ -1331,9 +1336,36 @@ app.get '/thank-you', (req, res) ->
                   session: req.session
               else
                 if purchase.isSuccess()
-                  res.render 'thank-you'
-                    user: req.user
-                    session: req.session
+                  valid_new_url (err, url) ->
+                    if err
+                      console.log 'ERR: ', err
+                      res.render 'order_form'
+                        error_message: 'Something went wrong. Please try again.'
+                        user: req.user
+                        session: req.session
+                    else
+                      order = new mongo_order
+                      order.order_number = url
+                      order.user_id = req.user._id
+                      order.theme_id = session.saved_form.active_theme_id
+                      order.status = 'Charged'
+                      order.quantity = session.saved_form.quantity
+                      order.shipping_method = session.saved_form.shipping_method
+                      order.values = session.saved_form.values
+                      order.address = session.saved_address.address
+                      order.city = session.saved_address.city
+                      order.full_address = session.saved_address.full_address
+                      order.save (err, new_order) ->
+                        if err
+                          console.log 'ERR: ', err
+                          res.render 'order_form'
+                            error_message: 'Something went wrong. Please try again.'
+                            user: req.user
+                            session: req.session
+                        else
+                          res.render 'thank-you'
+                            user: req.user
+                            session: req.session
                 else
                   console.log 'CARD ERR: ', purchase.messages
                   res.render 'order_form'

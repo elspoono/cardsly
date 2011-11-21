@@ -297,6 +297,10 @@
     quantity: Number,
     shipping_method: Number,
     tracking_number: String,
+    values: [String],
+    address: String,
+    city: String,
+    full_address: String,
     date_added: {
       type: Date,
       "default": Date.now
@@ -620,15 +624,14 @@
     });
   };
 
-  for (i = 0; i <= 100; i++) {
-    valid_new_url(function(err, url) {
-      if (err) {
-        return console.log('ERR: ', err);
-      } else {
-        return console.log(url);
-      }
-    });
-  }
+  /*
+  for i in [0..100]
+    valid_new_url (err, url) ->
+      if err
+        console.log 'ERR: ', err
+      else
+        console.log url
+  */
 
   app.post('/upload-image', function(req, res) {
     var s3_fail;
@@ -1093,9 +1096,43 @@
                   });
                 } else {
                   if (purchase.isSuccess()) {
-                    return res.render('thank-you', {
-                      user: req.user,
-                      session: req.session
+                    return valid_new_url(function(err, url) {
+                      var order;
+                      if (err) {
+                        console.log('ERR: ', err);
+                        return res.render('order_form', {
+                          error_message: 'Something went wrong. Please try again.',
+                          user: req.user,
+                          session: req.session
+                        });
+                      } else {
+                        order = new mongo_order;
+                        order.order_number = url;
+                        order.user_id = req.user._id;
+                        order.theme_id = session.saved_form.active_theme_id;
+                        order.status = 'Charged';
+                        order.quantity = session.saved_form.quantity;
+                        order.shipping_method = session.saved_form.shipping_method;
+                        order.values = session.saved_form.values;
+                        order.address = session.saved_address.address;
+                        order.city = session.saved_address.city;
+                        order.full_address = session.saved_address.full_address;
+                        return order.save(function(err, new_order) {
+                          if (err) {
+                            console.log('ERR: ', err);
+                            return res.render('order_form', {
+                              error_message: 'Something went wrong. Please try again.',
+                              user: req.user,
+                              session: req.session
+                            });
+                          } else {
+                            return res.render('thank-you', {
+                              user: req.user,
+                              session: req.session
+                            });
+                          }
+                        });
+                      }
                     });
                   } else {
                     console.log('CARD ERR: ', purchase.messages);

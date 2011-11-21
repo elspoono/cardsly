@@ -55,8 +55,9 @@ $base_line_height = 1.5
 $base_gap = $base_font_px * $base_line_height
 
 /* Font_families */
-$base_font_family = 'Ubuntu', sans-serif
+$base_font_family = 'Maven Pro', sans-serif
 $display_font_family = 'Maven Pro', sans-serif
+$header_font_family = 'Rammetto One', sans-serif
 
 /***********************************
  *
@@ -490,6 +491,7 @@ input, select
     margin-bottom 5px
 .section
   h3
+    font-family $header_font_family
     border-bottom 15px solid $c_bg_light
     margin-bottom 30px
     padding-bottom 10px
@@ -1258,15 +1260,22 @@ input value=["Send Feedback"]
 // SCOTTS STUFF _ HOME PAGE CRAP
 
 
+.above_phone
+  width 376px
+  margin 0 0 0 400px
+  .right
+    text-align right
+  h2
+    font-family $header_font_family
+    margin 15px 0 0 0
+    relative_size(1)
 
 
 .phone_frame
   height 542px
   width 276px
-  margin 0 500px
   display block 
   position relative
-.phone_frame
   margin 30px 30px 30px 450px
   z-index 300
 .phone_bar
@@ -1282,7 +1291,7 @@ input value=["Send Feedback"]
   position absolute
   overflow hidden
   left 473px
-  top 126px
+  top 217px
   width 233px
   height 900px
   z-index 23

@@ -24,25 +24,26 @@ $ ->
   $slides = $ '.slides'
   $phone_scanner = $ '.phone_scanner'
   imagelist = [
-    ['derek/facebook.png','social']
-    ['recipe.png','recipes']
-    ['derek/flickr.png','photos']
-    ['video.png','videos']
-    ['derek/twitter.png','twitter']
-    ['derek/linkedin.png','linkedIn']
-    ['derek/wordpress.png','blog']
-    ['derek/tumblr.png','tumblr']
-    ['deal.png','deals']
+    ['derek/facebook.png','FaceBook']
+    ['derek/slideshare.png','SlideShare']
+    ['derek/linkedin.png','LinkedIn']
+    ['derek/wordpress.png','WordPress']
+    ['video.png','YouTube']
+    ['derek/twitter.png','Twitter']
     ['derek/ebay.png','eBay']
-    ['derek/etsy.png','etsy']
-    ['derek/deviantart.png','art portfolio']
-    ['map.png','maps']
-    ['xkcd.png','web comics']
-    ['review.png','movie reviews']
-    ['derek/yelp.png','yelp']
-    ['article.png','news stories']
-    ['derek/github.png','gitHub']
-    ['derek/meetup.png','meetup']
+    ['derek/yelp.png','Yelp']
+    ['derek/flickr.png','Flickr']
+    ['derek/etsy.png','Etsy']
+    ['derek/meetup.png','Meetup']
+    ['recipe.png','AllRecipes']
+    ['derek/tumblr.png','Tumblr']
+    ['derek/deviantart.png','DeviantArt']
+    ['deal.png','Groupon']
+    ['map.png','Google Map']
+    ['review.png','Movie']
+    ['article.png','News']
+    ['xkcd.png','XKCD']
+    ['derek/github.png','Github']
   ]
   for i in imagelist
     $slides.append '<li><img src="/images/home/'+i[0]+'" /><label>'+i[1]+'</label></li>'
@@ -79,15 +80,15 @@ $ ->
   for i in [0..$imgs.length]
     $li = $ '<li />'
     $my_qr = $ '<div class="qr" />'
-    $img = $ '<img src="/images/home/biz_card.png">'
+    $img = $ '<img src="/images/home/derek/biz_card.png">'
     $my_qr.qr
-      url: 'http://cards.ly/'+Math.random()
-      height: 44
-      width: 44
+      url: 'http://cards.ly/'+i
+      height: 90
+      width: 90
     $my_qr.css
       position: 'absolute'
-      top: 56
-      left: 185
+      top: 25
+      left: 140
     $img.css
       height: 142
     $li.append $my_qr
@@ -96,7 +97,7 @@ $ ->
   #
   #
   biz_incr = 142+30
-  biz_begin = (-$imgs.length-.75)*biz_incr
+  biz_begin = (-$imgs.length)*biz_incr
   $biz_cards.css
     top: biz_begin
   $biz_cards.find('li').hide().fadeIn()
@@ -205,9 +206,6 @@ $ ->
         clearTimeout timer
         frame_time = 4000
         quick_time = 200
-        $label_to.stop(true,true).css
-          'margin-left': 0
-        $label_to.delay(2000).fadeOut(3000)
         $biz_cards.stop(true,true).animate
           top: parseInt($biz_cards.css('top')) + biz_incr*6
         , 1200
@@ -227,10 +225,7 @@ $ ->
   #
   #
   $(window).load ->
-    if $.browser.msie and parseInt($.browser.version, 10)<8
-      console.log 'Do something for IE7 here'
-    else
-      my_repeatable_function()
+    my_repeatable_function()
   #
   #
   #
