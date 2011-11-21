@@ -1205,6 +1205,15 @@
     }
   });
 
+  app.get('/beepBoop10', function(req, res) {
+    var url, urls;
+    urls = ['http://facebook.com/elforko', 'http://twitter.com/elspoono', 'http://blog.cards.ly', 'http://elspoono.wordpress.com', 'http://www.meetup.com/webdesignersdevelopers/members/8256239/', 'http://www.slideshare.net/elspoono', 'https://plus.google.com/100278450741153543517/posts', 'http://github.com/elspoono'];
+    url = urls[Math.round(mrg.generate_real() * (urls.length - 1))];
+    return res.send('', {
+      Location: url
+    }, 302);
+  });
+
   /*
   
   Generic Routes
