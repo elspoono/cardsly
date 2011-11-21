@@ -788,9 +788,9 @@ $ ->
   $a = $ '.account_link'
   $am = $a.find '.account_menu'
   $body = $(document)
-  $('.small_nav li').hover ->
+  $('.small_nav li').live 'mouseenter', ->
     $(this).addClass 'hover'
-  , ->
+  $('.small_nav li').live 'mouseleave', ->
     $(this).removeClass 'hover'
   close_menu = (e) ->
     $t = $ e.target
@@ -869,9 +869,9 @@ $ ->
           url: '/get-user'
           success: (user) ->
             loading_close()
-            if data.err
+            if user.err
               $.load_alert
-                content: data.err
+                content: user.err
             else
               $s = $ '.signins' 
               $s.fadeOut 500, ->

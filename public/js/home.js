@@ -1,12 +1,13 @@
-(function() {
+
   /*
   
   This is only for the home page
   
   - Home page animations
   - Gallery selection on the home page
-  
-  */  $(function() {
+  */
+
+  $(function() {
     var $biz_cards, $body, $img, $imgs, $labels, $li, $loading_screen, $my_qr, $phone_scanner, $slides, biz_begin, biz_incr, current_num, frame_time, i, imagelist, iterate_num, my_repeatable_function, quick_time, _i, _len, _ref;
     $biz_cards = $('.biz_cards');
     $slides = $('.slides');
@@ -65,9 +66,7 @@
         $label_to = $labels.filter(':first');
       }
       wait_delay = quick_time * 3;
-      if (wait_delay <= 150) {
-        wait_delay = 0;
-      }
+      if (wait_delay <= 150) wait_delay = 0;
       $label_away.stop(true, true).show().css({
         'margin-left': 0
       });
@@ -80,12 +79,10 @@
       $guy_im_fading_out.delay(wait_delay).animate({
         'margin-left': -233
       }, quick_time);
-      $phone_scanner.stop(true, false);
-      $phone_scanner.fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
+      $phone_scanner.stop(true, false).show();
+      $phone_scanner.hide().fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
       wait_delay = quick_time * 4;
-      if (wait_delay <= 200) {
-        wait_delay = 0;
-      }
+      if (wait_delay <= 200) wait_delay = 0;
       $my_next_guy.show().css({
         'margin-left': 233
       });
@@ -109,9 +106,7 @@
         top: parseInt($biz_cards.css('top')) + biz_incr
       }, frame_time - biz_delay, style);
       current_num++;
-      if (current_num === iterate_num) {
-        current_num = 0;
-      }
+      if (current_num === iterate_num) current_num = 0;
       timer = setTimeout(my_repeatable_function, frame_time);
       frame_time = frame_time - 950;
       quick_time = quick_time - 30;
@@ -146,4 +141,3 @@
       return my_repeatable_function();
     });
   });
-}).call(this);
