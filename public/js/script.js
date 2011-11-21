@@ -805,7 +805,7 @@
           return $.ajax({
             url: '/get-user',
             success: function(user) {
-              var $s;
+              var $existing_payment, $s;
               loading_close();
               if (user.err) {
                 return $.load_alert({
@@ -813,11 +813,19 @@
                 });
               } else {
                 $s = $('.signins');
-                $s.fadeOut(500, function() {
-                  $s.html('You are now logged in, please continue.');
-                  return $s.fadeIn(1000);
-                });
-                return $('.small_nav .login').replaceWith('<li class="account_link"><a href="/settings">' + (user.name || user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>');
+                $s.html('<p>Congratulations ' + (user.name || user.email) + ', you are now connected to cards.ly</p><div class="check"><input type="checkbox" name="do_send" id="do_send" checked="checked" class="do_send"><label for="do_send">Send my order confirmation email to:</label></div><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email || '') + '"></div>');
+                $('.small_nav .login').replaceWith('<li class="account_link"><a href="/settings">' + (user.name || user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>');
+                if (user.payyment_method && user.payment_method.last_four_digits) {
+                  $existing_payment = $('<div class="existing_payment"><div class="type"></div><div class="expiry">' + user.existing_payment.expiry_month + '/\
+' + user.existing_payment.expiry_year + '</div><div class="last_4">**** - **** - **** - \
+' + user.existing_payment.last_four_digits + '</div><div class="small button gray">Use New Card</div></div>');
+                  $existing_payment.find('.button').click(function() {
+                    $existing_payment.remove();
+                    $('.order_total form').show();
+                    return false;
+                  });
+                  return $('.order_total form').hide();
+                }
               }
             },
             error: function(err) {

@@ -161,10 +161,23 @@
     h3 Step 3: Sign In
     .signins
       if user
-        p
-          | Ordering cards for 
-          =user.name
-          =user.email
+        .check
+          input.do_send(
+            type='checkbox'
+            name='do_send'
+            id='do_send'
+            checked='checked'
+          )
+          label(
+            for='do_send'
+          ) Send my order confirmation email to:
+        .input
+          input.email_to_send(
+            name='email_to_send'
+            value=user.email
+            placeholder='my@email.com'
+          )
+
       else
         p
           .socials

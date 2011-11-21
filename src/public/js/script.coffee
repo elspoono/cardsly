@@ -874,11 +874,22 @@ $ ->
                 content: user.err
             else
               $s = $ '.signins' 
-              $s.fadeOut 500, ->
-                $s.html 'You are now logged in, please continue.'
-                $s.fadeIn 1000
+              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><input type="checkbox" name="do_send" id="do_send" checked="checked" class="do_send"><label for="do_send">Send my order confirmation email to:</label></div><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email or '') + '"></div>'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
-              
+              if user.payyment_method and user.payment_method.last_four_digits
+                #
+                # Hide the form
+                $existing_payment = $ '<div class="existing_payment"><div class="type"></div><div class="expiry">' + user.existing_payment.expiry_month + '/
+' + user.existing_payment.expiry_year + '</div><div class="last_4">**** - **** - **** - 
+' + user.existing_payment.last_four_digits + '</div><div class="small button gray">Use New Card</div></div>'
+                $existing_payment.find('.button').click ->
+                  $existing_payment.remove()
+                  $('.order_total form').show()
+                  false
+                $('.order_total form').hide()
+                #
+              #
+              #
           error: (err) ->
             loading_close()
             $.load_alert
