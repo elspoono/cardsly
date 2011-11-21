@@ -944,7 +944,7 @@
                   console.log('PURCHASE: ', purchase);
                   console.log('ERR: ', err);
                   return res.render('order_form', {
-                    error_message: 'I couldn\'t reach the credit card company just now. Please try again in a moment.',
+                    error_message: 'Something might be wrong with that credit card number or it\'s CVC number. I couldn\'t process it.',
                     user: req.user,
                     session: req.session
                   });
