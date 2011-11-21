@@ -904,8 +904,6 @@
     payment_method_token = req.query.payment_method_token;
     if (payment_method_token) {
       total = (req.session.saved_form.quantity + req.session.saved_form.shipping_method) * 1;
-      console.log(total);
-      console.log(payment_method_token);
       return paymentMethod = samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
         if (err) {
           console.log('ERR: ', err);
@@ -915,8 +913,7 @@
             session: req.session
           });
         } else {
-          console.log(payment_method.cardType);
-          console.log(payment_method.lastFourDigits);
+          console.log('PAYMENT: ', payment_method);
           req.user.payment_method = {
             token: payment_method_token,
             cardType: payment_method.cardType,
@@ -925,7 +922,6 @@
             expiry_year: payment_method.expiry_year
           };
           return req.user.save(function(err, saved_user) {
-            var purchase;
             if (err) {
               console.log('ERR: ', err);
               return res.render('order_form', {
@@ -934,11 +930,11 @@
                 session: req.session
               });
             } else {
-              return purchase = samurai.Processor.purchase(payment_method_token, total, {
-                billing_reference: 'billing data',
-                customer_reference: 'customer data',
-                custom: 'custom data',
-                descriptor: 'descriptor'
+              return samurai.Processor.purchase(payment_method_token, total, {
+                billing_reference: 'Billing Reference',
+                customer_reference: req.user._id,
+                custom: req.user.email || req.user.name,
+                descriptor: req.user.linkedin_url || req.user.facebook_url || req.user.twitter_url
               }, function(err, purchase) {
                 if (err) {
                   console.log('PURCHASE: ', purchase);

@@ -1128,11 +1128,6 @@ app.get '/thank-you', (req, res) ->
     #
     #
     total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
-    console.log total
-    #
-    #
-    #
-    console.log payment_method_token
     #
     #
     #
@@ -1147,8 +1142,7 @@ app.get '/thank-you', (req, res) ->
       else
         #
         #
-        console.log payment_method.cardType
-        console.log payment_method.lastFourDigits
+        console.log 'PAYMENT: ', payment_method
         #
         req.user.payment_method = 
           token: payment_method_token
@@ -1172,11 +1166,11 @@ app.get '/thank-you', (req, res) ->
             #
             #
             # Try it
-            purchase = samurai.Processor.purchase payment_method_token, total,
-              billing_reference: 'billing data'
-              customer_reference:  'customer data'
-              custom:              'custom data'
-              descriptor:          'descriptor'
+            samurai.Processor.purchase payment_method_token, total,
+              billing_reference: 'Billing Reference'
+              customer_reference: req.user._id
+              custom: req.user.email or req.user.name
+              descriptor: req.user.linkedin_url or req.user.facebook_url or req.user.twitter_url
             , (err, purchase) ->
               if err
                 # Do Error
