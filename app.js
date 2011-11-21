@@ -155,8 +155,8 @@
     custom_3: String,
     payment_method: {
       token: String,
-      cardType: String,
-      lastFourDigits: String,
+      card_type: String,
+      last_four_digits: String,
       expiry_month: String,
       expiry_year: String
     },
@@ -916,10 +916,10 @@
           console.log('PAYMENT: ', payment_method);
           req.user.payment_method = {
             token: payment_method_token,
-            cardType: payment_method.cardType,
-            lastFourDigits: payment_method.lastFourDigits,
-            expiry_month: payment_method.expiry_month,
-            expiry_year: payment_method.expiry_year
+            card_type: payment_method.attributes.card_type,
+            last_four_digits: payment_method.attributes.last_four_digits,
+            expiry_month: payment_method.attributes.expiry_month,
+            expiry_year: payment_method.attributes.expiry_year
           };
           return req.user.save(function(err, saved_user) {
             if (err) {
