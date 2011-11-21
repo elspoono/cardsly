@@ -541,7 +541,7 @@
         active_theme.theme_templates[active_view].s3_id = s3_id;
         set_timers();
         return $card.css({
-          background: 'url(\'//d3eo3eito2cquu.cloudfront.net//525x300/' + s3_id + '\')'
+          background: 'url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + s3_id + '\')'
         });
       } else {
         return $.load_alert({
@@ -642,7 +642,7 @@
       active_theme = theme;
       if (theme_template.s3_id) {
         $card.css({
-          background: '#FFFFFF url(\'http://cdn.cards.ly/525x300/' + theme_template.s3_id + '\')'
+          background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme_template.s3_id + '\')'
         });
       } else {
         $card.css({
