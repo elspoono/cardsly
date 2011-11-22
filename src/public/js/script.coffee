@@ -876,7 +876,9 @@ $ ->
               $s = $ '.signins' 
               $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><input type="checkbox" name="do_send" id="do_send" checked="checked" class="do_send"><label for="do_send">Send my order confirmation email to:</label></div><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email or '') + '"></div>'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
-              if user.payyment_method and user.payment_method.last_four_digits
+              ###
+              SAMURAI
+              if user.payment_method and user.payment_method.last_four_digits
                 #
                 # Hide the form
                 $existing_payment = $ '<div class="existing_payment"><div class="type"></div><div class="expiry">' + user.existing_payment.expiry_month + '/
@@ -888,6 +890,7 @@ $ ->
                   false
                 $('.order_total form').hide()
                 #
+              ###
               #
               #
           error: (err) ->
@@ -1593,12 +1596,16 @@ $ ->
   #
   # Hide the form
   $existing_payment = $ '.existing_payment'
+  $existing_payment.hide()
+  ###
+  SAMURAI
   $existing_payment.find('.button').click ->
     $existing_payment.remove()
     $('.order_total form').show()
     false
   if $existing_payment.length
     $('.order_total form').hide()
+  ###
   #
   #
   #
