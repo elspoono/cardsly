@@ -57,13 +57,16 @@ $ ->
             if data.err
               $.load_alert
                 content: data.err
+            else if data.wp
+              $.load_alert
+                content: data.wp
             else
               successful_password_change()
           error: (err) ->
             loading_close()
             $.load_alert
               content: 'Our apologies. A server error occurred.'
-          wrong_password: (err) ->
+          wrong_password: (wp) ->
             loading_close()
             $.load_alert
               content: 'Please enter the correct current password'

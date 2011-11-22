@@ -67,6 +67,10 @@
                 return $.load_alert({
                   content: data.err
                 });
+              } else if (data.wp) {
+                return $.load_alert({
+                  content: data.wp
+                });
               } else {
                 return successful_password_change();
               }
@@ -77,7 +81,7 @@
                 content: 'Our apologies. A server error occurred.'
               });
             },
-            wrong_password: function(err) {
+            wrong_password: function(wp) {
               loading_close();
               return $.load_alert({
                 content: 'Please enter the correct current password'
