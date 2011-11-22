@@ -976,7 +976,8 @@
               if (err) {
                 console.log('ERR: stripe customer create resulted in ', err);
                 return res.send({
-                  err: err
+                  err: err,
+                  customer: customer
                 });
               } else {
                 console.log('CUSTOMER: ', customer);

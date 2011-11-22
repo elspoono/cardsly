@@ -1746,6 +1746,7 @@ $ ->
                       token: response.id
                     success: (result) ->
                       loading_close()
+                      console.log result
                       if result.err
                         $.load_alert
                           content: result.err

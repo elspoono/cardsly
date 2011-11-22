@@ -1545,6 +1545,7 @@
                     }),
                     success: function(result) {
                       loading_close();
+                      console.log(result);
                       if (result.err) {
                         return $.load_alert({
                           content: result.err
