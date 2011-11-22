@@ -66,8 +66,8 @@
   line-height: 1.5em;
 }
 .order_total .my_card {
-  height: 200px;
-  width: 200px;
+  height: auto;
+  width: auto;
 }
 input value=["Send Feedback"],
 .feedback_form {
