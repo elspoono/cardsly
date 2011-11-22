@@ -92,7 +92,6 @@ input
   filter: alpha ( opacity = 70 );
 }
 .feedback a {
-  width: 80px;
   height: 38px;
   line-height: 22px;
   font-size: 14px;
