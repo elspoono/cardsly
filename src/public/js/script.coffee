@@ -874,7 +874,7 @@ $ ->
                 content: user.err
             else
               $s = $ '.signins' 
-              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><input type="checkbox" name="do_send" id="do_send" checked="checked" class="do_send"><label for="do_send">Send my order confirmation email to:</label></div><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email or '') + '"></div>'
+              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><label for="do_send">Send my order confirmation email to:</label></div><div class="clear" /><div class="input"><input name="email_to_send" placeholder="my@email.com" class="email_to_send" value="' + (user.email or '') + '"</div><div class="clear" />'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
               ###
               SAMURAI
@@ -1745,6 +1745,7 @@ $ ->
                     url: '/confirm-purchase'
                     data: JSON.stringify
                       token: response.id
+                      email: $('.email_to_send').val()
                     success: (result) ->
                       loading_close()
                       console.log result

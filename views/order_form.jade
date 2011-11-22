@@ -162,21 +162,17 @@
     .signins
       if user
         .check
-          input.do_send(
-            type='checkbox'
-            name='do_send'
-            id='do_send'
-            checked='checked'
-          )
           label(
             for='do_send'
-          ) Send my order emails to:
+          ) Send the confirmation email to:
+        .clear
         .input
           input.email_to_send(
             name='email_to_send'
             value=user.email
             placeholder='my@email.com'
           )
+        .clear
 
       else
         p
