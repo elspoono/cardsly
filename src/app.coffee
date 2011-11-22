@@ -1116,10 +1116,10 @@ app.post '/get-themes', (req,res,next) ->
 #
 # Production
 #
-#stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
+stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
-stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+#stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
@@ -1152,7 +1152,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           stripe.customers.create
             card: req.body.token
             email: req.user.email or null
-            description: req.user.name
+            description: req.user.name or req.user.email or req.user.id
           , (err, customer) ->
             if err
               consolle.log 'ERR: stripe customer create resulted in ', err

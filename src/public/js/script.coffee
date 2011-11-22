@@ -1695,10 +1695,10 @@ $ ->
   #
   #
   # Production
-  #Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
+  Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
   #
   # Test
-  Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
+  #Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->
