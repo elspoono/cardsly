@@ -1080,12 +1080,13 @@ app.post '/create-user', (req,res,next) ->
 app.post '/change-password', (req,res,next) ->
   if encrypted(req.body.current_password) == req.user.password_encrypted
     req.user.password_encrypted = encrypted(req.body.new_password);
-    req.user.save (err,data) ->
+    req.user.save (err,data,wp) ->
      res.send
         success: 'True'
   else
-    res.send
-      password_wrong: 'True'
+    req.user (err,data,wp) ->
+      res.send
+        password_wrong: 'True'
 #
 #
 #

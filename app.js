@@ -805,14 +805,16 @@
   app.post('/change-password', function(req, res, next) {
     if (encrypted(req.body.current_password) === req.user.password_encrypted) {
       req.user.password_encrypted = encrypted(req.body.new_password);
-      return req.user.save(function(err, data) {
+      return req.user.save(function(err, data, wp) {
         return res.send({
           success: 'True'
         });
       });
     } else {
-      return res.send({
-        password_wrong: 'True'
+      return req.user(function(err, data, wp) {
+        return res.send({
+          password_wrong: 'True'
+        });
       });
     }
   });
