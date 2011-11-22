@@ -1600,7 +1600,7 @@ input
   height: 40px;
   line-height: 40px;
   text-align: center;
-  padding: 5px;
+  padding: 5px 10px;
   background: #3a322f;
   border: 3px solid #eee;
   border-bottom: none;
