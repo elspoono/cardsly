@@ -1720,7 +1720,7 @@ $ ->
                   $s.show_tooltip
                     message: 'Please sign in or create an account.'
                 ,500
-              if result.error is 'You are not John Stamos'
+              if result.error is 'Hey Uncle Jesse, is that you?'
                 $('html,body').animate
                   scrollTop: $mc.offset().top
                   500
