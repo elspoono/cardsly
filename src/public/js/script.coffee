@@ -1748,8 +1748,12 @@ $ ->
                       loading_close()
                       console.log result
                       if result.err
-                        $.load_alert
-                          content: result.err
+                        if result.customer and result.customer.error and result.customer.error.message
+                          $.load_alert
+                            content: result.customer.error.message
+                        else
+                          $.load_alert
+                            content: 'Our apoligies, something went wrong, please try again later'
                       else
                         console.log result
                         if result.charge.paid

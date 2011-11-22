@@ -1547,9 +1547,15 @@
                       loading_close();
                       console.log(result);
                       if (result.err) {
-                        return $.load_alert({
-                          content: result.err
-                        });
+                        if (result.customer && result.customer.error && result.customer.error.message) {
+                          return $.load_alert({
+                            content: result.customer.error.message
+                          });
+                        } else {
+                          return $.load_alert({
+                            content: 'Our apoligies, something went wrong, please try again later'
+                          });
+                        }
                       } else {
                         console.log(result);
                         if (result.charge.paid) {
