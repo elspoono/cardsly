@@ -1341,7 +1341,7 @@ app.get '/success', (req, res) ->
 get_order_info = (req, res, next) ->
   mongo_order.find
     user_id: req.user._id
-    charge.paid: true
+    'charge.paid': true
   , (err, orders) ->
     if check_no_err err
       req.orders = orders

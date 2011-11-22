@@ -937,7 +937,7 @@
     });
   });
 
-  stripe = require('./stripe_installed.js')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+  stripe = require('./stripe_installed.js')('SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW');
 
   app.post('/confirm-purchase', function(req, res, next) {
     return valid_new_url(function(err, url) {
@@ -952,7 +952,7 @@
         order.order_number = url;
         order.user_id = req.user._id;
         order.theme_id = req.session.saved_form.active_theme_id;
-        order.status = 'Charged';
+        order.status = 'Pending';
         order.quantity = req.session.saved_form.quantity;
         order.shipping_method = req.session.saved_form.shipping_method;
         order.values = req.session.saved_form.values;
@@ -971,10 +971,13 @@
             return stripe.customers.create({
               card: req.body.token,
               email: req.user.email || null,
-              description: req.user.name
+              description: req.user.name || req.user.email || req.user.id
             }, function(err, customer) {
               if (err) {
-                return consolle.log('ERR: stripe customer create resulted in ', err);
+                console.log('ERR: stripe customer create resulted in ', err);
+                return res.send({
+                  err: err
+                });
               } else {
                 console.log('CUSTOMER: ', customer);
                 req.user.customer = customer;
@@ -989,6 +992,7 @@
                   description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
                 }, function(err, charge) {
                   console.log('CHARGE: ', charge);
+                  new_order.status = 'Failed';
                   if (err) {
                     console.log('ERR: stripe charge resulted in ', err);
                     res.send({
@@ -1000,6 +1004,7 @@
                       err: 'Charge resulted in not paid for some reason.'
                     });
                   } else {
+                    new_order.status = 'Charged';
                     res.send({
                       order_id: new_order._id,
                       charge: charge
