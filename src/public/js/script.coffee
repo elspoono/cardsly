@@ -1714,17 +1714,19 @@ $ ->
                 $('html,body').animate
                   scrollTop: $s.offset().top-50
                   500
-                  ->
-                    $s.stop(true,true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn()
-                    $s.show_tooltip
-                      message: 'Please sign in or create an account.'
+                setTimeout ->
+                  $s.stop(true,true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn()
+                  $s.show_tooltip
+                    message: 'Please sign in or create an account.'
+                ,500
               if result.error is 'You are not John Stamos'
                 $('html,body').animate
                   scrollTop: $mc.offset().top
                   500
-                  ->
-                    $.load_alert
-                      content: result.error+'.<p>Please try clicking on the text on this card.'
+                setTimeout ->
+                  $.load_alert
+                    content: result.error+'.<p>Please try clicking on the text on this card.'
+                ,500
               else
                 $.load_alert
                   content: result.error

@@ -1506,21 +1506,23 @@
                 $s = $('.signins');
                 $('html,body').animate({
                   scrollTop: $s.offset().top - 50
-                }, 500, function() {
+                }, 500);
+                setTimeout(function() {
                   $s.stop(true, true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
                   return $s.show_tooltip({
                     message: 'Please sign in or create an account.'
                   });
-                });
+                }, 500);
               }
               if (result.error === 'You are not John Stamos') {
-                return $('html,body').animate({
+                $('html,body').animate({
                   scrollTop: $mc.offset().top
-                }, 500, function() {
+                }, 500);
+                return setTimeout(function() {
                   return $.load_alert({
                     content: result.error + '.<p>Please try clicking on the text on this card.'
                   });
-                });
+                }, 500);
               } else {
                 return $.load_alert({
                   content: result.error
