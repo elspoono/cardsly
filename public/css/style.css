@@ -540,6 +540,9 @@ select {
 .normal,
 .gray {
   width: 180px;
+  font-size: 20px;
+  height: 50px;
+  line-height: 30px;
   text-align: center;
   padding: 8px 15px;
   -webkit-border-radius: 10px;
@@ -551,8 +554,6 @@ select {
   -webkit-box-shadow: 1px 1px 1px #000;
   box-shadow: 1px 1px 1px #000;
   behavior: url("/js/libs/PIE");
-  font-size: 25.2px;
-  line-height: 1.5em;
   color: #eee;
   border: 0;
 }
@@ -668,6 +669,25 @@ select {
   behavior: url("/js/libs/PIE");
 }
 .design_button.button {
+  font-family: 'Rammetto One', sans-serif;
+  background-color: #0ba23d;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #23f067, #0ba23d);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #23f067, #0ba23d);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #23f067, #0ba23d);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #23f067, #0ba23d);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #23f067, #0ba23d);
+  -pie-background: linear-gradient(top, #23f067, #0ba23d);
+  behavior: url("/js/libs/PIE");
+  font-size: 26px;
+  line-height: 40px;
+  height: 40px;
+  width: 220px;
   background-color: #0ba23d;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
 /* Saf4+, Chrome */
@@ -907,6 +927,7 @@ select {
   line-height: 1.5em;
 }
 .checkout.button {
+  font-family: 'Rammetto One', sans-serif;
   background-color: #0ba23d;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#23f067), to(#0ba23d));
 /* Saf4+, Chrome */
@@ -921,9 +942,10 @@ select {
   background-image: linear-gradient(top, #23f067, #0ba23d);
   -pie-background: linear-gradient(top, #23f067, #0ba23d);
   behavior: url("/js/libs/PIE");
-  font-size: 21px;
-  line-height: 1.5em;
-  width: 160px;
+  font-size: 30px;
+  line-height: 40px;
+  height: 40px;
+  width: 180px;
   text-shadow: 1px 1px 0 #000;
   behavior: url("/js/libs/PIE");
 }

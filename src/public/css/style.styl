@@ -548,12 +548,14 @@ input, select
 // Gray and Normal Buttons Basic Properties
 .normal,.gray
   width 180px
+  font-size 20px
+  height 50px
+  line-height 30px
   text-align center
   padding 8px 15px
   border_radius(10px)
   margin 0 auto
   box_shadow(1px,$c_black)
-  relative_size(1.2)
   color $c_light
   border 0
 
@@ -592,6 +594,12 @@ input, select
 
 // Checkout Button
 .design_button.button
+  font-family $header_font_family
+  gradient($c_go,darken($c_go,20))
+  font-size 26px
+  line-height 40px
+  height 40px
+  width 220px
   gradient($c_go,darken($c_go,20))
   text_shadow(1px,$c_black,0)
 .design_button.button.hover
@@ -741,9 +749,12 @@ input, select
 //
 // Checkout Button
 .checkout.button
+  font-family $header_font_family
   gradient($c_go,darken($c_go,20))
-  relative_size(1)
-  width 160px
+  font-size 30px
+  line-height 40px
+  height 40px
+  width 180px
   text_shadow(1px,$c_black,0)
 .checkout.button.hover
   gradient(lighten($c_go,10),darken($c_go,10))

@@ -1711,6 +1711,13 @@ $ ->
                     $s.stop(true,true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn()
                     $s.show_tooltip
                       message: 'Please sign in or create an account.'
+              if result.error is 'You are not John Stamos'
+                $('html,body').animate
+                  scrollTop: $mc.offset().top
+                  500
+                  ->
+                    $.load_alert
+                      content: result.error+'.<p>Please try clicking on the text on this card.'
               else
                 $.load_alert
                   content: result.error
@@ -1734,15 +1741,21 @@ $ ->
                         $.load_alert
                           content: result.err
                       else
-                        document.location.href = '/cards/thank-you'
+                        console.log result
+                        if result.charge.paid
+                          document.location.href = '/cards/thank-you'
+                        else
+                          $.load_alert
+                            content: 'Our apoligies, something went wrong, please try again later'
+                          
                     error: ->
                       loading_close()
                       $.load_alert
-                        content: 'Our apoligies, somethieng went wrong, please try again later'
+                        content: 'Our apoligies, something went wrong, please try again later'
                 else
                   loading_close()
                   $.load_alert
-                    content: 'I\'m sorry, I couldn\'t process that card information.<br>Please double check the cvc and expiration date.'
+                    content: 'I\'m sorry, I couldn\'t process that credit card information.<br>Please double check the cvc and expiration date.'
               
               ###
 

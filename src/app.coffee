@@ -361,6 +361,7 @@ order_schema = new schema
   address: String
   city: String
   full_address: String
+  charge_id: String
   date_added:
     type: Date
     default: Date.now
@@ -436,7 +437,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #
   promise = new Promise()
   #
-  console.log userMeta
+  #console.log userMeta
   #
   userSearch = {}
   if userMeta.publicProfileUrl
@@ -453,10 +454,10 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #
   mongo_user.findOne userSearch, (err,existinguser) ->
     if err
-      console.log 'err: ', err
+      console.log 'ERR: ', err
       promise.fail err
     else if existinguser
-      console.log 'user exists: ', existinguser
+      #console.log 'user exists: ', existinguser
       promise.fulfill existinguser
     else
       user = new mongo_user
@@ -467,10 +468,10 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
       user.email = userSearch.email
       user.save (err, createduser) -> 
         if err
-          console.log 'err: ', err
+          console.log 'ERR: ', err
           promise.fail err
         else
-          console.log 'user created: ', createduser
+          #console.log 'user created: ', createduser
           promise.fulfill createduser
   promise
 #
@@ -872,7 +873,7 @@ app.post '/upload-image', (req, res) ->
 # Generic Ajax Error Handling
 check_no_err_ajax = (err) ->
   if err
-    console.log err
+    console.log 'ERR: ', err
     res.send
       err: err
   !err
@@ -957,7 +958,7 @@ app.post '/save-form', (req, res) ->
 #
 app.post '/find-address', (req, res, next) ->
   geo.geocoder geo.google, req.body.address+' '+req.body.city, false, (full_address, latitude, longitude, details) ->
-    console.log full_address, latitude, longitude, details
+    #console.log full_address, latitude, longitude, details
     full_address = full_address.replace /,/, '<br>'
     req.session.saved_address =
       address: req.body.address
@@ -1012,7 +1013,6 @@ app.post '/login', (req, res, next) ->
         userId: user._id
       res.send
         success: true
-      console.log req.user
 #
 #
 #
@@ -1029,7 +1029,7 @@ app.post '/send-feedback', (req,res,next) ->
     html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
   , (err, data) ->
     if err
-      console.log 'ERR Feedback Email did not send:', err, req.body.email, req.body.content
+      console.log 'ERR: Feedback Email did not send - ', err, req.body.email, req.body.content
 #
 #
 #
@@ -1069,7 +1069,7 @@ app.post '/change-password', (req,res,next) ->
 #
 # Get User
 app.post '/get-user', (req,res,next) ->
-  console.log 'USER: ', req.user
+  #console.log 'USER: ', req.user
   res.send
     name: req.user.name
     email: req.user.email
@@ -1107,7 +1107,7 @@ app.post '/confirm-purchase', (req, res, next) ->
 
   valid_new_url (err, url) ->
     if err
-      console.log 'ERR: ', err
+      console.log 'ERR: url generate resulted in ', err
       res.send
         err: err
     else
@@ -1124,34 +1124,39 @@ app.post '/confirm-purchase', (req, res, next) ->
       order.full_address = req.session.saved_address.full_address
       order.save (err, new_order) ->
         if err
-          console.log 'ERR: ', err
+          console.log 'ERR: database ', err
           res.send
             err: err
         else
           amount = new_order.quantity*1 + new_order.shipping_method*1
-          console.log 'AMOUNT: ', amount
+          #console.log 'AMOUNT: ', amount
           stripe.charges.create
             currency: 'usd'
             amount: amount*100
             customer: req.body.stripe_id
             description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-          , (err, customer) ->
-            console.log 'CUSTOMER: ', customer
+          , (err, charge) ->
+            console.log 'CHARGE: ', charge
+            #
             if err
-              console.log 'ERR: ', err
+              console.log 'ERR: stripe charge resulted in ', err
               res.send
-                err: customer.error.message
+                err: charge.error.message
             else
               res.send
                 order_id: new_order._id
+                charge: charge
+            #
+            new_order.charge_id = charge.id
+            new_order.save (err, final_order) ->
+              if err
+                console.log 'ERR: database ', err
 #
 #
 #
 #
 #
 app.post '/validate-purchase', (req, res, next) ->
-  console.log req.user
-  console.log req.session
   #
   #
   #
@@ -1164,6 +1169,9 @@ app.post '/validate-purchase', (req, res, next) ->
   else if not req.session.saved_address.full_address
     res.send
       error: 'Please check the address'
+  else if req.session.saved_form.values[0] is "John Stamos"
+    res.send
+      error: 'You are not John Stamos'
   else
     #
     #

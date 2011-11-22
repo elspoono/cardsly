@@ -301,6 +301,7 @@
     address: String,
     city: String,
     full_address: String,
+    charge_id: String,
     date_added: {
       type: Date,
       "default": Date.now
@@ -339,7 +340,6 @@
   handleGoodResponse = function(session, accessToken, accessTokenSecret, userMeta) {
     var promise, userSearch;
     promise = new Promise();
-    console.log(userMeta);
     userSearch = {};
     if (userMeta.publicProfileUrl) {
       userSearch.name = userMeta.firstName + ' ' + userMeta.lastName;
@@ -357,10 +357,9 @@
     mongo_user.findOne(userSearch, function(err, existinguser) {
       var user;
       if (err) {
-        console.log('err: ', err);
+        console.log('ERR: ', err);
         return promise.fail(err);
       } else if (existinguser) {
-        console.log('user exists: ', existinguser);
         return promise.fulfill(existinguser);
       } else {
         user = new mongo_user;
@@ -371,10 +370,9 @@
         user.email = userSearch.email;
         return user.save(function(err, createduser) {
           if (err) {
-            console.log('err: ', err);
+            console.log('ERR: ', err);
             return promise.fail(err);
           } else {
-            console.log('user created: ', createduser);
             return promise.fulfill(createduser);
           }
         });
@@ -706,7 +704,7 @@
 
   check_no_err_ajax = function(err) {
     if (err) {
-      console.log(err);
+      console.log('ERR: ', err);
       res.send({
         err: err
       });
@@ -774,7 +772,6 @@
 
   app.post('/find-address', function(req, res, next) {
     return geo.geocoder(geo.google, req.body.address + ' ' + req.body.city, false, function(full_address, latitude, longitude, details) {
-      console.log(full_address, latitude, longitude, details);
       full_address = full_address.replace(/,/, '<br>');
       req.session.saved_address = {
         address: req.body.address,
@@ -829,10 +826,9 @@
         req.session.auth = {
           userId: user._id
         };
-        res.send({
+        return res.send({
           success: true
         });
-        return console.log(req.user);
       }
     });
   });
@@ -849,7 +845,7 @@
       html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
     }, function(err, data) {
       if (err) {
-        return console.log('ERR Feedback Email did not send:', err, req.body.email, req.body.content);
+        return console.log('ERR: Feedback Email did not send - ', err, req.body.email, req.body.content);
       }
     });
   });
@@ -892,7 +888,6 @@
   });
 
   app.post('/get-user', function(req, res, next) {
-    console.log('USER: ', req.user);
     return res.send({
       name: req.user.name,
       email: req.user.email,
@@ -927,7 +922,7 @@
     return valid_new_url(function(err, url) {
       var order;
       if (err) {
-        console.log('ERR: ', err);
+        console.log('ERR: url generate resulted in ', err);
         return res.send({
           err: err
         });
@@ -946,30 +941,34 @@
         return order.save(function(err, new_order) {
           var amount;
           if (err) {
-            console.log('ERR: ', err);
+            console.log('ERR: database ', err);
             return res.send({
               err: err
             });
           } else {
             amount = new_order.quantity * 1 + new_order.shipping_method * 1;
-            console.log('AMOUNT: ', amount);
             return stripe.charges.create({
               currency: 'usd',
               amount: amount * 100,
               customer: req.body.stripe_id,
               description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-            }, function(err, customer) {
-              console.log('CUSTOMER: ', customer);
+            }, function(err, charge) {
+              console.log('CHARGE: ', charge);
               if (err) {
-                console.log('ERR: ', err);
-                return res.send({
-                  err: customer.error.message
+                console.log('ERR: stripe charge resulted in ', err);
+                res.send({
+                  err: charge.error.message
                 });
               } else {
-                return res.send({
-                  order_id: new_order._id
+                res.send({
+                  order_id: new_order._id,
+                  charge: charge
                 });
               }
+              new_order.charge_id = charge.id;
+              return new_order.save(function(err, final_order) {
+                if (err) return console.log('ERR: database ', err);
+              });
             });
           }
         });
@@ -978,8 +977,6 @@
   });
 
   app.post('/validate-purchase', function(req, res, next) {
-    console.log(req.user);
-    console.log(req.session);
     if (!req.user) {
       return res.send({
         error: 'Please sign in'
@@ -991,6 +988,10 @@
     } else if (!req.session.saved_address.full_address) {
       return res.send({
         error: 'Please check the address'
+      });
+    } else if (req.session.saved_form.values[0] === "John Stamos") {
+      return res.send({
+        error: 'You are not John Stamos'
       });
     } else {
       /*

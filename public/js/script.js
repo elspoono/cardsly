@@ -1496,12 +1496,21 @@
               loading_close();
               if (result.error === 'Please sign in') {
                 $s = $('.signins');
-                return $('html,body').animate({
+                $('html,body').animate({
                   scrollTop: $s.offset().top - 50
                 }, 500, function() {
                   $s.stop(true, true).delay(300).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
                   return $s.show_tooltip({
                     message: 'Please sign in or create an account.'
+                  });
+                });
+              }
+              if (result.error === 'You are not John Stamos') {
+                return $('html,body').animate({
+                  scrollTop: $mc.offset().top
+                }, 500, function() {
+                  return $.load_alert({
+                    content: result.error + '.<p>Please try clicking on the text on this card.'
                   });
                 });
               } else {
@@ -1531,20 +1540,27 @@
                           content: result.err
                         });
                       } else {
-                        return document.location.href = '/cards/thank-you';
+                        console.log(result);
+                        if (result.charge.paid) {
+                          return document.location.href = '/cards/thank-you';
+                        } else {
+                          return $.load_alert({
+                            content: 'Our apoligies, something went wrong, please try again later'
+                          });
+                        }
                       }
                     },
                     error: function() {
                       loading_close();
                       return $.load_alert({
-                        content: 'Our apoligies, somethieng went wrong, please try again later'
+                        content: 'Our apoligies, something went wrong, please try again later'
                       });
                     }
                   });
                 } else {
                   loading_close();
                   return $.load_alert({
-                    content: 'I\'m sorry, I couldn\'t process that card information.<br>Please double check the cvc and expiration date.'
+                    content: 'I\'m sorry, I couldn\'t process that credit card information.<br>Please double check the cvc and expiration date.'
                   });
                 }
               });
