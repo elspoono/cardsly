@@ -666,7 +666,7 @@ app.configure "production", ->
 
 
 
-
+console.log app.settings.env
 
 
 
@@ -1090,6 +1090,7 @@ app.post '/get-user', (req,res,next) ->
   res.send
     name: req.user.name
     email: req.user.email
+    active_card: req.user.customer.active_card
     ###
     payment_method:
       card_type: req.user.payment_method.card_type

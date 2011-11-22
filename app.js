@@ -534,6 +534,8 @@
     return app.use(express.errorHandler());
   });
 
+  console.log(app.settings.env);
+
   /*
   
   POST ROUTES
@@ -910,7 +912,8 @@
   app.post('/get-user', function(req, res, next) {
     return res.send({
       name: req.user.name,
-      email: req.user.email
+      email: req.user.email,
+      active_card: req.user.customer.active_card
       /*
           payment_method:
             card_type: req.user.payment_method.card_type
