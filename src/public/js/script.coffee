@@ -1748,12 +1748,8 @@ $ ->
                       loading_close()
                       console.log result
                       if result.err
-                        if result.customer and result.customer.error and result.customer.error.message
-                          $.load_alert
-                            content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.customer.error.message + '</blockquote></p>'
-                        else
-                          $.load_alert
-                            content: 'Our apoligies, something went wrong, please try again later'
+                        $.load_alert
+                          content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
                       else
                         console.log result
                         if result.charge.paid
