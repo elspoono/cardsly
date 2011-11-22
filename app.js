@@ -502,6 +502,7 @@
     app.set("view engine", "jade");
     app.set('view options', {
       scripts: [],
+      env: app.settings.env,
       user: false,
       session: false,
       error_message: false
@@ -533,8 +534,6 @@
   app.configure("production", function() {
     return app.use(express.errorHandler());
   });
-
-  console.log(app.settings.env);
 
   /*
   
@@ -941,6 +940,10 @@
   });
 
   stripe = require('./stripe_installed.js')('SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW');
+
+  if (app.settings.env === 'development') {
+    stripe = require('./stripe_installed.js')('VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u');
+  }
 
   app.post('/confirm-purchase', function(req, res, next) {
     return valid_new_url(function(err, url) {

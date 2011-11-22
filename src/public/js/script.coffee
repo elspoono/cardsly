@@ -1694,11 +1694,12 @@ $ ->
   item_name = '100 cards'
   #
   #
-  # Production
-  Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
+  if env is 'development'
+    Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
+  else
+    Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
   #
   # Test
-  #Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
   #
   # Checkout button action, default error for now.
   $('.checkout').click () ->

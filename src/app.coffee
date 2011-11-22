@@ -616,6 +616,7 @@ app.configure ->
   app.set "view engine", "jade"
   app.set 'view options',
     scripts: []
+    env: app.settings.env
     user: false
     session: false
     error_message: false
@@ -666,7 +667,7 @@ app.configure "production", ->
 
 
 
-console.log app.settings.env
+
 
 
 
@@ -1120,7 +1121,8 @@ app.post '/get-themes', (req,res,next) ->
 stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
-#stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+if app.settings.env is 'development'
+  stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
