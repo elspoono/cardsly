@@ -22,12 +22,12 @@ function setup_response_handler(req, callback) {
                     var err = 200 == res.statusCode ? 0 : res.statusCode;
                     try {
                         response = JSON.parse(response);
-                        callback(null, response);
                     }
                     catch(e) {
-                        console.log(response);
-                        callback(err, {});
+                        err = 1;
+                        response = { error : { message : "Invalid JSON from stripe.com" } };
                     }
+                    callback(err, response)
             });
         });
 }
@@ -39,7 +39,6 @@ module.exports = function (api_key, options) {
 
     function _request(method, path, data, callback) {
 
-        //console.log("data", typeof data, data);
 
         // convert first level of deep data structures to foo[bar]=baz syntax
         Object.keys(data).forEach(function(key) {
@@ -53,10 +52,12 @@ module.exports = function (api_key, options) {
             }
         });
 
+        console.log("data", typeof data, data);
+
         var request_data = querystring.stringify(data);
 
         //console.log(method, "request for", path);
-        //console.log("http request", request_data);
+        console.log("http request", request_data);
 
         var request_options = {
               host: 'api.stripe.com',
@@ -101,10 +102,18 @@ module.exports = function (api_key, options) {
                 get("/v1/charges/" + charge_id, {}, cb);
             },
             refund: function(charge_id, amount, cb) {
+                var requestParams = {};
                 if(!(charge_id && typeof charge_id === 'string')) {
                     cb("charge_id required");
                 }
-                post("/v1/charges/" + charge_id + "/refund", { amount: amount }, cb);
+                if (typeof amount === 'function') {
+                    cb = amount;
+                    amount = null;
+                }
+                if (amount) {
+                    requestParams.amount = amount;
+                }
+                post("/v1/charges/" + charge_id + "/refund", requestParams, cb);
             },
             list: function(data, cb) {
                 get("/v1/charges", data, cb);

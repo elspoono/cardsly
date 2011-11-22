@@ -1097,10 +1097,10 @@ app.post '/get-themes', (req,res,next) ->
 #
 # Production
 #
-stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
+#stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
-#stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
+stripe = require('./stripe_installed.js') 'VGZ3wGSA2ygExWhd6J9pjkhSD5uqlE7u'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
