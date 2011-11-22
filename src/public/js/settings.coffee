@@ -63,6 +63,11 @@ $ ->
             loading_close()
             $.load_alert
               content: 'Our apologies. A server error occurred.'
+          wrong_password: (err) ->
+            loading_close()
+            $.load_alert
+              content: 'Please enter the correct current password'
+
     false
   #Successful Login Function
   

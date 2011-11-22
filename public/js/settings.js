@@ -1,13 +1,12 @@
-
+(function() {
   /*
   
   All the stuff for the admin template designer
   is probably going to be in this section right here.
   
   ok.
-  */
-
-  $(function() {
+  
+  */  $(function() {
     var successful_password_change;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
@@ -77,6 +76,12 @@
               return $.load_alert({
                 content: 'Our apologies. A server error occurred.'
               });
+            },
+            wrong_password: function(err) {
+              loading_close();
+              return $.load_alert({
+                content: 'Please enter the correct current password'
+              });
             }
           });
         });
@@ -89,3 +94,4 @@
       });
     };
   });
+}).call(this);
