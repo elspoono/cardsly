@@ -1155,7 +1155,7 @@ app.post '/confirm-purchase', (req, res, next) ->
             description: req.user.name or req.user.email or req.user.id
           , (err, customer) ->
             if err
-              console.log 'ERR: stripe customer create resulted in ', err
+              console.log 'ERR: stripe customer create resulted in ', err, customer
               res.send
                 err: err
                 customer: customer

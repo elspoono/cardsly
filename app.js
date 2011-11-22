@@ -974,7 +974,7 @@
               description: req.user.name || req.user.email || req.user.id
             }, function(err, customer) {
               if (err) {
-                console.log('ERR: stripe customer create resulted in ', err);
+                console.log('ERR: stripe customer create resulted in ', err, customer);
                 return res.send({
                   err: err,
                   customer: customer

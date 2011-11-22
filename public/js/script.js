@@ -1549,7 +1549,7 @@
                       if (result.err) {
                         if (result.customer && result.customer.error && result.customer.error.message) {
                           return $.load_alert({
-                            content: result.customer.error.message
+                            content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.customer.error.message + '</blockquote></p>'
                           });
                         } else {
                           return $.load_alert({
