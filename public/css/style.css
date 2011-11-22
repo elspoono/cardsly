@@ -817,7 +817,7 @@ select {
  *******************************************/
 .signins .check,
 .signins .email_to_send {
-  width: 200px;
+  width: 250px;
   margin: 0 auto;
   display: block;
 }
@@ -825,13 +825,14 @@ select {
   overflow: hidden;
 }
 .signins .check input {
-  line-height: 60px;
   margin-right: 10px;
   float: left;
+  height: 30px;
 }
 .signins .check label {
-  float: right;
-  width: 170px;
+  line-height: 30px;
+  float: left;
+  width: 200px;
 }
 .order_details .left,
 .order_details .right,
@@ -1596,7 +1597,6 @@ input
   z-index: 500;
 }
 .feedback a {
-  width: 110px;
   height: 40px;
   line-height: 40px;
   text-align: center;
