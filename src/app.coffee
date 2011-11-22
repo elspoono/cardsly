@@ -204,15 +204,22 @@ user_schema = new schema
   twitter_url: String
   facebook_url: String
   linkedin_url: String
-  custom_1: String
-  custom_2: String
-  custom_3: String
+  customer:
+    id: String
+    active_card:
+      cvc_check: String
+      exp_month: Number
+      exp_year: Number
+      last4: String
+      type: String
+  ###
   payment_method:
     token: String
     card_type: String
     last_four_digits: String
     expiry_month: String
     expiry_year: String
+  ###
   date_added:
     type: Date
     default: Date.now
@@ -361,7 +368,17 @@ order_schema = new schema
   address: String
   city: String
   full_address: String
-  charge_id: String
+  amount: Number
+  charge:
+    id: String
+    paid: Boolean
+    refunded: Boolean
+    card:
+      cvc_check: String
+      exp_month: Number
+      exp_year: Number
+      last4: String
+      type: String
   date_added:
     type: Date
     default: Date.now
@@ -1073,11 +1090,13 @@ app.post '/get-user', (req,res,next) ->
   res.send
     name: req.user.name
     email: req.user.email
+    ###
     payment_method:
       card_type: req.user.payment_method.card_type
       last_four_digits: req.user.payment_method.last_four_digits
       expiry_month: req.user.payment_method.expiry_month
       expiry_year: req.user.payment_method.expiry_year
+    ###
 
 #
 #
@@ -1115,42 +1134,70 @@ app.post '/confirm-purchase', (req, res, next) ->
       order.order_number = url
       order.user_id = req.user._id
       order.theme_id = req.session.saved_form.active_theme_id
-      order.status = 'Charged'
+      order.status = 'Pending'
       order.quantity = req.session.saved_form.quantity
       order.shipping_method = req.session.saved_form.shipping_method
       order.values = req.session.saved_form.values
       order.address = req.session.saved_address.address
       order.city = req.session.saved_address.city
       order.full_address = req.session.saved_address.full_address
+      order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
       order.save (err, new_order) ->
         if err
           console.log 'ERR: database ', err
           res.send
             err: err
         else
-          amount = new_order.quantity*1 + new_order.shipping_method*1
-          #console.log 'AMOUNT: ', amount
-          stripe.charges.create
-            currency: 'usd'
-            amount: amount*100
-            customer: req.body.stripe_id
-            description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-          , (err, charge) ->
-            console.log 'CHARGE: ', charge
-            #
+          console.log 'AMOUNT: ', new_order.amount
+          stripe.customers.create
+            card: req.body.token
+            email: req.user.email or null
+            description: req.user.name
+          , (err, customer) ->
             if err
-              console.log 'ERR: stripe charge resulted in ', err
-              res.send
-                err: charge.error.message
+              consolle.log 'ERR: stripe customer create resulted in ', err
             else
-              res.send
-                order_id: new_order._id
-                charge: charge
-            #
-            new_order.charge_id = charge.id
-            new_order.save (err, final_order) ->
-              if err
-                console.log 'ERR: database ', err
+              #
+              console.log 'CUSTOMER: ', customer
+              #
+              # Save the payment token to the user
+              req.user.customer = customer
+              req.user.save (err, user_saved) ->
+                if err
+                  console.log 'ERR: database ', err
+              #
+              console.log ''
+              #
+              # Attempt a charge
+              stripe.charges.create
+                currency: 'usd'
+                amount: new_order.amount*1
+                customer: customer.id
+                description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+              , (err, charge) ->
+                #
+                console.log 'CHARGE: ', charge
+                #
+                new_order.status = 'Failed'
+                if err
+                  console.log 'ERR: stripe charge resulted in ', err
+                  res.send
+                    err: charge.error.message
+                else if not charge.paid
+                  console.log 'ERR: stripe charge resulted in not paid for some reason.'
+                  res.send
+                    err: 'Charge resulted in not paid for some reason.'
+                else
+                  new_order.status = 'Charged'
+                  res.send
+                    order_id: new_order._id
+                    charge: charge
+                #
+                # Save the order result to the order
+                new_order.charge = charge
+                new_order.save (err, final_order) ->
+                  if err
+                    console.log 'ERR: database ', err
 #
 #
 #
@@ -1292,6 +1339,7 @@ app.get '/success', (req, res) ->
 get_order_info = (req, res, next) ->
   mongo_order.find
     user_id: req.user._id
+    charge.paid: true
   , (err, orders) ->
     if check_no_err err
       req.orders = orders
@@ -1307,7 +1355,6 @@ app.get '/cards', get_order_info, securedPage, (req, res) ->
 #
 # cards Page Mockup
 app.get '/cards/thank-you', get_order_info, securedPage, (req, res) ->
-  console.log req.orders
   res.render 'cards'
     orders: req.orders
     user: req.user
@@ -1367,6 +1414,7 @@ app.get '/settings', securedPage, (req, res) ->
 #
 #
 #
+###
 #Thank_You Page
 app.get '/thank-you', (req, res) -> 
   #
@@ -1485,6 +1533,7 @@ app.get '/thank-you', (req, res) ->
       user: req.user
       session: req.session
     # Do Error
+###
 #
 #
 # Splash Page

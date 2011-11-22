@@ -150,16 +150,24 @@
     twitter_url: String,
     facebook_url: String,
     linkedin_url: String,
-    custom_1: String,
-    custom_2: String,
-    custom_3: String,
-    payment_method: {
-      token: String,
-      card_type: String,
-      last_four_digits: String,
-      expiry_month: String,
-      expiry_year: String
+    customer: {
+      id: String,
+      active_card: {
+        cvc_check: String,
+        exp_month: Number,
+        exp_year: Number,
+        last4: String,
+        type: String
+      }
     },
+    /*
+      payment_method:
+        token: String
+        card_type: String
+        last_four_digits: String
+        expiry_month: String
+        expiry_year: String
+    */
     date_added: {
       type: Date,
       "default": Date.now
@@ -301,7 +309,19 @@
     address: String,
     city: String,
     full_address: String,
-    charge_id: String,
+    amount: Number,
+    charge: {
+      id: String,
+      paid: Boolean,
+      refunded: Boolean,
+      card: {
+        cvc_check: String,
+        exp_month: Number,
+        exp_year: Number,
+        last4: String,
+        type: String
+      }
+    },
     date_added: {
       type: Date,
       "default": Date.now
@@ -890,13 +910,14 @@
   app.post('/get-user', function(req, res, next) {
     return res.send({
       name: req.user.name,
-      email: req.user.email,
-      payment_method: {
-        card_type: req.user.payment_method.card_type,
-        last_four_digits: req.user.payment_method.last_four_digits,
-        expiry_month: req.user.payment_method.expiry_month,
-        expiry_year: req.user.payment_method.expiry_year
-      }
+      email: req.user.email
+      /*
+          payment_method:
+            card_type: req.user.payment_method.card_type
+            last_four_digits: req.user.payment_method.last_four_digits
+            expiry_month: req.user.payment_method.expiry_month
+            expiry_year: req.user.payment_method.expiry_year
+      */
     });
   });
 
@@ -938,37 +959,58 @@
         order.address = req.session.saved_address.address;
         order.city = req.session.saved_address.city;
         order.full_address = req.session.saved_address.full_address;
+        order.amount = (req.session.saved_form.quantity * 1 + req.session.saved_form.shipping_method * 1) * 100;
         return order.save(function(err, new_order) {
-          var amount;
           if (err) {
             console.log('ERR: database ', err);
             return res.send({
               err: err
             });
           } else {
-            amount = new_order.quantity * 1 + new_order.shipping_method * 1;
-            return stripe.charges.create({
-              currency: 'usd',
-              amount: amount * 100,
-              customer: req.body.stripe_id,
-              description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-            }, function(err, charge) {
-              console.log('CHARGE: ', charge);
+            console.log('AMOUNT: ', new_order.amount);
+            return stripe.customers.create({
+              card: req.body.token,
+              email: req.user.email || null,
+              description: req.user.name
+            }, function(err, customer) {
               if (err) {
-                console.log('ERR: stripe charge resulted in ', err);
-                res.send({
-                  err: charge.error.message
-                });
+                return consolle.log('ERR: stripe customer create resulted in ', err);
               } else {
-                res.send({
-                  order_id: new_order._id,
-                  charge: charge
+                console.log('CUSTOMER: ', customer);
+                req.user.customer = customer;
+                req.user.save(function(err, user_saved) {
+                  if (err) return console.log('ERR: database ', err);
+                });
+                console.log('');
+                return stripe.charges.create({
+                  currency: 'usd',
+                  amount: new_order.amount * 1,
+                  customer: customer.id,
+                  description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+                }, function(err, charge) {
+                  console.log('CHARGE: ', charge);
+                  if (err) {
+                    console.log('ERR: stripe charge resulted in ', err);
+                    res.send({
+                      err: charge.error.message
+                    });
+                  } else if (!charge.paid) {
+                    console.log('ERR: stripe charge resulted in not paid for some reason.');
+                    res.send({
+                      err: 'Charge resulted in not paid for some reason.'
+                    });
+                  } else {
+                    res.send({
+                      order_id: new_order._id,
+                      charge: charge
+                    });
+                  }
+                  new_order.charge = charge;
+                  return new_order.save(function(err, final_order) {
+                    if (err) return console.log('ERR: database ', err);
+                  });
                 });
               }
-              new_order.charge_id = charge.id;
-              return new_order.save(function(err, final_order) {
-                if (err) return console.log('ERR: database ', err);
-              });
             });
           }
         });
@@ -1076,7 +1118,8 @@
 
   get_order_info = function(req, res, next) {
     return mongo_order.find({
-      user_id: req.user._id
+      user_id: req.user._id,
+      'charge.paid': true
     }, function(err, orders) {
       if (check_no_err(err)) {
         req.orders = orders;
@@ -1095,7 +1138,6 @@
   });
 
   app.get('/cards/thank-you', get_order_info, securedPage, function(req, res) {
-    console.log(req.orders);
     return res.render('cards', {
       orders: req.orders,
       user: req.user,
@@ -1152,117 +1194,126 @@
     });
   });
 
-  app.get('/thank-you', function(req, res) {
-    var payment_method_token, total;
-    payment_method_token = req.query.payment_method_token;
-    if (!payment_method_token && req.user && req.user.payment_method && req.user.payment_method.token) {
-      payment_method_token = req.user.payment_method.token;
-    }
-    if (payment_method_token) {
-      total = (req.session.saved_form.quantity + req.session.saved_form.shipping_method) * 1;
-      return samurai.PaymentMethod.find(payment_method_token, function(err, payment_method) {
-        if (err) {
-          console.log('ERR: ', err);
-          return res.render('order_form', {
-            error_message: 'Something went wrong. Please try again.',
-            user: req.user,
+  /*
+  #Thank_You Page
+  app.get '/thank-you', (req, res) -> 
+    #
+    # First, we try to grab it from the url
+    payment_method_token = req.query.payment_method_token
+    #
+    #
+    # If it's not there, we try to grab it from the database
+    if not payment_method_token and req.user and req.user.payment_method and req.user.payment_method.token
+      payment_method_token = req.user.payment_method.token
+    #
+    #
+    # And if we found it either place, then proceed
+    if payment_method_token
+      #
+      #
+      # Figure out their total
+      total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
+      #
+      #
+      # Hit up samurai for their payment_method details
+      #
+      samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
+        if err
+          # Do Error
+          console.log 'ERR: ', err
+          res.render 'order_form'
+            error_message: 'Something went wrong. Please try again.'
+            user: req.user
             session: req.session
-          });
-        } else {
-          console.log('PAYMENT: ', payment_method);
-          req.user.payment_method = {
-            token: payment_method_token,
-            card_type: payment_method.attributes.card_type,
-            last_four_digits: payment_method.attributes.last_four_digits,
-            expiry_month: payment_method.attributes.expiry_month,
+        else
+          #
+          #
+          console.log 'PAYMENT: ', payment_method
+          #
+          req.user.payment_method = 
+            token: payment_method_token
+            card_type: payment_method.attributes.card_type
+            last_four_digits: payment_method.attributes.last_four_digits
+            expiry_month: payment_method.attributes.expiry_month
             expiry_year: payment_method.attributes.expiry_year
-          };
-          return req.user.save(function(err, saved_user) {
-            if (err) {
-              console.log('ERR: ', err);
-              return res.render('order_form', {
-                error_message: 'Something went wrong. Please try again.',
-                user: req.user,
+          #
+          #
+          req.user.save (err, saved_user) ->
+            if err
+              # Do Error
+              console.log 'ERR: ', err
+              res.render 'order_form'
+                error_message: 'Something went wrong. Please try again.'
+                user: req.user
                 session: req.session
-              });
-            } else {
-              return samurai.Processor.purchase(payment_method_token, total, {
-                billing_reference: 'Billing Reference',
-                customer_reference: req.user._id,
-                custom: req.user.email || req.user.name,
-                descriptor: req.user.linkedin_url || req.user.facebook_url || req.user.twitter_url
-              }, function(err, purchase) {
-                if (err) {
-                  console.log('PURCHASE: ', purchase);
-                  console.log('ERR: ', err);
-                  return res.render('order_form', {
-                    error_message: 'Something might be wrong with that credit card number or it\'s CVC number. I couldn\'t process it.',
-                    user: req.user,
+            else
+              #
+              #
+              #
+              #
+              # Try it
+              samurai.Processor.purchase payment_method_token, total,
+                billing_reference: 'Billing Reference'
+                customer_reference: req.user._id
+                custom: req.user.email or req.user.name
+                descriptor: req.user.linkedin_url or req.user.facebook_url or req.user.twitter_url
+              , (err, purchase) ->
+                if err
+                  # Do Error
+                  console.log 'PURCHASE: ', purchase
+                  console.log 'ERR: ', err
+                  res.render 'order_form'
+                    error_message: 'Something might be wrong with that credit card number or it\'s CVC number. I couldn\'t process it.'
+                    user: req.user
                     session: req.session
-                  });
-                } else {
-                  if (purchase.isSuccess()) {
-                    return valid_new_url(function(err, url) {
-                      var order;
-                      if (err) {
-                        console.log('ERR: ', err);
-                        return res.render('order_form', {
-                          error_message: 'Something went wrong. Please try again.',
-                          user: req.user,
+                else
+                  if purchase.isSuccess()
+                    valid_new_url (err, url) ->
+                      if err
+                        console.log 'ERR: ', err
+                        res.render 'order_form'
+                          error_message: 'Something went wrong. Please try again.'
+                          user: req.user
                           session: req.session
-                        });
-                      } else {
-                        order = new mongo_order;
-                        order.order_number = url;
-                        order.user_id = req.user._id;
-                        order.theme_id = session.saved_form.active_theme_id;
-                        order.status = 'Charged';
-                        order.quantity = session.saved_form.quantity;
-                        order.shipping_method = session.saved_form.shipping_method;
-                        order.values = session.saved_form.values;
-                        order.address = session.saved_address.address;
-                        order.city = session.saved_address.city;
-                        order.full_address = session.saved_address.full_address;
-                        return order.save(function(err, new_order) {
-                          if (err) {
-                            console.log('ERR: ', err);
-                            return res.render('order_form', {
-                              error_message: 'Something went wrong. Please try again.',
-                              user: req.user,
+                      else
+                        order = new mongo_order
+                        order.order_number = url
+                        order.user_id = req.user._id
+                        order.theme_id = session.saved_form.active_theme_id
+                        order.status = 'Charged'
+                        order.quantity = session.saved_form.quantity
+                        order.shipping_method = session.saved_form.shipping_method
+                        order.values = session.saved_form.values
+                        order.address = session.saved_address.address
+                        order.city = session.saved_address.city
+                        order.full_address = session.saved_address.full_address
+                        order.save (err, new_order) ->
+                          if err
+                            console.log 'ERR: ', err
+                            res.render 'order_form'
+                              error_message: 'Something went wrong. Please try again.'
+                              user: req.user
                               session: req.session
-                            });
-                          } else {
-                            return res.render('thank-you', {
-                              user: req.user,
+                          else
+                            res.render 'thank-you'
+                              user: req.user
                               session: req.session
-                            });
-                          }
-                        });
-                      }
-                    });
-                  } else {
-                    console.log('CARD ERR: ', purchase.messages);
-                    return res.render('order_form', {
-                      error_message: 'I\'m sorry, we couldn\'t process that credit card.',
-                      user: req.user,
+                  else
+                    console.log 'CARD ERR: ', purchase.messages
+                    res.render 'order_form'
+                      error_message: 'I\'m sorry, we couldn\'t process that credit card.'
+                      user: req.user
                       session: req.session
-                    });
-                  }
-                }
-              });
-            }
-          });
-        }
-      });
-    } else {
-      console.log('ERR: ', 'Hit the thank you page without a token.');
-      return res.render('order_form', {
-        error_message: 'Something went wrong. Please try again.',
-        user: req.user,
+      #
+      # 
+    else
+      console.log 'ERR: ', 'Hit the thank you page without a token.'
+      res.render 'order_form'
+        error_message: 'Something went wrong. Please try again.'
+        user: req.user
         session: req.session
-      });
-    }
-  });
+      # Do Error
+  */
 
   app.get('/splash', function(req, res) {
     return res.render('splash', {
