@@ -80,7 +80,7 @@
       $guy_im_fading_out.delay(wait_delay).animate({
         'margin-left': -233
       }, quick_time);
-      $phone_scanner.stop(true, false).show();
+      $phone_scanner.stop(true, true).show();
       $phone_scanner.hide().fadeIn(quick_time).delay(quick_time).fadeOut(quick_time);
       wait_delay = quick_time * 4;
       if (wait_delay <= 200) {
