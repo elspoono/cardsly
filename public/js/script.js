@@ -1536,8 +1536,8 @@
                 exp_month: $('.card_expiry_month').val(),
                 exp_year: $('.card_expiry_year').val()
               }, amount, function(status, response) {
+                console.log(status, response);
                 if (status === 200) {
-                  console.log(status, response);
                   return $.ajax({
                     url: '/confirm-purchase',
                     data: JSON.stringify({
@@ -1570,7 +1570,7 @@
                 } else {
                   loading_close();
                   return $.load_alert({
-                    content: 'I\'m sorry, I couldn\'t process that credit card information.<br>Please double check the cvc and expiration date.'
+                    content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
                   });
                 }
               });

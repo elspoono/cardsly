@@ -1738,8 +1738,8 @@ $ ->
                   exp_month: $('.card_expiry_month').val()
                   exp_year: $('.card_expiry_year').val()
               , amount, (status, response) ->
+                console.log status, response
                 if status is 200
-                  console.log status, response
                   $.ajax
                     url: '/confirm-purchase'
                     data: JSON.stringify
@@ -1764,7 +1764,7 @@ $ ->
                 else
                   loading_close()
                   $.load_alert
-                    content: 'I\'m sorry, I couldn\'t process that credit card information.<br>Please double check the cvc and expiration date.'
+                    content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
               
               ###
 
