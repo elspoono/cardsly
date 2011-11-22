@@ -805,7 +805,7 @@ select {
   overflow: hidden;
 }
 .signins .check input {
-  line-height: 60px;
+  margin-top: 5px;
   margin-right: 10px;
   float: left;
 }
