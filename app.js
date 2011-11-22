@@ -1100,17 +1100,19 @@
     return !err;
   };
 
-  app.get('*', function(req, res, next) {
-    var headers;
-    headers = req.headers;
-    if (headers['x-real-ip'] && headers['x-forwarded-proto'] !== 'https') {
-      return res.send('', {
-        Location: 'https://www.cards.ly' + req.url
-      }, 302);
-    } else {
-      return next();
-    }
-  });
+  if (app.settings.env === 'production') {
+    app.get('*', function(req, res, next) {
+      var headers;
+      headers = req.headers;
+      if (headers['x-real-ip'] && headers['x-forwarded-proto'] !== 'https') {
+        return res.send('', {
+          Location: 'https://www.cards.ly' + req.url
+        }, 302);
+      } else {
+        return next();
+      }
+    });
+  }
 
   app.get('/', function(req, res) {
     return res.render('landing-prelaunch', {
