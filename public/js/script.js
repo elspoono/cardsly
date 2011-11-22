@@ -1518,7 +1518,7 @@
                   });
                 }, 500);
               }
-              if (result.error === 'You are not John Stamos') {
+              if (result.error === 'Hey Uncle Jesse, is that you?') {
                 $('html,body').animate({
                   scrollTop: $mc.offset().top
                 }, 500);
