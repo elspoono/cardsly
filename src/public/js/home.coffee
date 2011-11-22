@@ -144,7 +144,7 @@ $ ->
     $guy_im_fading_out.delay(wait_delay).animate
       'margin-left': -233
     ,quick_time
-    $phone_scanner.stop(true,false).show()
+    $phone_scanner.stop(true,true).show()
     #
     #
     #
