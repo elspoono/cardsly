@@ -1045,6 +1045,16 @@
                           return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
                         }
                       });
+                      nodemailer.send_mail({
+                        sender: 'support@cards.ly',
+                        to: 'help@cards.ly',
+                        subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
+                        html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                      }, function(err, data) {
+                        if (err) {
+                          return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                        }
+                      });
                     }
                   }
                   new_order.charge = charge;
@@ -1187,6 +1197,22 @@
       user: req.user,
       session: req.session,
       thankyou: true
+    });
+  });
+
+  app.get('/orders', securedAdminPage, function(req, res, next) {
+    return mongo_order.find({
+      status: 'Charged',
+      'charge.paid': true
+    }, function(err, orders) {
+      if (check_no_err(err)) {
+        return res.render('orders', {
+          user: req.user,
+          orders: orders,
+          session: req.session,
+          scripts: ['/js/orders.js']
+        });
+      }
     });
   });
 

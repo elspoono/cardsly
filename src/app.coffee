@@ -1221,6 +1221,15 @@ app.post '/confirm-purchase', (req, res, next) ->
                     , (err, data) ->
                       if err
                         console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+                    
+                    nodemailer.send_mail
+                      sender: 'support@cards.ly'
+                      to: 'help@cards.ly'
+                      subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
+                      html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                    , (err, data) ->
+                      if err
+                        console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
                 #
                 # Save the order result to the order
                 new_order.charge = charge
@@ -1390,6 +1399,21 @@ app.get '/cards/thank-you', get_order_info, securedPage, (req, res) ->
     user: req.user
     session: req.session
     thankyou: true
+#
+# Orders Page
+app.get '/orders', securedAdminPage, (req, res, next) ->
+  mongo_order.find
+    status: 'Charged'
+    'charge.paid': true
+  , (err, orders) ->
+    if check_no_err err
+      res.render 'orders'
+        user: req.user
+        orders: orders
+        session: req.session
+        scripts:[
+          '/js/orders.js'
+        ]
 #
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
