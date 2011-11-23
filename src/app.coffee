@@ -206,11 +206,12 @@ user_schema = new schema
   linkedin_url: String
   stripe:
     id: String
-    cvc_check: String
-    exp_month: Number
-    exp_year: Number
-    last4: String
-    type: String
+    active_card:
+      cvc_check: String
+      exp_month: Number
+      exp_year: Number
+      last4: String
+      card_type: String
   ###
   payment_method:
     token: String
@@ -1163,123 +1164,95 @@ app.post '/confirm-purchase', (req, res, next) ->
           res.send
             err: err
         else
-          #console.log 'AMOUNT: ', new_order.amount
-          stripe.customers.create
-            card: req.body.token
-            email: req.user.email or null
-            description: req.user.name or req.user.email or req.user.id
-          , (err, customer) ->
-            if err
-              console.log 'ERR: stripe customer create resulted in ', err, customer
-              res.send
-                err: customer.error.message
-            else
+          #
+          # Final Function to Be Called
+          do_charge = ->
+            # Attempt a charge
+            stripe.charges.create
+              currency: 'usd'
+              amount: new_order.amount*1
+              customer: req.user.stripe.id
+              description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+            , (err, charge) ->
               #
-              console.log 'CUSTOMER: ', customer
+              #console.log 'CHARGE: ', charge
               #
-              # Save the payment token to the user
-              req.user.stripe = customer.active_card
-              ###
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              THIS ISNT WORKING
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              #
-              ###
-              console.log req.user.stripe
-              req.user.save (err, user_saved) ->
-                if err
-                  console.log 'ERR: database ', err
-              #
-              #
-              # Attempt a charge
-              stripe.charges.create
-                currency: 'usd'
-                amount: new_order.amount*1
-                customer: customer.id
-                description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-              , (err, charge) ->
+              new_order.status = 'Failed'
+              if err
+                console.log 'ERR: stripe charge resulted in ', err
+                res.send
+                  err: charge.error.message
+              else if not charge.paid
+                console.log 'ERR: stripe charge resulted in not paid for some reason.'
+                res.send
+                  err: 'Charge resulted in not paid for some reason.'
+              else
+                new_order.status = 'Charged'
+                res.send
+                  order_id: new_order._id
+                  charge: charge
+                if new_order.confirm_email and new_order.email
+                  message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+                  #console.log message
+                  nodemailer.send_mail
+                    sender: 'help@cards.ly'
+                    to: new_order.email
+                    subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
+                    html: message
+                  , (err, data) ->
+                    if err
+                      console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+                  
+                  nodemailer.send_mail
+                    sender: 'support@cards.ly'
+                    to: 'help@cards.ly'
+                    subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
+                    html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                  , (err, data) ->
+                    if err
+                      console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+          #
+          # If they passed in a token, create a customer
+          if req.body.token
+            stripe.customers.create
+              card: req.body.token
+              email: req.user.email or null
+              description: req.user.name or req.user.email or req.user.id
+            , (err, customer) ->
+              if err
+                console.log 'ERR: stripe customer create resulted in ', err, customer
+                res.send
+                  err: customer.error.message
+              else
                 #
-                #console.log 'CHARGE: ', charge
+                console.log 'CUSTOMER: ', customer
                 #
-                new_order.status = 'Failed'
-                if err
-                  console.log 'ERR: stripe charge resulted in ', err
-                  res.send
-                    err: charge.error.message
-                else if not charge.paid
-                  console.log 'ERR: stripe charge resulted in not paid for some reason.'
-                  res.send
-                    err: 'Charge resulted in not paid for some reason.'
-                else
-                  new_order.status = 'Charged'
-                  res.send
-                    order_id: new_order._id
-                    charge: charge
-                  if new_order.confirm_email and new_order.email
-                    message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
-                    #console.log message
-                    nodemailer.send_mail
-                      sender: 'help@cards.ly'
-                      to: new_order.email
-                      subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
-                      html: message
-                    , (err, data) ->
-                      if err
-                        console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
-                    
-                    nodemailer.send_mail
-                      sender: 'support@cards.ly'
-                      to: 'help@cards.ly'
-                      subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
-                      html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                    , (err, data) ->
-                      if err
-                        console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
-                #
-                # Save the order result to the order
-                new_order.charge = charge
-                new_order.save (err, final_order) ->
+                # Save the payment token to the user
+                req.user.stripe = customer
+                req.user.stripe.active_card.card_type = customer.active_card.type
+                console.log req.user.stripe
+                req.user.save (err, user_saved) ->
                   if err
                     console.log 'ERR: database ', err
+                #
+                #
+                do_charge()
+          #
+          # Otherwise, make sure they have an existing stripe
+          else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
+            do_charge()
+          else
+            res.send
+              err: 'No Payment Data Received'
+
+    #
+    #
+    #
+    # Save the order result to the order
+    new_order.charge = charge
+    new_order.save (err, final_order) ->
+      if err
+        console.log 'ERR: database ', err
 #
 #
 #

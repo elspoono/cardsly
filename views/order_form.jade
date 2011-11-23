@@ -216,18 +216,20 @@
       .details
         .total Total Price: &nbsp;
           .price $10
-        if user && user.customer && user.customer.id
+        if user && user.stripe && user.stripe.id
           .existing_payment
             .type
-              =user.customer.type
+              =user.stripe.active_card.card_type
             .expiry
-              =user.customer.exp_month
+              =user.stripe.active_card.exp_month
               | /
-              =user.customer.exp_year
+              =user.stripe.active_card.exp_year
             .last_4
               | **** - **** - **** - 
-              =user.customer.last4
+              =user.stripe.active_card.last4
             .small.button.gray Use New Card
+          .use_existing_payment
+            .small.button.gray Use Existing
         if user && user.payment_method && user.payment_method.token
           .existing_payment
             .type

@@ -152,11 +152,13 @@
     linkedin_url: String,
     stripe: {
       id: String,
-      cvc_check: String,
-      exp_month: Number,
-      exp_year: Number,
-      last4: String,
-      type: String
+      active_card: {
+        cvc_check: String,
+        exp_month: Number,
+        exp_year: Number,
+        last4: String,
+        card_type: String
+      }
     },
     /*
       payment_method:
@@ -960,7 +962,7 @@
       var order;
       if (err) {
         console.log('ERR: url generate resulted in ', err);
-        return res.send({
+        res.send({
           err: err
         });
       } else {
@@ -979,133 +981,101 @@
         order.email = req.body.email;
         order.shipping_email = req.body.shipping_email;
         order.confirm_email = req.body.confirm_email;
-        return order.save(function(err, new_order) {
+        order.save(function(err, new_order) {
+          var do_charge;
           if (err) {
             console.log('ERR: database ', err);
             return res.send({
               err: err
             });
           } else {
-            return stripe.customers.create({
-              card: req.body.token,
-              email: req.user.email || null,
-              description: req.user.name || req.user.email || req.user.id
-            }, function(err, customer) {
-              if (err) {
-                console.log('ERR: stripe customer create resulted in ', err, customer);
-                return res.send({
-                  err: customer.error.message
-                });
-              } else {
-                console.log('CUSTOMER: ', customer);
-                req.user.stripe = customer.active_card;
-                /*
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              THIS ISNT WORKING
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                              #
-                */
-                console.log(req.user.stripe);
-                req.user.save(function(err, user_saved) {
-                  if (err) return console.log('ERR: database ', err);
-                });
-                return stripe.charges.create({
-                  currency: 'usd',
-                  amount: new_order.amount * 1,
-                  customer: customer.id,
-                  description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-                }, function(err, charge) {
-                  var message;
-                  new_order.status = 'Failed';
-                  if (err) {
-                    console.log('ERR: stripe charge resulted in ', err);
-                    res.send({
-                      err: charge.error.message
+            do_charge = function() {
+              return stripe.charges.create({
+                currency: 'usd',
+                amount: new_order.amount * 1,
+                customer: req.user.stripe.id,
+                description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+              }, function(err, charge) {
+                var message;
+                new_order.status = 'Failed';
+                if (err) {
+                  console.log('ERR: stripe charge resulted in ', err);
+                  return res.send({
+                    err: charge.error.message
+                  });
+                } else if (!charge.paid) {
+                  console.log('ERR: stripe charge resulted in not paid for some reason.');
+                  return res.send({
+                    err: 'Charge resulted in not paid for some reason.'
+                  });
+                } else {
+                  new_order.status = 'Charged';
+                  res.send({
+                    order_id: new_order._id,
+                    charge: charge
+                  });
+                  if (new_order.confirm_email && new_order.email) {
+                    message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
+                    nodemailer.send_mail({
+                      sender: 'help@cards.ly',
+                      to: new_order.email,
+                      subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number,
+                      html: message
+                    }, function(err, data) {
+                      if (err) {
+                        return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                      }
                     });
-                  } else if (!charge.paid) {
-                    console.log('ERR: stripe charge resulted in not paid for some reason.');
-                    res.send({
-                      err: 'Charge resulted in not paid for some reason.'
+                    return nodemailer.send_mail({
+                      sender: 'support@cards.ly',
+                      to: 'help@cards.ly',
+                      subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
+                      html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                    }, function(err, data) {
+                      if (err) {
+                        return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                      }
                     });
-                  } else {
-                    new_order.status = 'Charged';
-                    res.send({
-                      order_id: new_order._id,
-                      charge: charge
-                    });
-                    if (new_order.confirm_email && new_order.email) {
-                      message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
-                      nodemailer.send_mail({
-                        sender: 'help@cards.ly',
-                        to: new_order.email,
-                        subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number,
-                        html: message
-                      }, function(err, data) {
-                        if (err) {
-                          return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
-                        }
-                      });
-                      nodemailer.send_mail({
-                        sender: 'support@cards.ly',
-                        to: 'help@cards.ly',
-                        subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
-                        html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                      }, function(err, data) {
-                        if (err) {
-                          return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
-                        }
-                      });
-                    }
                   }
-                  new_order.charge = charge;
-                  return new_order.save(function(err, final_order) {
+                }
+              });
+            };
+            if (req.body.token) {
+              return stripe.customers.create({
+                card: req.body.token,
+                email: req.user.email || null,
+                description: req.user.name || req.user.email || req.user.id
+              }, function(err, customer) {
+                if (err) {
+                  console.log('ERR: stripe customer create resulted in ', err, customer);
+                  return res.send({
+                    err: customer.error.message
+                  });
+                } else {
+                  console.log('CUSTOMER: ', customer);
+                  req.user.stripe = customer;
+                  req.user.stripe.active_card.card_type = customer.active_card.type;
+                  console.log(req.user.stripe);
+                  req.user.save(function(err, user_saved) {
                     if (err) return console.log('ERR: database ', err);
                   });
-                });
-              }
-            });
+                  return do_charge();
+                }
+              });
+            } else if (req.user.stripe && req.user.stripe.active_card && req.user.stripe.id) {
+              return do_charge();
+            } else {
+              return res.send({
+                err: 'No Payment Data Received'
+              });
+            }
           }
         });
       }
+      new_order.charge = charge;
+      return new_order.save(function(err, final_order) {
+        if (err) return console.log('ERR: database ', err);
+      });
     });
   });
 

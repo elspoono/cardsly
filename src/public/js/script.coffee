@@ -30,7 +30,10 @@ $.ajaxSetup
   type: 'POST'
   contentType: 'application/json'
 $window = $ window 
-$.fx.speeds._default = 300
+if $.browser.msie and parseInt($.browser.version, 10)<9
+  $.fx.speeds._default = 0
+else
+  $.fx.speeds._default = 300
 #
 #
 $.line_copy = [
@@ -766,7 +769,7 @@ $ ->
     $.cookie 'bypass_splash', true
   #
   # Redirect non compatible browsers *IMMEDIATELLY*
-  if $.browser.msie and parseInt($.browser.version, 10)<8 and not document.location.href.match(/splash/) and not $.cookie 'bypass_splash'
+  if $.browser.msie and parseInt($.browser.version, 10)<9 and not document.location.href.match(/splash/) and not $.cookie 'bypass_splash'
       document.location.href = '/splash'
   #
   #
@@ -1602,8 +1605,13 @@ $ ->
   #$existing_payment.hide()
 
   $existing_payment.find('.button').click ->
-    $existing_payment.remove()
+    $existing_payment.hide()
     $('.order_total form').show()
+    $('.use_existing_payment').show().unbind().click ->
+      $existing_payment.show()
+      $('.order_total form').hide()
+      $(this).hide()
+      false
     false
   if $existing_payment.length
     $('.order_total form').hide()
@@ -1745,44 +1753,67 @@ $ ->
                   content: result.error
             else if result.success
               console.log 'AMOUNT: ', amount
-              Stripe.createToken
-                  number: $('.card_number').val()
-                  cvc: $('.cvv').val()
-                  exp_month: $('.card_expiry_month').val()
-                  exp_year: $('.card_expiry_year').val()
-              , amount, (status, response) ->
-                console.log status, response
-                if status is 200
-                  $.ajax
-                    url: '/confirm-purchase'
-                    data: JSON.stringify
-                      token: response.id
-                      confirm_email: $('.do_send_confirm input').is(':checked')
-                      shipping_email: $('.do_send_shipping input').is(':checked')
-                      email: $('.email_to_send input').val()
-                    success: (result) ->
-                      loading_close()
-                      console.log result
-                      if result.err
-                        $.load_alert
-                          content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
-                      else
-                        console.log result
-                        if result.charge.paid
-                          document.location.href = '/cards/thank-you'
-                        else
-                          $.load_alert
-                            content: 'Our apoligies, something went wrong, please try again later'
-                          
-                    error: ->
-                      loading_close()
+              #
+              # Set up a default
+              token = false
+              #
+              # This gets called after we either get a token
+              # OR we already have a payment maybe
+              load_final = ->
+                $.ajax
+                  url: '/confirm-purchase'
+                  data: JSON.stringify
+                    token: token
+                    confirm_email: $('.do_send_confirm input').is(':checked')
+                    shipping_email: $('.do_send_shipping input').is(':checked')
+                    email: $('.email_to_send input').val()
+                  success: (result) ->
+                    loading_close()
+                    console.log result
+                    if result.err
                       $.load_alert
-                        content: 'Our apoligies, something went wrong, please try again later'
-                else
-                  loading_close()
-                  $.load_alert
-                    content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
-              
+                        content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
+                    else
+                      console.log result
+                      if result.charge.paid
+                        document.location.href = '/cards/thank-you'
+                      else
+                        $.load_alert
+                          content: 'Our apoligies, something went wrong, please try again later'
+                        
+                  error: ->
+                    loading_close()
+                    $.load_alert
+                      content: 'Our apoligies, something went wrong, please try again later'
+              #
+              #
+              # See if they filled a card in
+              if $('.card_number').val() and $('.cvv').val()
+                #
+                # Create a token based on the card number perhaps
+                Stripe.createToken
+                    number: $('.card_number').val()
+                    cvc: $('.cvv').val()
+                    exp_month: $('.card_expiry_month').val()
+                    exp_year: $('.card_expiry_year').val()
+                , amount, (status, response) ->
+                  console.log status, response
+                  if status is 200
+                    token = response.id
+                    load_final()
+                  else
+                    loading_close()
+                    $.load_alert
+                      content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
+              #
+              #
+              else if $('.existing_payment:visible').length
+                load_final()
+              #
+              #
+              else
+                $.load_alert
+                  content: 'Please enter a credit card'
               ###
 
               THIS IS THE SAMURAI INTEGRATION

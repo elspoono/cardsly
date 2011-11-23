@@ -880,6 +880,18 @@ blockquote {
   background: #908575;
   border: 1px solid #524641;
 }
+.existing_payment {
+  text-align: right;
+}
+.existing_payment .button {
+  height: 20px;
+}
+.use_existing_payment {
+  display: none;
+}
+.use_existing_payment .button {
+  height: 20px;
+}
 .order_total .details {
   float: right;
   width: 250px;

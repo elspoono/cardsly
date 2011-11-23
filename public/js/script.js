@@ -26,7 +26,11 @@
 
   $window = $(window);
 
-  $.fx.speeds._default = 300;
+  if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
+    $.fx.speeds._default = 0;
+  } else {
+    $.fx.speeds._default = 300;
+  }
 
   $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
 
@@ -740,7 +744,7 @@
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
-    if ($.browser.msie && parseInt($.browser.version, 10) < 8 && !document.location.href.match(/splash/) && !$.cookie('bypass_splash')) {
+    if ($.browser.msie && parseInt($.browser.version, 10) < 9 && !document.location.href.match(/splash/) && !$.cookie('bypass_splash')) {
       document.location.href = '/splash';
     }
     $error = $('.error');
@@ -1406,8 +1410,14 @@
     });
     $existing_payment = $('.existing_payment');
     $existing_payment.find('.button').click(function() {
-      $existing_payment.remove();
+      $existing_payment.hide();
       $('.order_total form').show();
+      $('.use_existing_payment').show().unbind().click(function() {
+        $existing_payment.show();
+        $('.order_total form').hide();
+        $(this).hide();
+        return false;
+      });
       return false;
     });
     if ($existing_payment.length) $('.order_total form').hide();
@@ -1501,7 +1511,7 @@
         return $.ajax({
           url: '/validate-purchase',
           success: function(result) {
-            var $s;
+            var $s, load_final, token;
             if (result.error) {
               loading_close();
               if (result.error === 'Please sign in') {
@@ -1532,54 +1542,67 @@
               }
             } else if (result.success) {
               console.log('AMOUNT: ', amount);
-              return Stripe.createToken({
-                number: $('.card_number').val(),
-                cvc: $('.cvv').val(),
-                exp_month: $('.card_expiry_month').val(),
-                exp_year: $('.card_expiry_year').val()
-              }, amount, function(status, response) {
-                console.log(status, response);
-                if (status === 200) {
-                  return $.ajax({
-                    url: '/confirm-purchase',
-                    data: JSON.stringify({
-                      token: response.id,
-                      confirm_email: $('.do_send_confirm input').is(':checked'),
-                      shipping_email: $('.do_send_shipping input').is(':checked'),
-                      email: $('.email_to_send input').val()
-                    }),
-                    success: function(result) {
-                      loading_close();
-                      console.log(result);
-                      if (result.err) {
-                        return $.load_alert({
-                          content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
-                        });
-                      } else {
-                        console.log(result);
-                        if (result.charge.paid) {
-                          return document.location.href = '/cards/thank-you';
-                        } else {
-                          return $.load_alert({
-                            content: 'Our apoligies, something went wrong, please try again later'
-                          });
-                        }
-                      }
-                    },
-                    error: function() {
-                      loading_close();
+              token = false;
+              load_final = function() {
+                return $.ajax({
+                  url: '/confirm-purchase',
+                  data: JSON.stringify({
+                    token: token,
+                    confirm_email: $('.do_send_confirm input').is(':checked'),
+                    shipping_email: $('.do_send_shipping input').is(':checked'),
+                    email: $('.email_to_send input').val()
+                  }),
+                  success: function(result) {
+                    loading_close();
+                    console.log(result);
+                    if (result.err) {
                       return $.load_alert({
-                        content: 'Our apoligies, something went wrong, please try again later'
+                        content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
                       });
+                    } else {
+                      console.log(result);
+                      if (result.charge.paid) {
+                        return document.location.href = '/cards/thank-you';
+                      } else {
+                        return $.load_alert({
+                          content: 'Our apoligies, something went wrong, please try again later'
+                        });
+                      }
                     }
-                  });
-                } else {
-                  loading_close();
-                  return $.load_alert({
-                    content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
-                  });
-                }
-              });
+                  },
+                  error: function() {
+                    loading_close();
+                    return $.load_alert({
+                      content: 'Our apoligies, something went wrong, please try again later'
+                    });
+                  }
+                });
+              };
+              if ($('.card_number').val() && $('.cvv').val()) {
+                return Stripe.createToken({
+                  number: $('.card_number').val(),
+                  cvc: $('.cvv').val(),
+                  exp_month: $('.card_expiry_month').val(),
+                  exp_year: $('.card_expiry_year').val()
+                }, amount, function(status, response) {
+                  console.log(status, response);
+                  if (status === 200) {
+                    token = response.id;
+                    return load_final();
+                  } else {
+                    loading_close();
+                    return $.load_alert({
+                      content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
+                    });
+                  }
+                });
+              } else if ($('.existing_payment:visible').length) {
+                return load_final();
+              } else {
+                return $.load_alert({
+                  content: 'Please enter a credit card'
+                });
+              }
               /*
               
                             THIS IS THE SAMURAI INTEGRATION
