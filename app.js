@@ -91,11 +91,8 @@
 
   encrypted = function(inString) {
     var salt;
-    console.log('b1');
-    salt = bcrypt.gen_salt_sync();
-    console.log('b2');
-    bcrypt.encrypt_sync(inString, salt);
-    return console.log('b3');
+    salt = bcrypt.gen_salt_sync(10);
+    return bcrypt.encrypt_sync(inString, salt);
   };
 
   compareEncrypted = function(inString, hash) {
@@ -878,12 +875,10 @@
   });
 
   app.post('/create-user', function(req, res, next) {
-    console.log(1);
     return mongo_user.count({
       email: req.body.email,
       active: true
     }, function(err, already) {
-      console.log(2);
       if (already > 0) {
         return res.send({
           err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
@@ -893,17 +888,11 @@
       }
     });
   }, function(req, res, next) {
-    var encrypted_pass, user;
-    console.log(3);
+    var user;
     user = new mongo_user();
     user.email = req.body.email;
-    console.log(4);
-    encrypted_pass = encrypted('123456790');
-    console.log(4.5);
-    user.password_encrypted = encrypted_pass;
-    console.log(5);
+    user.password_encrypted = encrypted(req.body.password);
     return user.save(function(err, data) {
-      console.log(6);
       req.session.auth = {
         userId: user._id
       };
@@ -914,22 +903,22 @@
   });
 
   app.post('/change-password', function(req, res, next) {
-    if (!req.user.email || !req.body.password) {
+    if (!req.user.email || !req.body.current_password) {
       return res.send({
-        err: 'Invalid Parmeters'
+        err: 'Invalid Parameters'
       });
     } else {
-      return mongo_user.authenticate(req.user.email, req.body.password, function(err, user) {
+      return mongo_user.authenticate(req.user.email, req.body.current_password, function(err, user) {
         if (err || !user) {
           return res.send({
             err: err || 'User not found'
           });
         } else {
-          req.user.password_encrypted = encrypted(req.body.password);
+          req.user.password_encrypted = encrypted(req.body.new_password);
           return req.user.save(function(err, user_saved) {
             if (check_no_err_ajax(err)) {
               return res.send({
-                success: 'True'
+                success: true
               });
             }
           });

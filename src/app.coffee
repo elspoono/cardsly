@@ -1097,10 +1097,6 @@ app.post '/change-password', (req,res,next) ->
           if check_no_err_ajax err
             res.send
               success: true
-      else
-        req.user (err,data) ->
-          res.send
-            err: 'Original password was incorrect, please try again.'
 #
 #
 #
