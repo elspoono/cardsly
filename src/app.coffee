@@ -1083,16 +1083,16 @@ app.post '/create-user', (req,res,next) ->
 app.post '/change-password', (req,res,next) ->
   #
   #
-  if !req.user.email or !req.body.password
+  if !req.user.email or !req.body.current_password
     res.send
-      err: 'Invalid Parmeters'
+      err: 'Invalid Parameters'
   else
-    mongo_user.authenticate req.user.email, req.body.password, (err, user) ->
+    mongo_user.authenticate req.user.email, req.body.current_password, (err, user) ->
       if err or !user
         res.send
           err: err or 'User not found'
       else
-        req.user.password_encrypted = encrypted req.body.password
+        req.user.password_encrypted = encrypted req.body.new_password
         req.user.save (err, user_saved) ->
           if check_no_err_ajax err
             res.send
