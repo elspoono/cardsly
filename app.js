@@ -1011,6 +1011,7 @@
                   customer: customer.id,
                   description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
                 }, function(err, charge) {
+                  var message;
                   console.log('CHARGE: ', charge);
                   new_order.status = 'Failed';
                   if (err) {
@@ -1030,12 +1031,14 @@
                       charge: charge
                     });
                     if (new_order.confirm_email && new_order.email) {
+                      message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.828.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
+                      console.log(message);
                       nodemailer.send_mail({
                         sender: 'help@cards.ly',
                         to: 'support@cards.ly',
                         cc: 'help@cards.ly',
                         subject: 'Cardsly Order Confirmation - ' + new_order.order_number,
-                        html: '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.828.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+                        html: message
                       }, function(err, data) {
                         if (err) {
                           return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
