@@ -1203,10 +1203,10 @@
   });
 
   app.get('/success', function(req, res) {
-    return res.render('success', {
-      user: req.user,
-      session: req.session
-    });
+    res.cookie('success_login', true);
+    return res.send('<script>window.onload = function(){window.close();}', {
+      'Content-Type': 'text/html'
+    }, 200);
   });
 
   get_order_info = function(req, res, next) {

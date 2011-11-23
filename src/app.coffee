@@ -1414,9 +1414,10 @@ app.get '/', (req, res) ->
 # Where they land after authenticating
 # This should close automatically or redirect to the home page if no caller
 app.get '/success', (req, res) ->
-  res.render 'success'
-    user: req.user
-    session: req.session
+  res.cookie 'success_login', true
+  res.send '<script>window.onload = function(){window.close();}',
+    'Content-Type': 'text/html'
+  , 200
 #
 # Get the order information
 get_order_info = (req, res, next) ->
