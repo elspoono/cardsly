@@ -1587,46 +1587,6 @@ label .subtitle {
 .section.home_first {
   padding: 0;
 }
-input value=["Send Feedback"],
-.feedback_form {
-input
-  margin: 15px auto;
-}
-.feedback_text {
-  font-size: 14px;
-  width: 350px;
-}
-.emailNotUser {
-  font-size: 12px;
-  width: 350px;
-}
-.feedback {
-  top: 40%;
-  right: -45px;
-  cursor: pointer;
-  position: fixed;
-  z-index: 500;
-}
-.feedback a {
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  padding: 5px 10px;
-  background: #3a322f;
-  border: 3px solid #eee;
-  border-bottom: none;
-  display: block;
-  -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
-  -ms-transform: rotate(270deg);
-  -o-transform: rotate(270deg);
-  transform: rotate(270deg);
-  zoom: 1;
-  font-size: 21px;
-  line-height: 1.5em;
-  color: #eee;
-  text-decoration: none;
-}
 .account_information,
 .shipping_table {
   font-size: 20px;
@@ -1933,10 +1893,52 @@ p {
 }
 .chat {
   position: fixed;
-  top: 50%;
-  right: 25px;
-  margin-top: -260px;
+  z-index: 150;
+  bottom: 5px;
+  right: 20px;
 }
 .chat img {
-  margin-top: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+input value=["Send Feedback"],
+.feedback_form {
+input
+  margin: 15px auto;
+}
+.feedback_text {
+  font-size: 14px;
+  width: 350px;
+}
+.emailNotUser {
+  font-size: 12px;
+  width: 350px;
+}
+.feedback {
+  top: 40%;
+  right: -45px;
+  cursor: pointer;
+  position: fixed;
+  z-index: 150;
+}
+.feedback a {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  padding: 5px 10px;
+  background: #3a322f;
+  border: 3px solid #eee;
+  border-bottom: none;
+  display: block;
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+  zoom: 1;
+  font-size: 21px;
+  line-height: 1.5em;
+  color: #eee;
+  text-decoration: none;
 }

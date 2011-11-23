@@ -1150,36 +1150,6 @@ label
 // Slides
 .section.home_first
   padding 0
-//Feedback Button
-input value=["Send Feedback"]
-.feedback_form
-  input
-  margin 15px auto
-.feedback_text
-  font-size 14px
-  width 350px
-.emailNotUser
-  font-size 12px
-  width 350px
-.feedback
-  top 40%
-  right -45px
-  cursor pointer
-  position fixed
-  z-index 500
-  a
-    height 40px
-    line-height 40px
-    text-align center
-    padding 5px 10px
-    background $c_extra_dark
-    border 3px solid $c_light
-    border-bottom none
-    display block
-    box_rotate(270deg)
-    relative_size(1)
-    color $c_light
-    text-decoration none
 
 //Account Page
 .account_information
@@ -1439,12 +1409,44 @@ p
 
 
 
-   // HOME PAGE ADD = SECOT
-   
+// HOME PAGE ADD = SECOT
 .chat
   position fixed
-  top 50%
-  right 25px
-  margin-top -260px
+  z-index 150
+  bottom 5px
+  right 20px
   img
-    margin-top 50%
+    position absolute
+    bottom 0
+    right 0
+
+//Feedback Button
+input value=["Send Feedback"]
+.feedback_form
+  input
+  margin 15px auto
+.feedback_text
+  font-size 14px
+  width 350px
+.emailNotUser
+  font-size 12px
+  width 350px
+.feedback
+  top 40%
+  right -45px
+  cursor pointer
+  position fixed
+  z-index 150
+  a
+    height 40px
+    line-height 40px
+    text-align center
+    padding 5px 10px
+    background $c_extra_dark
+    border 3px solid $c_light
+    border-bottom none
+    display block
+    box_rotate(270deg)
+    relative_size(1)
+    color $c_light
+    text-decoration none
