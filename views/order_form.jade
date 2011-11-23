@@ -55,6 +55,7 @@
     .order_details
       ul.radio_text_fields.left.quantity
         li
+          img.promo(src=' /images/promo.png')
           p Quantity:
         - quantity = 10
         if session && session.saved_form && session.saved_form.quantity
@@ -274,3 +275,4 @@
           .error=error_message
         .button.normal.checkout Purchase
       .clear
+
