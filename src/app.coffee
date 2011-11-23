@@ -1095,7 +1095,8 @@ app.post '/change-password', (req,res,next) ->
 # Get User
 app.post '/get-user', (req,res,next) ->
   #console.log 'USER: ', req.user
-  req.user.stripe.id = null
+  if req.user.stripe
+    req.user.stripe.id = null
   res.send
     name: req.user.name
     email: req.user.email

@@ -918,7 +918,7 @@
   });
 
   app.post('/get-user', function(req, res, next) {
-    req.user.stripe.id = null;
+    if (req.user.stripe) req.user.stripe.id = null;
     return res.send({
       name: req.user.name,
       email: req.user.email,
