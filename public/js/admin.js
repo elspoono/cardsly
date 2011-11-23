@@ -9,7 +9,7 @@
   */
 
   $(function() {
-    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, active_theme, active_view, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_size, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
+    var $all_colors, $body, $card, $cat, $categories, $color1, $color2, $content, $dForm, $designer, $font_color, $font_family, $font_size_indicator, $font_size_slider, $fonts, $lines, $options, $qr, $qr_bg, $qr_color1, $qr_color2, $qr_color2_alpha, $qr_radius, $qrs, $save_button, $six_button, $twelve_button, $upload, $view_buttons, $views, $web_bg, $web_button, $web_fg, $web_fg2, active_theme, active_view, add_transparent_gradient, card_height, card_inner_height, card_inner_width, card_width, change_tab, ctrl_pressed, default_theme, execute_save, fam, font_families, get_position, history, history_timer, i, line, load_theme, no_theme, redo_history, save_timer, set_timers, shift_amount, shift_pressed, unfocus_highlight, update_active_size, update_active_theme, update_align, update_card_size, update_family, update_size, _i, _j, _len, _len2, _ref;
     $designer = $('.designer');
     $options = $designer.find('.options');
     $card = $designer.find('.card');
@@ -39,6 +39,7 @@
     $qr_color2_alpha = $qrs.find('.qr_color2_alpha');
     $all_colors = $('.color');
     $web_fg = $('.web_fg');
+    $web_fg2 = $('.web_fg2');
     $web_bg = $('.web_bg');
     $save_button = $designer.find('.buttons .save');
     $views = $designer.find('.views');
@@ -112,6 +113,7 @@
     $qr.hide();
     $lines.hide();
     $web_fg.hide();
+    $web_fg2.hide();
     $web_bg.hide();
     $qr.prep_qr();
     shift_amount = 1;
@@ -212,6 +214,7 @@
         onChange: function(hsb, hex, rgb) {
           return $t.trigger('color_update', {
             hex: hex,
+            rgb: rgb,
             timer: true
           });
         },
@@ -246,6 +249,31 @@
         background: '#' + options.hex
       });
       if (options.timer) return set_timers();
+    });
+    $color1.bind('color_update', function(e, options) {
+      return $web_bg.css({
+        background: '#' + options.hex
+      });
+    });
+    add_transparent_gradient = function(h, start, element) {
+      var backgrounds, i, rgb, _k, _len3, _results;
+      rgb = $.hexToR(h) + ',' + $.hexToG(h) + ',' + $.hexToB(h);
+      backgrounds = ['-moz-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)', '-webkit-gradient(linear, left top, left bottom, color-stop(' + start + ',rgba(' + rgb + ',0)), color-stop(99%,rgba(' + rgb + ',1)))', '-webkit-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)', '-o-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)', '-ms-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)', 'linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'];
+      element.css({
+        filter: 'progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#a6000000\', endColorstr=\'#00000000\',GradientType=0 )'
+      });
+      _results = [];
+      for (_k = 0, _len3 = backgrounds.length; _k < _len3; _k++) {
+        i = backgrounds[_k];
+        _results.push(element.css({
+          background: i
+        }));
+      }
+      return _results;
+    };
+    $color2.bind('color_update', function(e, options) {
+      add_transparent_gradient(options.hex, '40%', $web_fg);
+      return add_transparent_gradient(options.hex, '80%', $web_fg2);
     });
     update_family = function() {
       var $active_items, $t;
@@ -666,6 +694,7 @@
           height: 290
         });
         $web_fg.show();
+        $web_fg2.show();
         $web_bg.show();
       } else {
         $card.css({
@@ -676,6 +705,7 @@
         });
         update_card_size();
         $web_fg.hide();
+        $web_fg2.hide();
         $web_bg.hide();
       }
       $qr.hide();
@@ -754,7 +784,7 @@
       return $new_card.click();
     });
     $view_buttons = $('.views .option');
-    $view_buttons.click(function() {
+    $view_buttons.unbind().click(function() {
       var $t, index;
       $t = $(this);
       $view_buttons.filter('.active').removeClass('active');

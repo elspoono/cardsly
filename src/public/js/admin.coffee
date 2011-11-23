@@ -63,6 +63,7 @@ $ ->
   #
   #
   $web_fg = $ '.web_fg'
+  $web_fg2 = $ '.web_fg2'
   $web_bg = $ '.web_bg'
   #
   $save_button = $designer.find '.buttons .save'
@@ -194,6 +195,7 @@ $ ->
   $qr.hide()
   $lines.hide()
   $web_fg.hide()
+  $web_fg2.hide()
   $web_bg.hide()
   
   $qr.prep_qr()
@@ -338,6 +340,7 @@ $ ->
       onChange: (hsb, hex, rgb) ->
         $t.trigger 'color_update'
           hex: hex
+          rgb: rgb
           timer: true
       onShow: (colpkr) ->
         $t.ColorPickerSetColor $t.data 'hex'     
@@ -374,6 +377,35 @@ $ ->
     $qr_bg.css
       background: '#' + options.hex
     set_timers() if options.timer
+  #
+  #
+  $color1.bind 'color_update', (e, options) ->
+    $web_bg.css
+      background: '#' + options.hex
+  #
+  add_transparent_gradient = (h, start, element) ->
+    rgb = $.hexToR(h) + ',' + $.hexToG(h) + ',' + $.hexToB(h)
+    backgrounds = [
+      '-moz-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
+      '-webkit-gradient(linear, left top, left bottom, color-stop(' + start + ',rgba(' + rgb + ',0)), color-stop(99%,rgba(' + rgb + ',1)))'
+      '-webkit-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
+      '-o-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
+      '-ms-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
+      'linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
+    ]
+    element.css
+      filter: 'progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#a6000000\', endColorstr=\'#00000000\',GradientType=0 )'
+    for i in backgrounds
+      element.css
+        background: i
+  #
+  $color2.bind 'color_update', (e, options) ->
+    add_transparent_gradient options.hex, '40%', $web_fg
+    add_transparent_gradient options.hex, '80%', $web_fg2
+    
+
+  #
+  #
   #
   #
   ##############
@@ -856,6 +888,7 @@ $ ->
       $card.css
         height: 290
       $web_fg.show()
+      $web_fg2.show()
       $web_bg.show()
     else
       $card.css
@@ -865,6 +898,7 @@ $ ->
         margin: 0
       update_card_size()
       $web_fg.hide()
+      $web_fg2.hide()
       $web_bg.hide()
     #
     #
@@ -956,7 +990,7 @@ $ ->
   #
   #
   $view_buttons = $ '.views .option'
-  $view_buttons.click ->
+  $view_buttons.unbind().click ->
     $t = $ this
     $view_buttons.filter('.active').removeClass 'active'
     $t.addClass 'active'

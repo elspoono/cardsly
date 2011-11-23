@@ -106,6 +106,11 @@ $.fn.prep_qr = (options) ->
       height: size
       width: size
 #
+$.hexToR = (h) -> parseInt(($.cutHex(h)).substring(0,2),16)
+$.hexToG = (h) -> parseInt(($.cutHex(h)).substring(2,4),16)
+$.hexToB = (h) -> parseInt(($.cutHex(h)).substring(4,6),16)
+$.cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+#
 $.fn.draw_qr = (options) ->
   settings = 
     color: '000000'
@@ -126,12 +131,8 @@ $.fn.draw_qr = (options) ->
     if canvas and canvas.getContext
       ctx = canvas.getContext "2d"
       #
-      hexToR = (h) -> parseInt((cutHex(h)).substring(0,2),16)
-      hexToG = (h) -> parseInt((cutHex(h)).substring(2,4),16)
-      hexToB = (h) -> parseInt((cutHex(h)).substring(4,6),16)
-      cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
 
-      ctx.fillStyle = 'rgb(' + hexToR(settings.color) + ',' + hexToG(settings.color) + ',' + hexToB(settings.color) + ')'
+      ctx.fillStyle = 'rgb(' + $.hexToR(settings.color) + ',' + $.hexToG(settings.color) + ',' + $.hexToB(settings.color) + ')'
 
       # Actual Drawing of the QR Code
       for r in [0..count-1]
