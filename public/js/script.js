@@ -157,23 +157,24 @@
     *
   */
 
-  $.create_card_from_theme = function(theme, size) {
-    var $li, $my_card, $my_qr, $my_qr_bg, i, pos, theme_template, _len, _ref;
-    if (!size) {
-      size = {
-        height: 90,
-        width: 158
-      };
-    }
-    theme_template = theme.theme_templates[0];
+  $.create_card_from_theme = function(options) {
+    var $li, $my_card, $my_qr, $my_qr_bg, i, pos, settings, theme_template, _len, _ref;
+    settings = {
+      height: 90,
+      width: 158,
+      theme: null,
+      active_view: 0
+    };
+    if (options) $.extend(settings, options);
+    theme_template = settings.theme.theme_templates[settings.active_view];
     $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
-    $my_card.data('theme', theme);
+    $my_card.data('theme', settings.theme);
     $my_qr = $my_card.find('.qr');
     $my_qr_bg = $my_qr.find('.background');
     $my_qr.qr({
       color: theme_template.qr.color1,
-      height: theme_template.qr.h / 100 * size.height,
-      width: theme_template.qr.w / 100 * size.width
+      height: theme_template.qr.h / 100 * settings.height,
+      width: theme_template.qr.w / 100 * settings.width
     });
     $my_qr.find('canvas').css({
       zIndex: 150,
@@ -181,15 +182,15 @@
     });
     $my_qr.css({
       position: 'absolute',
-      top: theme_template.qr.y / 100 * size.height,
-      left: theme_template.qr.x / 100 * size.width
+      top: theme_template.qr.y / 100 * settings.height,
+      left: theme_template.qr.x / 100 * settings.width
     });
     $my_qr_bg.css({
       zIndex: 140,
       position: 'absolute',
       'border-radius': theme_template.qr.radius + 'px',
-      height: theme_template.qr.h / 100 * size.height,
-      width: theme_template.qr.w / 100 * size.width,
+      height: theme_template.qr.h / 100 * settings.height,
+      width: theme_template.qr.w / 100 * settings.width,
       background: '#' + theme_template.qr.color2
     });
     $my_qr_bg.fadeTo(0, theme_template.qr.color2_alpha);
@@ -199,18 +200,18 @@
       $li = $('<div class="line">' + $.line_copy[i] + '</div>');
       $li.appendTo($my_card).css({
         position: 'absolute',
-        top: pos.y / 100 * size.height,
-        left: pos.x / 100 * size.width,
-        width: (pos.w / 100 * size.width) + 'px',
-        fontSize: (pos.h / 100 * size.height) + 'px',
-        lineHeight: (pos.h / 100 * size.height) + 'px',
+        top: pos.y / 100 * settings.height,
+        left: pos.x / 100 * settings.width,
+        width: (pos.w / 100 * settings.width) + 'px',
+        fontSize: (pos.h / 100 * settings.height) + 'px',
+        lineHeight: (pos.h / 100 * settings.height) + 'px',
         fontFamily: pos.font_family,
         textAlign: pos.text_align,
         color: '#' + pos.color
       });
     }
     return $my_card.css({
-      background: 'url(\'//d3eo3eito2cquu.cloudfront.net/' + size.width + 'x' + size.height + '/' + theme_template.s3_id + '\')'
+      background: 'url(\'//d3eo3eito2cquu.cloudfront.net/' + settings.width + 'x' + settings.height + '/' + theme_template.s3_id + '\')'
     });
   };
 
@@ -731,7 +732,7 @@
   */
 
   $(function() {
-    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, all_themes, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, load_theme_thumbnails, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
@@ -1166,21 +1167,33 @@
     };
     update_card_size();
     $qr.prep_qr();
+    all_themes = [];
+    load_theme_thumbnails = function() {
+      var $active_view, $my_card, theme, _i, _len;
+      for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
+        theme = all_themes[_i];
+        $my_card = $.create_card_from_theme({
+          theme: theme
+        });
+        $.add_card_to_category($my_card, theme);
+      }
+      $active_view = $('.active_view');
+      if ($active_view.html()) {
+        $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+      }
+      return $lines.each(function(i) {
+        return update_cards(i, $(this).html());
+      });
+    };
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $active_theme, $active_view, $my_card, active_theme_id, all_themes, theme, _i, _len;
+        var $active_theme, active_theme_id;
         all_themes = all_data.themes;
         $categories.html('');
         active_theme_id = $('.active_theme_id').html();
-        $active_theme = false;
-        for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
-          theme = all_themes[_i];
-          $my_card = $.create_card_from_theme(theme);
-          if (active_theme_id && theme._id === active_theme_id) {
-            $active_theme = $my_card;
-          }
-          $.add_card_to_category($my_card, theme);
+        if (active_theme_id && theme._id === active_theme_id) {
+          $active_theme = $my_card;
         }
         if ($active_theme) {
           $active_theme.closest('.category').addClass('active');
@@ -1188,13 +1201,8 @@
         } else {
           $categories.find('.category:first h4').click();
         }
-        $active_view = $('.active_view');
-        if ($active_view.html()) {
-          $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
-        }
-        return $lines.each(function(i) {
-          return update_cards(i, $(this).html());
-        });
+        $active_theme = false;
+        return load_theme_thumbnails();
       },
       error: function() {
         return $.load_alert({
@@ -1304,9 +1312,11 @@
           color: '#' + pos.color
         });
       }
-      $active_card = $.create_card_from_theme(active_theme, {
+      $active_card = $.create_card_from_theme({
+        theme: active_theme,
         height: 300,
-        width: 525
+        width: 525,
+        active_view: active_view
       });
       $('.my_card').children().remove();
       $('.my_card').append($active_card);
@@ -1486,7 +1496,7 @@
       $t.addClass('active');
       index = $t.prevAll().length;
       active_view = index;
-      load_theme(active_theme);
+      load_theme_thumbnails();
       return set_timers();
     });
     /*

@@ -124,7 +124,8 @@ $ ->
         #
         #
         #
-        $my_card = $.create_card_from_theme theme
+        $my_card = $.create_card_from_theme
+          theme: theme
         
         # Push the whole thing to categories
         $.add_card_to_category $my_card, theme
@@ -976,7 +977,8 @@ $ ->
     $.load_loading {}, (close_loading) ->
       execute_save (result) ->
         close_loading()
-        $new_card = $.create_card_from_theme active_theme
+        $new_card = $.create_card_from_theme 
+          theme: active_theme
         active_theme.not_saved = false
         active_theme._id = result.theme._id
         $save_button.stop(true,true).slideUp()

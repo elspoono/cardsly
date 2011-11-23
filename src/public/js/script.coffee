@@ -180,22 +180,25 @@ $.fn.qr = (options) ->
 #
 #
 # helper function to create styled card
-$.create_card_from_theme = (theme, size) ->
+$.create_card_from_theme = (options) ->
+  settings =
+    height: 90
+    width: 158
+    theme: null
+    active_view: 0
   #
-  #
-  if !size
-    size = 
-      height: 90
-      width: 158
+  if options
+    $.extend settings, options
+  
   #
   # Set Constants
-  theme_template = theme.theme_templates[0]
+  theme_template = settings.theme.theme_templates[settings.active_view]
   #
   #
   # Prep the Card
   $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
   #
-  $my_card.data 'theme', theme
+  $my_card.data 'theme', settings.theme
   #
   $my_qr = $my_card.find('.qr')
   #
@@ -203,21 +206,21 @@ $.create_card_from_theme = (theme, size) ->
   #
   $my_qr.qr
     color: theme_template.qr.color1
-    height: theme_template.qr.h/100 * size.height
-    width: theme_template.qr.w/100 * size.width
+    height: theme_template.qr.h/100 * settings.height
+    width: theme_template.qr.w/100 * settings.width
   $my_qr.find('canvas').css
     zIndex: 150
     position: 'absolute'
   $my_qr.css
     position: 'absolute'
-    top: theme_template.qr.y/100 * size.height
-    left: theme_template.qr.x/100 * size.width
+    top: theme_template.qr.y/100 * settings.height
+    left: theme_template.qr.x/100 * settings.width
   $my_qr_bg.css
     zIndex: 140
     position: 'absolute'
     'border-radius': theme_template.qr.radius+'px'
-    height: theme_template.qr.h/100 * size.height
-    width: theme_template.qr.w/100 * size.width
+    height: theme_template.qr.h/100 * settings.height
+    width: theme_template.qr.w/100 * settings.width
     background: '#' + theme_template.qr.color2
   $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
   #
@@ -226,11 +229,11 @@ $.create_card_from_theme = (theme, size) ->
     $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
     $li.appendTo($my_card).css
       position: 'absolute'
-      top: pos.y/100 * size.height
-      left: pos.x/100 * size.width
-      width: (pos.w/100 * size.width) + 'px'
-      fontSize: (pos.h/100 * size.height) + 'px'
-      lineHeight: (pos.h/100 * size.height) + 'px'
+      top: pos.y/100 * settings.height
+      left: pos.x/100 * settings.width
+      width: (pos.w/100 * settings.width) + 'px'
+      fontSize: (pos.h/100 * settings.height) + 'px'
+      lineHeight: (pos.h/100 * settings.height) + 'px'
       fontFamily: pos.font_family
       textAlign: pos.text_align
       color: '#'+pos.color
@@ -238,7 +241,7 @@ $.create_card_from_theme = (theme, size) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+size.width+'x'+size.height+'/' + theme_template.s3_id + '\')'
+    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + theme_template.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -1278,26 +1281,44 @@ $ ->
   #
   # LOADING the themes
   #
+  all_themes = []
+  load_theme_thumbnails = ->
+    for theme in all_themes
+      #
+      #
+      #
+      $my_card = $.create_card_from_theme
+        theme: theme
+
+      # Push the whole thing to categories
+      $.add_card_to_category $my_card, theme
+    #
+    #
+    #
+    #
+    # Restore active view
+    $active_view = $ '.active_view'
+    if $active_view.html()
+      $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
+    #
+    #
+    #
+    #
+    $lines.each (i) ->
+      update_cards i, $(this).html()
+  #
+  #
+  #
   $.ajax
     url: '/get-themes'
     success: (all_data) ->
       all_themes = all_data.themes
       $categories.html ''
+      #
+      #
       active_theme_id = $('.active_theme_id').html()
-      $active_theme = false
-      for theme in all_themes
-        #
-        #
-        #
-        $my_card = $.create_card_from_theme theme
-        
-        if active_theme_id and theme._id is active_theme_id
-          $active_theme = $my_card
-
-        # Push the whole thing to categories
-        $.add_card_to_category $my_card, theme
-      #
-      #
+      if active_theme_id and theme._id is active_theme_id
+        $active_theme = $my_card
       #
       # Restore active theme
       if $active_theme
@@ -1307,16 +1328,8 @@ $ ->
         $categories.find('.category:first h4').click()
       #
       #
-      # Restore active view
-      $active_view = $ '.active_view'
-      if $active_view.html()
-        $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
-      #
-      #
-      #
-      #
-      $lines.each (i) ->
-        update_cards i, $(this).html()
+      $active_theme = false
+      load_theme_thumbnails()
     #
     #
     error: ->
@@ -1445,9 +1458,11 @@ $ ->
     #
     #
     # For the home page, show the selected card at the bottom
-    $active_card = $.create_card_from_theme active_theme,
+    $active_card = $.create_card_from_theme
+      theme: active_theme
       height: 300
       width: 525
+      active_view: active_view
     $('.my_card').children().remove()
     $('.my_card').append $active_card
     $active_card.find('.qr canvas').css
@@ -1684,7 +1699,7 @@ $ ->
     index = $t.prevAll().length
     active_view = index
     #
-    load_theme active_theme
+    load_theme_thumbnails()
     set_timers()
   ###
   Shopping Cart Stuff

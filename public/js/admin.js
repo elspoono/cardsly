@@ -72,7 +72,9 @@
         $categories.html('');
         for (_j = 0, _len2 = all_themes.length; _j < _len2; _j++) {
           theme = all_themes[_j];
-          $my_card = $.create_card_from_theme(theme);
+          $my_card = $.create_card_from_theme({
+            theme: theme
+          });
           $.add_card_to_category($my_card, theme);
         }
         return $categories.find('.category:first h4').click();
@@ -767,7 +769,9 @@
         return execute_save(function(result) {
           var $new_card;
           close_loading();
-          $new_card = $.create_card_from_theme(active_theme);
+          $new_card = $.create_card_from_theme({
+            theme: active_theme
+          });
           active_theme.not_saved = false;
           active_theme._id = result.theme._id;
           $save_button.stop(true, true).slideUp();
