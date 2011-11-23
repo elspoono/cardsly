@@ -1000,7 +1000,9 @@
                 });
               } else {
                 console.log('CUSTOMER: ', customer);
-                req.user.customer = customer;
+                req.user.customer = {};
+                req.user.customer.id = customer.id;
+                req.user.customer.active_card = customer.active_card;
                 req.user.save(function(err, user_saved) {
                   if (err) return console.log('ERR: database ', err);
                 });

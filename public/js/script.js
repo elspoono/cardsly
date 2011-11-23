@@ -1405,7 +1405,12 @@
       });
     });
     $existing_payment = $('.existing_payment');
-    $existing_payment.hide();
+    $existing_payment.find('.button').click(function() {
+      $existing_payment.remove();
+      $('.order_total form').show();
+      return false;
+    });
+    if ($existing_payment.length) $('.order_total form').hide();
     /*
       SAMURAI
       $existing_payment.find('.button').click ->

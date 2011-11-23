@@ -1177,7 +1177,9 @@ app.post '/confirm-purchase', (req, res, next) ->
               console.log 'CUSTOMER: ', customer
               #
               # Save the payment token to the user
-              req.user.customer = customer
+              req.user.customer = {}
+              req.user.customer.id = customer.id
+              req.user.customer.active_card = customer.active_card
               req.user.save (err, user_saved) ->
                 if err
                   console.log 'ERR: database ', err

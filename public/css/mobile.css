@@ -69,6 +69,9 @@
   height: auto;
   width: auto;
 }
+.chat {
+  display: none;
+}
 input value=["Send Feedback"],
 .feedback_form {
 input
@@ -92,11 +95,12 @@ input
   filter: alpha ( opacity = 70 );
 }
 .feedback a {
-  height: 38px;
-  line-height: 22px;
-  font-size: 14px;
+  height: 20px;
+  line-height: 14px;
+  font-size: 10px;
   text-align: center;
-  padding: 5px;
+  margin-left: 5px;
+  padding: 0 10px 20px 10px;
   background: #3a322f;
   border: 3px solid #eee;
   border-bottom: none;
