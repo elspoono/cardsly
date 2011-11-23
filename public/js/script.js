@@ -1458,10 +1458,15 @@
       var $q, $s;
       $q = $('.quantity input:checked');
       $s = $('.shipping_method input:checked');
+      $('.quantity li').removeClass('active');
+      $q.closest('li').addClass('active');
+      $('.shipping_method li').removeClass('active');
+      $s.closest('li').addClass('active');
       amount = ($q.val() * 1) + ($s.val() * 1);
       $('.order_total .price').html('$' + amount);
       return set_timers();
     });
+    $('.quantity input,.shipping_method input').trigger('change');
     address_timer = 0;
     set_address_timer = function() {
       clearTimeout(address_timer);

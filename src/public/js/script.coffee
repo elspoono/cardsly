@@ -1677,12 +1677,24 @@ $ ->
   $('.quantity input,.shipping_method input').bind 'change', () ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
+    #
+    # Set Class
+    $('.quantity li').removeClass 'active'
+    $q.closest('li').addClass 'active'
+    #
+    #
+    # Set Class
+    $('.shipping_method li').removeClass 'active'
+    $s.closest('li').addClass 'active'
+    #
+    #
     amount = ($q.val()*1) + ($s.val()*1)
     $('.order_total .price').html '$' + amount
     #
     #
     #
     set_timers()
+  $('.quantity input,.shipping_method input').trigger 'change'
   #
   #
   address_timer = 0

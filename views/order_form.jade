@@ -65,21 +65,22 @@
     .order_details
       ul.radio_text_fields.left.quantity
         li
-          img.promo(src=' /images/promo.png')
           p Quantity:
         - quantity = 10
         if session && session.saved_form && session.saved_form.quantity
           - quantity = session.saved_form.quantity
         li
-          input(
-            type='radio'
-            name='quantity'
-            value='10'
-            checked= (quantity==10 ? 'checked' : false)
-            id='quantity_1'
-          )
-          label(for='quantity_1') 100 cards for $10
-            .subtitle 10 cents per card
+          .promo
+            img.promo_img(src='/images/promo.png')
+            input(
+              type='radio'
+              name='quantity'
+              value='10'
+              checked= (quantity==10 ? 'checked' : false)
+              id='quantity_1'
+            )
+            label(for='quantity_1') 100 cards for $10
+              .subtitle 10 cents per card
         li
           input(
             type='radio'

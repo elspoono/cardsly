@@ -49,6 +49,12 @@
 .footer .us_pics li {
   margin: 45px 10px 0 10px;
 }
+.promo_img {
+  -webkit-transform: scale(0.8, 0.8);
+  -moz-transform: scale(0.8, 0.8);
+  -ms-transform: scale(0.8, 0.8);
+  transform: scale(0.8, 0.8);
+}
 .help_container .help_img {
   -webkit-transform: scale(0.5, 0.5);
   -moz-transform: scale(0.5, 0.5);

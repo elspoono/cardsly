@@ -743,9 +743,9 @@ blockquote
   .left,.right,.righter
     float left
     margin 30px 0
-    width 240px
+    width 210px
   .right,.righter
-    margin-left 20px
+    margin-left 50px
 .address_container
   margin 20px 0
   border 1px solid $c_bg_dark
@@ -1197,11 +1197,40 @@ label
     color $c_light
     relative_size(.65)
     cursor default
+
+
+
+
+// RADIO TEXT STUFF FOR QUANTITY
+.radio_text_fields
+  .active
+    .promo
+      border 5px solid $c_light
+  .promo
+    border 5px solid transparent
+    label
+      font-size 16px
+    position relative
+    margin -15px
+    padding 15px
+    padding-right 0
+    border_radius(10px)
+    .promo_img
+      position absolute
+      top -50px
+      right -40px
+    .subtitle
+      color $c_light
 .radio_text_fields
   relative_size(1)
   margin -30px 0 15px 0
   li
-    margin 10px
+    cursor pointer
+    margin -5px
+    padding 15px
+    border_radius(10px)
+  li.active
+    alpha_bg($c_black,.4)
   label
     color $c_light
     relative_size(.65)
@@ -1209,6 +1238,13 @@ label
     margin 0px 10px 0 0
     float left
     width auto
+
+
+
+
+
+
+
 
 // Slides
 .section.home_first
@@ -1478,17 +1514,6 @@ p
   z-index 150
   bottom 5px
   right 20px
-  img
-    position absolute
-    bottom 0
-    right 0
-
-
-.promo
-  z-index 150
-  position absolute
-  top 130px
-  left -90px
   img
     position absolute
     bottom 0

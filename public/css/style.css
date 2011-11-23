@@ -924,11 +924,11 @@ blockquote {
 .order_details .righter {
   float: left;
   margin: 30px 0;
-  width: 240px;
+  width: 210px;
 }
 .order_details .right,
 .order_details .righter {
-  margin-left: 20px;
+  margin-left: 50px;
 }
 .address_container {
   margin: 20px 0;
@@ -1646,13 +1646,48 @@ label .subtitle {
   line-height: 1.5em;
   cursor: default;
 }
+.radio_text_fields .active .promo {
+  border: 5px solid #eee;
+}
+.radio_text_fields .promo {
+  border: 5px solid transparent;
+  position: relative;
+  margin: -15px;
+  padding: 15px;
+  padding-right: 0;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  behavior: url("/js/libs/PIE");
+}
+.radio_text_fields .promo label {
+  font-size: 16px;
+}
+.radio_text_fields .promo .promo_img {
+  position: absolute;
+  top: -50px;
+  right: -40px;
+}
+.radio_text_fields .promo .subtitle {
+  color: #eee;
+}
 .radio_text_fields {
   font-size: 21px;
   line-height: 1.5em;
   margin: -30px 0 15px 0;
 }
 .radio_text_fields li {
-  margin: 10px;
+  cursor: pointer;
+  margin: -5px;
+  padding: 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  behavior: url("/js/libs/PIE");
+}
+.radio_text_fields li.active {
+  background: #000;
+  background: rgba(0,0,0,0.40);
 }
 .radio_text_fields label {
   color: #eee;
@@ -1978,17 +2013,6 @@ p {
   right: 20px;
 }
 .chat img {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-.promo {
-  z-index: 150;
-  position: absolute;
-  top: 130px;
-  left: -90px;
-}
-.promo img {
   position: absolute;
   bottom: 0;
   right: 0;
