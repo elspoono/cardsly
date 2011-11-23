@@ -1917,6 +1917,17 @@ p {
   bottom: 0;
   right: 0;
 }
+.promo {
+  z-index: 150;
+  position: absolute;
+  top: 1940px;
+  right: 1060px;
+}
+.promo img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 input value=["Send Feedback"],
 .feedback_form {
 input
