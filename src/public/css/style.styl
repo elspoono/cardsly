@@ -664,12 +664,28 @@ blockquote
  *******************************************/
 // Sign In Stuff
 .signins
-  .check,.email_to_send
-    width 250px
-    float right
-    display block
+  overflow hidden
   .check
-    width 270px
+    li
+      margin 5px 0
+  .do_send_confirm,.do_send_shipping
+    overflow hidden
+    input, label
+      float left
+      cursor pointer
+    input
+      height 20px
+      margin-right 20px
+  .email_to_send
+    span, label
+      float left
+    input
+      width 230px
+    label
+      height 40px
+      line-height 40px
+      margin-right 8px
+      margin-left 2px
 // Final Checkout Stuff At Bottom
 .order_details
   .left,.right,.righter

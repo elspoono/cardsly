@@ -369,6 +369,9 @@ order_schema = new schema
   city: String
   full_address: String
   amount: Number
+  email: String
+  shipping_email: String
+  confirm_email: String
   charge:
     id: String
     paid: Boolean
@@ -1040,7 +1043,7 @@ app.post '/send-feedback', (req,res,next) ->
   res.send
       succesfulFeedback:'This worked!'
   nodemailer.send_mail
-    sender: req.body.email
+    sender: req.body.email or 'help@cards.ly'
     to: 'support@cards.ly'
     cc: 'help@cards.ly'
     subject:'Feedback email from:' + req.body.email
@@ -1150,6 +1153,9 @@ app.post '/confirm-purchase', (req, res, next) ->
       order.city = req.session.saved_address.city
       order.full_address = req.session.saved_address.full_address
       order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
+      order.email = req.body.email
+      order.shipping_email = req.body.shipping_email
+      order.confirm_email = req.body.confirm_email
       order.save (err, new_order) ->
         if err
           console.log 'ERR: database ', err
@@ -1202,6 +1208,16 @@ app.post '/confirm-purchase', (req, res, next) ->
                   res.send
                     order_id: new_order._id
                     charge: charge
+                  if new_order.confirm_email and new_order.email
+                    nodemailer.send_mail
+                      sender: 'help@cards.ly'
+                      to: 'support@cards.ly'
+                      cc: 'help@cards.ly'
+                      subject: ('Cardsly Order Confirmation - ' + new_order.order_number)
+                      html: ('<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.828.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>')
+                    , (err, data) ->
+                      if err
+                        console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
                 #
                 # Save the order result to the order
                 new_order.charge = charge
@@ -1228,7 +1244,7 @@ app.post '/validate-purchase', (req, res, next) ->
       error: 'Please check the address'
   else if req.session.saved_form.values[0] is "John Stamos"
     res.send
-      error: 'You are not John Stamos'
+      error: 'Hey Uncle Jesse, is that you?'
   else
     #
     #

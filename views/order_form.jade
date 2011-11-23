@@ -162,17 +162,25 @@
     .signins
       if user
         .check
-          label(
-            for='do_send'
-          ) Send the confirmation email to:
-        .clear
-        .input
-          input.email_to_send(
-            name='email_to_send'
-            value=user.email
-            placeholder='my@email.com'
-          )
-        .clear
+          ul
+            li.do_send_confirm
+              input(type='checkbox',id='do_send_confirm',checked='checked')
+              label(
+                for='do_send_confirm'
+              ) Send a confirmation email
+            li.do_send_shipping
+              input(type='checkbox',id='do_send_shipping',checked='checked')
+              label(
+                for='do_send_shipping'
+              ) Send a shipping receipt
+            li.email_to_send
+              label(for='email_to_send') To:
+              input(
+                name='email_to_send'
+                id='email_to_send'
+                value=user.email
+                placeholder='my@email.com'
+              )
 
       else
         p

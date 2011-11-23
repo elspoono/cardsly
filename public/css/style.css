@@ -819,14 +819,40 @@ blockquote {
  * Home Page
  *
  *******************************************/
-.signins .check,
-.signins .email_to_send {
-  width: 250px;
-  float: right;
-  display: block;
+.signins {
+  overflow: hidden;
 }
-.signins .check {
-  width: 270px;
+.signins .check li {
+  margin: 5px 0;
+}
+.signins .do_send_confirm,
+.signins .do_send_shipping {
+  overflow: hidden;
+}
+.signins .do_send_confirm input,
+.signins .do_send_shipping input,
+.signins .do_send_confirm label,
+.signins .do_send_shipping label {
+  float: left;
+  cursor: pointer;
+}
+.signins .do_send_confirm input,
+.signins .do_send_shipping input {
+  height: 20px;
+  margin-right: 20px;
+}
+.signins .email_to_send span,
+.signins .email_to_send label {
+  float: left;
+}
+.signins .email_to_send input {
+  width: 230px;
+}
+.signins .email_to_send label {
+  height: 40px;
+  line-height: 40px;
+  margin-right: 8px;
+  margin-left: 2px;
 }
 .order_details .left,
 .order_details .right,

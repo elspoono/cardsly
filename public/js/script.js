@@ -1546,7 +1546,9 @@
                     url: '/confirm-purchase',
                     data: JSON.stringify({
                       token: response.id,
-                      email: $('.email_to_send').val()
+                      confirm_email: $('.do_send_confirm input').is(':checked'),
+                      shipping_email: $('.do_send_shipping input').is(':checked'),
+                      email: $('.email_to_send input').val()
                     }),
                     success: function(result) {
                       loading_close();
