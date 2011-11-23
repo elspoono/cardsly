@@ -150,6 +150,40 @@ blockquote {
 .help_container .help_trigger {
   display: none;
 }
+.help_container .one .help_img {
+  margin: 150px 0 0 40px;
+}
+.help_container .two .help_img {
+  margin: 70px 60px 0 0;
+  float: right;
+}
+.help_container .three .help_img {
+  margin: -160px 0 0 40px;
+}
+.help_container .help_img_container {
+  width: 100%;
+}
+.help_container .help_img_container .help_img {
+  height: 300px;
+  width: 350px;
+  background: url("/images/help_right.png");
+}
+.help_container .help_img_container .help_img .text {
+  font-family: 'Amatic SC';
+  font-size: 70px;
+  line-height: 70px;
+  position: absolute;
+  text-align: center;
+  width: 220px;
+  height: 150px;
+  margin: 110px 0 0 20px;
+}
+.help_container .help_img_container .left {
+  background: url("/images/help_left.png");
+}
+.help_container .help_img_container .left .text {
+  margin-left: 90px;
+}
 .help_container .help_close,
 .help_container .help_trigger {
   position: absolute;
@@ -162,13 +196,12 @@ blockquote {
   z-index: 152;
 }
 .help_container .help_overlay {
-  opacity: 0.6;
-  filter: alpha ( opacity = 60 );
   -webkit-border-radius: 15.75px;
   -moz-border-radius: 15.75px;
   border-radius: 15.75px;
   behavior: url("/js/libs/PIE");
   background: #000;
+  background: rgba(0,0,0,0.60);
   height: 100%;
   width: 100%;
   position: absolute;

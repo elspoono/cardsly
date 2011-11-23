@@ -815,7 +815,7 @@
         document.location.href = '/#design-button';
       } else {
         $('html,body').animate({
-          scrollTop: $('.section:eq(1)').offset().top
+          scrollTop: $('.section:eq(1)').offset().top - 50
         }, 500, function() {
           return $('.home_designer .line:first').click();
         });

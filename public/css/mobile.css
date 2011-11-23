@@ -49,6 +49,22 @@
 .footer .us_pics li {
   margin: 45px 10px 0 10px;
 }
+.help_container .help_img {
+  -webkit-transform: scale(0.5, 0.5);
+  -moz-transform: scale(0.5, 0.5);
+  -ms-transform: scale(0.5, 0.5);
+  transform: scale(0.5, 0.5);
+}
+.help_container .one .help_img {
+  margin: 130px 0 0 -60px;
+}
+.help_container .two .help_img {
+  margin: 10px -40px 0 0;
+  float: right;
+}
+.help_container .three .help_img {
+  margin: -200px 0 0 -40px;
+}
 .order_details .left,
 .order_details .right,
 .order_details .righter {

@@ -280,6 +280,32 @@ blockquote
   position relative
   .help_trigger
     display none
+  .one .help_img
+    margin 150px 0 0 40px
+  .two .help_img
+    margin 70px 60px 0 0
+    float right
+  .three .help_img
+    margin -160px 0 0 40px
+  .help_img_container
+    width 100%
+    .help_img
+      height 300px
+      width 350px
+      background url('/images/help_right.png')
+      .text
+        font-family 'Amatic SC'
+        font-size 70px
+        line-height 70px
+        position absolute
+        text-align center
+        width 220px
+        height 150px
+        margin 110px 0 0 20px
+    .left
+      background url('/images/help_left.png')
+      .text
+        margin-left 90px
   .help_close,.help_trigger
     position absolute
     top -20px
@@ -290,9 +316,8 @@ blockquote
     line-height 30px
     z-index 152
   .help_overlay
-    opacity(.6)
     border_radius()
-    background $c_black
+    alpha_bg($c_black,.6)
     height 100%
     width 100%
     position absolute
