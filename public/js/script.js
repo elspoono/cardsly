@@ -166,7 +166,7 @@
       active_view: 0
     };
     if (options) $.extend(settings, options);
-    theme_template = settings.theme.theme_templates[settings.active_view];
+    theme_template = settings.theme.theme_templates[settings.active_view] || settings.theme.theme_templates[0];
     $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
     $my_card.data('theme', settings.theme);
     $my_qr = $my_card.find('.qr');
@@ -732,7 +732,7 @@
   */
 
   $(function() {
-    var $a, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, all_themes, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, load_theme_thumbnails, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
+    var $a, $active_theme, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, all_themes, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, load_theme_thumbnails, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
       $.cookie('bypass_splash', true);
     }
@@ -1153,7 +1153,8 @@
     $address_result = $('.address_result');
     $city = $('.city');
     $body = $(document);
-    active_theme = false;
+    $active_theme = false;
+    active_theme = {};
     active_view = 0;
     card_height = 0;
     card_width = 0;
@@ -1169,17 +1170,23 @@
     $qr.prep_qr();
     all_themes = [];
     load_theme_thumbnails = function() {
-      var $active_view, $my_card, theme, _i, _len;
+      var $my_card, theme, _i, _len;
       for (_i = 0, _len = all_themes.length; _i < _len; _i++) {
         theme = all_themes[_i];
         $my_card = $.create_card_from_theme({
-          theme: theme
+          theme: theme,
+          active_view: active_view
         });
+        if (active_theme._id && theme._id === active_theme._id) {
+          $active_theme = $my_card;
+        }
         $.add_card_to_category($my_card, theme);
       }
-      $active_view = $('.active_view');
-      if ($active_view.html()) {
-        $view_buttons.filter(':eq(' + $active_view.html() + ')').click();
+      if ($active_theme) {
+        $active_theme.closest('.category').addClass('active');
+        $active_theme.click();
+      } else {
+        $categories.find('.category:first h4').click();
       }
       return $lines.each(function(i) {
         return update_cards(i, $(this).html());
@@ -1188,21 +1195,17 @@
     $.ajax({
       url: '/get-themes',
       success: function(all_data) {
-        var $active_theme, active_theme_id;
+        var $active_view;
         all_themes = all_data.themes;
         $categories.html('');
-        active_theme_id = $('.active_theme_id').html();
-        if (active_theme_id && theme._id === active_theme_id) {
-          $active_theme = $my_card;
+        $active_view = $('.active_view');
+        if ($active_view.html() !== '') {
+          active_view = $active_view.html();
+          $view_buttons.filter('.active').removeClass('active');
+          $view_buttons.filter(':eq(' + active_view + ')').addClass('active');
         }
-        if ($active_theme) {
-          $active_theme.closest('.category').addClass('active');
-          $active_theme.click();
-        } else {
-          $categories.find('.category:first h4').click();
-        }
-        $active_theme = false;
-        return load_theme_thumbnails();
+        load_theme_thumbnails();
+        return active_theme._id = $('.active_theme_id').html();
       },
       error: function() {
         return $.load_alert({
@@ -1230,33 +1233,8 @@
       }
     });
     load_theme = function(theme) {
-      var $active_card, $li, i, line, new_line, pos, theme_template, _i, _len, _len2, _ref, _ref2;
-      theme_template = theme.theme_templates[active_view];
-      if (!theme_template) {
-        if (active_view === 2) {
-          theme_template = $.extend(true, {}, theme.theme_templates[0]);
-        }
-        if (active_view === 1) {
-          theme_template = $.extend(true, {}, theme.theme_templates[0]);
-          _ref = theme_template.lines;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            line = _ref[_i];
-            $.extend(true, line, {
-              h: line.h / 1.5,
-              w: line.w / 1.5
-            });
-            new_line = $.extend(true, {}, line);
-            new_line.x = 100 - new_line.x - new_line.w;
-            theme_template.lines.push(new_line);
-          }
-          theme_template.qr.h = theme_template.qr.h / 1.5;
-          theme_template.qr.w = theme_template.qr.w / 1.5;
-        }
-        theme.theme_templates[active_view] = theme_template;
-      }
-      if (active_view === 1 && theme.theme_templates[active_view].lines.length > 10) {
-        theme.theme_templates[active_view].lines.splice(10, 5);
-      }
+      var $active_card, $li, i, pos, theme_template, _len, _ref;
+      theme_template = theme.theme_templates[active_view] || theme.theme_templates[0];
       active_theme = theme;
       if (theme_template.s3_id) {
         $card.css({
@@ -1296,9 +1274,9 @@
       $qr.draw_qr({
         color: theme_template.qr.color1
       });
-      _ref2 = theme_template.lines;
-      for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
-        pos = _ref2[i];
+      _ref = theme_template.lines;
+      for (i = 0, _len = _ref.length; i < _len; i++) {
+        pos = _ref[i];
         $li = $lines.eq(i);
         $li.show().css({
           top: pos.y / 100 * card_height,
@@ -1496,6 +1474,7 @@
       $t.addClass('active');
       index = $t.prevAll().length;
       active_view = index;
+      $('.category .cards').html('');
       load_theme_thumbnails();
       return set_timers();
     });

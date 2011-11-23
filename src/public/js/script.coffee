@@ -192,7 +192,7 @@ $.create_card_from_theme = (options) ->
   
   #
   # Set Constants
-  theme_template = settings.theme.theme_templates[settings.active_view]
+  theme_template = settings.theme.theme_templates[settings.active_view] or settings.theme.theme_templates[0]
   #
   #
   # Prep the Card
@@ -1251,7 +1251,8 @@ $ ->
   #
   #
   # Set some constants
-  active_theme = false
+  $active_theme = false
+  active_theme = {}
   active_view = 0
   card_height = 0
   card_width = 0
@@ -1289,17 +1290,23 @@ $ ->
       #
       $my_card = $.create_card_from_theme
         theme: theme
-
+        active_view: active_view
+      #
+      #
+      if active_theme._id and theme._id is active_theme._id
+        $active_theme = $my_card
+      #
       # Push the whole thing to categories
       $.add_card_to_category $my_card, theme
     #
     #
+    # Restore active theme
+    if $active_theme
+      $active_theme.closest('.category').addClass('active')
+      $active_theme.click()
+    else
+      $categories.find('.category:first h4').click()
     #
-    #
-    # Restore active view
-    $active_view = $ '.active_view'
-    if $active_view.html()
-      $view_buttons.filter(':eq(' + $active_view.html() + ')').click()
     #
     #
     #
@@ -1316,20 +1323,18 @@ $ ->
       $categories.html ''
       #
       #
-      active_theme_id = $('.active_theme_id').html()
-      if active_theme_id and theme._id is active_theme_id
-        $active_theme = $my_card
+      # Restore active view
+      $active_view = $ '.active_view'
+      if $active_view.html() isnt ''
+        active_view = $active_view.html()
+        $view_buttons.filter('.active').removeClass 'active'
+        $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
       #
-      # Restore active theme
-      if $active_theme
-        $active_theme.closest('.category').addClass('active')
-        $active_theme.click()
-      else
-        $categories.find('.category:first h4').click()
-      #
-      #
-      $active_theme = false
       load_theme_thumbnails()
+      #
+      #
+      active_theme._id = $('.active_theme_id').html()
+      #
     #
     #
     error: ->
@@ -1377,25 +1382,7 @@ $ ->
   load_theme = (theme) ->
     #
     # Set Constants
-    theme_template = theme.theme_templates[active_view]
-    #
-    if !theme_template
-      if active_view is 2
-        theme_template = $.extend true, {}, theme.theme_templates[0]
-      if active_view is 1
-        theme_template = $.extend true, {}, theme.theme_templates[0]
-        for line in theme_template.lines
-          $.extend true, line,
-            h: line.h/1.5
-            w: line.w/1.5
-          new_line = $.extend true, {}, line
-          new_line.x = 100-new_line.x-new_line.w
-          theme_template.lines.push new_line
-        theme_template.qr.h = theme_template.qr.h/1.5
-        theme_template.qr.w = theme_template.qr.w/1.5
-      theme.theme_templates[active_view] = theme_template
-    if active_view is 1 and theme.theme_templates[active_view].lines.length > 10
-      theme.theme_templates[active_view].lines.splice 10, 5
+    theme_template = theme.theme_templates[active_view] or theme.theme_templates[0]
     # 
     #
     #
@@ -1699,6 +1686,8 @@ $ ->
     index = $t.prevAll().length
     active_view = index
     #
+    #
+    $('.category .cards').html ''
     load_theme_thumbnails()
     set_timers()
   ###
