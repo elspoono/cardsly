@@ -1213,8 +1213,7 @@ app.post '/confirm-purchase', (req, res, next) ->
                     console.log message
                     nodemailer.send_mail
                       sender: 'help@cards.ly'
-                      to: 'support@cards.ly'
-                      cc: 'help@cards.ly'
+                      to: new_order.email
                       subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
                       html: message
                     , (err, data) ->
