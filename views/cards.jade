@@ -1,5 +1,5 @@
-.section
-  if thankyou
+if thankyou
+  .section
     .cell_bg
     .cell_content
       h2 Thank You!
@@ -20,8 +20,8 @@
           td.order_cell=orders[i].order_number
           td.order_cell=orders[i].date_added
           td.order_cell=orders[i].status
-
-.section
-  .cell_bg
-  .cell_content
-    p Your Cardsly cards order is being processed and your cards will appear here once your order ships.
+if orders.length
+  .section
+    .cell_bg
+    .cell_content
+      p Your Cardsly cards order is being processed and your cards will appear here once your order ships.
