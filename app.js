@@ -1191,7 +1191,7 @@
     });
   };
 
-  app.get('/cards', get_order_info, securedPage, function(req, res) {
+  app.get('/cards', securedPage, get_order_info, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,
@@ -1200,7 +1200,7 @@
     });
   });
 
-  app.get('/cards/thank-you', get_order_info, securedPage, function(req, res) {
+  app.get('/cards/thank-you', securedPage, get_order_info, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,

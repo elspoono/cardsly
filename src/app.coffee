@@ -1404,7 +1404,7 @@ get_order_info = (req, res, next) ->
       next()
 #
 # cards Page Mockup
-app.get '/cards', get_order_info, securedPage, (req, res) ->
+app.get '/cards', securedPage, get_order_info, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user
@@ -1412,7 +1412,7 @@ app.get '/cards', get_order_info, securedPage, (req, res) ->
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', get_order_info, securedPage, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_order_info, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user
