@@ -8,7 +8,6 @@
   */
 
   $(function() {
-    var successful_password_change;
     $('.new_password').data('timer', 0).keyup(function() {
       var $t;
       $t = $(this);
@@ -40,7 +39,7 @@
       }, 1000));
     });
     false;
-    $('.set_new_password').submit(function() {
+    return $('.set_new_password').submit(function() {
       var err;
       err = false;
       if ($('.new_password').val() === '' || $('.new_password2').val() === '') {
@@ -68,12 +67,10 @@
                 return $.load_alert({
                   content: data.err
                 });
-              } else if (data.wp) {
-                return $.load_alert({
-                  content: data.wp
-                });
               } else {
-                return successful_password_change();
+                return $.load_alert({
+                  content: 'Password Successfully Changed!'
+                });
               }
             },
             error: function(err) {
@@ -93,9 +90,4 @@
       }
       return false;
     });
-    return successful_password_change = function() {
-      return $.load_alert({
-        content: 'Pasword Changed'
-      });
-    };
   });

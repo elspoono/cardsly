@@ -47,7 +47,7 @@ $ ->
       $.load_alert {content:err}
     else
       $.load_loading {}, (loading_close) ->
-         $.ajax
+        $.ajax
           url: '/change-password'
           data: JSON.stringify
             current_password: $('.current_password').val()
@@ -57,11 +57,9 @@ $ ->
             if data.err
               $.load_alert
                 content: data.err
-            else if data.wp
-              $.load_alert
-                content: data.wp
             else
-              successful_password_change()
+              $.load_alert
+                content: 'Password Successfully Changed!'
           error: (err) ->
             loading_close()
             $.load_alert
@@ -72,8 +70,3 @@ $ ->
               content: 'Please enter the correct current password'
 
     false
-  #Successful Login Function
-  
-  successful_password_change = ->
-    $.load_alert
-      content: 'Pasword Changed'

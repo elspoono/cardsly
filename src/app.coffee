@@ -1081,15 +1081,26 @@ app.post '/create-user', (req,res,next) ->
 #
 # Change Password
 app.post '/change-password', (req,res,next) ->
-  if encrypted(req.body.current_password) == req.user.password_encrypted
-    req.user.password_encrypted = encrypted(req.body.new_password);
-    req.user.save (err,data,wp) ->
-     res.send
-        success: 'True'
+  #
+  #
+  if !req.user.email or !req.body.password
+    res.send
+      err: 'Invalid Parmeters'
   else
-    req.user (err,data,wp) ->
-      res.send
-        password_wrong: 'True'
+    mongo_user.authenticate req.user.email, req.body.password, (err, user) ->
+      if err or !user
+        res.send
+          err: err or 'User not found'
+      else
+        req.user.password_encrypted = encrypted req.body.password
+        req.user.save (err, user_saved) ->
+          if check_no_err_ajax err
+            res.send
+              success: true
+      else
+        req.user (err,data) ->
+          res.send
+            err: 'Original password was incorrect, please try again.'
 #
 #
 #

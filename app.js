@@ -91,8 +91,11 @@
 
   encrypted = function(inString) {
     var salt;
-    salt = bcrypt.gen_salt_sync(10);
-    return bcrypt.encrypt_sync(inString, salt);
+    console.log('b1');
+    salt = bcrypt.gen_salt_sync();
+    console.log('b2');
+    bcrypt.encrypt_sync(inString, salt);
+    return console.log('b3');
   };
 
   compareEncrypted = function(inString, hash) {
@@ -875,10 +878,12 @@
   });
 
   app.post('/create-user', function(req, res, next) {
+    console.log(1);
     return mongo_user.count({
       email: req.body.email,
       active: true
     }, function(err, already) {
+      console.log(2);
       if (already > 0) {
         return res.send({
           err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
@@ -888,11 +893,17 @@
       }
     });
   }, function(req, res, next) {
-    var user;
+    var encrypted_pass, user;
+    console.log(3);
     user = new mongo_user();
     user.email = req.body.email;
-    user.password_encrypted = encrypted(req.body.password);
+    console.log(4);
+    encrypted_pass = encrypted('123456790');
+    console.log(4.5);
+    user.password_encrypted = encrypted_pass;
+    console.log(5);
     return user.save(function(err, data) {
+      console.log(6);
       req.session.auth = {
         userId: user._id
       };
@@ -903,18 +914,26 @@
   });
 
   app.post('/change-password', function(req, res, next) {
-    if (encrypted(req.body.current_password) === req.user.password_encrypted) {
-      req.user.password_encrypted = encrypted(req.body.new_password);
-      return req.user.save(function(err, data, wp) {
-        return res.send({
-          success: 'True'
-        });
+    if (!req.user.email || !req.body.password) {
+      return res.send({
+        err: 'Invalid Parmeters'
       });
     } else {
-      return req.user(function(err, data, wp) {
-        return res.send({
-          password_wrong: 'True'
-        });
+      return mongo_user.authenticate(req.user.email, req.body.password, function(err, user) {
+        if (err || !user) {
+          return res.send({
+            err: err || 'User not found'
+          });
+        } else {
+          req.user.password_encrypted = encrypted(req.body.password);
+          return req.user.save(function(err, user_saved) {
+            if (check_no_err_ajax(err)) {
+              return res.send({
+                success: 'True'
+              });
+            }
+          });
+        }
       });
     }
   });
