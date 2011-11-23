@@ -1932,6 +1932,8 @@ p {
   behavior: url("/js/libs/PIE");
 }
 .chat {
-  margin: 0px 0px 0px 910px;
-  position: absolute;
+  position: fixed;
+  top: 50%;
+  right: 35px;
+  margin-top: -205px;
 }

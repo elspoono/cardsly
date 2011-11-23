@@ -134,6 +134,7 @@ $ ->
       #
       # Click the first theme
       $categories.find('.category:first h4').click()
+
     error: ->
       $.load_alert
         content: 'Error loading themes. Please try again later.'
@@ -493,7 +494,7 @@ $ ->
   $fonts.find('.decrease').click -> update_size -1
   $font_size_slider.slider
     min: 1
-    max: 150
+    max: 75
     step: 5
     slide: (e, ui) ->
       #

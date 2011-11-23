@@ -1326,10 +1326,10 @@ $ ->
       #
       # Restore active view
       $active_view = $ '.active_view'
-      if $active_view.html() isnt ''
+      if $active_view.html() and $active_view.html() isnt ''
         active_view = $active_view.html()
-        $view_buttons.filter('.active').removeClass 'active'
-        $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
+      $view_buttons.filter('.active').removeClass 'active'
+      $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
       #
       load_theme_thumbnails()
       #

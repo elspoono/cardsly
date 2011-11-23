@@ -347,7 +347,7 @@
     });
     $font_size_slider.slider({
       min: 1,
-      max: 150,
+      max: 75,
       step: 5,
       slide: function(e, ui) {
         update_active_size(ui.value);

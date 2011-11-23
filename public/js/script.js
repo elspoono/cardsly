@@ -1203,11 +1203,11 @@
         all_themes = all_data.themes;
         $categories.html('');
         $active_view = $('.active_view');
-        if ($active_view.html() !== '') {
+        if ($active_view.html() && $active_view.html() !== '') {
           active_view = $active_view.html();
-          $view_buttons.filter('.active').removeClass('active');
-          $view_buttons.filter(':eq(' + active_view + ')').addClass('active');
         }
+        $view_buttons.filter('.active').removeClass('active');
+        $view_buttons.filter(':eq(' + active_view + ')').addClass('active');
         load_theme_thumbnails();
         return active_theme._id = $('.active_theme_id').html();
       },

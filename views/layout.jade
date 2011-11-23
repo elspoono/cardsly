@@ -38,7 +38,11 @@ html
           ul.navigation
             if user && user.role && user.role == 'admin'
               li
-                a(href='/admin') Edit Templates
+                a(href='/cards') Cards
+              li
+                a(href='/orders') Orders
+              li
+                a(href='/admin') Theme Admin
             else if user
               li
                 a(href='/') Buy Cards
