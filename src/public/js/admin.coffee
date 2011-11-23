@@ -380,7 +380,7 @@ $ ->
     set_timers() if options.timer
   #
   #
-  $color1.bind 'color_update', (e, options) ->
+  $color2.bind 'color_update', (e, options) ->
     $web_bg.css
       background: '#' + options.hex
   #
@@ -400,7 +400,7 @@ $ ->
       element.css
         background: i
   #
-  $color2.bind 'color_update', (e, options) ->
+  $color1.bind 'color_update', (e, options) ->
     add_transparent_gradient options.hex, '40%', $web_fg
     add_transparent_gradient options.hex, '80%', $web_fg2
     

@@ -250,7 +250,7 @@
       });
       if (options.timer) return set_timers();
     });
-    $color1.bind('color_update', function(e, options) {
+    $color2.bind('color_update', function(e, options) {
       return $web_bg.css({
         background: '#' + options.hex
       });
@@ -271,7 +271,7 @@
       }
       return _results;
     };
-    $color2.bind('color_update', function(e, options) {
+    $color1.bind('color_update', function(e, options) {
       add_transparent_gradient(options.hex, '40%', $web_fg);
       return add_transparent_gradient(options.hex, '80%', $web_fg2);
     });
