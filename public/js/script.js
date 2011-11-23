@@ -789,6 +789,26 @@
       return false;
     };
     $a.one('click', expand_menu);
+    $('.help_container').each(function() {
+      var $close, $overlay, $t, $trigger, do_close, do_show;
+      $t = $(this);
+      $overlay = $t.find('.help_overlay');
+      $close = $t.find('.help_close');
+      $trigger = $t.find('.help_trigger');
+      do_close = function() {
+        $overlay.hide();
+        $close.hide();
+        return $trigger.show();
+      };
+      do_show = function() {
+        $overlay.show();
+        $close.show();
+        return $trigger.hide();
+      };
+      $overlay.click(do_close);
+      $close.click(do_close);
+      return $trigger.click(do_show);
+    });
     path = document.location.href.replace(/http:\/\/[^\/]*/ig, '');
     $('.design_button').click(function() {
       if (path !== '/' && path !== '/home') {

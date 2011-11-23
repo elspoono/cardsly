@@ -1,48 +1,53 @@
 
 .gallery_select
-.design_container
-  .section.first
-    .cell_bg
-    .cell_content
-      h3 Step 1 : Design Your Cards
-      p.subtitle Please type your name (hit enter to go to next line):
-      .active_view
-        if session && session.saved_form && session.saved_form.active_view
-          =session.saved_form.active_view
-      .active_theme_id
-        if session && session.saved_form && session.saved_form.active_theme_id
-          =session.saved_form.active_theme_id
-      .home_designer
-        .card_container
-          .card
-            .qr
-              .background
-            if session && session.saved_form && session.saved_form.values && session.saved_form.values.length
-              .content
-                - for(var i=0; i<session.saved_form.values.length; i++)
-                  .line
-                    =session.saved_form.values[i]
-            else
-              .content.defaults
-                .line John Stamos
-                .line Uncle Jesse
-                .line 555.555.5555
-                .line john@stamos.com
-                .line
-                .line
-                .line
-                .line
-                .line
-                .line
-      .home_options
-        .views
-          .subtitle Number of Fields
-          .toggle
-            .disabled
-              .option.six.active 6
-              .option.twelve 10
-      .categories
-  .clear
+.help_container
+  .help_trigger.button.gray ?
+  .help_close.button.normal X
+  .help_overlay
+  .help_img
+  .design_container
+    .section.first
+      .cell_bg
+      .cell_content
+          h3 Step 1 : Design Your Cards
+          p.subtitle Please type your name (hit enter to go to next line):
+          .active_view
+            if session && session.saved_form && session.saved_form.active_view
+              =session.saved_form.active_view
+          .active_theme_id
+            if session && session.saved_form && session.saved_form.active_theme_id
+              =session.saved_form.active_theme_id
+          .home_designer
+            .card_container
+              .card
+                .qr
+                  .background
+                if session && session.saved_form && session.saved_form.values && session.saved_form.values.length
+                  .content
+                    - for(var i=0; i<session.saved_form.values.length; i++)
+                      .line
+                        =session.saved_form.values[i]
+                else
+                  .content.defaults
+                    .line John Stamos
+                    .line Uncle Jesse
+                    .line 555.555.5555
+                    .line john@stamos.com
+                    .line
+                    .line
+                    .line
+                    .line
+                    .line
+                    .line
+          .home_options
+            .views
+              .subtitle Number of Fields
+              .toggle
+                .disabled
+                  .option.six.active 6
+                  .option.twelve 10
+          .categories
+    .clear
 .section
   .cell_bg
   .cell_content

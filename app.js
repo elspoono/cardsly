@@ -1164,13 +1164,13 @@
     });
   }
 
-  app.get('/', function(req, res) {
-    return res.render('landing-prelaunch', {
-      user: req.user,
-      session: req.session,
+  /*
+  app.get '/', (req, res) ->
+    res.render 'landing-prelaunch'
+      user: req.user
+      session: req.session
       layout: 'layout_landing'
-    });
-  });
+  */
 
   app.get('/success', function(req, res) {
     res.cookie('success_login', true);
@@ -1418,7 +1418,7 @@
     });
   });
 
-  app.get('/home', function(req, res) {
+  app.get('/', function(req, res) {
     var ua, ua_string;
     ua_string = req.header('USER-AGENT');
     ua = ua_match(ua_string);
