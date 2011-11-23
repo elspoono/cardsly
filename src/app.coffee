@@ -191,7 +191,7 @@ DATABASE MODELING
 #
 # user schema Definition
 user_schema = new schema
-  email:String
+  email: String
   password_encrypted: String
   role: String
   name: String
@@ -204,14 +204,13 @@ user_schema = new schema
   twitter_url: String
   facebook_url: String
   linkedin_url: String
-  customer:
+  stripe:
     id: String
-    active_card:
-      cvc_check: String
-      exp_month: Number
-      exp_year: Number
-      last4: String
-      type: String
+    cvc_check: String
+    exp_month: Number
+    exp_year: Number
+    last4: String
+    type: String
   ###
   payment_method:
     token: String
@@ -1096,10 +1095,11 @@ app.post '/change-password', (req,res,next) ->
 # Get User
 app.post '/get-user', (req,res,next) ->
   #console.log 'USER: ', req.user
+  req.user.stripe.id = null
   res.send
     name: req.user.name
     email: req.user.email
-    active_card: req.user.customer.active_card
+    stripe: req.user.stripe
     ###
     payment_method:
       card_type: req.user.payment_method.card_type
@@ -1162,7 +1162,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           res.send
             err: err
         else
-          console.log 'AMOUNT: ', new_order.amount
+          #console.log 'AMOUNT: ', new_order.amount
           stripe.customers.create
             card: req.body.token
             email: req.user.email or null
@@ -1177,18 +1177,57 @@ app.post '/confirm-purchase', (req, res, next) ->
               console.log 'CUSTOMER: ', customer
               #
               # Save the payment token to the user
-              req.user.customer = {}
-              req.user.customer.id = customer.id
-              req.user.customer.active_card = {}
-              req.user.customer.active_card.last4 = customer.active_card.last4
-              req.user.customer.active_card.exp_month = customer.active_card.exp_month
-              req.user.customer.active_card.exp_year = customer.active_card.exp_year
-              req.user.customer.active_card.type = customer.active_card.type
+              req.user.stripe = customer.active_card
+              ###
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              THIS ISNT WORKING
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              #
+              ###
+              console.log req.user.stripe
               req.user.save (err, user_saved) ->
                 if err
                   console.log 'ERR: database ', err
               #
-              console.log ''
               #
               # Attempt a charge
               stripe.charges.create
@@ -1198,7 +1237,7 @@ app.post '/confirm-purchase', (req, res, next) ->
                 description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
               , (err, charge) ->
                 #
-                console.log 'CHARGE: ', charge
+                #console.log 'CHARGE: ', charge
                 #
                 new_order.status = 'Failed'
                 if err
@@ -1216,7 +1255,7 @@ app.post '/confirm-purchase', (req, res, next) ->
                     charge: charge
                   if new_order.confirm_email and new_order.email
                     message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
-                    console.log message
+                    #console.log message
                     nodemailer.send_mail
                       sender: 'help@cards.ly'
                       to: new_order.email

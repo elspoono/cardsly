@@ -219,14 +219,14 @@
         if user && user.customer && user.customer.id
           .existing_payment
             .type
-              =user.customer.active_card.type
+              =user.customer.type
             .expiry
-              =user.customer.active_card.exp_month
+              =user.customer.exp_month
               | /
-              =user.customer.active_card.exp_year
+              =user.customer.exp_year
             .last_4
               | **** - **** - **** - 
-              =user.customer.active_card.last4
+              =user.customer.last4
             .small.button.gray Use New Card
         if user && user.payment_method && user.payment_method.token
           .existing_payment
