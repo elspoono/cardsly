@@ -1245,15 +1245,6 @@
       var $t, history, theme;
       $t = $(this);
       theme = $t.data('theme');
-      if (active_theme._id) {
-        $a = $('.category .card');
-        $a.each(function() {
-          $t = $(this);
-          if ($t.data('theme') && $t.data('theme')._id === active_theme._id) {
-            return $t.data('theme', active_theme);
-          }
-        });
-      }
       if (theme) {
         load_theme(theme);
         history = [theme];

@@ -1017,7 +1017,6 @@
                     err: 'Charge resulted in not paid for some reason.'
                   });
                 } else {
-                  new_order.status = 'Charged';
                   res.send({
                     order_id: new_order._id,
                     charge: charge
@@ -1034,17 +1033,17 @@
                         return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
                       }
                     });
-                    return nodemailer.send_mail({
-                      sender: 'support@cards.ly',
-                      to: 'help@cards.ly',
-                      subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
-                      html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                    }, function(err, data) {
-                      if (err) {
-                        return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
-                      }
-                    });
                   }
+                  return nodemailer.send_mail({
+                    sender: 'support@cards.ly',
+                    to: 'help@cards.ly',
+                    subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
+                    html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                  }, function(err, data) {
+                    if (err) {
+                      return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                    }
+                  });
                 }
               });
             };

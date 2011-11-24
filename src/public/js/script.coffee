@@ -1385,12 +1385,6 @@ $ ->
   $('.category .card').live 'click', () ->
     $t = $ this
     theme = $t.data 'theme'
-    if active_theme._id
-      $a = $ '.category .card'
-      $a.each ->
-        $t = $ this
-        if $t.data('theme') and $t.data('theme')._id == active_theme._id
-          $t.data 'theme', active_theme
     if theme
       load_theme theme
       history = [theme]

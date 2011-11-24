@@ -1194,10 +1194,22 @@ app.post '/confirm-purchase', (req, res, next) ->
                 res.send
                   err: 'Charge resulted in not paid for some reason.'
               else
-                new_order.status = 'Charged'
                 res.send
                   order_id: new_order._id
                   charge: charge
+                #
+                #
+                #
+                # Do Cleanup and send emails etc
+                #
+                #
+                #
+                #
+                # Generate order urls, based on "quantity" (which isnt really quantity)
+                #
+                #
+                #
+                # Send Email
                 if new_order.confirm_email and new_order.email
                   message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
                   nodemailer.send_mail
@@ -1208,15 +1220,15 @@ app.post '/confirm-purchase', (req, res, next) ->
                   , (err, data) ->
                     if err
                       console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
-                  
-                  nodemailer.send_mail
-                    sender: 'support@cards.ly'
-                    to: 'help@cards.ly'
-                    subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
-                    html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                  , (err, data) ->
-                    if err
-                      console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+                
+                nodemailer.send_mail
+                  sender: 'support@cards.ly'
+                  to: 'help@cards.ly'
+                  subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
+                  html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+                , (err, data) ->
+                  if err
+                    console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
           #
           # If they passed in a token, create a customer
           if req.body.token
