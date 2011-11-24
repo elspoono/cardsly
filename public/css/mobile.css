@@ -55,17 +55,21 @@
   transform: scale(0.5, 0.5);
 }
 .help_container .enter_card .help_img {
-  margin: 90px 0 0 -70px;
+  margin: 40px 0 0 -70px;
 }
 .help_container .click_more_card .help_img {
-  margin: 10px -40px 0 0;
+  margin: -55px -40px 0 0;
   float: right;
 }
 .help_container .choose_card_design .help_img {
-  margin: -200px 0 0 -40px;
+  margin: -230px 0 0 -40px;
+}
+.help_container .double_check .help_img {
+  margin: 80px 0 0 0;
+  float: left;
 }
 .help_container .enter_price .help_img {
-  margin: 370px 0 0 -90px;
+  margin: 0 0 0 -80px;
   float: left;
 }
 .order_details .left,
