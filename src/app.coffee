@@ -389,9 +389,22 @@ order_schema = new schema
 mongo_order = mongoose.model 'orders', order_schema
 #
 #
+#
+url_group_schema = new schema
+  user_id: String
+  order_id: String
+  url_ids: [String]
+  date_added:
+    type: Date
+    default: Date.now
+#
+mongo_url_group = mongoose.model 'url_groups', url_group_schema
+#
 url_schema = new schema
   url_string: String
-  user_id: String
+  card_number: Number
+  group_id: String
+  order_id: String
   redirect_to: String
 #
 mongo_url = mongoose.model 'urls', url_schema
@@ -798,14 +811,6 @@ valid_new_url = (next) ->
       next null, try_url
     else
       valid_new_url next
-###
-for i in [0..100]
-  valid_new_url (err, url) ->
-    if err
-      console.log 'ERR: ', err
-    else
-      console.log url
-###
 #
 #
 #
@@ -1133,8 +1138,10 @@ app.post '/get-themes', (req,res,next) ->
       res.send
         themes: themes
 #
-# Production
 #
+#
+#
+# Production
 stripe = require('./stripe_installed.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 # Test
@@ -1167,7 +1174,7 @@ app.post '/confirm-purchase', (req, res, next) ->
       order.confirm_email = req.body.confirm_email
       order.save (err, new_order) ->
         if err
-          console.log 'ERR: database ', err
+          console.log 'ERR: save new order ', err
           res.send
             err: err
         else
@@ -1199,19 +1206,75 @@ app.post '/confirm-purchase', (req, res, next) ->
                   charge: charge
                 #
                 #
-                #
+                ################################
                 # Do Cleanup and send emails etc
+                ################################
                 #
+                #
+                #
+                # Save the order's url
+                #
+                #  - This is used to show the "contact page" for an order
+                #
+                order_url = new mongo_url
+                order_url.url_string = new_order.order_number
+                order_url.order_id = new_order._id
+                order_url.save (err, new_order_url) ->
+                  if err
+                    console.log 'ERR: order url save - ', err
+                #
+                #
+                redirect_to = 'http://cards.ly/'+new_order.order_number
                 #
                 #
                 #
                 # Generate order urls, based on "quantity" (which isnt really quantity)
                 #
+                url_group = new mongo_url_group
+                url_group.order_id = new_order._id
+                url_group.user_id = req.user._id
+                url_group.save (err, new_url_group) ->
+                  if err
+                    console.log 'ERR: save group  - ', err
+                  else
+                    volume = 100
+                    volume = 250 if new_order.quantity is 25
+                    volume = 500 if new_order.quantity is 35
+                    volume = 1500 if new_order.quantity is 75
+                    for i in [1..volume]
+                      valid_new_url (err, url_string) ->
+                        if err
+                          console.log 'ERR: url create - ', err
+                        else
+                          #
+                          #
+                          url = new mongo_url
+                          url.url_string = url_string
+                          url.group_id = new_order._id
+                          url.redirect_to = redirect_to
+                          url.save (err, new_url) ->
+                            if err
+                              console.log 'ERR: url save err - ', err
+                            else
+                              mongo_order.update
+                                _id: new_order._id
+                              ,
+                                $push:
+                                  url_ids: new_url._id
+                              , (err, order_saved) ->
+                                if err
+                                  console.log 'ERR: order resave err - ', err
                 #
                 #
+                ############
                 # Send Email
+                ############
+                #
+                # Prep the Email Message
+                message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+                #
+                # Send the user an email
                 if new_order.confirm_email and new_order.email
-                  message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
                   nodemailer.send_mail
                     sender: 'help@cards.ly'
                     to: new_order.email
@@ -1220,7 +1283,8 @@ app.post '/confirm-purchase', (req, res, next) ->
                   , (err, data) ->
                     if err
                       console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
-                
+                #
+                # Send us an email
                 nodemailer.send_mail
                   sender: 'support@cards.ly'
                   to: 'help@cards.ly'
@@ -1228,7 +1292,11 @@ app.post '/confirm-purchase', (req, res, next) ->
                   html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
                 , (err, data) ->
                   if err
-                    console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+                    console.log 'ERR: Notification email did not send - ', err, new_order.order_number
+          #
+          #
+          #
+          #
           #
           # If they passed in a token, create a customer
           if req.body.token
@@ -1256,9 +1324,15 @@ app.post '/confirm-purchase', (req, res, next) ->
                 #
                 do_charge()
           #
+          #
+          #
           # Otherwise, make sure they have an existing stripe
           else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
             do_charge()
+          #
+          #
+          #
+          # Otherwise, we got problems
           else
             res.send
               err: 'No Payment Data Received'
@@ -1501,132 +1575,6 @@ app.get '/settings', securedPage, (req, res) ->
     scripts:[
       '/js/settings.js'
     ]
-#
-#
-#
-#
-#
-###
-#Thank_You Page
-app.get '/thank-you', (req, res) -> 
-  #
-  # First, we try to grab it from the url
-  payment_method_token = req.query.payment_method_token
-  #
-  #
-  # If it's not there, we try to grab it from the database
-  if not payment_method_token and req.user and req.user.payment_method and req.user.payment_method.token
-    payment_method_token = req.user.payment_method.token
-  #
-  #
-  # And if we found it either place, then proceed
-  if payment_method_token
-    #
-    #
-    # Figure out their total
-    total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
-    #
-    #
-    # Hit up samurai for their payment_method details
-    #
-    samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
-      if err
-        # Do Error
-        console.log 'ERR: ', err
-        res.render 'order_form'
-          error_message: 'Something went wrong. Please try again.'
-          user: req.user
-          session: req.session
-      else
-        #
-        #
-        console.log 'PAYMENT: ', payment_method
-        #
-        req.user.payment_method = 
-          token: payment_method_token
-          card_type: payment_method.attributes.card_type
-          last_four_digits: payment_method.attributes.last_four_digits
-          expiry_month: payment_method.attributes.expiry_month
-          expiry_year: payment_method.attributes.expiry_year
-        #
-        #
-        req.user.save (err, saved_user) ->
-          if err
-            # Do Error
-            console.log 'ERR: ', err
-            res.render 'order_form'
-              error_message: 'Something went wrong. Please try again.'
-              user: req.user
-              session: req.session
-          else
-            #
-            #
-            #
-            #
-            # Try it
-            samurai.Processor.purchase payment_method_token, total,
-              billing_reference: 'Billing Reference'
-              customer_reference: req.user._id
-              custom: req.user.email or req.user.name
-              descriptor: req.user.linkedin_url or req.user.facebook_url or req.user.twitter_url
-            , (err, purchase) ->
-              if err
-                # Do Error
-                console.log 'PURCHASE: ', purchase
-                console.log 'ERR: ', err
-                res.render 'order_form'
-                  error_message: 'Something might be wrong with that credit card number or it\'s CVC number. I couldn\'t process it.'
-                  user: req.user
-                  session: req.session
-              else
-                if purchase.isSuccess()
-                  valid_new_url (err, url) ->
-                    if err
-                      console.log 'ERR: ', err
-                      res.render 'order_form'
-                        error_message: 'Something went wrong. Please try again.'
-                        user: req.user
-                        session: req.session
-                    else
-                      order = new mongo_order
-                      order.order_number = url
-                      order.user_id = req.user._id
-                      order.theme_id = session.saved_form.active_theme_id
-                      order.status = 'Charged'
-                      order.quantity = session.saved_form.quantity
-                      order.shipping_method = session.saved_form.shipping_method
-                      order.values = session.saved_form.values
-                      order.address = session.saved_address.address
-                      order.city = session.saved_address.city
-                      order.full_address = session.saved_address.full_address
-                      order.save (err, new_order) ->
-                        if err
-                          console.log 'ERR: ', err
-                          res.render 'order_form'
-                            error_message: 'Something went wrong. Please try again.'
-                            user: req.user
-                            session: req.session
-                        else
-                          res.render 'thank-you'
-                            user: req.user
-                            session: req.session
-                else
-                  console.log 'CARD ERR: ', purchase.messages
-                  res.render 'order_form'
-                    error_message: 'I\'m sorry, we couldn\'t process that credit card.'
-                    user: req.user
-                    session: req.session
-    #
-    # 
-  else
-    console.log 'ERR: ', 'Hit the thank you page without a token.'
-    res.render 'order_form'
-      error_message: 'Something went wrong. Please try again.'
-      user: req.user
-      session: req.session
-    # Do Error
-###
-#
 #
 # Splash Page
 app.get '/splash', (req, res) -> 

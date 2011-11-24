@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_url_group, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_group_schema, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -333,9 +333,23 @@
 
   mongo_order = mongoose.model('orders', order_schema);
 
+  url_group_schema = new schema({
+    user_id: String,
+    order_id: String,
+    url_ids: [String],
+    date_added: {
+      type: Date,
+      "default": Date.now
+    }
+  });
+
+  mongo_url_group = mongoose.model('url_groups', url_group_schema);
+
   url_schema = new schema({
     url_string: String,
-    user_id: String,
+    card_number: Number,
+    group_id: String,
+    order_id: String,
     redirect_to: String
   });
 
@@ -645,15 +659,6 @@
       }
     });
   };
-
-  /*
-  for i in [0..100]
-    valid_new_url (err, url) ->
-      if err
-        console.log 'ERR: ', err
-      else
-        console.log url
-  */
 
   app.post('/upload-image', function(req, res) {
     var s3_fail;
@@ -992,7 +997,7 @@
         order.save(function(err, new_order) {
           var do_charge;
           if (err) {
-            console.log('ERR: database ', err);
+            console.log('ERR: save new order ', err);
             return res.send({
               err: err
             });
@@ -1004,7 +1009,7 @@
                 customer: req.user.stripe.id,
                 description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
               }, function(err, charge) {
-                var message;
+                var message, order_url, redirect_to, url_group;
                 new_order.status = 'Failed';
                 if (err) {
                   console.log('ERR: stripe charge resulted in ', err);
@@ -1021,8 +1026,60 @@
                     order_id: new_order._id,
                     charge: charge
                   });
+                  order_url = new mongo_url;
+                  order_url.url_string = new_order.order_number;
+                  order_url.order_id = new_order._id;
+                  order_url.save(function(err, new_order_url) {
+                    if (err) return console.log('ERR: order url save - ', err);
+                  });
+                  redirect_to = 'http://cards.ly/' + new_order.order_number;
+                  url_group = new mongo_url_group;
+                  url_group.order_id = new_order._id;
+                  url_group.user_id = req.user._id;
+                  url_group.save(function(err, new_url_group) {
+                    var i, volume, _results;
+                    if (err) {
+                      return console.log('ERR: save group  - ', err);
+                    } else {
+                      volume = 100;
+                      if (new_order.quantity === 25) volume = 250;
+                      if (new_order.quantity === 35) volume = 500;
+                      if (new_order.quantity === 75) volume = 1500;
+                      _results = [];
+                      for (i = 1; 1 <= volume ? i <= volume : i >= volume; 1 <= volume ? i++ : i--) {
+                        _results.push(valid_new_url(function(err, url_string) {
+                          if (err) {
+                            return console.log('ERR: url create - ', err);
+                          } else {
+                            url = new mongo_url;
+                            url.url_string = url_string;
+                            url.group_id = new_order._id;
+                            url.redirect_to = redirect_to;
+                            return url.save(function(err, new_url) {
+                              if (err) {
+                                return console.log('ERR: url save err - ', err);
+                              } else {
+                                return mongo_order.update({
+                                  _id: new_order._id
+                                }, {
+                                  $push: {
+                                    url_ids: new_url._id
+                                  }
+                                }, function(err, order_saved) {
+                                  if (err) {
+                                    return console.log('ERR: order resave err - ', err);
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        }));
+                      }
+                      return _results;
+                    }
+                  });
+                  message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
                   if (new_order.confirm_email && new_order.email) {
-                    message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
                     nodemailer.send_mail({
                       sender: 'help@cards.ly',
                       to: new_order.email,
@@ -1041,7 +1098,7 @@
                     html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
                   }, function(err, data) {
                     if (err) {
-                      return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                      return console.log('ERR: Notification email did not send - ', err, new_order.order_number);
                     }
                   });
                 }
@@ -1279,127 +1336,6 @@
       scripts: ['/js/settings.js']
     });
   });
-
-  /*
-  #Thank_You Page
-  app.get '/thank-you', (req, res) -> 
-    #
-    # First, we try to grab it from the url
-    payment_method_token = req.query.payment_method_token
-    #
-    #
-    # If it's not there, we try to grab it from the database
-    if not payment_method_token and req.user and req.user.payment_method and req.user.payment_method.token
-      payment_method_token = req.user.payment_method.token
-    #
-    #
-    # And if we found it either place, then proceed
-    if payment_method_token
-      #
-      #
-      # Figure out their total
-      total = (req.session.saved_form.quantity+req.session.saved_form.shipping_method) * 1
-      #
-      #
-      # Hit up samurai for their payment_method details
-      #
-      samurai.PaymentMethod.find payment_method_token, (err, payment_method) ->
-        if err
-          # Do Error
-          console.log 'ERR: ', err
-          res.render 'order_form'
-            error_message: 'Something went wrong. Please try again.'
-            user: req.user
-            session: req.session
-        else
-          #
-          #
-          console.log 'PAYMENT: ', payment_method
-          #
-          req.user.payment_method = 
-            token: payment_method_token
-            card_type: payment_method.attributes.card_type
-            last_four_digits: payment_method.attributes.last_four_digits
-            expiry_month: payment_method.attributes.expiry_month
-            expiry_year: payment_method.attributes.expiry_year
-          #
-          #
-          req.user.save (err, saved_user) ->
-            if err
-              # Do Error
-              console.log 'ERR: ', err
-              res.render 'order_form'
-                error_message: 'Something went wrong. Please try again.'
-                user: req.user
-                session: req.session
-            else
-              #
-              #
-              #
-              #
-              # Try it
-              samurai.Processor.purchase payment_method_token, total,
-                billing_reference: 'Billing Reference'
-                customer_reference: req.user._id
-                custom: req.user.email or req.user.name
-                descriptor: req.user.linkedin_url or req.user.facebook_url or req.user.twitter_url
-              , (err, purchase) ->
-                if err
-                  # Do Error
-                  console.log 'PURCHASE: ', purchase
-                  console.log 'ERR: ', err
-                  res.render 'order_form'
-                    error_message: 'Something might be wrong with that credit card number or it\'s CVC number. I couldn\'t process it.'
-                    user: req.user
-                    session: req.session
-                else
-                  if purchase.isSuccess()
-                    valid_new_url (err, url) ->
-                      if err
-                        console.log 'ERR: ', err
-                        res.render 'order_form'
-                          error_message: 'Something went wrong. Please try again.'
-                          user: req.user
-                          session: req.session
-                      else
-                        order = new mongo_order
-                        order.order_number = url
-                        order.user_id = req.user._id
-                        order.theme_id = session.saved_form.active_theme_id
-                        order.status = 'Charged'
-                        order.quantity = session.saved_form.quantity
-                        order.shipping_method = session.saved_form.shipping_method
-                        order.values = session.saved_form.values
-                        order.address = session.saved_address.address
-                        order.city = session.saved_address.city
-                        order.full_address = session.saved_address.full_address
-                        order.save (err, new_order) ->
-                          if err
-                            console.log 'ERR: ', err
-                            res.render 'order_form'
-                              error_message: 'Something went wrong. Please try again.'
-                              user: req.user
-                              session: req.session
-                          else
-                            res.render 'thank-you'
-                              user: req.user
-                              session: req.session
-                  else
-                    console.log 'CARD ERR: ', purchase.messages
-                    res.render 'order_form'
-                      error_message: 'I\'m sorry, we couldn\'t process that credit card.'
-                      user: req.user
-                      session: req.session
-      #
-      # 
-    else
-      console.log 'ERR: ', 'Hit the thank you page without a token.'
-      res.render 'order_form'
-        error_message: 'Something went wrong. Please try again.'
-        user: req.user
-        session: req.session
-      # Do Error
-  */
 
   app.get('/splash', function(req, res) {
     return res.render('splash', {
