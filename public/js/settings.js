@@ -48,6 +48,8 @@
         err = 'I\'m sorry, I don\'t think those passwords match.';
       } else if ($('.new_password').val() < 4) {
         err = 'Password should be a little longer, at least 4 characters.';
+      } else if ($('.current_password').val() < 4) {
+        err = 'Please enter your current password.';
       }
       if (err) {
         $.load_alert({

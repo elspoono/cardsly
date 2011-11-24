@@ -37,12 +37,14 @@ $ ->
   #Change Pasword
   $('.set_new_password').submit ->
     err = false
-    if $('.new_password').val() == '' || $('.new_password2').val() ==''
+    if $('.new_password').val() is '' or $('.new_password2').val() is ''
       err =  'Please enter your new password twice.'
-    else if $('.new_password').val()!= $('.new_password2').val()
+    else if $('.new_password').val() isnt $('.new_password2').val()
       err = 'I\'m sorry, I don\'t think those passwords match.'
-    else if $('.new_password').val()<4
+    else if $('.new_password').val() < 4
       err = 'Password should be a little longer, at least 4 characters.'
+    else if $('.current_password').val() < 4
+      err = 'Please enter your current password.'
     if err
       $.load_alert {content:err}
     else
