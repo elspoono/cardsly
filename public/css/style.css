@@ -150,15 +150,19 @@ blockquote {
 .help_container .help_trigger {
   display: none;
 }
-.help_container .one .help_img {
+.help_container .enter_card .help_img {
   margin: 120px 0 0 40px;
 }
-.help_container .two .help_img {
+.help_container .click_more_card .help_img {
   margin: 70px 60px 0 0;
   float: right;
 }
-.help_container .three .help_img {
+.help_container .chose_card_design .help_img {
   margin: -160px 0 0 40px;
+}
+.help_container .enter_price .help_img {
+  margin: 150px 200px 0 0;
+  float: right;
 }
 .help_container .help_img_container {
   width: 100%;
