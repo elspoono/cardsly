@@ -1191,7 +1191,6 @@ app.post '/confirm-purchase', (req, res, next) ->
               #
               #console.log 'CHARGE: ', charge
               #
-              new_order.status = 'Failed'
               if err
                 console.log 'ERR: stripe charge resulted in ', err
                 res.send
@@ -1311,7 +1310,7 @@ app.post '/confirm-purchase', (req, res, next) ->
                   err: customer.error.message
               else
                 #
-                console.log 'CUSTOMER: ', customer
+                #console.log 'CUSTOMER: ', customer
                 #
                 # Save the payment token to the user
                 req.user.stripe = customer

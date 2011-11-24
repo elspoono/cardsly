@@ -1010,7 +1010,6 @@
                 description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
               }, function(err, charge) {
                 var message, order_url, redirect_to, url_group;
-                new_order.status = 'Failed';
                 if (err) {
                   console.log('ERR: stripe charge resulted in ', err);
                   return res.send({
@@ -1116,7 +1115,6 @@
                     err: customer.error.message
                   });
                 } else {
-                  console.log('CUSTOMER: ', customer);
                   req.user.stripe = customer;
                   req.user.stripe.active_card.card_type = customer.active_card.type;
                   console.log(req.user.stripe);
