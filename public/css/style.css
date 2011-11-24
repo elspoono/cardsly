@@ -158,11 +158,15 @@ blockquote {
   float: right;
 }
 .help_container .chose_card_design .help_img {
-  margin: -160px 0 0 40px;
+  margin: -160px 0 0 0;
 }
 .help_container .enter_price .help_img {
-  margin: 150px 200px 0 0;
+  margin: -440px 120px 0 0;
   float: right;
+}
+.help_container .double_check .help_img {
+  margin: 290px 0 0 50px;
+  float: left;
 }
 .help_container .help_img_container {
   width: 100%;
