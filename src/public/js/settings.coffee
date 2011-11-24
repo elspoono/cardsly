@@ -62,6 +62,7 @@ $ ->
             else
               $.load_alert
                 content: 'Password Successfully Changed!'
+              $('.set_new_password').replaceWith '<p>Password changes successfully!</p>'
           error: (err) ->
             loading_close()
             $.load_alert

@@ -70,9 +70,10 @@
                   content: data.err
                 });
               } else {
-                return $.load_alert({
+                $.load_alert({
                   content: 'Password Successfully Changed!'
                 });
+                return $('.set_new_password').replaceWith('<p>Password changes successfully!</p>');
               }
             },
             error: function(err) {
