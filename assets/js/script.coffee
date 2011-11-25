@@ -819,27 +819,15 @@ $ ->
   #
   # Get Started Button Scroll
   $('.design_button').click ->
-    if path isnt '/'
-      document.location.href = '/#design-button'
-    else
+    if $('.home_designer').length
       $('html,body').animate
         scrollTop: $('.section:eq(1)').offset().top-50
         500
         ->
           $('.home_designer .line:first').click()
+    else
+      document.location.href='/buy'
     false
-  #
-  #
-  #
-  #
-  #
-  # And again, on the home page, if we were passed the hash, scroll down!
-  if path == '/#design-button'
-    document.location.href = '#'
-    $('.design_button').click()
-  #
-  #
-
 
 
 
