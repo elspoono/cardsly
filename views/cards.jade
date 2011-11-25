@@ -7,21 +7,25 @@ if thankyou
         p At this moment you are our favorite person in the world (until our next order, then you are replaced) but be happy cause who knows when that will be!  We appreciate you being an early adopter/hipster.  We are currently working on printing, cutting and making your radical business/personal/fun/whatever the heck you want to do with them cards!
         p If you want to make any changes to your order, please email or call (480.428.8000) post hast! If a robot answers then you have dialed the wrong number, because we will personally answer your call after a brief message from Scott explaining how rad we are. If your happy and ready to hand out your cards, just sit back and wait because we process orders fast, which means same day shipping, if the mail man hasn't already driven by that is. If you ordered on a weekend, we will ship them out on Monday as we do have lives on the weekend, sometimes.  Seriously though, thanks so much for your order; we are excited for you to be creative in adding and editing whatever you want to those QR codes!
         p Let us know how we can help improve the product or any interaction you've had with cards.ly. We really value input as we grow and become more awesomer because of people like you!
+
+if orders.length
+  .section
+    .cell_bg
+    .cell_content
+      p Your Cardsly cards order is being processed and your cards will appear here once your order ships.
+
 .section
   .cell_bg
   .cell_content
     table.order_status
       tr.order_row_top
         td.order_cell Order ID
-        td.order_cell Date Submitted
+        td.order_cell Paid
+        td.order_cell Date
         td.order_cell Status
       - for (var i in orders)
         tr.order_row
           td.order_cell=orders[i].order_number
+          td.order_cell='$'+(orders[i].amount/100)+''
           td.order_cell=orders[i].date_added
           td.order_cell=orders[i].status
-if orders.length
-  .section
-    .cell_bg
-    .cell_content
-      p Your Cardsly cards order is being processed and your cards will appear here once your order ships.
