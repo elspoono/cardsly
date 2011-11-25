@@ -1667,6 +1667,12 @@ $ ->
   ###
   #
   amount = 10
+  #
+  $('.quantity li').click ->
+    $t = $ this
+    $t.closest('li').andSelf().find('input').attr('checked',true).trigger 'change'
+    false
+  #
   # Radio Select
   $('.quantity input,.shipping_method input').bind 'change', () ->
     $q = $('.quantity input:checked')

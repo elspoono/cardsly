@@ -1134,7 +1134,7 @@ blockquote {
   overflow: hidden;
 }
 .home_options .views .toggle {
-  width: 80px;
+  width: 100px;
   margin: 0 auto;
 }
 .home_options .subtitle {
@@ -1334,7 +1334,7 @@ blockquote {
   -pie-background: linear-gradient(top, #56a3da, #2470a6);
   behavior: url("/js/libs/PIE");
   margin: 10px 0;
-  padding: 2px;
+  padding: 3px;
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
   border-radius: 12px;
@@ -1356,13 +1356,13 @@ blockquote {
   background-image: linear-gradient(top, #2470a6, #123752);
   -pie-background: linear-gradient(top, #2470a6, #123752);
   behavior: url("/js/libs/PIE");
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
   behavior: url("/js/libs/PIE");
 }
 .toggle .option {
-  width: 40px;
+  width: 50px;
   height: 40px;
   line-height: 40px;
   text-align: center;
@@ -1373,12 +1373,21 @@ blockquote {
 }
 .toggle .active {
   color: #eee;
-  background: #56a3da;
-  background: rgba(86,163,218,0.80);
-  -webkit-border-radius: 9px;
-  -moz-border-radius: 9px;
-  border-radius: 9px;
+  background-color: #2470a6;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#56a3da), to(#2470a6));
+/* Saf4+, Chrome */
+  background-image: -webkit-linear-gradient(top, #56a3da, #2470a6);
+/* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image: -moz-linear-gradient(top, #56a3da, #2470a6);
+/* FF3.6 */
+  background-image: -ms-linear-gradient(top, #56a3da, #2470a6);
+/* IE10 */
+  background-image: -o-linear-gradient(top, #56a3da, #2470a6);
+/* Opera 11.10+ */
+  background-image: linear-gradient(top, #56a3da, #2470a6);
+  -pie-background: linear-gradient(top, #56a3da, #2470a6);
   behavior: url("/js/libs/PIE");
+  font-size: 22px;
 }
 .web_bg,
 .web_fg,
@@ -1649,6 +1658,35 @@ label .subtitle {
   background: #908575;
   border: 1px solid #524641;
 }
+.radio_text_fields {
+  font-size: 21px;
+  line-height: 1.5em;
+  margin: -30px 0 15px 0;
+}
+.radio_text_fields li {
+  cursor: pointer;
+  margin: -5px;
+  padding: 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  behavior: url("/js/libs/PIE");
+}
+.radio_text_fields li.active {
+  background: #000;
+  background: rgba(0,0,0,0.40);
+}
+.radio_text_fields label {
+  color: #eee;
+  font-size: 13.65px;
+  line-height: 1.5em;
+  cursor: pointer;
+}
+.radio_text_fields input {
+  margin: 0px 10px 0 0;
+  float: left;
+  width: auto;
+}
 .radio_text_fields .active .promo {
   border: 5px solid #eee;
 }
@@ -1673,34 +1711,6 @@ label .subtitle {
 }
 .radio_text_fields .subtitle {
   color: #eee;
-}
-.radio_text_fields {
-  font-size: 21px;
-  line-height: 1.5em;
-  margin: -30px 0 15px 0;
-}
-.radio_text_fields li {
-  cursor: pointer;
-  margin: -5px;
-  padding: 15px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  behavior: url("/js/libs/PIE");
-}
-.radio_text_fields li.active {
-  background: #000;
-  background: rgba(0,0,0,0.40);
-}
-.radio_text_fields label {
-  color: #eee;
-  font-size: 13.65px;
-  line-height: 1.5em;
-}
-.radio_text_fields input {
-  margin: 0px 10px 0 0;
-  float: left;
-  width: auto;
 }
 .section.home_first {
   padding: 0;

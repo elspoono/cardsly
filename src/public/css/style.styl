@@ -875,7 +875,7 @@ blockquote
     border_radius_bottom_only(10px)
     overflow hidden
     .toggle
-      width 80px
+      width 100px
       margin 0 auto
   .subtitle
     margin-bottom 3px
@@ -1005,14 +1005,14 @@ blockquote
   overflow hidden
   gradient($c_logo_alt,darken($c_logo_alt,20))
   margin 10px 0
-  padding 2px
+  padding 3px
   border_radius(12px)
   .disabled
     overflow hidden
     gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
-    border_radius(10px)
+    border_radius(12px)
   .option
-    width 40px
+    width 50px
     height 40px
     line-height 40px
     text-align center
@@ -1022,8 +1022,8 @@ blockquote
     color $c_logo_alt
   .active
     color $c_light
-    alpha_bg($c_logo_alt,.8)
-    border_radius(9px)
+    gradient($c_logo_alt,darken($c_logo_alt,20))
+    font-size 22px
 //
 .web_bg,.web_fg,.web_fg2
   position absolute
@@ -1205,6 +1205,23 @@ label
   relative_size(.6)
 // RADIO TEXT STUFF FOR QUANTITY
 .radio_text_fields
+  relative_size(1)
+  margin -30px 0 15px 0
+  li
+    cursor pointer
+    margin -5px
+    padding 15px
+    border_radius(10px)
+  li.active
+    alpha_bg($c_black,.4)
+  label
+    color $c_light
+    relative_size(.65)
+    cursor pointer
+  input
+    margin 0px 10px 0 0
+    float left
+    width auto
   .active
     .promo
       border 5px solid $c_light
@@ -1223,23 +1240,6 @@ label
       right -40px
   .subtitle
     color $c_light
-.radio_text_fields
-  relative_size(1)
-  margin -30px 0 15px 0
-  li
-    cursor pointer
-    margin -5px
-    padding 15px
-    border_radius(10px)
-  li.active
-    alpha_bg($c_black,.4)
-  label
-    color $c_light
-    relative_size(.65)
-  input
-    margin 0px 10px 0 0
-    float left
-    width auto
 
 
 

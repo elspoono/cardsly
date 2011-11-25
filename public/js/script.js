@@ -1445,6 +1445,12 @@
       # Radio Button Clicking Stuff
     */
     amount = 10;
+    $('.quantity li').click(function() {
+      var $t;
+      $t = $(this);
+      $t.closest('li').andSelf().find('input').attr('checked', true).trigger('change');
+      return false;
+    });
     $('.quantity input,.shipping_method input').bind('change', function() {
       var $q, $s;
       $q = $('.quantity input:checked');
