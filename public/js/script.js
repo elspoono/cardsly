@@ -1,42 +1,34 @@
 (function() {
-
   /*
   
   This file is everywhere on the site
   
   - We put a lot of library functions in it
   - As well as things that need to happen on every page
+  
   */
-
   /*
    * 
    * Set settings / defaults
    * 
    * AJAX defaults
    * some constants
-   *
+   * 
   */
-
   var $window, date_format;
-
   $.ajaxSetup({
     type: 'POST',
     contentType: 'application/json'
   });
-
   $window = $(window);
-
   if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
     $.fx.speeds._default = 0;
   } else {
     $.fx.speeds._default = 300;
   }
-
   $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
-
   /*
   */
-
   $.fn.prep_qr = function(options) {
     var settings;
     settings = {
@@ -44,7 +36,9 @@
     };
     return this.each(function(i) {
       var $canvas, $t, count, qrcode, scale, size;
-      if (options) $.extend(settings, options);
+      if (options) {
+        $.extend(settings, options);
+      }
       $t = $(this);
       $canvas = $('<canvas />');
       $t.append($canvas);
@@ -65,19 +59,15 @@
       });
     });
   };
-
   $.hexToR = function(h) {
     return parseInt(($.cutHex(h)).substring(0, 2), 16);
   };
-
   $.hexToG = function(h) {
     return parseInt(($.cutHex(h)).substring(2, 4), 16);
   };
-
   $.hexToB = function(h) {
     return parseInt(($.cutHex(h)).substring(4, 6), 16);
   };
-
   $.cutHex = function(h) {
     if (h.charAt(0) === "#") {
       return h.substring(1, 7);
@@ -85,7 +75,6 @@
       return h;
     }
   };
-
   $.fn.draw_qr = function(options) {
     var settings;
     settings = {
@@ -93,7 +82,9 @@
     };
     return this.each(function(i) {
       var $t, c, canvas, count, ctx, qrcode, r, scale, size, _ref, _results;
-      if (options) $.extend(settings, options);
+      if (options) {
+        $.extend(settings, options);
+      }
       $t = $(this);
       qrcode = $t.data('qrcode');
       count = qrcode.getModuleCount();
@@ -109,11 +100,7 @@
             var _ref2, _results2;
             _results2 = [];
             for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-              if (qrcode.isDark(c, r)) {
-                _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
-              } else {
-                _results2.push(void 0);
-              }
+              _results2.push(qrcode.isDark(c, r) ? ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale) : void 0);
             }
             return _results2;
           })());
@@ -122,7 +109,6 @@
       }
     });
   };
-
   $.fn.qr = function(options) {
     var settings;
     settings = {
@@ -133,7 +119,9 @@
     };
     return this.each(function(i) {
       var $t;
-      if (options) $.extend(settings, options);
+      if (options) {
+        $.extend(settings, options);
+      }
       $t = $(this);
       $t.prep_qr({
         url: settings.url
@@ -156,7 +144,6 @@
       }
     });
   };
-
   /*
     * 
     *
@@ -164,7 +151,6 @@
     *
     *
   */
-
   $.create_card_from_theme = function(options) {
     var $li, $my_card, $my_qr, $my_qr_bg, i, pos, settings, theme_template, _len, _ref;
     settings = {
@@ -173,7 +159,9 @@
       theme: null,
       active_view: 0
     };
-    if (options) $.extend(settings, options);
+    if (options) {
+      $.extend(settings, options);
+    }
     theme_template = settings.theme.theme_templates[settings.active_view] || settings.theme.theme_templates[0];
     $my_card = $('<div class="card"><div class="qr"><div class="background" /></div></div>');
     $my_card.data('theme', settings.theme);
@@ -222,7 +210,6 @@
       background: 'url(\'//d3eo3eito2cquu.cloudfront.net/' + settings.width + 'x' + settings.height + '/' + theme_template.s3_id + '\')'
     });
   };
-
   $.add_card_to_category = function($my_card, theme) {
     var $categories, $category;
     $categories = $('.categories');
@@ -233,7 +220,6 @@
     }
     return $category.find('.cards').prepend($my_card);
   };
-
   /*
    * 
    * 
@@ -242,9 +228,8 @@
    * - does a little tooltip dealy bob on any element
    *
    * - usually used for form inputs
-   *
+   * 
   */
-
   $.fn.show_tooltip = function(options) {
     var settings;
     settings = {
@@ -252,11 +237,15 @@
     };
     return this.each(function(i) {
       var $t, data, offset, toRemove, tooltip, _i, _len;
-      if (options) $.extend(settings, options);
+      if (options) {
+        $.extend(settings, options);
+      }
       $t = $(this);
       offset = $t.offset();
       data = $t.data('tooltips');
-      if (!data) data = [];
+      if (!data) {
+        data = [];
+      }
       if (settings.message) {
         tooltip = $('<div class="tooltip" />');
         tooltip.html(settings.message);
@@ -281,21 +270,20 @@
       /*
       
               TODO : Make the animation in a custom slide up / slide down thing with $.animate
-      */
+      
+          */
       tooltip.stop(true, true).fadeIn().delay(4000).fadeOut();
       return $t.data('tooltip', tooltip);
     });
   };
-
   /*
      * 
      * Modal Handling Functions
      * 
      * Basic load
      * 
-     *
+     * 
   */
-
   $.load_modal = function(options, next) {
     var $body, buttons, close, height, i, modal, my_next, resize_event, scrollbar_width, settings, width, win, _fn, _i, _len, _ref;
     scrollbar_width = $.scrollbar_width();
@@ -308,7 +296,9 @@
       height: 235,
       closeText: 'close'
     };
-    if (options) $.extend(settings, options);
+    if (options) {
+      $.extend(settings, options);
+    }
     $('iframe').css('visibility', 'hidden');
     my_next = function() {
       $window.unbind('scroll resize', resize_event);
@@ -326,17 +316,25 @@
       return win.fadeOut(function() {
         win.remove();
         $('iframe').css('visibility', '');
-        if ($('.window').length === 0) return $('#container').show();
+        if ($('.window').length === 0) {
+          return $('#container').show();
+        }
       });
     };
-    if (settings.closeText) close.html(settings.closeText);
-    if (settings.content) win.html(settings.content);
+    if (settings.closeText) {
+      close.html(settings.closeText);
+    }
+    if (settings.content) {
+      win.html(settings.content);
+    }
     if (settings.height) {
       win.css({
         'min-height': settings.height
       });
     }
-    if (settings.width) win.width(settings.width);
+    if (settings.width) {
+      win.width(settings.width);
+    }
     buttons = $('<div class="buttons" />');
     /*
       Loop through the buttons passed in.
@@ -353,7 +351,7 @@
           action: function(){ alert('Button 2 clicked')}
         }
       ]
-    */
+      */
     if (settings.buttons) {
       _ref = settings.buttons;
       _fn = function(i) {
@@ -434,19 +432,19 @@
       win.fadeIn();
       close.fadeIn();
     }
-    if (next) next(my_next);
+    if (next) {
+      next(my_next);
+    }
     return resize_event();
   };
-
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Loading (Subclass of $.load_modal)
    * 
-   *
+   * 
   */
-
   $.load_loading = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -461,16 +459,14 @@
     }
     return $.load_modal(modified_options, next);
   };
-
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Confirm (Subclass of $.load_modal)
    * like javascript confirm()
-   *
+   * 
   */
-
   $.load_confirm = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -485,16 +481,14 @@
     }
     return $.load_modal(modified_options, next);
   };
-
   /*
    * 
    * Modal Handling Functions
    * 
    * Load Alert (Subclass of $.load_modal)
    * like javascript alert()
-   *
+   * 
   */
-
   $.load_alert = function(options, next) {
     var i, modified_options, v;
     options = options || {};
@@ -523,7 +517,6 @@
     }
     return $.load_modal(modified_options, next);
   };
-
   /*
    * jQuery Scrollbar Width v1.0
    * 
@@ -531,7 +524,6 @@
    * Licensed under LGPL v3.0
    * http:#www.gnu.org/licenses/lgpl-3.0.txt
   */
-
   $.scrollbar_width = function() {
     var $body, w;
     if (!$._scrollbar_width) {
@@ -539,13 +531,14 @@
       w = $body.css('overflow', 'hidden').width();
       $body.css('overflow', 'scroll');
       w -= $body.width();
-      if (!w) w = $body.width() - $body[0].clientWidth;
+      if (!w) {
+        w = $body.width() - $body[0].clientWidth;
+      }
       $body.css('overflow', '');
       $._scrollbar_width = w;
     }
     return $._scrollbar_width;
   };
-
   /*
   #http:#stevenlevithan.com/assets/misc/date.format.js
    * Date Format 1.2.3
@@ -560,18 +553,12 @@
    * The date defaults to the current date/time.
    * The mask defaults to date_format.masks.default.
   */
-
   date_format = (function() {
     var pad, timezone, timezoneClip, token;
-
     function date_format() {}
-
     token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g;
-
     timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g;
-
     timezoneClip = /[^-+\dA-Z]/g;
-
     pad = function(val, len) {
       val = String(val);
       len = len || 2;
@@ -580,7 +567,6 @@
       }
       return val;
     };
-
     date_format.prototype.format = function(date, mask, utc) {
       var D, H, L, M, d, dF, flags, m, o, s, y, _;
       dF = date_format.prototype;
@@ -589,7 +575,9 @@
         date = void 0;
       }
       date = date ? new Date(date) : new Date;
-      if (isNaN(date)) throw SyntaxError("invalid date");
+      if (isNaN(date)) {
+        throw SyntaxError("invalid date");
+      }
       mask = String(dF.masks[mask] || mask || dF.masks["default"]);
       if (mask.slice(0, 4) === "UTC:") {
         mask = mask.slice(4);
@@ -644,7 +632,6 @@
         }
       });
     };
-
     date_format.prototype.masks = {
       "default": "ddd mmm dd yyyy HH:MM:ss",
       shortDate: "m/d/yy",
@@ -659,22 +646,17 @@
       isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
       isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
     };
-
     date_format.prototype.i18n = {
       dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
-
     return date_format;
-
   })();
-
   Date.prototype.format = function(mask, utc) {
     var a;
     a = new date_format;
     return a.format(this, mask, utc);
   };
-
   /*
    * jQuery Cookie plugin
    *
@@ -684,12 +666,13 @@
    * http://www.gnu.org/licenses/gpl.html
    *
   */
-
   jQuery.cookie = function(key, value, options) {
     var days, decode, regex, result, t;
     if (arguments.length > 1 && String(value) !== "[object Object]") {
       options = jQuery.extend({}, options);
-      if (value === null || value === void 0) options.expires = -1;
+      if (value === null || value === void 0) {
+        options.expires = -1;
+      }
       if (typeof options.expires === 'number') {
         days = options.expires;
         t = options.expires = new Date();
@@ -709,7 +692,6 @@
       return null;
     }
   };
-
   $.fn.box_rotate = function(options) {
     var settings;
     settings = {
@@ -717,7 +699,9 @@
     };
     return this.each(function(i) {
       var $t, degrees, rotate;
-      if (options) $.extend(settings, options);
+      if (options) {
+        $.extend(settings, options);
+      }
       $t = $(this);
       degrees = settings.degrees;
       rotate = Math.floor((degrees / 360) * 100) / 100;
@@ -730,7 +714,6 @@
       });
     });
   };
-
   /*
   The 
   $ ->
@@ -738,7 +721,6 @@
     Means everything under him (like me, indented here)
     WILL be done on document ready event.
   */
-
   $(function() {
     var $a, $active_theme, $address, $address_result, $am, $body, $card, $categories, $city, $designer, $email_text, $error, $existing_payment, $feedback_a, $gs, $lines, $mc, $qr, $qr_bg, $quantity, $shipping_method, $view_buttons, $win, active_theme, active_view, address_timer, all_themes, amount, card_height, card_inner_height, card_inner_width, card_width, close_menu, expand_menu, input_timer, item_name, load_theme, load_theme_thumbnails, monitor_for_complete, path, set_address_timer, set_timers, shift_pressed, successful_login, update_card_size, update_cards;
     if (document.location.href.match(/#bypass_splash/i)) {
@@ -758,7 +740,7 @@
     /*
       Profile MENU in the TOP RIGHT
       Thing that shows a drop down
-    */
+      */
     $a = $('.account_link');
     $am = $a.find('.account_menu');
     $body = $(document);
@@ -858,7 +840,7 @@
                                   false
                                 $('.order_total form').hide()
                                 #
-                */
+                              */
               }
             },
             error: function(err) {
@@ -1325,7 +1307,7 @@
           TODO
       
           - this probably doesn't need to update every time. Could make page faster not doing this.
-      */
+          */
       return $lines.each(function(i) {
         return update_cards(i, $(this).html());
       });
@@ -1357,7 +1339,7 @@
       Update Cards
     
       This is used each time we need to update all the cards on the home page with the new content that's typed in.
-    */
+      */
     update_cards = function(rowNumber, value) {
       return $('.categories .card').add('.order_total .card').each(function() {
         var $t;
@@ -1372,7 +1354,9 @@
       $t.data('timer', 0);
       return $t.click(function() {
         var $input, remove_input, style;
-        if (i === 6) $view_buttons.filter(':last').click();
+        if (i === 6) {
+          $view_buttons.filter(':last').click();
+        }
         style = $t.attr('style');
         $input = $('<input class="line" />');
         $input.attr('style', style);
@@ -1382,27 +1366,35 @@
         $input.focus().select();
         $input.keydown(function(e) {
           var $next;
-          if (e.keyCode === 16) shift_pressed = true;
+          if (e.keyCode === 16) {
+            shift_pressed = true;
+          }
           if (e.keyCode === 13 || e.keyCode === 9) {
             e.preventDefault();
             $next = $t.nextAll('div:visible:first');
             if (shift_pressed) {
               $next = $t.prev();
-              if (!$next.length) $next = $lines.filter(':visible:last');
+              if (!$next.length) {
+                $next = $lines.filter(':visible:last');
+              }
             } else {
               /*
                           Uncomment this to allow entering to 10 mode
                           if i is 5
                             $next = $t.nextAll('div:first')
-              */
-              if (!$next.length) $next = $lines.filter(':first');
+                          */
+              if (!$next.length) {
+                $next = $lines.filter(':first');
+              }
             }
             $next.click();
             return false;
           }
         });
         $input.keyup(function(e) {
-          if (e.keyCode === 16) shift_pressed = false;
+          if (e.keyCode === 16) {
+            shift_pressed = false;
+          }
           update_cards(i, this.value);
           $t.html(this.value);
           return set_timers();
@@ -1431,7 +1423,9 @@
       });
       return false;
     });
-    if ($existing_payment.length) $('.order_total form').hide();
+    if ($existing_payment.length) {
+      $('.order_total form').hide();
+    }
     /*
       SAMURAI
       $existing_payment.find('.button').click ->
@@ -1440,10 +1434,10 @@
         false
       if $existing_payment.length
         $('.order_total form').hide()
-    */
+      */
     /*
       # Radio Button Clicking Stuff
-    */
+      */
     amount = 10;
     $('.quantity input,.shipping_method input').bind('change', function() {
       var $q, $s;
@@ -1470,13 +1464,19 @@
             message: 'Please enter a street address'
           });
         } else if (city === '') {
-          if ($address.data('tooltip')) $address.data('tooltip').stop().hide();
+          if ($address.data('tooltip')) {
+            $address.data('tooltip').stop().hide();
+          }
           return $city.show_tooltip({
             message: 'Please enter a city or zip code'
           });
         } else {
-          if ($address.data('tooltip')) $address.data('tooltip').stop().hide();
-          if ($city.data('tooltip')) $city.data('tooltip').stop().hide();
+          if ($address.data('tooltip')) {
+            $address.data('tooltip').stop().hide();
+          }
+          if ($city.data('tooltip')) {
+            $city.data('tooltip').stop().hide();
+          }
           $address_result.html('Searching for real address ...');
           return $.ajax({
             url: '/find-address',
@@ -1515,7 +1515,7 @@
     });
     /*
       Shopping Cart Stuff
-    */
+      */
     item_name = '100 cards';
     if (env === 'development') {
       Stripe.setPublishableKey('pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw');
@@ -1627,7 +1627,7 @@
                               document.location.href = '/thank-you'
                             else
                               $('.order_total form').submit()
-              */
+                            */
             } else {
               loading_close();
               return $.load_alert({
@@ -1646,5 +1646,4 @@
       return false;
     });
   });
-
 }).call(this);
