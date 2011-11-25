@@ -52,12 +52,12 @@ module.exports = function (api_key, options) {
             }
         });
 
-        console.log("data", typeof data, data);
+        //console.log("data", typeof data, data);
 
         var request_data = querystring.stringify(data);
 
         //console.log(method, "request for", path);
-        console.log("http request", request_data);
+        //console.log("http request", request_data);
 
         var request_options = {
               host: 'api.stripe.com',

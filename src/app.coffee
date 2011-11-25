@@ -220,6 +220,9 @@ user_schema = new schema
     expiry_month: String
     expiry_year: String
   ###
+  card_number:
+    type: Number
+    default: 0
   date_added:
     type: Date
     default: Date.now
@@ -390,24 +393,32 @@ mongo_order = mongoose.model 'orders', order_schema
 #
 #
 #
+#
+#
+small_url_schema = new schema
+  url_string: String
+  card_number: String
+  redirect_to: String
+#
+#
 url_group_schema = new schema
   user_id: String
   order_id: String
-  url_ids: [String]
+  urls: [small_url_schema]
   date_added:
     type: Date
     default: Date.now
+  active:
+    type: Boolean
+    default: true
 #
 mongo_url_group = mongoose.model 'url_groups', url_group_schema
 #
-url_schema = new schema
+url_redirect_schema = new schema
   url_string: String
-  card_number: Number
-  group_id: String
-  order_id: String
   redirect_to: String
 #
-mongo_url = mongoose.model 'urls', url_schema
+mongo_url_redirect = mongoose.model 'url_redirects', url_redirect_schema
 #
 #
 # Views (for stats)
@@ -767,7 +778,7 @@ for l in pre_consonants
   for i in [1..l[1]]
     consonants.push l[0]
 numbers = ['',1,2,3,4,5,6,7,8,9]
-new_url = () ->
+random_url = () ->
   psuedo = ''
   c_l = consonants.length - 1
   v_l = vowels.length - 1
@@ -800,18 +811,72 @@ new_url = () ->
   add_consonant()
   add_number()
   psuedo
-valid_new_url = (next) ->
-  try_url = new_url()
-  mongo_url.count
+#
+#
+#
+###
+
+USAGE
+
+create_new_url 'http://url-I-want-to-redirect-to.com', (err, new_url) ->
+  console.log 'Now http://cards.ly/' + new_url.url_string + ' will redirect there.'
+
+###
+create_url = (redirect_to, next) ->
+  try_url = random_url()
+  mongo_url_redirect.count
     url_string: try_url
   , (err, count) ->
     if err
       next err
-    if not count
-      next null, try_url
+    else if count
+      create_url next
     else
-      valid_new_url next
+      new_url = new mongo_url_redirect
+      new_url.redirect_to = redirect_to
+      new_url.url_string = try_url
+      new_url.save (err, saved_url) ->
+        if err
+          next err
+        else
+          next null, saved_url
 #
+#
+#
+###
+
+USAGE
+
+create_urls
+  redirect_to: 'http://url-I-want-to-redirect-to.com'
+  volume: 100
+, (err, new_urls) ->
+  for new_url in new_urls
+    console.log 'Now http://cards.ly/' + new_url.url_string + ' will redirect there.'
+
+###
+create_urls = (options, next) ->
+  if typeof(options) isnt 'object'
+    next 'No Options Sent'
+  else if not options.redirect_to
+    next 'Please set redirect_to'
+  else if not options.volume
+    next 'Please set volume'
+  else
+    #
+    new_urls = []
+    #
+    check_if_done = ->
+      if new_urls.length is options.volume
+        next null, new_urls
+    #
+    for i in [1..options.volume]
+      create_url options.redirect_to, (err, new_url) ->
+        if err
+          next err
+        else
+          new_urls.push new_url
+          check_if_done()
 #
 #
 #
@@ -1150,201 +1215,192 @@ if app.settings.env is 'development'
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
-
-  valid_new_url (err, url) ->
-    if err
-      console.log 'ERR: url generate resulted in ', err
-      res.send
-        err: err
-    else
-      order = new mongo_order
-      order.order_number = url
-      order.user_id = req.user._id
-      order.theme_id = req.session.saved_form.active_theme_id
-      order.status = 'Pending'
-      order.quantity = req.session.saved_form.quantity
-      order.shipping_method = req.session.saved_form.shipping_method
-      order.values = req.session.saved_form.values
-      order.address = req.session.saved_address.address
-      order.city = req.session.saved_address.city
-      order.full_address = req.session.saved_address.full_address
-      order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
-      order.email = req.body.email
-      order.shipping_email = req.body.shipping_email
-      order.confirm_email = req.body.confirm_email
-      order.save (err, new_order) ->
-        if err
-          console.log 'ERR: save new order ', err
-          res.send
-            err: err
-        else
-          #
-          # Final Function to Be Called
-          do_charge = ->
-            # Attempt a charge
-            stripe.charges.create
-              currency: 'usd'
-              amount: new_order.amount*1
-              customer: req.user.stripe.id
-              description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-            , (err, charge) ->
-              #
-              #console.log 'CHARGE: ', charge
-
-              #
-              #
-              # Save the order result to the order
-              new_order.charge = charge
-              new_order.save (err, final_order) ->
-                if err
-                  console.log 'ERR: database ', err
-              #
-              #
-              #
-              if err
-                console.log 'ERR: stripe charge resulted in ', err
-                res.send
-                  err: charge.error.message
-              else if not charge.paid
-                console.log 'ERR: stripe charge resulted in not paid for some reason.'
-                res.send
-                  err: 'Charge resulted in not paid for some reason.'
-              else
-                res.send
-                  order_id: new_order._id
-                  charge: charge
-                #
-                #
-                ################################
-                # Do Cleanup and send emails etc
-                ################################
-                #
-                #
-                #
-                # Save the order's url
-                #
-                #  - This is used to show the "contact page" for an order
-                #
-                order_url = new mongo_url
-                order_url.url_string = new_order.order_number
-                order_url.order_id = new_order._id
-                order_url.save (err, new_order_url) ->
-                  if err
-                    console.log 'ERR: order url save - ', err
-                #
-                #
-                redirect_to = 'http://cards.ly/'+new_order.order_number
-                #
-                #
-                #
-                # Generate order urls, based on "quantity" (which isnt really quantity)
-                #
-                url_group = new mongo_url_group
-                url_group.order_id = new_order._id
-                url_group.user_id = req.user._id
-                url_group.save (err, new_url_group) ->
-                  if err
-                    console.log 'ERR: save group  - ', err
-                  else
-                    volume = 100
-                    volume = 250 if new_order.quantity is 25
-                    volume = 500 if new_order.quantity is 35
-                    volume = 1500 if new_order.quantity is 75
-                    for i in [1..volume]
-                      valid_new_url (err, url_string) ->
-                        if err
-                          console.log 'ERR: url create - ', err
-                        else
-                          #
-                          #
-                          url = new mongo_url
-                          url.url_string = url_string
-                          url.group_id = new_order._id
-                          url.redirect_to = redirect_to
-                          url.save (err, new_url) ->
-                            if err
-                              console.log 'ERR: url save err - ', err
-                            else
-                              mongo_order.update
-                                _id: new_order._id
-                              ,
-                                $push:
-                                  url_ids: new_url._id
-                              , (err, order_saved) ->
-                                if err
-                                  console.log 'ERR: order resave err - ', err
-                #
-                #
-                ############
-                # Send Email
-                ############
-                #
-                # Prep the Email Message
-                message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
-                #
-                # Send the user an email
-                if new_order.confirm_email and new_order.email
-                  nodemailer.send_mail
-                    sender: 'help@cards.ly'
-                    to: new_order.email
-                    subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
-                    html: message
-                  , (err, data) ->
-                    if err
-                      console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
-                #
-                # Send us an email
-                nodemailer.send_mail
-                  sender: 'support@cards.ly'
-                  to: 'help@cards.ly'
-                  subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
-                  html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                , (err, data) ->
-                  if err
-                    console.log 'ERR: Notification email did not send - ', err, new_order.order_number
-          #
-          #
-          #
-          #
-          #
-          # If they passed in a token, create a customer
-          if req.body.token
-            stripe.customers.create
-              card: req.body.token
-              email: req.user.email or null
-              description: req.user.name or req.user.email or req.user.id
-            , (err, customer) ->
-              if err
-                console.log 'ERR: stripe customer create resulted in ', err, customer
-                res.send
-                  err: customer.error.message
-              else
-                #
-                #console.log 'CUSTOMER: ', customer
-                #
-                # Save the payment token to the user
-                req.user.stripe = customer
-                req.user.stripe.active_card.card_type = customer.active_card.type
-                console.log req.user.stripe
-                req.user.save (err, user_saved) ->
-                  if err
-                    console.log 'ERR: database ', err
-                #
-                #
-                do_charge()
-          #
-          #
-          #
-          # Otherwise, make sure they have an existing stripe
-          else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
-            do_charge()
-          #
-          #
-          #
-          # Otherwise, we got problems
-          else
+  order = new mongo_order
+  order.user_id = req.user._id
+  order.theme_id = req.session.saved_form.active_theme_id
+  order.status = 'Pending'
+  order.quantity = req.session.saved_form.quantity
+  order.shipping_method = req.session.saved_form.shipping_method
+  order.values = req.session.saved_form.values
+  order.address = req.session.saved_address.address
+  order.city = req.session.saved_address.city
+  order.full_address = req.session.saved_address.full_address
+  order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
+  order.email = req.body.email
+  order.shipping_email = req.body.shipping_email
+  order.confirm_email = req.body.confirm_email
+  order.save (err, new_order) ->
+    if check_no_err_ajax err
+      req.order = new_order
+      #
+      #
+      # If they passed in a token, create a customer
+      if req.body.token
+        stripe.customers.create
+          card: req.body.token
+          email: req.user.email or null
+          description: req.user.name or req.user.email or req.user.id
+        , (err, customer) ->
+          if err
+            console.log 'ERR: stripe customer create resulted in ', err, customer
             res.send
-              err: 'No Payment Data Received'
+              err: customer.error.message
+          else
+            #
+            #console.log 'CUSTOMER: ', customer
+            #
+            # Save the payment token to the user
+            req.user.stripe = customer
+            req.user.stripe.active_card.card_type = customer.active_card.type
+            #console.log req.user.stripe
+            req.user.save (err, user_saved) ->
+              if err
+                console.log 'ERR: database ', err
+            #
+            #
+            next()
+      #
+      #
+      #
+      # Otherwise, make sure they have an existing stripe
+      else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
+        next()
+      #
+      #
+      #
+      # Otherwise, we got problems
+      else
+        res.send
+          err: 'No Payment Data Received'
+      #
+      #
+, (req, res, next) ->
+  #
+  new_order = req.order
+  #
+  #
+  # Attempt a charge
+  stripe.charges.create
+    currency: 'usd'
+    amount: new_order.amount*1
+    customer: req.user.stripe.id
+    description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+  , (err, charge) ->
+    #
+    #
+    #console.log 'CHARGE: ', charge
+    #
+    #
+    #
+    # Save the order's url
+    #
+    #  - This is used to show the "contact page" for an order
+    #
+    create_url 'http://cards.ly/order/'+new_order._id, (err, order_url) ->
+      if check_no_err_ajax err
+        #
+        #
+        # Save that url to the order
+        new_order.order_number = order_url.url_string
+        #
+        #
+        # Save the charge result to the order
+        new_order.charge = charge
+        #
+        #
+        new_order.save (err, final_order) ->
+          if err
+            console.log 'ERR: database ', err
+        #
+        #
+        #
+        if err
+          console.log 'ERR: stripe charge resulted in ', err
+          res.send
+            err: charge.error.message
+        else if not charge.paid
+          console.log 'ERR: stripe charge resulted in not paid for some reason.'
+          res.send
+            err: 'Charge resulted in not paid for some reason.'
+        else
+          res.send
+            order_id: new_order._id
+            charge: charge
+          #
+          #
+          ################################
+          # Do Cleanup and send emails etc
+          ################################
+          #
+          #
+          #
+          redirect_to = 'http://cards.ly/'+new_order.order_number
+          #
+          #
+          #
+          # Generate order urls, based on "quantity" (which isnt really quantity)
+          #
+          volume = 100
+          volume = 250 if new_order.quantity is 25
+          volume = 500 if new_order.quantity is 35
+          volume = 1500 if new_order.quantity is 75
+          #
+          #
+          create_urls
+            redirect_to: redirect_to
+            volume: volume
+          , (err, new_urls) ->
+
+            url_group = new mongo_url_group
+            url_group.order_id = new_order._id
+            url_group.user_id = req.user._id
+            url_group.urls = []
+            #
+            for new_url in new_urls
+              req.user.card_number++
+              url_group.urls.push
+                url_string: new_url.url_string
+                redirect_to: redirect_to
+                card_number: req.user.card_number
+            #
+            #
+            url_group.save (err, saved_group) ->
+              if err
+                console.log 'ERR: saving group - ', err
+            #
+            #
+            req.user.save (err, saved_user) ->
+              if err
+                console.log 'ERR: saving user - ', err
+          #
+          #
+          ############
+          # Send Email
+          ############
+          #
+          # Prep the Email Message
+          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+          #
+          # Send the user an email
+          if new_order.confirm_email and new_order.email
+            nodemailer.send_mail
+              sender: 'help@cards.ly'
+              to: new_order.email
+              subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
+              html: message
+            , (err, data) ->
+              if err
+                console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+          #
+          # Send us an email
+          nodemailer.send_mail
+            sender: 'support@cards.ly'
+            to: 'help@cards.ly'
+            subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
+            html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+          , (err, data) ->
+            if err
+              console.log 'ERR: Notification email did not send - ', err, new_order.order_number
 #
 #
 #
@@ -1496,8 +1552,21 @@ get_order_info = (req, res, next) ->
       req.orders = orders
       next()
 #
+#
+get_urls = (req, res, next) ->
+  mongo_url_group.find
+    user_id: req.user._id
+  , (err, url_groups) ->
+    if check_no_err err
+      #
+      #
+      groups_left = url_groups.length
+      #
+      #
+      next()
+#
 # cards Page Mockup
-app.get '/cards', securedPage, get_order_info, (req, res) ->
+app.get '/cards', securedPage, get_order_info, get_urls, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user
@@ -1505,7 +1574,7 @@ app.get '/cards', securedPage, get_order_info, (req, res) ->
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_order_info, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_order_info, get_urls, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user

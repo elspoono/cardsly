@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url, mongo_url_group, mongo_user, mongo_view, mongoose, mrg, new_url, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_group_schema, url_schema, user_schema, util, valid_new_url, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, create_url, create_urls, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, get_urls, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url_group, mongo_url_redirect, mongo_user, mongo_view, mongoose, mrg, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, random_url, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, small_url_schema, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_group_schema, url_redirect_schema, user_schema, util, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -168,6 +168,10 @@
         expiry_month: String
         expiry_year: String
     */
+    card_number: {
+      type: Number,
+      "default": 0
+    },
     date_added: {
       type: Date,
       "default": Date.now
@@ -333,27 +337,34 @@
 
   mongo_order = mongoose.model('orders', order_schema);
 
+  small_url_schema = new schema({
+    url_string: String,
+    card_number: String,
+    redirect_to: String
+  });
+
   url_group_schema = new schema({
     user_id: String,
     order_id: String,
-    url_ids: [String],
+    urls: [small_url_schema],
     date_added: {
       type: Date,
       "default": Date.now
+    },
+    active: {
+      type: Boolean,
+      "default": true
     }
   });
 
   mongo_url_group = mongoose.model('url_groups', url_group_schema);
 
-  url_schema = new schema({
+  url_redirect_schema = new schema({
     url_string: String,
-    card_number: Number,
-    group_id: String,
-    order_id: String,
     redirect_to: String
   });
 
-  mongo_url = mongoose.model('urls', url_schema);
+  mongo_url_redirect = mongoose.model('url_redirects', url_redirect_schema);
 
   view_schema = new schema({
     ip_address: String,
@@ -588,7 +599,7 @@
 
   numbers = ['', 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  new_url = function() {
+  random_url = function() {
     var add_consonant, add_consonant_upper, add_number, add_vowel, c_l, n_l, psuedo, v_l;
     psuedo = '';
     c_l = consonants.length - 1;
@@ -645,19 +656,78 @@
     return psuedo;
   };
 
-  valid_new_url = function(next) {
+  /*
+  
+  USAGE
+  
+  create_new_url 'http://url-I-want-to-redirect-to.com', (err, new_url) ->
+    console.log 'Now http://cards.ly/' + new_url.url_string + ' will redirect there.'
+  */
+
+  create_url = function(redirect_to, next) {
     var try_url;
-    try_url = new_url();
-    return mongo_url.count({
+    try_url = random_url();
+    return mongo_url_redirect.count({
       url_string: try_url
     }, function(err, count) {
-      if (err) next(err);
-      if (!count) {
-        return next(null, try_url);
+      var new_url;
+      if (err) {
+        return next(err);
+      } else if (count) {
+        return create_url(next);
       } else {
-        return valid_new_url(next);
+        new_url = new mongo_url_redirect;
+        new_url.redirect_to = redirect_to;
+        new_url.url_string = try_url;
+        return new_url.save(function(err, saved_url) {
+          if (err) {
+            return next(err);
+          } else {
+            return next(null, saved_url);
+          }
+        });
       }
     });
+  };
+
+  /*
+  
+  USAGE
+  
+  create_urls
+    redirect_to: 'http://url-I-want-to-redirect-to.com'
+    volume: 100
+  , (err, new_urls) ->
+    for new_url in new_urls
+      console.log 'Now http://cards.ly/' + new_url.url_string + ' will redirect there.'
+  */
+
+  create_urls = function(options, next) {
+    var check_if_done, i, new_urls, _ref3, _results;
+    if (typeof options !== 'object') {
+      return next('No Options Sent');
+    } else if (!options.redirect_to) {
+      return next('Please set redirect_to');
+    } else if (!options.volume) {
+      return next('Please set volume');
+    } else {
+      new_urls = [];
+      check_if_done = function() {
+        if (new_urls.length === options.volume) return next(null, new_urls);
+      };
+      _results = [];
+      for (i = 1, _ref3 = options.volume; 1 <= _ref3 ? i <= _ref3 : i >= _ref3; 1 <= _ref3 ? i++ : i--) {
+        _results.push(create_url(options.redirect_to, function(err, new_url) {
+          if (err) {
+            return next(err);
+          } else {
+            new_urls.push(new_url);
+            return check_if_done();
+          }
+        }));
+      }
+      return _results;
+    }
   };
 
   app.post('/upload-image', function(req, res) {
@@ -971,173 +1041,141 @@
   }
 
   app.post('/confirm-purchase', function(req, res, next) {
-    return valid_new_url(function(err, url) {
-      var order;
-      if (err) {
-        console.log('ERR: url generate resulted in ', err);
-        return res.send({
-          err: err
-        });
-      } else {
-        order = new mongo_order;
-        order.order_number = url;
-        order.user_id = req.user._id;
-        order.theme_id = req.session.saved_form.active_theme_id;
-        order.status = 'Pending';
-        order.quantity = req.session.saved_form.quantity;
-        order.shipping_method = req.session.saved_form.shipping_method;
-        order.values = req.session.saved_form.values;
-        order.address = req.session.saved_address.address;
-        order.city = req.session.saved_address.city;
-        order.full_address = req.session.saved_address.full_address;
-        order.amount = (req.session.saved_form.quantity * 1 + req.session.saved_form.shipping_method * 1) * 100;
-        order.email = req.body.email;
-        order.shipping_email = req.body.shipping_email;
-        order.confirm_email = req.body.confirm_email;
-        return order.save(function(err, new_order) {
-          var do_charge;
+    var order;
+    order = new mongo_order;
+    order.user_id = req.user._id;
+    order.theme_id = req.session.saved_form.active_theme_id;
+    order.status = 'Pending';
+    order.quantity = req.session.saved_form.quantity;
+    order.shipping_method = req.session.saved_form.shipping_method;
+    order.values = req.session.saved_form.values;
+    order.address = req.session.saved_address.address;
+    order.city = req.session.saved_address.city;
+    order.full_address = req.session.saved_address.full_address;
+    order.amount = (req.session.saved_form.quantity * 1 + req.session.saved_form.shipping_method * 1) * 100;
+    order.email = req.body.email;
+    order.shipping_email = req.body.shipping_email;
+    order.confirm_email = req.body.confirm_email;
+    return order.save(function(err, new_order) {
+      if (check_no_err_ajax(err)) {
+        req.order = new_order;
+        if (req.body.token) {
+          return stripe.customers.create({
+            card: req.body.token,
+            email: req.user.email || null,
+            description: req.user.name || req.user.email || req.user.id
+          }, function(err, customer) {
+            if (err) {
+              console.log('ERR: stripe customer create resulted in ', err, customer);
+              return res.send({
+                err: customer.error.message
+              });
+            } else {
+              req.user.stripe = customer;
+              req.user.stripe.active_card.card_type = customer.active_card.type;
+              req.user.save(function(err, user_saved) {
+                if (err) return console.log('ERR: database ', err);
+              });
+              return next();
+            }
+          });
+        } else if (req.user.stripe && req.user.stripe.active_card && req.user.stripe.id) {
+          return next();
+        } else {
+          return res.send({
+            err: 'No Payment Data Received'
+          });
+        }
+      }
+    });
+  }, function(req, res, next) {
+    var new_order;
+    new_order = req.order;
+    return stripe.charges.create({
+      currency: 'usd',
+      amount: new_order.amount * 1,
+      customer: req.user.stripe.id,
+      description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+    }, function(err, charge) {
+      return create_url('http://cards.ly/order/' + new_order._id, function(err, order_url) {
+        var message, redirect_to, volume;
+        if (check_no_err_ajax(err)) {
+          new_order.order_number = order_url.url_string;
+          new_order.charge = charge;
+          new_order.save(function(err, final_order) {
+            if (err) return console.log('ERR: database ', err);
+          });
           if (err) {
-            console.log('ERR: save new order ', err);
+            console.log('ERR: stripe charge resulted in ', err);
             return res.send({
-              err: err
+              err: charge.error.message
+            });
+          } else if (!charge.paid) {
+            console.log('ERR: stripe charge resulted in not paid for some reason.');
+            return res.send({
+              err: 'Charge resulted in not paid for some reason.'
             });
           } else {
-            do_charge = function() {
-              return stripe.charges.create({
-                currency: 'usd',
-                amount: new_order.amount * 1,
-                customer: req.user.stripe.id,
-                description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
-              }, function(err, charge) {
-                var message, order_url, redirect_to, url_group;
-                new_order.charge = charge;
-                new_order.save(function(err, final_order) {
-                  if (err) return console.log('ERR: database ', err);
+            res.send({
+              order_id: new_order._id,
+              charge: charge
+            });
+            redirect_to = 'http://cards.ly/' + new_order.order_number;
+            volume = 100;
+            if (new_order.quantity === 25) volume = 250;
+            if (new_order.quantity === 35) volume = 500;
+            if (new_order.quantity === 75) volume = 1500;
+            create_urls({
+              redirect_to: redirect_to,
+              volume: volume
+            }, function(err, new_urls) {
+              var new_url, url_group, _k, _len3;
+              url_group = new mongo_url_group;
+              url_group.order_id = new_order._id;
+              url_group.user_id = req.user._id;
+              url_group.urls = [];
+              for (_k = 0, _len3 = new_urls.length; _k < _len3; _k++) {
+                new_url = new_urls[_k];
+                req.user.card_number++;
+                url_group.urls.push({
+                  url_string: new_url.url_string,
+                  redirect_to: redirect_to,
+                  card_number: req.user.card_number
                 });
-                if (err) {
-                  console.log('ERR: stripe charge resulted in ', err);
-                  return res.send({
-                    err: charge.error.message
-                  });
-                } else if (!charge.paid) {
-                  console.log('ERR: stripe charge resulted in not paid for some reason.');
-                  return res.send({
-                    err: 'Charge resulted in not paid for some reason.'
-                  });
-                } else {
-                  res.send({
-                    order_id: new_order._id,
-                    charge: charge
-                  });
-                  order_url = new mongo_url;
-                  order_url.url_string = new_order.order_number;
-                  order_url.order_id = new_order._id;
-                  order_url.save(function(err, new_order_url) {
-                    if (err) return console.log('ERR: order url save - ', err);
-                  });
-                  redirect_to = 'http://cards.ly/' + new_order.order_number;
-                  url_group = new mongo_url_group;
-                  url_group.order_id = new_order._id;
-                  url_group.user_id = req.user._id;
-                  url_group.save(function(err, new_url_group) {
-                    var i, volume, _results;
-                    if (err) {
-                      return console.log('ERR: save group  - ', err);
-                    } else {
-                      volume = 100;
-                      if (new_order.quantity === 25) volume = 250;
-                      if (new_order.quantity === 35) volume = 500;
-                      if (new_order.quantity === 75) volume = 1500;
-                      _results = [];
-                      for (i = 1; 1 <= volume ? i <= volume : i >= volume; 1 <= volume ? i++ : i--) {
-                        _results.push(valid_new_url(function(err, url_string) {
-                          if (err) {
-                            return console.log('ERR: url create - ', err);
-                          } else {
-                            url = new mongo_url;
-                            url.url_string = url_string;
-                            url.group_id = new_order._id;
-                            url.redirect_to = redirect_to;
-                            return url.save(function(err, new_url) {
-                              if (err) {
-                                return console.log('ERR: url save err - ', err);
-                              } else {
-                                return mongo_order.update({
-                                  _id: new_order._id
-                                }, {
-                                  $push: {
-                                    url_ids: new_url._id
-                                  }
-                                }, function(err, order_saved) {
-                                  if (err) {
-                                    return console.log('ERR: order resave err - ', err);
-                                  }
-                                });
-                              }
-                            });
-                          }
-                        }));
-                      }
-                      return _results;
-                    }
-                  });
-                  message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
-                  if (new_order.confirm_email && new_order.email) {
-                    nodemailer.send_mail({
-                      sender: 'help@cards.ly',
-                      to: new_order.email,
-                      subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number,
-                      html: message
-                    }, function(err, data) {
-                      if (err) {
-                        return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
-                      }
-                    });
-                  }
-                  return nodemailer.send_mail({
-                    sender: 'support@cards.ly',
-                    to: 'help@cards.ly',
-                    subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
-                    html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-                  }, function(err, data) {
-                    if (err) {
-                      return console.log('ERR: Notification email did not send - ', err, new_order.order_number);
-                    }
-                  });
-                }
+              }
+              url_group.save(function(err, saved_group) {
+                if (err) return console.log('ERR: saving group - ', err);
               });
-            };
-            if (req.body.token) {
-              return stripe.customers.create({
-                card: req.body.token,
-                email: req.user.email || null,
-                description: req.user.name || req.user.email || req.user.id
-              }, function(err, customer) {
-                if (err) {
-                  console.log('ERR: stripe customer create resulted in ', err, customer);
-                  return res.send({
-                    err: customer.error.message
-                  });
-                } else {
-                  req.user.stripe = customer;
-                  req.user.stripe.active_card.card_type = customer.active_card.type;
-                  console.log(req.user.stripe);
-                  req.user.save(function(err, user_saved) {
-                    if (err) return console.log('ERR: database ', err);
-                  });
-                  return do_charge();
-                }
+              return req.user.save(function(err, saved_user) {
+                if (err) return console.log('ERR: saving user - ', err);
               });
-            } else if (req.user.stripe && req.user.stripe.active_card && req.user.stripe.id) {
-              return do_charge();
-            } else {
-              return res.send({
-                err: 'No Payment Data Received'
+            });
+            message = '<p>' + (req.user.name || req.user.email) + ',</p><p>We\'ve received your order and are processing it now. Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>';
+            if (new_order.confirm_email && new_order.email) {
+              nodemailer.send_mail({
+                sender: 'help@cards.ly',
+                to: new_order.email,
+                subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number,
+                html: message
+              }, function(err, data) {
+                if (err) {
+                  return console.log('ERR: Confirm email did not send - ', err, new_order.order_number);
+                }
               });
             }
+            return nodemailer.send_mail({
+              sender: 'support@cards.ly',
+              to: 'help@cards.ly',
+              subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number,
+              html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+            }, function(err, data) {
+              if (err) {
+                return console.log('ERR: Notification email did not send - ', err, new_order.order_number);
+              }
+            });
           }
-        });
-      }
+        }
+      });
     });
   });
 
@@ -1253,7 +1291,19 @@
     });
   };
 
-  app.get('/cards', securedPage, get_order_info, function(req, res) {
+  get_urls = function(req, res, next) {
+    return mongo_url_group.find({
+      user_id: req.user._id
+    }, function(err, url_groups) {
+      var groups_left;
+      if (check_no_err(err)) {
+        groups_left = url_groups.length;
+        return next();
+      }
+    });
+  };
+
+  app.get('/cards', securedPage, get_order_info, get_urls, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,
@@ -1262,7 +1312,7 @@
     });
   });
 
-  app.get('/cards/thank-you', securedPage, get_order_info, function(req, res) {
+  app.get('/cards/thank-you', securedPage, get_order_info, get_urls, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,

@@ -927,32 +927,6 @@ blockquote {
   margin-right: 8px;
   margin-left: 2px;
 }
-.order_details .left,
-.order_details .right,
-.order_details .righter {
-  float: left;
-  margin: 30px 0;
-  width: 210px;
-}
-.order_details .right,
-.order_details .righter {
-  margin-left: 50px;
-}
-.address_container {
-  margin: 20px 0;
-  border: 1px solid #524641;
-  width: 170px;
-  padding: 10px;
-  font-size: 12.6px;
-  line-height: 1.5em;
-}
-.address_container h5 {
-  font-weight: bold;
-  margin: -20px -5px 5px -5px;
-  padding-left: 5px;
-  background: #908575;
-  border: 1px solid #524641;
-}
 .existing_payment {
   text-align: right;
 }
@@ -1654,6 +1628,32 @@ label .subtitle {
   line-height: 1.5em;
   cursor: default;
 }
+.order_details .left,
+.order_details .right,
+.order_details .righter {
+  float: left;
+  margin: 30px 0;
+  width: 215px;
+}
+.order_details .right,
+.order_details .righter {
+  margin-left: 50px;
+}
+.address_container {
+  margin: 20px 0;
+  border: 1px solid #524641;
+  width: 170px;
+  padding: 10px;
+  font-size: 12.6px;
+  line-height: 1.5em;
+}
+.address_container h5 {
+  font-weight: bold;
+  margin: -20px -5px 5px -5px;
+  padding-left: 5px;
+  background: #908575;
+  border: 1px solid #524641;
+}
 .radio_text_fields .active .promo {
   border: 5px solid #eee;
 }
@@ -1676,7 +1676,7 @@ label .subtitle {
   top: -50px;
   right: -40px;
 }
-.radio_text_fields .promo .subtitle {
+.radio_text_fields .subtitle {
   color: #eee;
 }
 .radio_text_fields {
