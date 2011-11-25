@@ -124,11 +124,13 @@
           flags: flags,
           mtime: mtime
         };
+        /*
         if (data.length >= MIN_GZIP_SIZE) {
           gzip(data, function(err, gzippedData) {
             return _this.map[normalizeRoute(route)].gzippedData = gzippedData;
           });
         }
+        */
       }
       return this;
     };

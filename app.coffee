@@ -664,8 +664,7 @@ app.configure ->
       maxAge: 86400000 * 14
   app.use express.static(__dirname + '/public')
   app.use everyauth.middleware()
-  app.use require('./assets/js/libs/assets.js')
-    build: false
+  app.use require('./assets/js/libs/assets.js')()
 
 
 # ### Environment based settings
