@@ -9,10 +9,7 @@
           =user.name
           =user.email
       else
-        h3 Login to 
-          span.cardsly cards
-            span.alt .ly
-          | &nbsp;with:
+        h3 Login with your existing social account:
         .clear.center
         .socials
           a.button.twitter(href='/auth/twitter')
@@ -24,7 +21,8 @@
           a.button.google(href='/auth/google')
             span Google
           .clear
-        h3 Or sign in manually:
+        p
+        h3 Or, sign in with:
         form.login_form
           ul
             li

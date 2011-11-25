@@ -975,7 +975,7 @@
       var order;
       if (err) {
         console.log('ERR: url generate resulted in ', err);
-        res.send({
+        return res.send({
           err: err
         });
       } else {
@@ -994,7 +994,7 @@
         order.email = req.body.email;
         order.shipping_email = req.body.shipping_email;
         order.confirm_email = req.body.confirm_email;
-        order.save(function(err, new_order) {
+        return order.save(function(err, new_order) {
           var do_charge;
           if (err) {
             console.log('ERR: save new order ', err);
@@ -1010,6 +1010,10 @@
                 description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
               }, function(err, charge) {
                 var message, order_url, redirect_to, url_group;
+                new_order.charge = charge;
+                new_order.save(function(err, final_order) {
+                  if (err) return console.log('ERR: database ', err);
+                });
                 if (err) {
                   console.log('ERR: stripe charge resulted in ', err);
                   return res.send({
@@ -1134,10 +1138,6 @@
           }
         });
       }
-      new_order.charge = charge;
-      return new_order.save(function(err, final_order) {
-        if (err) return console.log('ERR: database ', err);
-      });
     });
   });
 
@@ -1273,7 +1273,6 @@
 
   app.get('/orders', securedAdminPage, function(req, res, next) {
     return mongo_order.find({
-      status: 'Charged',
       'charge.paid': true
     }, function(err, orders) {
       if (check_no_err(err)) {

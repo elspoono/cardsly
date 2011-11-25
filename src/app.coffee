@@ -1190,6 +1190,16 @@ app.post '/confirm-purchase', (req, res, next) ->
             , (err, charge) ->
               #
               #console.log 'CHARGE: ', charge
+
+              #
+              #
+              # Save the order result to the order
+              new_order.charge = charge
+              new_order.save (err, final_order) ->
+                if err
+                  console.log 'ERR: database ', err
+              #
+              #
               #
               if err
                 console.log 'ERR: stripe charge resulted in ', err
@@ -1335,15 +1345,6 @@ app.post '/confirm-purchase', (req, res, next) ->
           else
             res.send
               err: 'No Payment Data Received'
-
-    #
-    #
-    #
-    # Save the order result to the order
-    new_order.charge = charge
-    new_order.save (err, final_order) ->
-      if err
-        console.log 'ERR: database ', err
 #
 #
 #
@@ -1514,7 +1515,6 @@ app.get '/cards/thank-you', securedPage, get_order_info, (req, res) ->
 # Orders Page
 app.get '/orders', securedAdminPage, (req, res, next) ->
   mongo_order.find
-    status: 'Charged'
     'charge.paid': true
   , (err, orders) ->
     if check_no_err err
