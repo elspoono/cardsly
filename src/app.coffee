@@ -889,7 +889,6 @@ create_urls = (options, next) ->
 #
 #
 #
-#
 # Form request for multipart form uploading image
 app.post '/upload-image', (req, res) ->
   #

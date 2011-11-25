@@ -17,7 +17,7 @@
    *
   */
 
-  var $window, date_format;
+  var $window, date_format, random_strings;
 
   $.ajaxSetup({
     type: 'POST',
@@ -34,13 +34,16 @@
 
   $.line_copy = ['Jimbo jo Jiming', 'Banker Extraordinaire', 'Cool Cats Cucumbers', '57 Bakers, Edwarstonville', '555.555.5555', 'New York', 'Apt. #666', 'M thru F - 10 to 7', 'fb.com/my_facebook', '@my_twitter'];
 
+  random_strings = 'taameer73,Heesoh750,hiyit510,tuhaat140,Caaran74,lehof520,caniih190,Hiideer380,Doret53,yyywuut30,Febaad8,tootool61,huudiiz15,posaay690,Saakec590,tiloop930,lunad43,saatiim880,rolat70,mawas41,hidum17,baget520,Neekiir460,losiin220,leeleh45,Harees970,Cafeer440,neepat54,sojag760,ciqueen360,niifaat170,quetuuf470,tiimet66,deeros280,geeceel12,Taasow82,Fadoof87,Dodet720,riiteg15,jiitaaf25,Fujah620,hudon52,Sonit76,ceefoon680,sooneet88,ceesiis61,Tewiit520,tiiteh120,Cetiis72,Rylah25,reehyb340,Yerex67,QUiiwit10,satar530,Metew2,Leseh72,Leeheeb130,Giiliiw880,weetoog11,Cisin530,Juutih360,feseen310,Toopar73,Catet160,neejes690,Tyfeed21,Tatiic420,Watook720,Haawyc11,Motuuqu490,haayaah29,duufeec880,lityl770,moocuun88,behed21,hateeh89,Gosas4,cenood510,teneeh880,Lyyfeen970,pucun630,Liitec880,Teetiiqu110,Tageed38,zagaah480,neeheer87,hisig33,lasas450,tequot80,Dahiin840,Pubuqu860,Totoot79,Soonoom41,Faawut860,Heemaaqu15,hirin330,Leteen40,Seemeer790,faaween0,Yeesas680'.split(',');
+
   /*
   */
 
   $.fn.prep_qr = function(options) {
     var settings;
     settings = {
-      url: 'http://cards.ly'
+      url: 'http://cards.ly/' + random_strings[Math.floor(Math.random() * random_strings.length)],
+      number: Math.floor(Math.random() * 100)
     };
     return this.each(function(i) {
       var $canvas, $t, count, qrcode, scale, size;
@@ -51,9 +54,11 @@
       qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
       qrcode.addData(settings.url);
       qrcode.make();
+      $t.data('number', settings.number);
+      $t.data('url', settings.url);
       $t.data('qrcode', qrcode);
       count = qrcode.getModuleCount();
-      scale = 3;
+      scale = 6;
       size = count * scale + scale * 4;
       $t.css({
         height: size,
@@ -92,33 +97,30 @@
       color: '000000'
     };
     return this.each(function(i) {
-      var $t, c, canvas, count, ctx, qrcode, r, scale, size, _ref, _results;
+      var $t, c, canvas, count, ctx, number, qrcode, r, scale, size, url, _ref, _ref2;
       if (options) $.extend(settings, options);
       $t = $(this);
+      number = $t.data('number');
+      url = $t.data('url');
       qrcode = $t.data('qrcode');
       count = qrcode.getModuleCount();
-      scale = 3;
+      scale = 6;
       size = count * scale + scale * 4;
       canvas = $t.find('canvas')[0];
       if (canvas && canvas.getContext) {
         ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, size, size);
         ctx.fillStyle = 'rgb(' + $.hexToR(settings.color) + ',' + $.hexToG(settings.color) + ',' + $.hexToB(settings.color) + ')';
-        _results = [];
         for (r = 0, _ref = count - 1; 0 <= _ref ? r <= _ref : r >= _ref; 0 <= _ref ? r++ : r--) {
-          _results.push((function() {
-            var _ref2, _results2;
-            _results2 = [];
-            for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
-              if (qrcode.isDark(c, r)) {
-                _results2.push(ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale));
-              } else {
-                _results2.push(void 0);
-              }
+          for (c = 0, _ref2 = count - 1; 0 <= _ref2 ? c <= _ref2 : c >= _ref2; 0 <= _ref2 ? c++ : c--) {
+            if (qrcode.isDark(c, r)) {
+              ctx.fillRect(r * scale + scale * 2, c * scale + scale * 2, scale, scale);
             }
-            return _results2;
-          })());
+          }
         }
-        return _results;
+        ctx.font = '8pt Courier New';
+        ctx.fillText(url.replace('http://', '').replace('/', '/'), 11, size - 3, 400);
+        return ctx.fillText(number, size - 26, size - 3, 11);
       }
     });
   };
@@ -127,7 +129,6 @@
     var settings;
     settings = {
       color: '000000',
-      url: 'http://cards.ly',
       height: 50,
       width: 50
     };

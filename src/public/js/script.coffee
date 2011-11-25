@@ -49,7 +49,7 @@ $.line_copy = [
   '@my_twitter'
 ]
 
-
+random_strings = 'taameer73,Heesoh750,hiyit510,tuhaat140,Caaran74,lehof520,caniih190,Hiideer380,Doret53,yyywuut30,Febaad8,tootool61,huudiiz15,posaay690,Saakec590,tiloop930,lunad43,saatiim880,rolat70,mawas41,hidum17,baget520,Neekiir460,losiin220,leeleh45,Harees970,Cafeer440,neepat54,sojag760,ciqueen360,niifaat170,quetuuf470,tiimet66,deeros280,geeceel12,Taasow82,Fadoof87,Dodet720,riiteg15,jiitaaf25,Fujah620,hudon52,Sonit76,ceefoon680,sooneet88,ceesiis61,Tewiit520,tiiteh120,Cetiis72,Rylah25,reehyb340,Yerex67,QUiiwit10,satar530,Metew2,Leseh72,Leeheeb130,Giiliiw880,weetoog11,Cisin530,Juutih360,feseen310,Toopar73,Catet160,neejes690,Tyfeed21,Tatiic420,Watook720,Haawyc11,Motuuqu490,haayaah29,duufeec880,lityl770,moocuun88,behed21,hateeh89,Gosas4,cenood510,teneeh880,Lyyfeen970,pucun630,Liitec880,Teetiiqu110,Tageed38,zagaah480,neeheer87,hisig33,lasas450,tequot80,Dahiin840,Pubuqu860,Totoot79,Soonoom41,Faawut860,Heemaaqu15,hirin330,Leteen40,Seemeer790,faaween0,Yeesas680'.split ','
 
 
 
@@ -77,7 +77,8 @@ $.line_copy = [
 #
 $.fn.prep_qr = (options) ->
   settings = 
-    url: 'http://cards.ly'
+    url: 'http://cards.ly/'+random_strings[Math.floor(Math.random()*random_strings.length)]
+    number: Math.floor(Math.random()*100)
   this.each (i) ->
     if options
       $.extend settings, options
@@ -94,11 +95,13 @@ $.fn.prep_qr = (options) ->
     qrcode.make()
     #
     # Save that
+    $t.data 'number', settings.number
+    $t.data 'url', settings.url
     $t.data 'qrcode', qrcode
     #
     # Prep the variables for the canvas
     count = qrcode.getModuleCount()
-    scale = 3
+    scale = 6
     size = count * scale + scale * 4
     #
     #
@@ -123,29 +126,41 @@ $.fn.draw_qr = (options) ->
     $t = $(this)
     #
     #
+    number = $t.data 'number'
+    url = $t.data 'url'
     qrcode = $t.data 'qrcode'
     #
     # Prep the variables for the canvas
     count = qrcode.getModuleCount()
-    scale = 3
+    scale = 6
     size = count * scale + scale * 4
     #
     canvas = $t.find('canvas')[0]
     if canvas and canvas.getContext
       ctx = canvas.getContext "2d"
       #
-
+      #
+      ctx.clearRect 0,0,size,size
+      #
+      #
       ctx.fillStyle = 'rgb(' + $.hexToR(settings.color) + ',' + $.hexToG(settings.color) + ',' + $.hexToB(settings.color) + ')'
 
       # Actual Drawing of the QR Code
       for r in [0..count-1]
         for c in [0..count-1]
           ctx.fillRect r * scale + scale*2, c * scale + scale*2, scale, scale if qrcode.isDark(c,r)
+      #
+      #
+      #
+      ctx.font = '8pt Courier New'
+      ctx.fillText url.replace('http://','').replace('/', '/'), 11, size-3, 400
+      #
+      #
+      ctx.fillText number, size-26, size-3, 11
 #
 $.fn.qr = (options) ->
   settings = 
     color: '000000'
-    url: 'http://cards.ly'
     height: 50
     width: 50
   this.each (i) ->
