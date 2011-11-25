@@ -12,7 +12,7 @@
 
   parse = require('url').parse;
 
-  gzip = require('zlib').gzip;
+  //gzip = require('zlib').gzip;
 
   module.exports = function(options) {
     if (options == null) options = {};
@@ -96,14 +96,16 @@
         contentDisposition = 'attachment; filename="' + filename + '"';
         res.setHeader('Content-Disposition', contentDisposition);
       }
+      /*
       if (cacheHash.gzippedData && ((_ref2 = req.headers['accept-encoding']) != null ? _ref2.indexOf(/gzip/) : void 0)) {
         res.setHeader('Content-Encoding', 'gzip');
         res.setHeader('Content-Length', cacheHash.gzippedData.length);
         return res.end(cacheHash.gzippedData);
       } else {
+      */
         res.setHeader('Content-Length', cacheHash.data.length);
         return res.end(cacheHash.data);
-      }
+      //}
     };
 
     ConnectFileCache.prototype.set = function(routes, data, flags) {
