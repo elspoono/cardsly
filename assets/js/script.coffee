@@ -819,7 +819,7 @@ $ ->
   #
   # Get Started Button Scroll
   $('.design_button').click ->
-    if path isnt '/' and path isnt '/home'
+    if path isnt '/'
       document.location.href = '/#design-button'
     else
       $('html,body').animate
