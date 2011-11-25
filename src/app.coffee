@@ -1565,32 +1565,37 @@ get_order_info = (req, res, next) ->
       next()
 #
 #
-get_urls = (req, res, next) ->
-  mongo_url_group.find
-    user_id: req.user._id
-  , (err, url_groups) ->
-    if check_no_err err
-      #
-      #
-      groups_left = url_groups.length
-      #
-      #
-      next()
+get_group_urls = (req, res, next) ->
+  if req.user
+    mongo_url_group.find
+      user_id: req.user._id
+    , (err, url_groups) ->
+      if check_no_err err
+        #
+        #
+        req.url_groups = url_groups
+        #
+        #
+        next()
+  else
+    next()
 #
 # cards Page Mockup
-app.get '/cards', securedPage, get_order_info, get_urls, (req, res) ->
+app.get '/cards', securedPage, get_order_info, get_group_urls, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user
     session: req.session
+    group_urls: req.group_urls
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_order_info, get_urls, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_order_info, get_group_urls, (req, res) ->
   res.render 'cards'
     orders: req.orders
     user: req.user
     session: req.session
+    group_urls: req.group_urls
     thankyou: true
 #
 # Orders Page
@@ -1678,7 +1683,11 @@ app.get '/cute-animal', (req, res) ->
     layout: 'layout_landing'
 #
 #
-app.get '/buy', (req, res) ->
+#
+#
+#
+#
+app.get '/buy', get_group_urls, (req, res) ->
   res.render 'order_form'
     user: req.user
     session: req.session
@@ -1687,11 +1696,13 @@ app.get '/buy', (req, res) ->
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    group_urls: req.group_urls
 #
 #
 #
 #
-app.get '/sample-landing-page', (req, res) ->
+app.get '/sample-landing-page', get_group_urls, (req, res) ->
   res.render 'sample_landing_page'
     user: req.user
     session: req.session
@@ -1700,12 +1711,14 @@ app.get '/sample-landing-page', (req, res) ->
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    group_urls: req.group_urls
 #
 #
 #
 #
 # Real Index Page
-app.get '/', (req, res) -> 
+app.get '/', get_group_urls, (req, res) -> 
   #
   #
   if req.user
@@ -1718,14 +1731,17 @@ app.get '/', (req, res) ->
     ua_string = req.header('USER-AGENT')
     ua = ua_match ua_string
 
-    if ua.browser is 'msie' and parseInt(ua.version, 10) < 9
+    if (ua.browser is 'msie' and parseInt(ua.version, 10) < 9) or ua_string.match /mobile/i
       res.render 'simple_home'
         user: req.user
         session: req.session
-    else if ua_string.match /mobile/i
-      res.render 'simple_home'
-        user: req.user
-        session: req.session
+        #
+        # Cut off at 60 characters 
+        title: 'Cardsly | Create and buy QR code business cards you control'
+        # Cut off at 140 to 150 characters
+        description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        #
+        group_urls: req.group_urls
     else
       res.render 'index'
         user: req.user
@@ -1735,6 +1751,10 @@ app.get '/', (req, res) ->
         title: 'Cardsly | Create and buy QR code business cards you control'
         # Cut off at 140 to 150 characters
         description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        #
+        group_urls: req.group_urls
+        #
+        #
         scripts:[
           '/js/home.js'
         ]

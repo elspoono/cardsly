@@ -17,7 +17,7 @@
   - do basic config on all of them
   */
 
-  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, create_url, create_urls, db_uri, encrypted, everyauth, express, form, fs, geo, get_order_info, get_urls, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url_group, mongo_url_redirect, mongo_user, mongo_view, mongoose, mrg, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, random_url, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, small_url_schema, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_group_schema, url_redirect_schema, user_schema, util, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
+  var Promise, app, bcrypt, card_schema, check_no_err, check_no_err_ajax, compareEncrypted, conf, connect, consonants, create_url, create_urls, db_uri, encrypted, everyauth, express, form, fs, geo, get_group_urls, get_order_info, handleGoodResponse, http, i, im, knox, knoxClient, l, line_schema, message_schema, mongo_card, mongo_message, mongo_order, mongo_theme, mongo_url_group, mongo_url_redirect, mongo_user, mongo_view, mongoose, mrg, nodemailer, numbers, object_id, options, order_schema, pre_consonants, pre_vowels, random_url, redis_store, rest, samurai, schema, securedAdminPage, securedPage, session_store, small_url_schema, status_schema, stripe, theme_schema, theme_template_schema, ua_match, url_group_schema, url_redirect_schema, user_schema, util, valid_url_characters, view_schema, vowels, _i, _j, _len, _len2, _ref, _ref2;
 
   process.on('uncaughtException', function(err) {
     return console.log('UNCAUGHT', err);
@@ -1298,32 +1298,37 @@
     });
   };
 
-  get_urls = function(req, res, next) {
-    return mongo_url_group.find({
-      user_id: req.user._id
-    }, function(err, url_groups) {
-      var groups_left;
-      if (check_no_err(err)) {
-        groups_left = url_groups.length;
-        return next();
-      }
-    });
+  get_group_urls = function(req, res, next) {
+    if (req.user) {
+      return mongo_url_group.find({
+        user_id: req.user._id
+      }, function(err, url_groups) {
+        if (check_no_err(err)) {
+          req.url_groups = url_groups;
+          return next();
+        }
+      });
+    } else {
+      return next();
+    }
   };
 
-  app.get('/cards', securedPage, get_order_info, get_urls, function(req, res) {
+  app.get('/cards', securedPage, get_order_info, get_group_urls, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,
       session: req.session,
+      group_urls: req.group_urls,
       thankyou: false
     });
   });
 
-  app.get('/cards/thank-you', securedPage, get_order_info, get_urls, function(req, res) {
+  app.get('/cards/thank-you', securedPage, get_order_info, get_group_urls, function(req, res) {
     return res.render('cards', {
       orders: req.orders,
       user: req.user,
       session: req.session,
+      group_urls: req.group_urls,
       thankyou: true
     });
   });
@@ -1415,25 +1420,27 @@
     });
   });
 
-  app.get('/buy', function(req, res) {
+  app.get('/buy', get_group_urls, function(req, res) {
     return res.render('order_form', {
       user: req.user,
       session: req.session,
       title: 'Cardsly | Create and buy QR code business cards you control',
-      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.',
+      group_urls: req.group_urls
     });
   });
 
-  app.get('/sample-landing-page', function(req, res) {
+  app.get('/sample-landing-page', get_group_urls, function(req, res) {
     return res.render('sample_landing_page', {
       user: req.user,
       session: req.session,
       title: 'Cardsly | Create and buy QR code business cards you control',
-      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.',
+      group_urls: req.group_urls
     });
   });
 
-  app.get('/', function(req, res) {
+  app.get('/', get_group_urls, function(req, res) {
     var ua, ua_string;
     if (req.user) {
       return res.send('', {
@@ -1442,15 +1449,13 @@
     } else {
       ua_string = req.header('USER-AGENT');
       ua = ua_match(ua_string);
-      if (ua.browser === 'msie' && parseInt(ua.version, 10) < 9) {
+      if ((ua.browser === 'msie' && parseInt(ua.version, 10) < 9) || ua_string.match(/mobile/i)) {
         return res.render('simple_home', {
           user: req.user,
-          session: req.session
-        });
-      } else if (ua_string.match(/mobile/i)) {
-        return res.render('simple_home', {
-          user: req.user,
-          session: req.session
+          session: req.session,
+          title: 'Cardsly | Create and buy QR code business cards you control',
+          description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.',
+          group_urls: req.group_urls
         });
       } else {
         return res.render('index', {
@@ -1458,6 +1463,7 @@
           session: req.session,
           title: 'Cardsly | Create and buy QR code business cards you control',
           description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.',
+          group_urls: req.group_urls,
           scripts: ['/js/home.js']
         });
       }
