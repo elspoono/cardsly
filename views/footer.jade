@@ -38,21 +38,15 @@ a.chat(href='https://jodesco.campfirenow.com/b8b1c',target='_blank')
         a(href='http://twitter.com/#!wscain')
           img(src='/images/scott.png',title='Four score and seven years ago ...')
           img(src='/images/scott_text.png')
-//if lt IE 9
-  script(src='/js/libs/excanvas.compiled.js')
 //if lt IE 7
-  script(src='/js/libs/json2.js')
+  != js('libs/json2.js')
 script(src='https://js.stripe.com/v1/')
 script(src='//www.google.com/jsapi')
 script
   google.load("webfont", "1");
-script(src='/js/libs/jquery-1.6.2.min.js')
-script(src='/js/libs/jquery-ui-1.8.16.min.js')
-script(src='/js/plugins.js')
-script(src='/js/script.js')
-script(src='/js/libs/qrcode.js')
+!= js('script')
 - for (var i in scripts)
-  script(src=scripts[i])
+  != js(scripts[i])
 script
   var _sf_async_config={uid:30481,domain:"cards.ly"};
   (function(){
@@ -81,5 +75,5 @@ script
   _kms('//i.kissmetrics.com/i.js');_kms('//doug1izaerwt3.cloudfront.net/9d1117801d4df63bf079c74f1c957bf5881311a1.1.js');
 script(src='//cdn.optimizely.com/js/13629231.js')
 //if IE lt 9
-  link(rel='stylesheet', href='/css/ie.css')
-  script(src='/js/libs/PIE.js')
+  != css('ie')
+  != js('libs/PIE.js')
