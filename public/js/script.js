@@ -97,7 +97,7 @@
       color: '000000'
     };
     return this.each(function(i) {
-      var $t, c, canvas, count, ctx, number, qrcode, r, scale, size, url, _ref, _ref2;
+      var $t, c, canvas, count, ctx, do_style_one, do_style_two, number, qrcode, r, scale, size, url, _ref, _ref2;
       if (options) $.extend(settings, options);
       $t = $(this);
       number = $t.data('number');
@@ -118,8 +118,39 @@
             }
           }
         }
+        url = url.replace('http://', '');
+        do_style_one = function() {
+          ctx.font = '8pt Courier New';
+          return ctx.fillText(url, 11, size - 3, 400);
+        };
+        do_style_two = function() {
+          var dim, measured_width, re_measure, start_size, unit, width;
+          unit = scale * 4;
+          width = size - unit * 2;
+          ctx.clearRect(unit, size * 2 / 3 - unit / 2, width, unit);
+          width = width - unit / 2;
+          start_size = '8';
+          measured_width = 0;
+          re_measure = function() {
+            var dim;
+            ctx.font = start_size + 'px Arial';
+            dim = ctx.measureText(url);
+            measured_width = dim.width;
+            if (measured_width < width) {
+              start_size++;
+              return re_measure();
+            }
+          };
+          re_measure();
+          if (measured_width > width) {
+            ctx.font = start_size - 1 + 'px Arial';
+            dim = ctx.measureText(url);
+            measured_width = dim.width;
+          }
+          return ctx.fillText(url, unit + unit / 4 + (width - measured_width) / 2, size * 2 / 3 + unit / 4, 400);
+        };
+        do_style_one();
         ctx.font = '8pt Courier New';
-        ctx.fillText(url.replace('http://', '').replace('/', '/'), 11, size - 3, 400);
         return ctx.fillText(number, size - 26, size - 3, 11);
       }
     });
