@@ -40,14 +40,16 @@ html
               li
                 a(href='/cards') Cards
               li
-                a(href='/orders') Orders
+                a(href='/buy') Buy
               li
-                a(href='/admin') Theme Admin
+                a(href='/orders') Q
+              li
+                a(href='/admin') Admin
             else if user
               li
-                a(href='/') Buy Cards
-              li
                 a(href='/cards') Edit Cards
+              li
+                a(href='/buy') Buy Cards
             else
               li
                 a(href='/') Home

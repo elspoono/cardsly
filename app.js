@@ -533,7 +533,9 @@
       env: app.settings.env,
       user: false,
       session: false,
-      error_message: false
+      error_message: false,
+      title: 'Cardsly | Create and buy QR code business cards you control',
+      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
     });
     app.use(form({
       keepExtensions: true
@@ -1218,6 +1220,19 @@
   
   - normal pages
   - anything that's a regular page
+  
+  USAGE
+  
+  app.get '/path-you-want', (req, res, next) ->
+    do = 'something'
+    req.result = do
+    next()
+  , (req, res, next) ->
+    result = req.result
+    res.render 'path_you_want'
+      user: req.user
+      session: req.session
+      result: result
   */
 
   securedAdminPage = function(req, res, next) {
@@ -1263,14 +1278,6 @@
       }
     });
   }
-
-  /*
-  app.get '/', (req, res) ->
-    res.render 'landing-prelaunch'
-      user: req.user
-      session: req.session
-      layout: 'layout_landing'
-  */
 
   app.get('/success', function(req, res) {
     res.cookie('success_login', true);
@@ -1408,26 +1415,52 @@
     });
   });
 
+  app.get('/buy', function(req, res) {
+    return res.render('order_form', {
+      user: req.user,
+      session: req.session,
+      title: 'Cardsly | Create and buy QR code business cards you control',
+      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    });
+  });
+
+  app.get('/sample-landing-page', function(req, res) {
+    return res.render('sample_landing_page', {
+      user: req.user,
+      session: req.session,
+      title: 'Cardsly | Create and buy QR code business cards you control',
+      description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    });
+  });
+
   app.get('/', function(req, res) {
     var ua, ua_string;
-    ua_string = req.header('USER-AGENT');
-    ua = ua_match(ua_string);
-    if (ua.browser === 'msie' && parseInt(ua.version, 10) < 9) {
-      return res.render('simple_home', {
-        user: req.user,
-        session: req.session
-      });
-    } else if (ua_string.match(/mobile/i)) {
-      return res.render('simple_home', {
-        user: req.user,
-        session: req.session
-      });
+    if (req.user) {
+      return res.send('', {
+        Location: '/cards'
+      }, 302);
     } else {
-      return res.render('index', {
-        user: req.user,
-        session: req.session,
-        scripts: ['/js/home.js']
-      });
+      ua_string = req.header('USER-AGENT');
+      ua = ua_match(ua_string);
+      if (ua.browser === 'msie' && parseInt(ua.version, 10) < 9) {
+        return res.render('simple_home', {
+          user: req.user,
+          session: req.session
+        });
+      } else if (ua_string.match(/mobile/i)) {
+        return res.render('simple_home', {
+          user: req.user,
+          session: req.session
+        });
+      } else {
+        return res.render('index', {
+          user: req.user,
+          session: req.session,
+          title: 'Cardsly | Create and buy QR code business cards you control',
+          description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.',
+          scripts: ['/js/home.js']
+        });
+      }
     }
   });
 

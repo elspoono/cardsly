@@ -647,6 +647,13 @@ app.configure ->
     user: false
     session: false
     error_message: false
+    #
+    # Cut off at 60 characters 
+    title: 'Cardsly | Create and buy QR code business cards you control'
+    # Cut off at 140 to 150 characters
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    #
   app.use form
     keepExtensions: true
   app.use express.bodyParser()
@@ -1484,6 +1491,19 @@ GET ROUTES
 - normal pages
 - anything that's a regular page
 
+USAGE
+
+app.get '/path-you-want', (req, res, next) ->
+  do = 'something'
+  req.result = do
+  next()
+, (req, res, next) ->
+  result = req.result
+  res.render 'path_you_want'
+    user: req.user
+    session: req.session
+    result: result
+
 ###
 #
 #
@@ -1523,14 +1543,6 @@ if app.settings.env is 'production'
       next()
 
 #
-# Home Page
-###
-app.get '/', (req, res) ->
-  res.render 'landing-prelaunch'
-    user: req.user
-    session: req.session
-    layout: 'layout_landing'
-###
 #
 # Success Page
 #
@@ -1664,29 +1676,68 @@ app.get '/cute-animal', (req, res) ->
     user: req.user
     session: req.session
     layout: 'layout_landing'
-  
-
 #
-# Landing page prelaunch
+#
+app.get '/buy', (req, res) ->
+  res.render 'order_form'
+    user: req.user
+    session: req.session
+    #
+    # Cut off at 60 characters 
+    title: 'Cardsly | Create and buy QR code business cards you control'
+    # Cut off at 140 to 150 characters
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+#
+#
+#
+#
+app.get '/sample-landing-page', (req, res) ->
+  res.render 'sample_landing_page'
+    user: req.user
+    session: req.session
+    #
+    # Cut off at 60 characters 
+    title: 'Cardsly | Create and buy QR code business cards you control'
+    # Cut off at 140 to 150 characters
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+#
+#
+#
+#
+# Real Index Page
 app.get '/', (req, res) -> 
-  ua_string = req.header('USER-AGENT')
-  ua = ua_match ua_string
-
-  if ua.browser is 'msie' and parseInt(ua.version, 10) < 9
-    res.render 'simple_home'
-      user: req.user
-      session: req.session
-  else if ua_string.match /mobile/i
-    res.render 'simple_home'
-      user: req.user
-      session: req.session
+  #
+  #
+  if req.user
+    res.send '',
+      Location: '/cards'
+    , 302
   else
-    res.render 'index'
-      user: req.user
-      session: req.session
-      scripts:[
-        '/js/home.js'
-      ]
+    #
+    #
+    ua_string = req.header('USER-AGENT')
+    ua = ua_match ua_string
+
+    if ua.browser is 'msie' and parseInt(ua.version, 10) < 9
+      res.render 'simple_home'
+        user: req.user
+        session: req.session
+    else if ua_string.match /mobile/i
+      res.render 'simple_home'
+        user: req.user
+        session: req.session
+    else
+      res.render 'index'
+        user: req.user
+        session: req.session
+        #
+        # Cut off at 60 characters 
+        title: 'Cardsly | Create and buy QR code business cards you control'
+        # Cut off at 140 to 150 characters
+        description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        scripts:[
+          '/js/home.js'
+        ]
 #
 #
 #
