@@ -579,6 +579,27 @@ everyauth.google.fetchOAuthUser (accessToken) ->
 
 
 
+request = require 'request'
+
+# Variables we'll re-use
+customer_questions_available = true
+customer_questions_last_checked = 0
+
+# The checking function
+is_customer_questions_available = ->
+  if customer_questions_last_checked < (new Date() - 1000*60)
+    request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
+      if err or res.statusCode isnt 200
+        console.log 'ERR: campfire no response? - ', err
+      else
+        result = JSON.parse body
+        customer_questions_last_checked = new Date()
+        customer_questions_available = false
+        for user in result.room.users
+          if user.type is 'Member'
+            customer_questions_available = true
+  customer_questions_available
+
 
 
 
@@ -592,8 +613,7 @@ everyauth.google.fetchOAuthUser (accessToken) ->
 ###
 TODO
 
-For middleware
-- Make the session and user objects sent on every request sent automatically instead of being something we have to pass each time to the jade.
+- Pass the entire "req" object to jade files -- automatigically??
 
 ###
 
@@ -645,6 +665,7 @@ app.configure ->
     user: false
     session: false
     error_message: false
+    is_customer_questions_available: is_customer_questions_available
     #
     # Cut off at 60 characters 
     title: 'Cardsly | Create and buy QR code business cards you control'
