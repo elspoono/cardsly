@@ -12,8 +12,17 @@ if url_groups.length
   .section
     .cell_bg
     .cell_content
-      h3 Manage
-        | Your cards will be editable here once we ship them.
+      
+      .add_bar
+        input.url(placeholder='http://')
+        .button.normal Add URL
+
+      -for url_group in url_groups
+        .group
+          .total
+            =url_group.urls.length
+          .label
+            =url_group.date_added
 .section
   .cell_bg
   .cell_content

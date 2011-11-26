@@ -1348,9 +1348,9 @@ app.post '/confirm-purchase', (req, res, next) ->
           # Generate order urls, based on "quantity" (which isnt really quantity)
           #
           volume = 100
-          volume = 250 if new_order.quantity is 25
-          volume = 500 if new_order.quantity is 35
-          volume = 1500 if new_order.quantity is 75
+          volume = 250 if new_order.quantity*1 is 25
+          volume = 500 if new_order.quantity*1 is 35
+          volume = 1500 if new_order.quantity*1 is 70
           #
           #
           create_urls
@@ -1523,7 +1523,7 @@ securedPage = (req, res, next) ->
     res.send '',
       Location: '/'
     ,302
-check_no_err = (err) ->
+check_no_err = (err, res) ->
   if err
     console.log err
     res.send '',
@@ -1560,7 +1560,7 @@ get_order_info = (req, res, next) ->
     user_id: req.user._id
     'charge.paid': true
   , (err, orders) ->
-    if check_no_err err
+    if check_no_err err, res
       req.orders = orders
       next()
 #
@@ -1603,7 +1603,7 @@ app.get '/orders', securedAdminPage, (req, res, next) ->
   mongo_order.find
     'charge.paid': true
   , (err, orders) ->
-    if check_no_err err
+    if check_no_err err, res
       res.render 'orders'
         user: req.user
         orders: orders
@@ -1686,7 +1686,31 @@ app.get '/cute-animal', (req, res) ->
 #
 #
 #
-app.get '/buy', get_url_groups, (req, res) ->
+app.get '/buy', get_url_groups, (req, res, next) ->
+  session = req.session
+  if req.user
+    if (session and session.saved_form and session.saved_form.values and session.saved_form.values.length > 0 and session.saved_form.values[0] is "John Stamos") or !session or !session.saved_form or !session.saved_form.values or !session.saved_form.values.length
+      mongo_order.find
+        user_id: req.user._id
+      ,[],
+        limit: 1
+        sort:
+          date_added: -1
+      , (err, found_order) ->
+        if err
+          console.log err
+        else
+          req.session.saved_form.values = found_order[0].values
+          req.session.saved_address =
+            address: found_order[0].address
+            city: found_order[0].city
+            full_address: found_order[0].full_address
+        next()
+    else
+      next()
+  else
+    next()
+, (req, res, next) ->
   res.render 'order_form'
     user: req.user
     session: req.session

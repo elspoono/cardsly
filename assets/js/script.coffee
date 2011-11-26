@@ -821,7 +821,7 @@ $ ->
   $('.design_button').click ->
     if $('.home_designer').length
       $('html,body').animate
-        scrollTop: $('.section:eq(1)').offset().top-50
+        scrollTop: $('.home_designer').offset().top-100
         500
         ->
           $('.home_designer .line:first').click()
