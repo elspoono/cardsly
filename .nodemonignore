@@ -2,4 +2,5 @@
 ./public/*
 ./src/public/*
 ./builtAssets/*
+./assets/*
 *.rdb
