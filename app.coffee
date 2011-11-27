@@ -1881,7 +1881,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   qr = qr_code.create params.url
 
-  #console.log 'FOR URL: ', params.url
+  console.log 'FOR URL: ', params.url
 
   image_params = [
     __dirname + '/public/images/_.png'
@@ -1892,7 +1892,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
 
   count = qr.moduleCount
-  factor = .5
+  factor = 2
   #
   scale = 10 * factor
   offset = 0 * factor
@@ -1915,7 +1915,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       '-fill','#'+params.hex
     ]
 
-  #console.log 1
+  console.log 1
 
   for r in [0..count-1]
     for c in [0..count-1]
@@ -1927,7 +1927,6 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
         image_params.push [
           '-draw','rectangle '+y+','+x+' '+(y+scale)+','+(x+scale)
         ] if qr.isDark(c,r)
-        console.log c,r
       else
         image_params.push [
           '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
@@ -1958,7 +1957,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   image_params.push 'png:-'
 
-  console.log 'FINISHED'
+  console.log 2
 
   im.convert _.flatten(image_params), (err, img, stderr) ->
     buff = new Buffer img, 'binary'
