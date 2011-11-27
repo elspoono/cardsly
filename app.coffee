@@ -1881,7 +1881,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   qr = qr_code.create params.url
 
-  console.log 'FOR URL: ', params.url
+  #console.log 'FOR URL: ', params.url
 
   image_params = [
     __dirname + '/public/images/_.png'
@@ -1958,12 +1958,15 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
   image_params.push 'png:-'
 
   console.log 2
+  flattened = _.flatten image_params
+  console.log 3
 
-  im.convert _.flatten(image_params), (err, img, stderr) ->
+  im.convert flattened, (err, img, stderr) ->
     buff = new Buffer img, 'binary'
     res.send buff,
       'Content-Type': 'image/png'
     , 200
+    console.log 'SENT'
 #
 #
 #
