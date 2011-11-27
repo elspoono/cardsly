@@ -1838,20 +1838,46 @@ qr_code = require('./assets/js/libs/qrcode.js')
 _ = require 'underscore'
 #
 #
-app.get '/qr/:color?/:style?', (req, res, next) ->
+app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
 
   params =
     url: 'http://cards.ly'
     hex: '000000'
+    round: 5
+    style: 'round'
+    hex_2: 'transparent'
 
   
   
   parts = req.url.split '?'
   if parts.length > 1
     params.url = req.url.replace /^[^\?]*\?/i, ''
+  
 
-  console.log params.url
+  if req.params.color
+    if req.params.color.match /[a-f0-9]{6,8}/i
+      params.hex = req.params.color
+    else
+      req.params.style = req.params.color
+
+  if req.params.color_2
+    if req.params.color_2.match /[a-f0-9]{6,8}/i
+      params.hex_2 = req.params.color_2
+    else
+      req.params.style = req.params.color
+  
+
+  if req.params.style
+    if req.params.style is 'circle'
+      params.style = req.params.style
+      params.round = 4
+    if req.params.style is 'square'
+      params.style = req.params.style
+      params.round = 0
+    if req.params.style is 'round'
+      params.style = req.params.style
+      params.round = 5
 
   qr = qr_code.create params.url
 
@@ -1864,24 +1890,60 @@ app.get '/qr/:color?/:style?', (req, res, next) ->
 
 
   count = qr.moduleCount
-  scale = 20
-  offset = 0
-  qr_border_offset = 40
-  border_offset = 20
-  round = 8
+  factor = 2
+  #
+  scale = 10 * factor
+  offset = 0 * factor
+  qr_border_offset = 20 * factor
+  border_offset = 10 * factor
+  round = params.round * factor
+  #
+  quarter = scale/2
+  #
   size = count * border_offset + qr_border_offset * 2
 
   image_params.push [
     '-resize',size+'x'+size
   ]
 
+  if params.hex_2 isnt 'transparent'
+    image_params.push [
+      '-fill','#'+params.hex_2
+      '-draw','roundrectangle 0,0 '+size+','+size+' '+round*5+','+round*5
+      '-fill','#'+params.hex
+    ]
+
   for r in [0..count-1]
     for c in [0..count-1]
+      #
       x = c*border_offset+qr_border_offset+offset
       y = r*border_offset+qr_border_offset+offset
+      #
       image_params.push [
         '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
       ] if qr.isDark(c,r)
+      #
+      #
+      if params.style is 'round'
+        #
+        image_params.push [
+          '-draw','rectangle '+(y+quarter)+','+(x+quarter)+' '+(y+scale)+','+(x+scale)
+        ] if (qr.isDark(c+1,r) or qr.isDark(c,r+1)) and qr.isDark(c,r)
+        #
+        #
+        image_params.push [
+          '-draw','rectangle '+(y)+','+(x+quarter)+' '+(y+quarter)+','+(x+scale)
+        ] if (qr.isDark(c+1,r) or qr.isDark(c,r-1)) and qr.isDark(c,r)
+        #
+        #
+        image_params.push [
+          '-draw','rectangle '+(y)+','+(x)+' '+(y+quarter)+','+(x+quarter)
+        ] if (qr.isDark(c-1,r) or qr.isDark(c,r-1)) and qr.isDark(c,r)
+        #
+        #
+        image_params.push [
+          '-draw','rectangle '+(y+quarter)+','+(x)+' '+(y+scale)+','+(x+quarter)
+        ] if (qr.isDark(c-1,r) or qr.isDark(c,r+1)) and qr.isDark(c,r)
 
 
   image_params.push 'png:-'

@@ -60,7 +60,7 @@ QRCode.prototype = {
 	
 	isDark : function(row, col) {
 		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
-			throw new Error(row + "," + col);
+			return false;
 		}
 		return this.modules[row][col];
 	},
