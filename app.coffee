@@ -1919,9 +1919,14 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       x = c*border_offset+qr_border_offset+offset
       y = r*border_offset+qr_border_offset+offset
       #
-      image_params.push [
-        '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
-      ] if qr.isDark(c,r)
+      if params.style is 'square'
+        image_params.push [
+          '-draw','rectange '+y+','+x+' '+(y+scale)+','+(x+scale)
+        ] if qr.isDark(c,r)
+      else
+        image_params.push [
+          '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
+        ] if qr.isDark(c,r)
       #
       #
       if params.style is 'round'
