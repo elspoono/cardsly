@@ -1724,11 +1724,12 @@ app.get '/buy', get_url_groups, (req, res, next) ->
         if err
           console.log err
         else
-          req.session.saved_form.values = found_order[0].values
-          req.session.saved_address =
-            address: found_order[0].address
-            city: found_order[0].city
-            full_address: found_order[0].full_address
+          if found_order.length and found_order[0].values and found_order[0].address and found_order[0].city and found_order[0].full_address
+            req.session.saved_form.values = found_order[0].values
+            req.session.saved_address =
+              address: found_order[0].address
+              city: found_order[0].city
+              full_address: found_order[0].full_address
         next()
     else
       next()
