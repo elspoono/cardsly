@@ -1921,7 +1921,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       #
       if params.style is 'square'
         image_params.push [
-          '-draw','rectange '+y+','+x+' '+(y+scale)+','+(x+scale)
+          '-draw','rectangle '+y+','+x+' '+(y+scale)+','+(x+scale)
         ] if qr.isDark(c,r)
       else
         image_params.push [
