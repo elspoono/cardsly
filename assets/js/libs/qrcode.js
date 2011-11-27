@@ -1235,3 +1235,13 @@ QRBitBuffer.prototype = {
 		this.length++;
 	}
 };
+
+// This is only for being included from node. We are using this same library both places.
+if(typeof(exports) != 'undefined'){
+	exports.create = function(url){
+	  qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
+	  qrcode.addData(url);
+	  qrcode.make();
+	  return qrcode;
+	}
+}

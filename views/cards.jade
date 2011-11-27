@@ -9,17 +9,16 @@ if thankyou
         p Let us know how we can help improve the product or any interaction you've had with cards.ly. We really value input as we grow and become more awesomer because of people like you!
 
 .section
-//
-  if url_groups.length 
-    .add_bar
-      input.url(placeholder='http://')
-      .button.normal Add URL
-    .section
-      .cell_content
-        -for url_group in url_groups
-          .group
-            span.total
-              =url_group.urls.length
+if url_groups.length 
+  .add_bar
+    input.url(placeholder='http://')
+    .button.normal Add URL
+  .section
+    .cell_content
+      -for url_group in url_groups
+        .group
+          span.total
+            =url_group.urls.length
 .section
   .cell_bg
   .cell_content

@@ -1828,6 +1828,80 @@ app.get '/beepBoop10', (req, res) ->
 #
 #
 #
+#
+#
+#
+qr_code = require('./assets/js/libs/qrcode.js')
+_ = require 'underscore'
+#
+#
+app.get '/qr/:color?/:style?', (req, res, next) ->
+
+
+  params =
+    url: 'http://cards.ly'
+    hex: '000000'
+
+  
+  
+  parts = req.url.split '?'
+  if parts.length > 1
+    params.url = req.url.replace /^[^\?]*\?/i, ''
+
+  console.log params.url
+
+  qr = qr_code.create params.url
+
+  image_params = [
+    __dirname + '/public/images/_.png'
+    '-background','transparent'
+    '-fill','#'+params.hex
+  ]
+
+
+
+  count = qr.moduleCount
+  scale = 20
+  offset = 0
+  qr_border_offset = 40
+  border_offset = 20
+  round = 8
+  size = count * border_offset + qr_border_offset * 2
+
+  image_params.push [
+    '-resize',size+'x'+size
+  ]
+
+  for r in [0..count-1]
+    for c in [0..count-1]
+      x = c*border_offset+qr_border_offset+offset
+      y = r*border_offset+qr_border_offset+offset
+      image_params.push [
+        '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
+      ] if qr.isDark(c,r)
+
+
+  image_params.push 'png:-'
+
+  im.convert _.flatten(image_params), (err, img, stderr) ->
+    buff = new Buffer img, 'binary'
+    res.send buff,
+      'Content-Type': 'image/png'
+    , 200
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 # END GET ROUTES
 #
 #
