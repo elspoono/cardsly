@@ -1890,7 +1890,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
 
   count = qr.moduleCount
-  factor = 2
+  factor = .5
   #
   scale = 10 * factor
   offset = 0 * factor
