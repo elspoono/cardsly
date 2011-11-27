@@ -1881,6 +1881,8 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   qr = qr_code.create params.url
 
+  console.log 'FOR URL: ', params.url
+
   image_params = [
     __dirname + '/public/images/_.png'
     '-background','transparent'
@@ -1912,6 +1914,8 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       '-draw','roundrectangle 0,0 '+size+','+size+' '+round*5+','+round*5
       '-fill','#'+params.hex
     ]
+
+  console.log 1
 
   for r in [0..count-1]
     for c in [0..count-1]
@@ -1952,6 +1956,8 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
 
   image_params.push 'png:-'
+
+  console.log 2
 
   im.convert _.flatten(image_params), (err, img, stderr) ->
     buff = new Buffer img, 'binary'
