@@ -1847,7 +1847,7 @@ app.get '/make', (req, res, next) ->
 #
 qr_code = require('./assets/js/libs/qrcode.js')
 _ = require 'underscore'
-node_canvas = require './canvas'
+node_canvas = require 'canvas'
 #
 #
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
