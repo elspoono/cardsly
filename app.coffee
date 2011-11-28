@@ -95,6 +95,13 @@ object_id = schema.ObjectId
 #
 #
 #
+#
+qr_code = require('./assets/js/libs/qrcode.js')
+_ = require 'underscore'
+node_canvas = require 'canvas'
+#
+#
+#
 ###
 UTIL
 #
@@ -1234,7 +1241,6 @@ add_urls_to_order = (order, user, res) ->
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
-  ###
   volume = 100
   volume = 250 if order.quantity*1 is 25
   volume = 500 if order.quantity*1 is 35
@@ -1242,6 +1248,7 @@ add_urls_to_order = (order, user, res) ->
   #
   #
   #
+  ###
   mongo_theme.findById order.theme_id, (err, theme) ->
     theme_template = theme.theme_templates[order.active_view]
     #
@@ -1259,9 +1266,32 @@ add_urls_to_order = (order, user, res) ->
           imagedata += chunk
         response.on 'end', ->
           buff = new Buffer imagedata, 'binary'
-          res.send buff,
-            'Content-Type': 'image/png'
-          , 200
+
+          height = 960
+          width = 1680
+
+          canvas = new node_canvas(1680,960)
+          ctx = canvas.getContext '2d'
+
+          img = new node_canvas.Image
+          img.src = buff
+          ctx.drawImage img, 0, 0, width, height
+          
+
+
+          for line,i in theme_template.lines
+            h = Math.round(line.h/100*height)
+            x = line.x/100 * width
+            y = line.y/100 * height
+            ctx.font = h + 'px "' + __dirname + '/public/fonts/' + line.font_family + '.ttf"'
+            console.log ctx.font
+            ctx.fillText order.values[i], x, y+h
+
+          canvas.toBuffer (err, buff) ->
+            res.send buff,
+              'Content-Type': 'image/png'
+            , 200
+
 
   ###
   #
@@ -1879,10 +1909,6 @@ app.get '/make', (req, res, next) ->
 #
 #
 #
-#
-qr_code = require('./assets/js/libs/qrcode.js')
-_ = require 'underscore'
-node_canvas = require 'canvas'
 #
 #
 #
