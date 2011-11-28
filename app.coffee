@@ -1231,6 +1231,62 @@ app.post '/get-themes', (req,res,next) ->
 #
 #
 #
+add_urls_to_order = (order, user) ->
+  #
+  #
+  #
+  redirect_to = 'http://cards.ly/'+order.order_number
+  #
+  # Generate order urls, based on "quantity" (which isnt really quantity)
+  #
+  volume = 100
+  volume = 250 if order.quantity*1 is 25
+  volume = 500 if order.quantity*1 is 35
+  volume = 1500 if order.quantity*1 is 70
+  #
+  #
+  #
+  ###
+  mongo_theme.findById order.theme_id, (err, theme) ->
+    console.log theme
+  ###
+  #
+  create_urls
+    redirect_to: redirect_to
+    volume: volume
+  , (err, new_urls) ->
+
+    url_group = new mongo_url_group
+    url_group.order_id = order._id
+    url_group.user_id = user._id
+    url_group.urls = []
+    #
+    for new_url in new_urls
+      user.card_number++
+      url_group.urls.push
+        url_string: new_url.url_string
+        redirect_to: redirect_to
+        card_number: user.card_number
+    #
+    #
+    url_group.save (err, saved_group) ->
+      if err
+        console.log 'ERR: saving group - ', err
+    #
+    #
+    user.save (err, saved_user) ->
+      if err
+        console.log 'ERR: saving user - ', err
+  #
+#
+#
+app.get '/add-test', (req, res, next) ->
+  mongo_order.findOne
+    user_id: req.user._id
+  , (err, order) ->
+    add_urls_to_order order, req.user
+    res.send 'Done'
+#
 #
 #
 if app.settings.env is 'development'
@@ -1239,7 +1295,6 @@ if app.settings.env is 'development'
 else
   # Production
   stripe = require('./assets/js/libs/stripe.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
-
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
@@ -1362,44 +1417,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           #
           #
           #
-          redirect_to = 'http://cards.ly/'+new_order.order_number
-          #
-          #
-          #
-          # Generate order urls, based on "quantity" (which isnt really quantity)
-          #
-          volume = 100
-          volume = 250 if new_order.quantity*1 is 25
-          volume = 500 if new_order.quantity*1 is 35
-          volume = 1500 if new_order.quantity*1 is 70
-          #
-          #
-          create_urls
-            redirect_to: redirect_to
-            volume: volume
-          , (err, new_urls) ->
-
-            url_group = new mongo_url_group
-            url_group.order_id = new_order._id
-            url_group.user_id = req.user._id
-            url_group.urls = []
-            #
-            for new_url in new_urls
-              req.user.card_number++
-              url_group.urls.push
-                url_string: new_url.url_string
-                redirect_to: redirect_to
-                card_number: req.user.card_number
-            #
-            #
-            url_group.save (err, saved_group) ->
-              if err
-                console.log 'ERR: saving group - ', err
-            #
-            #
-            req.user.save (err, saved_user) ->
-              if err
-                console.log 'ERR: saving user - ', err
+          add_urls_to_order new_order, req.user
           #
           #
           ############
