@@ -1847,14 +1847,14 @@ app.get '/make', (req, res, next) ->
 #
 qr_code = require('./assets/js/libs/qrcode.js')
 _ = require 'underscore'
-node_canvas = require 'canvas'
+node_canvas = require 'canvas' or require './canvas'
 #
 #
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   canvas = new node_canvas(200,200)
   ctx = canvas.getContext '2d'
-  ctx.font = '30px Arial'
+  ctx.font = '30px Maven Pro'
   ctx.rotate .1
   ctx.fillText 'Awesome!', 50, 100
 
