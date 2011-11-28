@@ -1854,16 +1854,14 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   canvas = new node_canvas(200,200)
   ctx = canvas.getContext '2d'
-  ctx.font = '30px Maven Pro'
-  ctx.rotate .1
-  ctx.fillText 'Awesome!', 50, 100
 
-  te = ctx.measureText 'Awesome!'
-  ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-  ctx.beginPath()
-  ctx.lineTo 50, 102
-  ctx.lineTo 50 + te.width, 102
-  ctx.stroke()
+  ctx.fillStyle = '#0000FF'
+  ctx.fillRect 20, 20, 10, 10
+  
+  ctx.beginPath();
+  ctx.arc(75, 75, 10, 0, Math.PI*2, true); 
+  ctx.closePath();
+  ctx.fill();
 
   canvas.toBuffer (err, buff) ->
     res.send buff,
