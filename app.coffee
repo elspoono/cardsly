@@ -1831,16 +1831,46 @@ app.get '/beepBoop10', (req, res) ->
 #
 #
 #
+app.get '/make', (req, res, next) ->
+  res.render 'make'
+    user: req.user
+    session: req.session
+    #
+    # Cut off at 60 characters 
+    title: 'Cardsly | Generate custom QR Code images with short urls'
+    # Cut off at 140 to 150 characters
+    description: 'Create your own custom designed qr code images with short urls. See analytics and update links anytime in the Cardsly dashboard.'
+    #
 #
 #
 #
 #
 qr_code = require('./assets/js/libs/qrcode.js')
 _ = require 'underscore'
+node_canvas = require 'canvas'
 #
 #
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
+  canvas = new node_canvas(200,200)
+  ctx = canvas.getContext '2d'
+  ctx.font = '30px Arial'
+  ctx.rotate .1
+  ctx.fillText 'Awesome!', 50, 100
+
+  te = ctx.measureText 'Awesome!'
+  ctx.strokeStyle = 'rgba(0,0,0,0.5)'
+  ctx.beginPath()
+  ctx.lineTo 50, 102
+  ctx.lineTo 50 + te.width, 102
+  ctx.stroke()
+
+  canvas.toBuffer (err, buff) ->
+    res.send buff,
+      'Content-Type': 'image/png'
+    , 200
+
+  ###
 
   params =
     url: 'http://cards.ly'
@@ -1968,6 +1998,10 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       'Content-Type': 'image/png'
     , 200
     console.log 'SENT'
+  
+  ###
+
+
 #
 #
 #
