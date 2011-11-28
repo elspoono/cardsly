@@ -1444,8 +1444,8 @@ app.post '/confirm-purchase', (req, res, next) ->
           # Send Confirmation Email
           #####
           # Prep the Email Message
-          # Things to add to email message Receipt Details, Quantity Ordered, Total Paid, Order ID.
-          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.number+'</p></p> <p><b>Quantity Ordered: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+amount_paid+'.00</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+          total_paid = new_order.amount/100
+          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
           #
           # Send the user an email
           if new_order.confirm_email and new_order.email
