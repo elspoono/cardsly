@@ -1277,6 +1277,7 @@ add_urls_to_order = (order, user) ->
     user.save (err, saved_user) ->
       if err
         console.log 'ERR: saving user - ', err
+  volume
   #
 #
 #
@@ -1417,7 +1418,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           #
           #
           #
-          add_urls_to_order new_order, req.user
+          volume = add_urls_to_order new_order, req.user
           #
           #
           ############
