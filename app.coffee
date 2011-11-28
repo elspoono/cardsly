@@ -1850,6 +1850,33 @@ _ = require 'underscore'
 node_canvas = require 'canvas'
 #
 #
+#
+hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
+
+ctx_inverted_arc = (my_ctx, a, b, c, d) ->
+  my_ctx.beginPath()
+  my_ctx.moveTo c, b
+  my_ctx.quadraticCurveTo a, b, a, d
+  my_ctx.lineTo a, b
+  my_ctx.lineTo c, b
+  my_ctx.fill()
+#
+#
+#
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   params =
@@ -1911,31 +1938,66 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
   canvas = new node_canvas(size,size)
   ctx = canvas.getContext '2d'
 
-  ctx.fillStyle = '#'+params.hex
+  ctx.fillStyle = hex_to_rgba params.hex
 
   #
 
   if params.hex_2 isnt 'transparent'
-    console.log 'background'
+    
+    ctx.fillStyle = hex_to_rgba params.hex_2
+    
+    if params.style is 'square'
+      ctx.fillRect 0, 0, size, size
+    else
+      ctx.beginPath()
+      ctx.moveTo qr_border_offset, 0
+      ctx.lineTo size-qr_border_offset, 0
+      ctx.quadraticCurveTo size, 0, size, qr_border_offset
+      ctx.lineTo size, size-qr_border_offset
+      ctx.quadraticCurveTo size, size, size-qr_border_offset, size
+      ctx.lineTo qr_border_offset, size
+      ctx.quadraticCurveTo 0, size, 0, size-qr_border_offset
+      ctx.lineTo 0, qr_border_offset
+      ctx.quadraticCurveTo 0, 0, qr_border_offset, 0
+      ctx.fill()
+
+    ctx.fillStyle = hex_to_rgba params.hex
 
 
   for r in [0..count-1]
     for c in [0..count-1]
+      
       #
+      # r is the row we are on
+      # ... and c is the column
+      #
+      # x and y are the top left starting points for our qr grid item
+      #
+      # scale is the size of the grid item
+      #
+      # params.style is the type of drawing we are doing for that grid item
+
       x = c*border_offset+qr_border_offset+offset
       y = r*border_offset+qr_border_offset+offset
-      #
-
-      if params.style is 'square'
-        ctx.fillRect x, y, scale, scale if qr.isDark r, c
-      #
-      #
-      if params.style is 'round'
         
-        if qr.isDark r,c
-            
+      if qr.isDark r,c
+        #
+        #
+        #
+        if params.style is 'square'
+          ctx.fillRect x, y, scale, scale
+        #
+        #
+        if params.style is 'circle'
           ctx.beginPath()
-
+          ctx.arc x+quarter, y+quarter, quarter+1, 0, Math.PI*2
+          ctx.fill()
+        #
+        #
+        if params.style is 'round'
+          #
+          ctx.beginPath()
+          #
           # top middle
           ctx.moveTo x+quarter, y
 
@@ -1973,6 +2035,26 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
           # fill it all in
           ctx.fill()
+          #
+          #
+      else
+        if params.style is 'round'
+          #
+          # top left
+          if qr.isDark(r-1,c-1) and qr.isDark(r-1,c) and qr.isDark(r,c-1)
+            ctx_inverted_arc ctx, x, y, x+quarter/2, y+quarter/2
+          #
+          # top right
+          if qr.isDark(r-1,c) and qr.isDark(r-1,c+1) and qr.isDark(r,c+1)
+            ctx_inverted_arc ctx, x+scale, y, x+scale-quarter/2, y+quarter/2
+          #
+          # bottom right
+          if qr.isDark(r,c+1) and qr.isDark(r+1,c+1) and qr.isDark(r+1,c)
+            ctx_inverted_arc ctx, x+scale, y+scale, x+scale-quarter/2, y+scale-quarter/2
+          #
+          # bottom left
+          if qr.isDark(r,c-1) and qr.isDark(r+1,c-1) and qr.isDark(r+1,c)
+            ctx_inverted_arc ctx, x, y+scale, x+quarter/2, y+scale-quarter/2
 
   canvas.toBuffer (err, buff) ->
     res.send buff,

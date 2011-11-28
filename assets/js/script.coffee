@@ -124,6 +124,22 @@ $.hexToG = (h) -> parseInt(($.cutHex(h)).substring(2,4),16)
 $.hexToB = (h) -> parseInt(($.cutHex(h)).substring(4,6),16)
 $.cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
 #
+$.hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
+#
 $.fn.draw_qr = (options) ->
   settings = 
     color: '000000'
@@ -150,7 +166,7 @@ $.fn.draw_qr = (options) ->
       ctx.clearRect 0,0,size,size
       #
       #
-      ctx.fillStyle = 'rgb(' + $.hexToR(settings.color) + ',' + $.hexToG(settings.color) + ',' + $.hexToB(settings.color) + ')'
+      ctx.fillStyle = $.hex_to_rgba settings.color
 
       # Actual Drawing of the QR Code
       for r in [0..count-1]
