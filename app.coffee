@@ -1852,24 +1852,6 @@ node_canvas = require 'canvas'
 #
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
-  canvas = new node_canvas(200,200)
-  ctx = canvas.getContext '2d'
-
-  ctx.fillStyle = '#0000FF'
-  ctx.fillRect 20, 20, 10, 10
-  
-  ctx.beginPath();
-  ctx.arc(75, 75, 10, 0, Math.PI*2, true); 
-  ctx.closePath();
-  ctx.fill();
-
-  canvas.toBuffer (err, buff) ->
-    res.send buff,
-      'Content-Type': 'image/png'
-    , 200
-
-  ###
-
   params =
     url: 'http://cards.ly'
     hex: '000000'
@@ -1910,14 +1892,6 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   qr = qr_code.create params.url
 
-  #console.log 'FOR URL: ', params.url
-
-  image_params = [
-    __dirname + '/public/images/_.png'
-    '-background','transparent'
-    '-fill','#'+params.hex
-  ]
-
 
 
   count = qr.moduleCount
@@ -1933,18 +1907,17 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
   #
   size = count * border_offset + qr_border_offset * 2
 
-  image_params.push [
-    '-resize',size+'x'+size
-  ]
+
+  canvas = new node_canvas(size,size)
+  ctx = canvas.getContext '2d'
+
+  ctx.fillStyle = '#'+params.hex
+
+  #
 
   if params.hex_2 isnt 'transparent'
-    image_params.push [
-      '-fill','#'+params.hex_2
-      '-draw','roundrectangle 0,0 '+size+','+size+' '+round*5+','+round*5
-      '-fill','#'+params.hex
-    ]
+    console.log 'background'
 
-  console.log 1
 
   for r in [0..count-1]
     for c in [0..count-1]
@@ -1952,50 +1925,60 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       x = c*border_offset+qr_border_offset+offset
       y = r*border_offset+qr_border_offset+offset
       #
+
       if params.style is 'square'
-        image_params.push [
-          '-draw','rectangle '+y+','+x+' '+(y+scale)+','+(x+scale)
-        ] if qr.isDark(c,r)
-      else
-        image_params.push [
-          '-draw','roundrectangle '+y+','+x+' '+(y+scale)+','+(x+scale)+' '+round+','+round
-        ] if qr.isDark(c,r)
+        ctx.fillRect x, y, scale, scale if qr.isDark r, c
       #
       #
       if params.style is 'round'
-        #
-        image_params.push [
-          '-draw','rectangle '+(y+quarter)+','+(x+quarter)+' '+(y+scale)+','+(x+scale)
-        ] if (qr.isDark(c+1,r) or qr.isDark(c,r+1)) and qr.isDark(c,r)
-        #
-        #
-        image_params.push [
-          '-draw','rectangle '+(y)+','+(x+quarter)+' '+(y+quarter)+','+(x+scale)
-        ] if (qr.isDark(c+1,r) or qr.isDark(c,r-1)) and qr.isDark(c,r)
-        #
-        #
-        image_params.push [
-          '-draw','rectangle '+(y)+','+(x)+' '+(y+quarter)+','+(x+quarter)
-        ] if (qr.isDark(c-1,r) or qr.isDark(c,r-1)) and qr.isDark(c,r)
-        #
-        #
-        image_params.push [
-          '-draw','rectangle '+(y+quarter)+','+(x)+' '+(y+scale)+','+(x+quarter)
-        ] if (qr.isDark(c-1,r) or qr.isDark(c,r+1)) and qr.isDark(c,r)
+        
+        if qr.isDark r,c
+            
+          ctx.beginPath()
 
+          # top middle
+          ctx.moveTo x+quarter, y
 
-  image_params.push 'png:-'
+          # top right
+          if qr.isDark(r,c+1) or qr.isDark(r-1,c)
+            ctx.lineTo x+scale, y
+          else
+            ctx.lineTo x+scale-round, y
+            ctx.quadraticCurveTo x+scale, y, x+scale, y+round
 
-  console.log 2
-  flattened = _.flatten image_params
-  console.log 3
+          # bottom right
+          if qr.isDark(r,c+1) or qr.isDark(r+1,c)
+            ctx.lineTo x+scale, y+scale
+          else
+            ctx.lineTo x+scale, y+scale-round
+            ctx.quadraticCurveTo x+scale, y+scale, x+scale-round, y+scale
 
-  im.convert flattened, (err, img, stderr) ->
-    buff = new Buffer img, 'binary'
+          # bottom left
+          if qr.isDark(r,c-1) or qr.isDark(r+1,c)
+            ctx.lineTo x, y+scale
+          else
+            ctx.lineTo x+round, y+scale
+            ctx.quadraticCurveTo x, y+scale, x, y+scale-round
+
+          # top left
+          if qr.isDark(r,c-1) or qr.isDark(r-1,c)
+            ctx.lineTo x, y
+          else
+            ctx.lineTo x, y+round
+            ctx.quadraticCurveTo x, y, x+round, y
+          
+
+          # return to top middle
+          ctx.lineTo x+quarter, y
+
+          # fill it all in
+          ctx.fill()
+
+  canvas.toBuffer (err, buff) ->
     res.send buff,
       'Content-Type': 'image/png'
     , 200
-    console.log 'SENT'
+
   
   ###
 

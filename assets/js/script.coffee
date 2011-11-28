@@ -1256,71 +1256,72 @@ $ ->
   #
   # LOADING the themes
   #
-  all_themes = []
-  load_theme_thumbnails = ->
-    for theme in all_themes
+  if $categories.length
+    all_themes = []
+    load_theme_thumbnails = ->
+      for theme in all_themes
+        #
+        #
+        #
+        $my_card = $.create_card_from_theme
+          theme: theme
+          active_view: active_view
+        #
+        #
+        if active_theme._id and theme._id is active_theme._id
+          $active_theme = $my_card
+        #
+        # Push the whole thing to categories
+        $.add_card_to_category $my_card, theme
+      #
+      #
+      # Restore active theme
+      if $active_theme
+        $active_theme.closest('.category').addClass('active')
+        $active_theme.click()
+      else
+        $categories.find('.category:first h4').click()
       #
       #
       #
-      $my_card = $.create_card_from_theme
-        theme: theme
-        active_view: active_view
       #
       #
-      if active_theme._id and theme._id is active_theme._id
-        $active_theme = $my_card
-      #
-      # Push the whole thing to categories
-      $.add_card_to_category $my_card, theme
+      $lines.each (i) ->
+        update_cards i, $(this).html()
     #
     #
-    # Restore active theme
-    if $active_theme
-      $active_theme.closest('.category').addClass('active')
-      $active_theme.click()
-    else
-      $categories.find('.category:first h4').click()
     #
-    #
-    #
-    #
-    #
-    $lines.each (i) ->
-      update_cards i, $(this).html()
-  #
-  #
-  #
-  $.ajax
-    url: '/get-themes'
-    success: (all_data) ->
-      all_themes = all_data.themes
-      $categories.html ''
+    $.ajax
+      url: '/get-themes'
+      success: (all_data) ->
+        all_themes = all_data.themes
+        $categories.html ''
+        #
+        #
+        # Restore active view
+        $active_view = $ '.active_view'
+        if $active_view.html() and $active_view.html() isnt ''
+          active_view = $active_view.html()
+        $view_buttons.filter('.active').removeClass 'active'
+        $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
+        #
+        load_theme_thumbnails()
+        #
+        #
+        active_theme._id = $('.active_theme_id').html()
+        #
       #
       #
-      # Restore active view
-      $active_view = $ '.active_view'
-      if $active_view.html() and $active_view.html() isnt ''
-        active_view = $active_view.html()
-      $view_buttons.filter('.active').removeClass 'active'
-      $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
-      #
-      load_theme_thumbnails()
-      #
-      #
-      active_theme._id = $('.active_theme_id').html()
-      #
-    #
-    #
-    error: ->
-      $.load_alert
-        content: 'Error loading themes. Please try again later.'
-  $('.category .card').live 'click', () ->
-    $t = $ this
-    theme = $t.data 'theme'
-    if theme
-      load_theme theme
-      history = [theme]
-      set_timers()
+      error: ->
+        $.load_alert
+          content: 'Error loading themes. Please try again later.'
+    $('.category .card').live 'click', () ->
+      $t = $ this
+      theme = $t.data 'theme'
+      if theme
+        load_theme theme
+        history = [theme]
+        set_timers()
   #
   #
   #
