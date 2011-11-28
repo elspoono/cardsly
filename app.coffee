@@ -263,7 +263,8 @@ card_schema = new schema
   user_id: String
   print_id: Number
   path: String
-  theme_id: Number
+  theme_id: String
+  active_view: Number
   date_added:
     type: Date
     default: Date.now
@@ -360,6 +361,7 @@ order_schema = new schema
   order_number: String
   user_id: String
   theme_id: String
+  active_view: Number
   status: String
   status_history: [status_schema]
   quantity: Number
@@ -1205,13 +1207,6 @@ app.post '/get-user', (req,res,next) ->
     name: req.user.name
     email: req.user.email
     stripe: req.user.stripe
-    ###
-    payment_method:
-      card_type: req.user.payment_method.card_type
-      last_four_digits: req.user.payment_method.last_four_digits
-      expiry_month: req.user.payment_method.expiry_month
-      expiry_year: req.user.payment_method.expiry_year
-    ###
 
 #
 #
@@ -1231,7 +1226,7 @@ app.post '/get-themes', (req,res,next) ->
 #
 #
 #
-add_urls_to_order = (order, user) ->
+add_urls_to_order = (order, user, res) ->
   #
   #
   #
@@ -1239,6 +1234,7 @@ add_urls_to_order = (order, user) ->
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
+  ###
   volume = 100
   volume = 250 if order.quantity*1 is 25
   volume = 500 if order.quantity*1 is 35
@@ -1246,9 +1242,27 @@ add_urls_to_order = (order, user) ->
   #
   #
   #
-  ###
   mongo_theme.findById order.theme_id, (err, theme) ->
-    console.log theme
+    theme_template = theme.theme_templates[order.active_view]
+    #
+    imagedata = ''
+    #
+    request = http.get
+      host: 'd3eo3eito2cquu.cloudfront.net'
+      port: 80
+      path: '/raw/'+theme_template.s3_id
+    , (response) ->
+        #
+        response.setEncoding 'binary'
+        #
+        response.on 'data', (chunk) ->
+          imagedata += chunk
+        response.on 'end', ->
+          buff = new Buffer imagedata, 'binary'
+          res.send buff,
+            'Content-Type': 'image/png'
+          , 200
+
   ###
   #
   create_urls
@@ -1277,6 +1291,7 @@ add_urls_to_order = (order, user) ->
     user.save (err, saved_user) ->
       if err
         console.log 'ERR: saving user - ', err
+
   volume
   #
 #
@@ -1285,8 +1300,8 @@ app.get '/add-test', (req, res, next) ->
   mongo_order.findOne
     user_id: req.user._id
   , (err, order) ->
-    add_urls_to_order order, req.user
-    res.send 'Done'
+    add_urls_to_order order, req.user, res
+    #res.send 'Done'
 #
 #
 #
@@ -1302,6 +1317,7 @@ app.post '/confirm-purchase', (req, res, next) ->
   order = new mongo_order
   order.user_id = req.user._id
   order.theme_id = req.session.saved_form.active_theme_id
+  order.active_view = req.session.saved_form.active_view
   order.status = 'Pending'
   order.quantity = req.session.saved_form.quantity
   order.shipping_method = req.session.saved_form.shipping_method
@@ -1909,7 +1925,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
   
   parts = req.url.split '?'
   if parts.length > 1
-    params.url = req.url.replace /^[^\?]*\?/i, ''
+    params.url = unescape req.url.replace /^[^\?]*\?/i, ''
   
 
   if req.params.color
