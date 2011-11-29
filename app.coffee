@@ -680,6 +680,8 @@ app.configure ->
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    # H1 tag - allows html to be passed in, using brackets and all, e.g.: 
+    h1: '<span>business cards done easi<span class="alt">ly</span></span>'
     #
     #
   app.use form
@@ -1859,9 +1861,16 @@ app.get '/buy', get_url_groups, (req, res, next) ->
     session: req.session
     #
     # Cut off at 60 characters 
+    #
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
+    #
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    #h1: 'some other h1 tag'
+    #
+    # (Uncomment means remove the single # character at the start of it :)
     #
     url_groups: req.url_groups
 #
@@ -1874,9 +1883,16 @@ app.get '/sample-landing-page', get_url_groups, (req, res) ->
     session: req.session
     #
     # Cut off at 60 characters 
+    #
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
+    #
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    #h1: 'some other h1 tag'
+    #
+    # (Uncomment means remove the single # character at the start of it :)
     #
     url_groups: req.url_groups
 #
@@ -1903,9 +1919,16 @@ app.get '/', get_url_groups, (req, res) ->
         session: req.session
         #
         # Cut off at 60 characters 
+        #
         title: 'Cardsly | Create and buy QR code business cards you control'
         # Cut off at 140 to 150 characters
+        #
         description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        #
+        # Uncomment the following line to add a custom h1 tag!
+        #h1: 'some other h1 tag'
+        #
+        # (Uncomment means remove the single # character at the start of it :)
         #
         url_groups: req.url_groups
     else
@@ -1914,9 +1937,16 @@ app.get '/', get_url_groups, (req, res) ->
         session: req.session
         #
         # Cut off at 60 characters 
+        #
         title: 'Cardsly | Create and buy QR code business cards you control'
         # Cut off at 140 to 150 characters
+        #
         description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        #
+        # Uncomment the following line to add a custom h1 tag!
+        #h1: 'some other h1 tag'
+        #
+        # (Uncomment means remove the single # character at the start of it :)
         #
         url_groups: req.url_groups
         #
@@ -1955,9 +1985,16 @@ app.get '/make', (req, res, next) ->
     session: req.session
     #
     # Cut off at 60 characters 
-    title: 'Cardsly | Generate custom QR Code images with short urls'
+    #
+    title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
-    description: 'Create your own custom designed qr code images with short urls. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    #h1: 'some other h1 tag'
+    #
+    # (Uncomment means remove the single # character at the start of it :)
     #
 #
 #
