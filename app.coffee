@@ -1257,6 +1257,7 @@ add_urls_to_order = (order, user, res) ->
   #
   #
   #
+  ###
   mongo_theme.findById order.theme_id, (err, theme) ->
     theme_template = theme.theme_templates[order.active_view]
     #
@@ -1332,7 +1333,6 @@ add_urls_to_order = (order, user, res) ->
         console.log 'ERR: saving user - ', err
 
   volume
-  ###
   #
 #
 #
