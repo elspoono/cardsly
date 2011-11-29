@@ -1,30 +1,10 @@
-QR8bitByte = (data) ->
-  @mode = QRMode.MODE_8BIT_BYTE
-  @data = data
-QRCode = (typeNumber, errorCorrectLevel) ->
-  @typeNumber = typeNumber
-  @errorCorrectLevel = errorCorrectLevel
-  @modules = null
-  @moduleCount = 0
-  @dataCache = null
-  @dataList = new Array()
-QRPolynomial = (num, shift) ->
-  throw new Error(num.length + "/" + shift)  if num.length is `undefined`
-  offset = 0
-  offset++  while offset < num.length and num[offset] is 0
-  @num = new Array(num.length - offset + shift)
-  i = 0
-
-  while i < num.length - offset
-    @num[i] = num[i + offset]
-    i++
 QRRSBlock = (totalCount, dataCount) ->
   @totalCount = totalCount
   @dataCount = dataCount
-QRBitBuffer = ->
-  @buffer = new Array()
-  @length = 0
 class QR8bitByte
+  constructor: (data) ->
+    @mode = QRMode.MODE_8BIT_BYTE
+    @data = data
   getLength: (buffer) ->
     @data.length
 
@@ -36,6 +16,13 @@ class QR8bitByte
       i++
 
 class QRCode
+  constructor: (typeNumber, errorCorrectLevel) ->
+    @typeNumber = typeNumber
+    @errorCorrectLevel = errorCorrectLevel
+    @modules = null
+    @moduleCount = 0
+    @dataCache = null
+    @dataList = new Array()
   addData: (data) ->
     newData = new QR8bitByte(data)
     @dataList.push newData
@@ -101,11 +88,15 @@ class QRCode
     r = -1
 
     while r <= 7
-      continue  if row + r <= -1 or @moduleCount <= row + r
+      if row + r <= -1 or @moduleCount <= row + r
+        r++
+        continue
       c = -1
 
       while c <= 7
-        continue  if col + c <= -1 or @moduleCount <= col + c
+        if col + c <= -1 or @moduleCount <= col + c
+          c++
+          continue
         if (0 <= r and r <= 6 and (c is 0 or c is 6)) or (0 <= c and c <= 6 and (r is 0 or r is 6)) or (2 <= r and r <= 4 and 2 <= c and c <= 4)
           @modules[row + r][col + c] = true
         else
@@ -155,13 +146,17 @@ class QRCode
     r = 8
 
     while r < @moduleCount - 8
-      continue  if @modules[r][6]?
+      if @modules[r][6]?
+        r++
+        continue
       @modules[r][6] = (r % 2 is 0)
       r++
     c = 8
 
     while c < @moduleCount - 8
-      continue  if @modules[6][c]?
+      if @modules[6][c]?
+        c++
+        continue
       @modules[6][c] = (c % 2 is 0)
       c++
 
@@ -175,7 +170,9 @@ class QRCode
       while j < pos.length
         row = pos[i]
         col = pos[j]
-        continue  if @modules[row][col]?
+        if @modules[row][col]?
+          j++
+          continue
         r = -2
 
         while r <= 2
@@ -483,12 +480,18 @@ QRUtil =
         r = -1
 
         while r <= 1
-          continue  if row + r < 0 or moduleCount <= row + r
+          if row + r < 0 or moduleCount <= row + r
+            r++
+            continue
           c = -1
 
           while c <= 1
-            continue  if col + c < 0 or moduleCount <= col + c
-            continue  if r is 0 and c is 0
+            if col + c < 0 or moduleCount <= col + c
+              c++
+              continue
+            if r is 0 and c is 0
+              c++
+              continue
             sameCount++  if dark is qrCode.isDark(row + r, col + c)
             c++
           r++
@@ -570,6 +573,16 @@ while i < 255
   QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]] = i
   i++
 class QRPolynomial
+  constructor: (num, shift) ->
+    throw new Error(num.length + "/" + shift)  if num.length is `undefined`
+    offset = 0
+    offset++  while offset < num.length and num[offset] is 0
+    @num = new Array(num.length - offset + shift)
+    i = 0
+
+    while i < num.length - offset
+      @num[i] = num[i + offset]
+      i++
   get: (index) ->
     @num[index]
 
@@ -639,6 +652,9 @@ QRRSBlock.getRsBlockTable = (typeNumber, errorCorrectLevel) ->
       `undefined`
 
 class QRBitBuffer
+  constructor: ->
+    @buffer = new Array()
+    @length = 0
   get: (index) ->
     bufIndex = Math.floor(index / 8)
     ((@buffer[bufIndex] >>> (7 - index % 8)) & 1) is 1
@@ -661,14 +677,15 @@ class QRBitBuffer
 
 
 
-
-
-
-#
-unless typeof (exports) is "undefined"
-  exports.create = (url) ->
+create = (url) ->
     qrcode = new QRCode(-1, QRErrorCorrectLevel.H)
-    console.log qrcode
     qrcode.addData url
     qrcode.make()
     qrcode
+
+#
+#
+#
+# used when required :)
+unless typeof (exports) is "undefined"
+  exports.create = create
