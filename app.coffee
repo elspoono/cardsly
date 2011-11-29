@@ -1236,7 +1236,7 @@ exec = require('child_process').exec
 puts = (error, stdout, stderr) -> 
   console.log stderr
   console.log stdout
-exec "rm -r /app/.fonts | mkdir /app/.fonts/ | cp ./public/fonts/* /app/.fonts/ | chown root /app/.fonts/* | mkfontdir /app/.fonts | fc-cache -fv /app/.fonts/", puts
+exec "rm -r /app/.fonts | mkdir /app/.fonts/ | cp ./public/fonts/* /app/.fonts/ | chown root /app/.fonts/* | mkfontdir /app/.fonts/ | fc-cache -fv /app/.fonts/", puts
 #
 add_urls_to_order = (order, user, res) ->
   #
