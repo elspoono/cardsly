@@ -1232,9 +1232,8 @@ app.post '/get-themes', (req,res,next) ->
         themes: themes
 #
 #
-sys = require('sys')
 exec = require('child_process').exec
-puts = (error, stdout, stderr) -> sys.puts(stdout) 
+puts = (error, stdout, stderr) -> console.log(stdout) 
 exec "ls -la", puts
 #
 add_urls_to_order = (order, user, res) ->
