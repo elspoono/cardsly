@@ -96,7 +96,7 @@ object_id = schema.ObjectId
 #
 #
 #
-qr_code = require('./assets/js/libs/qrcode.js')
+qr_code = require './assets/js/libs/qrcode'
 _ = require 'underscore'
 node_canvas = require 'canvas'
 #
