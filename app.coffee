@@ -1233,8 +1233,8 @@ app.post '/get-themes', (req,res,next) ->
 #
 #
 exec = require('child_process').exec
-puts = (error, stdout, stderr) -> console.log(stdout) 
-exec "ls -la", puts
+puts = (error, stdout, stderr) -> console.log stdout
+exec "mkdir /app/.fonts/ | cp public/fonts/* /app/.fonts/ | fc-cache -fv", puts
 #
 add_urls_to_order = (order, user, res) ->
   #
