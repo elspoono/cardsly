@@ -1278,6 +1278,7 @@ add_urls_to_order = (order, user, res) ->
           ctx = canvas.getContext '2d'
 
           img = new node_canvas.Image
+          ###
           img.src = buff
           ctx.drawImage img, 0, 0, width, height
           
@@ -1291,7 +1292,7 @@ add_urls_to_order = (order, user, res) ->
             ctx.font = h + 'px "' + line.font_family + '"'
             console.log ctx.font
             ctx.fillText order.values[i], x, y+h
-          ###
+          
           canvas.toBuffer (err, buff) ->
             res.send buff,
               'Content-Type': 'image/png'
