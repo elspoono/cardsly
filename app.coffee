@@ -1282,13 +1282,13 @@ add_urls_to_order = (order, user, res) ->
           ctx = canvas.getContext '2d'
 
           img = new node_canvas.Image
-          ###
+          
           img.src = buff
           ctx.drawImage img, 0, 0, width, height
           
 
 
-          ###
+          
           for line,i in theme_template.lines
             h = Math.round(line.h/100*height)
             x = line.x/100 * width
