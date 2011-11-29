@@ -1340,8 +1340,51 @@ app.get '/add-test', (req, res, next) ->
   mongo_order.findOne
     user_id: req.user._id
   , (err, order) ->
-    add_urls_to_order order, req.user, res
-    #res.send 'Done'
+    #
+    #
+    #
+    #
+    mongo_theme.findById order.theme_id, (err, theme) ->
+      theme_template = theme.theme_templates[order.active_view]
+      #
+      imagedata = ''
+      #
+      request = http.get
+        host: 'd3eo3eito2cquu.cloudfront.net'
+        port: 80
+        path: '/raw/'+theme_template.s3_id
+      , (response) ->
+          #
+          response.setEncoding 'binary'
+          #
+          response.on 'data', (chunk) ->
+            imagedata += chunk
+          response.on 'end', ->
+            buff = new Buffer imagedata, 'binary'
+
+            height = 960
+            width = 1680
+
+            canvas = new node_canvas(1680,960)
+            ctx = canvas.getContext '2d'
+
+            img = new node_canvas.Image
+            img.src = buff
+            ctx.drawImage img, 0, 0, width, height
+            
+
+
+            for line,i in theme_template.lines
+              h = Math.round(line.h/100*height)
+              x = line.x/100 * width
+              y = line.y/100 * height
+              ctx.font = h + 'px slackey'
+              ctx.fillText order.values[i], x, y+h
+            
+            canvas.toBuffer (err, buff) ->
+              res.send buff,
+                'Content-Type': 'image/png'
+              , 200
 #
 #
 #
