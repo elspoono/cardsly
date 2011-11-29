@@ -1,7 +1,7 @@
 #= require 'libs/jquery-1.6.2.js'
 #= require 'libs/jquery-ui-1.8.16.min.js'
 #= require 'date'
-#= require 'libs/qrcode.js'
+#= require 'libs/qrcode'
 
 
 
