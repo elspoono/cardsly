@@ -1236,7 +1236,7 @@ exec = require('child_process').exec
 puts = (error, stdout, stderr) -> 
   console.log stderr
   console.log stdout
-exec "mkdir /app/.fonts | cp ./public/fonts/* /app/.fonts/ | fc-cache -fv", puts
+exec "mkdir /app/.fonts | cp ./public/fonts/* /app/.fonts/ | fc-cache -fv /app/.fonts/", puts
 #
 add_urls_to_order = (order, user, res) ->
   #
@@ -1283,6 +1283,7 @@ add_urls_to_order = (order, user, res) ->
           
 
 
+          ###
           for line,i in theme_template.lines
             h = Math.round(line.h/100*height)
             x = line.x/100 * width
@@ -1290,7 +1291,7 @@ add_urls_to_order = (order, user, res) ->
             ctx.font = h + 'px "' + line.font_family + '"'
             console.log ctx.font
             ctx.fillText order.values[i], x, y+h
-
+          ###
           canvas.toBuffer (err, buff) ->
             res.send buff,
               'Content-Type': 'image/png'
