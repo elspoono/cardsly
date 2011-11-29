@@ -1,0 +1,1077 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'canvas' ]
+info using npm@1.0.106
+info using node@v0.4.7
+verbose config file /Users/wscain/.npmrc
+verbose config file /usr/local/etc/npmrc
+verbose config file /usr/local/lib/node_modules/npm/npmrc
+silly testEngine { name: 'cham',
+silly testEngine   version: '0.0.1',
+silly testEngine   private: true,
+silly testEngine   dependencies: 
+silly testEngine    { express: '>= 0.0.1',
+silly testEngine      jade: '>= 0.0.1',
+silly testEngine      stylus: '>= 0.13.9',
+silly testEngine      'coffee-script': '>= 1.1.2',
+silly testEngine      connect: '>= 0.0.1',
+silly testEngine      'connect-redis': '>= 0.0.1',
+silly testEngine      mongoose: '>= 0.0.1',
+silly testEngine      bcrypt: '>=0.0.1',
+silly testEngine      geo: '>=0.0.1',
+silly testEngine      nodemailer: '>=0.0.1',
+silly testEngine      pdfkit: '>=0.0.1',
+silly testEngine      imagemagick: '>=0.0.1',
+silly testEngine      everyauth: '>=0.0.1',
+silly testEngine      knox: '>=0.0.1',
+silly testEngine      'connect-form': '>=0.0.1',
+silly testEngine      loggly: '>=0.0.1',
+silly testEngine      samurai: '>=0.0.1',
+silly testEngine      mime: '1.2.2',
+silly testEngine      snockets: '1.3.3',
+silly testEngine      underscore: '1.1.7',
+silly testEngine      request: '>=0.0.1' },
+silly testEngine   devDependencies: { vows: '>= 0.5.9' },
+silly testEngine   engines: { node: '*' },
+silly testEngine   author: 
+silly testEngine    { name: 'Grey Ang',
+silly testEngine      email: 'conancat@gmail.com',
+silly testEngine      url: 'http://grey-ang.com' },
+silly testEngine   description: 'Boilerplate for quick Coffeescript driven app, backed by Jade and Stylus',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/conancat/cham.git' },
+silly testEngine   scripts: { test: 'cake test' },
+silly testEngine   _id: 'cham@0.0.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/package.json
+verbose loadDefaults cham@0.0.1
+silly testEngine { name: 'connect',
+silly testEngine   version: '1.8.1',
+silly testEngine   description: 'High performance middleware framework',
+silly testEngine   keywords: [ 'framework', 'web', 'middleware', 'connect', 'rack' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/senchalabs/connect.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca',
+silly testEngine      url: 'http://tjholowaychuk.com' },
+silly testEngine   dependencies: 
+silly testEngine    { qs: '>= 0.3.1',
+silly testEngine      mime: '>= 0.0.1',
+silly testEngine      formidable: '1.0.x' },
+silly testEngine   devDependencies: 
+silly testEngine    { expresso: '0.9.2',
+silly testEngine      koala: '0.1.2',
+silly testEngine      less: '1.1.1',
+silly testEngine      sass: '0.5.0',
+silly testEngine      markdown: '0.2.1',
+silly testEngine      ejs: '0.4.3',
+silly testEngine      should: '0.3.2' },
+silly testEngine   main: 'index',
+silly testEngine   engines: { node: '>= 0.4.1 < 0.7.0' },
+silly testEngine   _id: 'connect@1.8.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/connect/package.json
+verbose loadDefaults connect@1.8.1
+silly testEngine { name: 'connect-form',
+silly testEngine   description: 'urlencoded / multipart form parsing middleware for Connect',
+silly testEngine   version: '0.2.1',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   dependencies: { formidable: '>= 0.9.3' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'connect-form@0.2.1',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/connect-form/package.json
+verbose loadDefaults connect-form@0.2.1
+silly testEngine { name: 'coffee-script',
+silly testEngine   description: 'Unfancy JavaScript',
+silly testEngine   keywords: [ 'javascript', 'language', 'coffeescript', 'compiler' ],
+silly testEngine   author: { name: 'Jeremy Ashkenas' },
+silly testEngine   version: '1.1.3',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'http://github.com/jashkenas/coffee-script/raw/master/LICENSE' } ],
+silly testEngine   engines: { node: '>=0.4.0' },
+silly testEngine   directories: { lib: './lib/coffee-script' },
+silly testEngine   main: './lib/coffee-script/coffee-script',
+silly testEngine   bin: { coffee: './bin/coffee', cake: './bin/cake' },
+silly testEngine   homepage: 'http://coffeescript.org',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/jashkenas/coffee-script.git' },
+silly testEngine   devDependencies: { 'uglify-js': '1.0.6', jison: '0.2.11' },
+silly testEngine   _id: 'coffee-script@1.1.3',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/coffee-script/package.json
+verbose loadDefaults coffee-script@1.1.3
+silly testEngine { name: 'everyauth',
+silly testEngine   description: 'Auth solution (password, facebook, & more) for your node.js Connect & Express apps',
+silly testEngine   version: '0.2.27',
+silly testEngine   homepage: 'https://github.com/bnoguchi/everyauth/',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/bnoguchi/everyauth.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'Brian Noguchi',
+silly testEngine      email: 'brian.noguchi@gmail.com',
+silly testEngine      url: 'https://github.com/bnoguchi/' },
+silly testEngine   keywords: 
+silly testEngine    [ 'auth',
+silly testEngine      'oauth',
+silly testEngine      'password',
+silly testEngine      'facebook',
+silly testEngine      'openid',
+silly testEngine      'twitter',
+silly testEngine      'authorization',
+silly testEngine      'authentication',
+silly testEngine      'connect',
+silly testEngine      'express' ],
+silly testEngine   main: './index.js',
+silly testEngine   directories: { lib: 'lib' },
+silly testEngine   dependencies: 
+silly testEngine    { oauth: '>=0.9.0',
+silly testEngine      restler: '>=0.2.1',
+silly testEngine      request: '>=2.2.0',
+silly testEngine      connect: '>=1 <2',
+silly testEngine      openid: '>=0.2.0',
+silly testEngine      xml2js: '>=0.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { express: '>=2.3.10',
+silly testEngine      jade: '>=0.12.1',
+silly testEngine      tobi: '>=0.2.2',
+silly testEngine      expresso: '>=0.8.1',
+silly testEngine      should: '>=0.2.1' },
+silly testEngine   engines: { node: '>=0.4' },
+silly testEngine   _id: 'everyauth@0.2.27',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/everyauth/package.json
+verbose loadDefaults everyauth@0.2.27
+silly testEngine { name: 'connect-redis',
+silly testEngine   description: 'Redis session store for Connect',
+silly testEngine   version: '1.2.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   main: './index.js',
+silly testEngine   dependencies: { redis: '>= 0.0.1' },
+silly testEngine   devDependencies: { connect: '1.4.x' },
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'connect-redis@1.2.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/connect-redis/package.json
+verbose loadDefaults connect-redis@1.2.0
+silly testEngine { name: 'geo',
+silly testEngine   description: 'Geo is a very basic, but simple and extendable, geocode library for Node.js. Currently it only supports Google\'s Geocode API (v3) - Geo Spatial features are coming out soon',
+silly testEngine   homepage: 'http://geeks.aretotally.in/projects/geonode',
+silly testEngine   keywords: 
+silly testEngine    [ 'geo',
+silly testEngine      'geospatial',
+silly testEngine      'geocode',
+silly testEngine      'geocoding',
+silly testEngine      'geohash' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Felipe Oliveira',
+silly testEngine      email: 'felipera@gmail.com' },
+silly testEngine   contributors: [],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git@github.com:feliperazeek/geonode.git' },
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'GPLv3',
+silly testEngine        url: 'http://www.gnu.org/licenses/gpl-3.0.txt' } ],
+silly testEngine   dependencies: { geohash: '' },
+silly testEngine   lib: 'lib',
+silly testEngine   main: './lib/geo',
+silly testEngine   version: '0.0.3',
+silly testEngine   directories: { test: './test' },
+silly testEngine   engines: { node: '>= 0.3.0' },
+silly testEngine   _id: 'geo@0.0.3',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/geo/package.json
+verbose loadDefaults geo@0.0.3
+silly testEngine { name: 'imagemagick',
+silly testEngine   description: 'A wrapper around the imagemagick cli',
+silly testEngine   version: '0.1.2',
+silly testEngine   author: { name: 'Rasmus Andersson' },
+silly testEngine   licenses: [ { type: 'MIT' } ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/rsms/node-imagemagick.git' },
+silly testEngine   engine: [ 'node >=0.1.90' ],
+silly testEngine   main: 'imagemagick',
+silly testEngine   _id: 'imagemagick@0.1.2',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/imagemagick/package.json
+verbose loadDefaults imagemagick@0.1.2
+silly testEngine { name: 'express',
+silly testEngine   description: 'Sinatra inspired web development framework',
+silly testEngine   version: '2.5.1',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'TJ Holowaychuk',
+silly testEngine        email: 'tj@vision-media.ca' },
+silly testEngine      { name: 'Aaron Heckmann',
+silly testEngine        email: 'aaron.heckmann+github@gmail.com' },
+silly testEngine      { name: 'Ciaran Jessup', email: 'ciaranj@gmail.com' },
+silly testEngine      { name: 'Guillermo Rauch', email: 'rauchg@gmail.com' } ],
+silly testEngine   dependencies: 
+silly testEngine    { connect: '1.8.x',
+silly testEngine      mime: '>= 0.0.1',
+silly testEngine      qs: '>= 0.3.1',
+silly testEngine      mkdirp: '0.0.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'connect-form': '0.2.1',
+silly testEngine      ejs: '0.4.2',
+silly testEngine      expresso: '0.9.2',
+silly testEngine      hamljs: '0.5.1',
+silly testEngine      jade: '0.16.2',
+silly testEngine      stylus: '0.13.0',
+silly testEngine      should: '0.3.2',
+silly testEngine      'express-messages': '0.0.2',
+silly testEngine      'node-markdown': '>= 0.0.1',
+silly testEngine      'connect-redis': '>= 0.0.1' },
+silly testEngine   keywords: [ 'framework', 'sinatra', 'web', 'rest', 'restful' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/express.git' },
+silly testEngine   main: 'index',
+silly testEngine   bin: { express: './bin/express' },
+silly testEngine   scripts: { test: 'make test', prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.4.1 < 0.7.0' },
+silly testEngine   _id: 'express@2.5.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/express/package.json
+verbose loadDefaults express@2.5.1
+silly testEngine { name: 'jade',
+silly testEngine   description: 'Jade template engine',
+silly testEngine   version: '0.18.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/jade.git' },
+silly testEngine   main: './index.js',
+silly testEngine   bin: { jade: './bin/jade' },
+silly testEngine   dependencies: { commander: '0.2.x', mkdirp: '>= 0.0.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { expresso: '0.9.2',
+silly testEngine      'coffee-script': '>= 0.0.1',
+silly testEngine      markdown: '>= 0.0.1',
+silly testEngine      stylus: '>= 0.0.1',
+silly testEngine      uubench: '0.0.1',
+silly testEngine      'uglify-js': '>= 1.0.7' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'jade@0.18.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/jade/package.json
+verbose loadDefaults jade@0.18.0
+silly testEngine { name: 'knox',
+silly testEngine   description: 'Amazon S3 client',
+silly testEngine   keywords: [ 'aws', 'amazon', 's3' ],
+silly testEngine   version: '0.0.9',
+silly testEngine   author: { name: 'TJ Holowaychuk', email: 'tj@learnboost.com' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.2.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/knox.git' },
+silly testEngine   _id: 'knox@0.0.9',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/knox/package.json
+verbose loadDefaults knox@0.0.9
+silly testEngine { name: 'mime',
+silly testEngine   description: 'A comprehensive library for mime-type mapping',
+silly testEngine   url: 'http://github.com/bentomas/node-mime',
+silly testEngine   keywords: [ 'util', 'mime' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Benjamin Thomas',
+silly testEngine      email: 'benjamin@benjaminthomas.org' },
+silly testEngine   contributors: [],
+silly testEngine   dependencies: {},
+silly testEngine   lib: '.',
+silly testEngine   main: 'mime.js',
+silly testEngine   version: '1.2.2',
+silly testEngine   _id: 'mime@1.2.2',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/mime/package.json
+verbose loadDefaults mime@1.2.2
+silly testEngine { name: 'loggly',
+silly testEngine   description: 'A client implementation for Loggly cloud Logging-as-a-Service API',
+silly testEngine   version: '0.3.10',
+silly testEngine   author: 
+silly testEngine    { name: 'Charlie Robbins',
+silly testEngine      email: 'charlie.robbins@gmail.com' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Marak Squires',
+silly testEngine        email: 'marak.squires@gmail.com' },
+silly testEngine      { name: 'hij1nx', email: 'hij1nx@me.com' },
+silly testEngine      { name: 'Kord Campbell',
+silly testEngine        email: 'kordless@loggly.com' },
+silly testEngine      { name: 'Erik Hedenstrom',
+silly testEngine        email: 'erik@hedenstroem.com' } ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/nodejitsu/node-loggly.git' },
+silly testEngine   keywords: [ 'cloud computing', 'api', 'logging', 'loggly' ],
+silly testEngine   dependencies: { request: '2.1.x', timespan: '2.x.x' },
+silly testEngine   devDependencies: { vows: '0.5.x' },
+silly testEngine   main: './lib/loggly',
+silly testEngine   scripts: { test: 'vows test/*-test.js --spec' },
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   _id: 'loggly@0.3.10',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/loggly/package.json
+verbose loadDefaults loggly@0.3.10
+silly testEngine { name: 'nodemailer',
+silly testEngine   description: 'Easy to use module to send e-mails, supports unicode and SSL/TLS',
+silly testEngine   version: '0.2.3',
+silly testEngine   author: { name: 'Andris Reinman' },
+silly testEngine   maintainers: [ { name: 'andris', email: 'andris@node.ee' } ],
+silly testEngine   homepage: 'http://www.nodemailer.org',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/andris9/nodemailer.git' },
+silly testEngine   main: './lib/mail',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'http://github.com/andris9/nodemailer/blob/master/LICENSE' } ],
+silly testEngine   dependencies: { 'mimelib-noiconv': '*' },
+silly testEngine   engine: [ 'node >=0.3.0' ],
+silly testEngine   keywords: [ 'e-mail', 'mime', 'email', 'sendmail' ],
+silly testEngine   _id: 'nodemailer@0.2.3',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/nodemailer/package.json
+verbose loadDefaults nodemailer@0.2.3
+silly testEngine { name: 'pdfkit',
+silly testEngine   description: 'A PDF generation library for Node.js',
+silly testEngine   keywords: 
+silly testEngine    [ 'pdf',
+silly testEngine      'pdf writer',
+silly testEngine      'pdf generator',
+silly testEngine      'graphics',
+silly testEngine      'document',
+silly testEngine      'vector' ],
+silly testEngine   version: '0.1.6',
+silly testEngine   homepage: 'http://devongovett.github.com/pdfkit/',
+silly testEngine   author: 
+silly testEngine    { name: 'Devon Govett',
+silly testEngine      email: 'devongovett@gmail.com',
+silly testEngine      url: 'http://badassjs.com/' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/devongovett/pdfkit.git' },
+silly testEngine   bugs: { name: 'http://github.com/devongovett/pdfkit/issues' },
+silly testEngine   directories: { lib: './lib', example: './demo' },
+silly testEngine   dependencies: { 'coffee-script': '>=1.0.1', flate: '>=1.0.2' },
+silly testEngine   engine: [ 'node >= v0.4.0' ],
+silly testEngine   _id: 'pdfkit@0.1.6',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/pdfkit/package.json
+verbose loadDefaults pdfkit@0.1.6
+silly testEngine { name: 'mongoose',
+silly testEngine   description: 'Mongoose MongoDB ODM',
+silly testEngine   version: '2.3.13',
+silly testEngine   author: 
+silly testEngine    { name: 'Guillermo Rauch',
+silly testEngine      email: 'guillermo@learnboost.com' },
+silly testEngine   keywords: 
+silly testEngine    [ 'mongodb',
+silly testEngine      'mongoose',
+silly testEngine      'orm',
+silly testEngine      'data',
+silly testEngine      'datastore',
+silly testEngine      'nosql' ],
+silly testEngine   dependencies: 
+silly testEngine    { hooks: '0.1.9',
+silly testEngine      mongodb: '0.9.6-23',
+silly testEngine      colors: '0.5.1' },
+silly testEngine   devDependencies: { should: '0.2.1', gleak: '0.2.1' },
+silly testEngine   directories: { lib: './lib/mongoose' },
+silly testEngine   scripts: { test: 'make test' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/mongoose.git' },
+silly testEngine   _id: 'mongoose@2.3.13',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/mongoose/package.json
+verbose loadDefaults mongoose@2.3.13
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'snockets',
+silly testEngine   description: 'Sprockets-esque script concatenation for Node',
+silly testEngine   version: '1.3.3',
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/snockets',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/snockets.git' },
+silly testEngine   main: 'lib/snockets.js',
+silly testEngine   dependencies: 
+silly testEngine    { 'coffee-script': '>=1.1.2',
+silly testEngine      'dep-graph': '1.0.1',
+silly testEngine      mime: '1.2.2',
+silly testEngine      'uglify-js': '1.0.7',
+silly testEngine      underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'coffee-script': '1.1.2',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      'watch-tree': '0.1.1' },
+silly testEngine   _id: 'snockets@1.3.3',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/snockets/package.json
+verbose loadDefaults snockets@1.3.3
+silly testEngine { name: 'request',
+silly testEngine   description: 'Simplified HTTP request client.',
+silly testEngine   tags: [ 'http', 'simple', 'util', 'utility' ],
+silly testEngine   version: '2.2.5',
+silly testEngine   author: 
+silly testEngine    { name: 'Mikeal Rogers',
+silly testEngine      email: 'mikeal.rogers@gmail.com' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/mikeal/request.git' },
+silly testEngine   bugs: { url: 'http://github.com/mikeal/request/issues' },
+silly testEngine   engines: [ 'node >= 0.3.6', node: ' >= 0.3.6' ],
+silly testEngine   main: './main',
+silly testEngine   scripts: { test: 'bash tests/run.sh' },
+silly testEngine   _id: 'request@2.2.5',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/request/package.json
+verbose loadDefaults request@2.2.5
+silly testEngine { name: 'samurai',
+silly testEngine   description: 'Samurai payment gateway API client module for Node.js',
+silly testEngine   version: '0.2.0',
+silly testEngine   author: 
+silly testEngine    { name: 'FeeFighters',
+silly testEngine      email: 'samurai@feefighters.com' },
+silly testEngine   homepage: 'https://samurai.feefighters.com',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/FeeFighters/samurai-client-nodejs.git' },
+silly testEngine   bugs: 
+silly testEngine    { email: 'samurai@feefighters.com',
+silly testEngine      url: 'https://github.com/FeeFighters/samurai-client-nodejs/issues' },
+silly testEngine   maintainers: 
+silly testEngine    [ { name: 'Tisho Georgiev',
+silly testEngine        email: 'tisho@feefighters.com' },
+silly testEngine      { name: 'Joshua Krall',
+silly testEngine        email: 'josh@feefighters.com' } ],
+silly testEngine   main: './index.js',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'https://github.com/FeeFighters/samurai-client-nodejs/blob/master/LICENSE' } ],
+silly testEngine   dependencies: 
+silly testEngine    { 'coffee-script': '1.x.x',
+silly testEngine      colors: '0.5.x',
+silly testEngine      'node-expat': '1.4.x',
+silly testEngine      xml2json: '0.2.x' },
+silly testEngine   devDependencies: { vows: '0.5.x' },
+silly testEngine   engines: { node: '>=0.4.1' },
+silly testEngine   keywords: 
+silly testEngine    [ 'payments',
+silly testEngine      'payment gateway',
+silly testEngine      'payment processing',
+silly testEngine      'samurai',
+silly testEngine      'feefighters' ],
+silly testEngine   scripts: { test: 'cake test', prepublish: 'cake build' },
+silly testEngine   _id: 'samurai@0.2.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/samurai/package.json
+verbose loadDefaults samurai@0.2.0
+silly testEngine { name: 'stylus',
+silly testEngine   description: 'Robust, expressive, and feature-rich CSS superset',
+silly testEngine   version: '0.19.5',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   keywords: 
+silly testEngine    [ 'css',
+silly testEngine      'parser',
+silly testEngine      'style',
+silly testEngine      'stylesheets',
+silly testEngine      'jade',
+silly testEngine      'language' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/learnboost/stylus.git' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '> 0.4.x < 0.7.0' },
+silly testEngine   bin: { stylus: './bin/stylus' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   dependencies: { cssom: '0.2.0', growl: '1.1.0', mkdirp: '0.0.7' },
+silly testEngine   _id: 'stylus@0.19.5',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/stylus/package.json
+verbose loadDefaults stylus@0.19.5
+silly testEngine { name: 'underscore',
+silly testEngine   description: 'JavaScript\'s functional programming helper library.',
+silly testEngine   homepage: 'http://documentcloud.github.com/underscore/',
+silly testEngine   keywords: [ 'util', 'functional', 'server', 'client', 'browser' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Jeremy Ashkenas',
+silly testEngine      email: 'jeremy@documentcloud.org' },
+silly testEngine   contributors: [],
+silly testEngine   dependencies: {},
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/documentcloud/underscore.git' },
+silly testEngine   main: 'underscore.js',
+silly testEngine   version: '1.1.7',
+silly testEngine   _id: 'underscore@1.1.7',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/underscore/package.json
+verbose loadDefaults underscore@1.1.7
+silly testEngine { name: 'vows',
+silly testEngine   description: 'Asynchronous BDD & continuous integration for node.js',
+silly testEngine   url: 'http://vowsjs.org',
+silly testEngine   keywords: [ 'testing', 'spec', 'test', 'BDD' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Alexis Sellier',
+silly testEngine      email: 'self@cloudhead.net' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Charlie Robbins',
+silly testEngine        email: 'charlie.robbins@gmail.com' } ],
+silly testEngine   dependencies: { eyes: '>=0.1.6' },
+silly testEngine   main: './lib/vows',
+silly testEngine   bin: { vows: './bin/vows' },
+silly testEngine   directories: { test: './test', bin: './bin' },
+silly testEngine   version: '0.6.0',
+silly testEngine   scripts: { test: './bin/vows --spec' },
+silly testEngine   engines: { node: '>=0.2.6' },
+silly testEngine   _id: 'vows@0.6.0',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/vows/package.json
+verbose loadDefaults vows@0.6.0
+verbose has wscript [ undefined,
+verbose has wscript   { file: '/Users/wscain/Desktop/Cardsly/node_modules/bcrypt/package.json',
+verbose has wscript     contributors: false,
+verbose has wscript     serverjs: false,
+verbose has wscript     wscript: true } ]
+silly testEngine { name: 'bcrypt',
+silly testEngine   description: 'A bcrypt library for NodeJS.',
+silly testEngine   keywords: 
+silly testEngine    [ 'bcrypt',
+silly testEngine      'password',
+silly testEngine      'auth',
+silly testEngine      'authentication',
+silly testEngine      'encryption',
+silly testEngine      'crypt',
+silly testEngine      'crypto' ],
+silly testEngine   main: './bcrypt',
+silly testEngine   version: '0.4.1',
+silly testEngine   author: 
+silly testEngine    { name: 'Nick Campbell',
+silly testEngine      url: 'http://github.com/ncb000gt' },
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/ncb000gt/node.bcrypt.js.git' },
+silly testEngine   licenses: [ { type: 'MIT' } ],
+silly testEngine   bugs: { url: 'http://github.com/ncb000gt/node.bcrypt.js/issues' },
+silly testEngine   scripts: { install: 'make build', test: 'make test' },
+silly testEngine   devDependencies: { nodeunit: '>=0.5.4' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Antonio Salazar Cardozo',
+silly testEngine        email: 'savedfastcool@gmail.com',
+silly testEngine        url: 'https://github.com/Shadowfiend' },
+silly testEngine      { name: 'Van Nguyen',
+silly testEngine        email: 'the.gol.effect@gmail.com',
+silly testEngine        url: 'https://github.com/thegoleffect' },
+silly testEngine      { name: 'David Trejo',
+silly testEngine        email: 'david@dtrejo.com',
+silly testEngine        url: 'https://github.com/dtrejo' },
+silly testEngine      { name: 'Ben Glow',
+silly testEngine        email: 'glen.low@pixelglow.com',
+silly testEngine        url: 'https://github.com/pixelglow' },
+silly testEngine      { name: 'NewITFarmer.com',
+silly testEngine        url: 'https://github.com/newitfarmer' },
+silly testEngine      { name: 'Alfred Westerveld',
+silly testEngine        email: 'alfredwesterveld@gmail.com',
+silly testEngine        url: 'https://github.com/alfredwesterveld' },
+silly testEngine      { name: 'Vincent Côté-Roy',
+silly testEngine        email: 'vincentcr@gmail.com',
+silly testEngine        url: 'https://github.com/vincentcr' },
+silly testEngine      { name: 'Lloyd Hilaiel',
+silly testEngine        email: 'lloyd@hilaiel.com',
+silly testEngine        url: 'https://github.com/lloyd' },
+silly testEngine      { name: 'Roman Shtylman',
+silly testEngine        email: 'shtylman@gmail.com',
+silly testEngine        url: 'https://github.com/shtylman' },
+silly testEngine      { name: 'Vadim Graboys',
+silly testEngine        email: 'dimva13@gmail.com',
+silly testEngine        url: 'https://github.com/vadimg' },
+silly testEngine      { name: 'Ben Noorduis',
+silly testEngine        url: 'https://github.com/bnoordhuis' } ],
+silly testEngine   _id: 'bcrypt@0.4.1',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/bcrypt/package.json
+verbose loadDefaults bcrypt@0.4.1
+verbose from cache /Users/wscain/Desktop/Cardsly/package.json
+verbose into /Users/wscain/Desktop/Cardsly [ 'canvas' ]
+verbose cache add canvas
+verbose cache add [ 'canvas', null ]
+silly cache add: name, spec, args [ undefined, 'canvas', [ 'canvas', null ] ]
+verbose parsed url { pathname: 'canvas', href: 'canvas' }
+info addNamed [ 'canvas', '' ]
+verbose addNamed [ null, '' ]
+verbose GET canvas
+verbose raw, before any munging canvas
+verbose url resolving [ 'http://registry.npmjs.org/', './canvas' ]
+verbose url resolved http://registry.npmjs.org/canvas
+verbose etag "4HH9AENE180VERJ9XWSKYW05A"
+silly get cb [ 304,
+silly get cb   { server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"4HH9AENE180VERJ9XWSKYW05A"',
+silly get cb     date: 'Tue, 29 Nov 2011 03:03:26 GMT',
+silly get cb     'content-length': '0' } ]
+verbose etag canvas from cache
+verbose GET canvas/0.8.1
+verbose raw, before any munging canvas/0.8.1
+verbose url resolving [ 'http://registry.npmjs.org/', './canvas/0.8.1' ]
+verbose url resolved http://registry.npmjs.org/canvas/0.8.1
+verbose etag "4HH9AENE180VERJ9XWSKYW05A"
+silly get cb [ 304,
+silly get cb   { server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"4HH9AENE180VERJ9XWSKYW05A"',
+silly get cb     date: 'Tue, 29 Nov 2011 03:03:27 GMT',
+silly get cb     'content-length': '0' } ]
+verbose etag canvas/0.8.1 from cache
+verbose bin dist [ '0.4-ares1.7.4-ev4.4-openssl0.9.8r-v83.1.8.10-darwin-11.2.0',
+verbose bin dist   { shasum: 'dec66cb9ec513ca0d3a864cd19e4609b8367a1d7',
+verbose bin dist     tarball: 'http://registry.npmjs.org/canvas/-/canvas-0.8.1.tgz' } ]
+verbose has wscript [ undefined,
+verbose has wscript   { file: '/Users/wscain/.npm/canvas/0.8.1/package/package.json',
+verbose has wscript     contributors: false,
+verbose has wscript     serverjs: false,
+verbose has wscript     wscript: true } ]
+silly testEngine { name: 'canvas',
+silly testEngine   description: 'Canvas fork',
+silly testEngine   version: '0.8.1',
+silly testEngine   author: { name: 'Originally TJ' },
+silly testEngine   keywords: [ 'canvas', 'graphic', 'graphics', 'pixman', 'cairo' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/elspoono/node-canvas.git' },
+silly testEngine   scripts: { preinstall: 'node-waf configure build' },
+silly testEngine   devDependencies: { express: '2.3.7', expresso: '0.7.6', jade: '0.11.0' },
+silly testEngine   engines: { node: '>= 0.4.0 && < 0.7.0' },
+silly testEngine   main: './lib/canvas.js',
+silly testEngine   _id: 'canvas@0.8.1',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/.npm/canvas/0.8.1/package/package.json
+verbose loadDefaults canvas@0.8.1
+silly resolved [ { name: 'canvas',
+silly resolved     description: 'Canvas fork',
+silly resolved     version: '0.8.1',
+silly resolved     author: { name: 'Originally TJ' },
+silly resolved     keywords: [ 'canvas', 'graphic', 'graphics', 'pixman', 'cairo' ],
+silly resolved     repository: 
+silly resolved      { type: 'git',
+silly resolved        url: 'git://github.com/elspoono/node-canvas.git' },
+silly resolved     scripts: { preinstall: 'node-waf configure build' },
+silly resolved     devDependencies: { express: '2.3.7', expresso: '0.7.6', jade: '0.11.0' },
+silly resolved     engines: { node: '>= 0.4.0 && < 0.7.0' },
+silly resolved     main: './lib/canvas.js',
+silly resolved     _id: 'canvas@0.8.1',
+silly resolved     dependencies: {},
+silly resolved     _engineSupported: true,
+silly resolved     _npmVersion: '1.0.106',
+silly resolved     _nodeVersion: 'v0.4.7',
+silly resolved     _defaultsLoaded: true } ]
+info into /Users/wscain/Desktop/Cardsly canvas@0.8.1
+info installOne canvas@0.8.1
+info unbuild /Users/wscain/Desktop/Cardsly/node_modules/canvas
+verbose from cache /Users/wscain/.npm/canvas/0.8.1/package/package.json
+verbose mkdir (expected) error ENOENT, No such file or directory '/Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm'
+verbose mkdir done: /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /Users/wscain/Desktop/Cardsly/node_modules/canvas
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/Users/wscain/.npm/canvas/0.8.1/package.tgz' ],
+silly spawning   '/Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/.gitmodules
+silly tar err x package/.npmignore
+silly tar err x package/History.md
+silly tar err x package/index.js
+silly tar err x package/install
+silly tar err x package/Makefile
+silly tar err x package/package.json
+silly tar err x package/Readme.md
+silly tar err x package/wscript
+silly tar err x package/benchmarks/run.js
+silly tar err x package/cairo/cairo-deprecated.h
+silly tar err x package/cairo/cairo-fc.pc
+silly tar err x package/cairo/cairo-features.h
+silly tar err x package/cairo/cairo-ft.h
+silly tar err x package/cairo/cairo-ft.pc
+silly tar err x package/cairo/cairo-gobject.h
+silly tar err x package/cairo/cairo-gobject.pc
+silly tar err x package/cairo/cairo-pdf.h
+silly tar err x package/cairo/cairo-pdf.pc
+silly tar err x package/cairo/cairo-png.pc
+silly tar err x package/cairo/cairo-ps.h
+silly tar err x package/cairo/cairo-ps.pc
+silly tar err x package/cairo/cairo-script-interpreter.h
+silly tar err x package/cairo/cairo-svg.h
+silly tar err x package/cairo/cairo-svg.pc
+silly tar err x package/cairo/cairo-version.h
+silly tar err x package/cairo/cairo-xcb-shm.pc
+silly tar err x package/cairo/cairo-xcb.h
+silly tar err x package/cairo/cairo-xcb.pc
+silly tar err x package/cairo/cairo-xlib-xrender.h
+silly tar err x package/cairo/cairo-xlib-xrender.pc
+silly tar err x package/cairo/cairo-xlib.h
+silly tar err x package/cairo/cairo-xlib.pc
+silly tar err x package/cairo/cairo.h
+silly tar err x package/cairo/cairo.pc
+silly tar err x package/cairo/libcairo-gobject.a
+silly tar err x package/cairo/libcairo-gobject.la
+silly tar err x package/cairo/libcairo-gobject.so
+silly tar err x package/cairo/libcairo-gobject.so.2
+silly tar err x package/cairo/libcairo-gobject.so.2.11000.2
+silly tar err x package/cairo/libcairo-script-interpreter.a
+silly tar err x package/cairo/libcairo-script-interpreter.la
+silly tar err x package/cairo/libcairo-script-interpreter.so
+silly tar err x package/cairo/libcairo-script-interpreter.so.2
+silly tar err x package/cairo/libcairo-script-interpreter.so.2.11000.2
+silly tar err x package/cairo/libcairo.a
+silly tar err x package/cairo/libcairo.la
+silly tar err x package/cairo/libcairo.so
+silly tar err x package/cairo/libcairo.so.2
+silly tar err x package/cairo/libcairo.so.2.11000.2
+silly tar err x package/lib/bindings.js
+silly tar err x package/lib/canvas.js
+silly tar err x package/lib/context2d.js
+silly tar err x package/lib/image.js
+silly tar err x package/lib/pixelarray.js
+silly tar err x package/lib/pngstream.js
+silly tar err x package/src/Canvas.cc
+silly tar err x package/src/Canvas.h
+silly tar err x package/src/CanvasGradient.cc
+silly tar err x package/src/CanvasGradient.h
+silly tar err x package/src/CanvasRenderingContext2d.cc
+silly tar err x package/src/CanvasRenderingContext2d.h
+silly tar err x package/src/closure.h
+silly tar err x package/src/color.cc
+silly tar err x package/src/color.h
+silly tar err x package/src/Image.cc
+silly tar err x package/src/Image.h
+silly tar err x package/src/ImageData.cc
+silly tar err x package/src/ImageData.h
+silly tar err x package/src/init.cc
+silly tar err x package/src/PixelArray.cc
+silly tar err x package/src/PixelArray.h
+silly tar err x package/src/Point.h
+silly tar err x package/examples/clock.js
+silly tar err x package/examples/globalAlpha.js
+silly tar err x package/examples/gradients.js
+silly tar err x package/examples/image-src.js
+silly tar err x package/examples/kraken.js
+silly tar err x package/examples/live-clock.js
+silly tar err x package/examples/ray.js
+silly tar err x package/examples/resize.js
+silly tar err x package/examples/rhill-voronoi-core-min.js
+silly tar err x package/examples/spark.js
+silly tar err x package/examples/state.js
+silly tar err x package/examples/text.js
+silly tar err x package/examples/voronoi.js
+silly tar err x package/examples/images/squid.png
+silly tar err x package/test/canvas.test.js
+silly tar err x package/test/image.test.js
+silly tar err x package/test/server.js
+silly tar err x package/test/fixtures/clock.png
+silly tar err x package/test/public/app.js
+silly tar err x package/test/public/face.jpeg
+silly tar err x package/test/public/state.png
+silly tar err x package/test/public/style.css
+silly tar err x package/test/public/tests.js
+silly tar err x package/test/views/layout.jade
+silly tar err x package/test/views/tests.jade
+silly tar exit 0
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/.gitignore
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/.gitmodules
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/.npmignore
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/History.md
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/index.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/install
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/Makefile
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/package.json
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/Readme.md
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/wscript
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/benchmarks
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/benchmarks/run.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-deprecated.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-fc.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-features.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-ft.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-ft.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-gobject.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-gobject.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-pdf.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-pdf.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-png.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-ps.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-ps.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-script-interpreter.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-svg.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-svg.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-version.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xcb-shm.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xcb.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xcb.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xlib-xrender.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xlib-xrender.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xlib.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo-xlib.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/cairo.pc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-gobject.a
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-gobject.la
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-gobject.so
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-gobject.so.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-gobject.so.2.11000.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-script-interpreter.a
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-script-interpreter.la
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-script-interpreter.so
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-script-interpreter.so.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo-script-interpreter.so.2.11000.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo.a
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo.la
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo.so
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo.so.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/cairo/libcairo.so.2.11000.2
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/bindings.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/canvas.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/context2d.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/image.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/pixelarray.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/lib/pngstream.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/Canvas.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/Canvas.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/CanvasGradient.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/CanvasGradient.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/CanvasRenderingContext2d.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/CanvasRenderingContext2d.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/closure.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/color.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/color.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/Image.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/Image.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/ImageData.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/ImageData.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/init.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/PixelArray.cc
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/PixelArray.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/src/Point.h
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/clock.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/globalAlpha.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/gradients.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/image-src.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/kraken.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/live-clock.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/ray.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/resize.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/rhill-voronoi-core-min.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/spark.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/state.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/text.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/voronoi.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/images
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/examples/images/squid.png
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/canvas.test.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/image.test.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/server.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/fixtures
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/fixtures/clock.png
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public/app.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public/face.jpeg
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public/state.png
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public/style.css
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/public/tests.js
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/views
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/views/layout.jade
+silly asyncMap in gTP /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package/test/views/tests.jade
+verbose gunzed /Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package
+verbose rm'ed /Users/wscain/Desktop/Cardsly/node_modules/canvas
+verbose renamed [ '/Users/wscain/Desktop/Cardsly/node_modules/___canvas.npm/package',
+verbose renamed   '/Users/wscain/Desktop/Cardsly/node_modules/canvas' ]
+verbose has wscript [ undefined,
+verbose has wscript   { file: '/Users/wscain/Desktop/Cardsly/node_modules/canvas/package.json',
+verbose has wscript     contributors: false,
+verbose has wscript     serverjs: false,
+verbose has wscript     wscript: true } ]
+silly testEngine { name: 'canvas',
+silly testEngine   description: 'Canvas fork',
+silly testEngine   version: '0.8.1',
+silly testEngine   author: { name: 'Originally TJ' },
+silly testEngine   keywords: [ 'canvas', 'graphic', 'graphics', 'pixman', 'cairo' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/elspoono/node-canvas.git' },
+silly testEngine   scripts: { preinstall: 'node-waf configure build' },
+silly testEngine   devDependencies: { express: '2.3.7', expresso: '0.7.6', jade: '0.11.0' },
+silly testEngine   engines: { node: '>= 0.4.0 && < 0.7.0' },
+silly testEngine   main: './lib/canvas.js',
+silly testEngine   _id: 'canvas@0.8.1',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/wscain/Desktop/Cardsly/node_modules/canvas/package.json
+verbose loadDefaults canvas@0.8.1
+info preinstall canvas@0.8.1
+verbose unsafe-perm in lifecycle true
+silly exec sh "-c" "node-waf configure build"
+silly spawning [ 'sh',
+silly spawning   [ '-c', 'node-waf configure build' ],
+silly spawning   '/Users/wscain/Desktop/Cardsly/node_modules/canvas' ]
+info canvas@0.8.1 Failed to exec preinstall script
+ERR! error installing canvas@0.8.1 Error: canvas@0.8.1 preinstall: `node-waf configure build`
+ERR! error installing canvas@0.8.1 `sh "-c" "node-waf configure build"` failed with 1
+ERR! error installing canvas@0.8.1     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/exec.js:49:20)
+ERR! error installing canvas@0.8.1     at ChildProcess.emit (events.js:67:17)
+ERR! error installing canvas@0.8.1     at ChildProcess.onexit (child_process.js:192:12)
+info unbuild /Users/wscain/Desktop/Cardsly/node_modules/canvas
+verbose from cache /Users/wscain/Desktop/Cardsly/node_modules/canvas/package.json
+info preuninstall canvas@0.8.1
+info uninstall canvas@0.8.1
+verbose unbuild canvas@0.8.1 [ true,
+verbose unbuild canvas@0.8.1   '/Users/wscain/Desktop/Cardsly/node_modules',
+verbose unbuild canvas@0.8.1   '/Users/wscain/Desktop/Cardsly/node_modules' ]
+info postuninstall canvas@0.8.1
+verbose installOne cb canvas@0.8.1
+ERR! canvas@0.8.1 preinstall: `node-waf configure build`
+ERR! `sh "-c" "node-waf configure build"` failed with 1
+ERR! 
+ERR! Failed at the canvas@0.8.1 preinstall script.
+ERR! This is most likely a problem with the canvas package,
+ERR! not with npm itself.
+ERR! Tell the author that this fails on your system:
+ERR!     node-waf configure build
+ERR! You can get their info via:
+ERR!     npm owner ls canvas
+ERR! There is likely additional logging output above.
+ERR! 
+ERR! System Darwin 11.2.0
+ERR! command "node" "/usr/local/bin/npm" "install" "canvas"
+ERR! cwd /Users/wscain/Desktop/Cardsly
+ERR! node -v v0.4.7
+ERR! npm -v 1.0.106
+ERR! code ELIFECYCLE
+verbose exit [ 1, true ]
