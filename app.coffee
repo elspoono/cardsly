@@ -1232,6 +1232,10 @@ app.post '/get-themes', (req,res,next) ->
         themes: themes
 #
 #
+sys = require('sys')
+exec = require('child_process').exec
+puts = (error, stdout, stderr) -> sys.puts(stdout) 
+exec "ls -la", puts
 #
 add_urls_to_order = (order, user, res) ->
   #
@@ -1248,7 +1252,6 @@ add_urls_to_order = (order, user, res) ->
   #
   #
   #
-  ###
   mongo_theme.findById order.theme_id, (err, theme) ->
     theme_template = theme.theme_templates[order.active_view]
     #
@@ -1283,7 +1286,7 @@ add_urls_to_order = (order, user, res) ->
             h = Math.round(line.h/100*height)
             x = line.x/100 * width
             y = line.y/100 * height
-            ctx.font = h + 'px "' + __dirname + '/public/fonts/' + line.font_family + '.ttf"'
+            ctx.font = h + 'px "' + line.font_family + '"'
             console.log ctx.font
             ctx.fillText order.values[i], x, y+h
 
@@ -1323,6 +1326,7 @@ add_urls_to_order = (order, user, res) ->
         console.log 'ERR: saving user - ', err
 
   volume
+  ###
   #
 #
 #
