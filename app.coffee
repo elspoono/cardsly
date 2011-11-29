@@ -1382,7 +1382,7 @@ app.get '/add-test', (req, res, next) ->
               h = Math.round(line.h/100*height)
               x = line.x/100 * width
               y = line.y/100 * height
-              ctx.font = h + 'px slackey'
+              ctx.font = h + 'px ' + line.font_family
               ctx.fillText order.values[i], x, y+h
             
             canvas.toBuffer (err, buff) ->
