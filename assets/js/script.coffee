@@ -1148,17 +1148,17 @@ $ ->
     $t = $ this
     $('.card').removeClass 'active'
     $t.addClass('active')
-    if $gs.offset().top == $t.offset().top-10
+    if $gs.offset().top == $t.offset().top-5
       $gs.animate
-        left: $t.offset().left-10
-      ,500
+        left: $t.offset().left-5
+      ,300
     else
       $gs.stop(true,false).animate
-        top: $t.offset().top-10
-      ,500,'linear',() ->
+        top: $t.offset().top-5
+      ,300,'linear',() ->
           $gs.animate
-            left: $t.offset().left-10
-          ,500,'linear'
+            left: $t.offset().left-5
+          ,300,'linear'
   #
   # 
   # Category Expand/Collapse

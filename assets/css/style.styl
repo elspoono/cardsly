@@ -70,7 +70,7 @@ $base_gap = $base_font_px * $base_line_height
 /* Font_families */
 $base_font_family = 'Maven Pro', sans-serif
 $display_font_family = 'Maven Pro', sans-serif
-$header_font_family = 'Rammetto One', sans-serif
+$header_font_family = 'Amatic SC', sans-serif
 
 /***********************************
  *
@@ -257,7 +257,7 @@ blockquote
 
 // 
 #container
-  max-width 850px
+  max-width 1000px
   margin 0 auto
 
 
@@ -294,14 +294,14 @@ blockquote
   .help_trigger
     display none
   .enter_card .help_img
-    margin 120px 0 0 40px
+    margin 155px 0 0 40px
   .click_more_card .help_img
     margin 70px 60px 0 0
     float right
   .chose_card_design .help_img
     margin -160px 0 0 40px
   .enter_price .help_img
-    margin -390px 120px 0 0
+    margin -355px 120px 0 0
     float right
   .double_check .help_img
     margin 240px 0 0 50px
@@ -401,7 +401,7 @@ blockquote
   width 100%
   background $c_extra_dark
 .small_nav
-  max-width 850px
+  max-width 1000px
   margin 0 auto
   //This changes the style of the objects that reside within the small nav object
   li
@@ -565,6 +565,7 @@ blockquote
 .section
   h3
     font-family $header_font_family
+    relative_size(2)
     border-bottom 15px solid $c_bg_light
     margin-bottom 30px
     padding-bottom 10px
@@ -584,6 +585,12 @@ blockquote
   z-index 500
 .section.first
   margin-top gap(4)
+  width 3550px
+  .cell_bg
+    box_shadow(0,$c_black,0)
+    background $c_extra_dark
+    border_radius(0)
+    left -50%
 .cell_content
   z-index 150
   position relative
@@ -592,7 +599,7 @@ blockquote
   opacity(.6)
   color $c_light
   border_radius()
-  box_shadow(5px,$c_black,16px)
+  box_shadow(3px,$c_black,16px)
   height 100%
   width 100%
   position absolute
@@ -626,7 +633,7 @@ blockquote
   line-height 30px
   text-align center
   padding 8px 15px
-  border_radius(10px)
+  border_radius(30px)
   margin 0 auto
   box_shadow(1px,$c_black)
   color $c_light
@@ -671,12 +678,11 @@ input.normal,input.gray
 .design_button.button
   font-family $header_font_family
   gradient($c_go,darken($c_go,20))
-  font-size 26px
+  font-size 42px
   line-height 40px
   height 40px
   width 220px
   gradient($c_go,darken($c_go,20))
-  text_shadow(1px,$c_black,0)
 .design_button.button.hover
   gradient(lighten($c_go,10),darken($c_go,10))
 .design_button.button.click
@@ -820,11 +826,10 @@ input.normal,input.gray
 .checkout.button
   font-family $header_font_family
   gradient($c_go,darken($c_go,20))
-  font-size 30px
+  font-size 42px
   line-height 40px
   height 40px
   width 180px
-  text_shadow(1px,$c_black,0)
 .checkout.button.hover
   gradient(lighten($c_go,10),darken($c_go,10))
 .checkout.button.click
@@ -1086,7 +1091,7 @@ input.normal,input.gray
     overflow hidden
     position relative
     float left
-    margin 15px 20px 15px 10px
+    margin 30px
     height 90px
     width 158px
     .line
@@ -1151,10 +1156,10 @@ input.normal,input.gray
     float left
     margin 15px
 .gallery_select
-  height 110px
-  width 178px
+  height 100px
+  width 168px
   position absolute
-  gradient(lighten($c_body_bg,20),$c_body_bg)
+  background $c_bg_dark
   z-index 30
 
 
@@ -1202,7 +1207,7 @@ label
     margin 30px 0
     width 215px
   .right,.righter
-    margin-left 50px
+    margin-left 100px
 .address_container
   margin 20px 0
   border 1px solid $c_bg_dark
@@ -1249,7 +1254,7 @@ label
     .promo_img
       position absolute
       top -50px
-      right -40px
+      right -50px
   .subtitle
     color $c_light
 
@@ -1381,14 +1386,17 @@ label
 
 
 .above_phone
+  position absolute
   width 376px
   margin 0 0 0 400px
   .right
     text-align right
   h2
+    color $c_light
     font-family $header_font_family
     margin 15px 0 0 0
-    relative_size(1)
+    font-size 42px
+    line-height 38px
 
 
 .phone_frame
@@ -1396,7 +1404,7 @@ label
   width 276px
   display block 
   position relative
-  margin 30px 30px 30px 450px
+  margin 120px 30px 30px 450px
   z-index 300
 .phone_bar
   position relative
@@ -1423,9 +1431,10 @@ label
     color $c_light
     display none
     em
-      text-decoration underline
+      font-family $header_font_family
       color $c_logo_alt
       font-style normal
+      font-size 48px
     relative_size(1.5)
   img
     position absolute
@@ -1455,7 +1464,8 @@ label
   li
     margin 30px 0
     position relative
-    box_shadow(5px,$c_black,5px)
+    img
+      box_shadow()
 
 .phone_scanner
   position absolute
