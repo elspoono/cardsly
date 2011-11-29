@@ -677,11 +677,215 @@ class QRBitBuffer
 
 
 
+
+
+
+###
+--------------------------------------------------------------------------------------------------------
+
+
+
+Begin DB Customizations
+
+
+
+--------------------------------------------------------------------------------------------------------
+###
+#
+#
+hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
+#
+ctx_inverted_arc = (my_ctx, a, b, c, d) ->
+  my_ctx.beginPath()
+  my_ctx.moveTo c, b
+  my_ctx.quadraticCurveTo a, b, a, d
+  my_ctx.lineTo a, b
+  my_ctx.lineTo c, b
+  my_ctx.fill()
+#
+#
 create = (url) ->
     qrcode = new QRCode(-1, QRErrorCorrectLevel.H)
     qrcode.addData url
     qrcode.make()
     qrcode
+#
+###
+
+USAGE
+
+draw_qr
+  node_canvas: node_canvas
+  hex: '000000'
+  hex_2: 'FFFFFF'
+  style: 'circle'
+  url: 'http://cards.ly'
+  square_size: '10'
+
+###
+#
+draw_qr = (o) ->
+
+  if o.style is 'circle'
+    o.round = 8
+  else if o.style is 'square'
+    o.round = 0
+  else
+    o.style = 'round'
+    o.round = 10
+
+  qr = create o.url
+
+
+
+  count = qr.moduleCount
+  #
+  border_size = o.square_size * 2
+  round = o.round
+  #
+  quarter = o.square_size/2
+  #
+  size = count * o.square_size + border_size * 2
+  #
+  #
+  #
+  if o.node_canvas
+    canvas = new o.node_canvas(size,size)
+  #
+  #
+  ctx = canvas.getContext '2d'
+  ctx.fillStyle = hex_to_rgba o.hex
+  #
+  #
+  if o.hex_2 isnt 'transparent'
+    
+    ctx.fillStyle = hex_to_rgba o.hex_2
+    
+    if o.style is 'square'
+      ctx.fillRect 0, 0, size, size
+    else
+      ctx.beginPath()
+      ctx.moveTo border_size, 0
+      ctx.lineTo size-border_size, 0
+      ctx.quadraticCurveTo size, 0, size, border_size
+      ctx.lineTo size, size-border_size
+      ctx.quadraticCurveTo size, size, size-border_size, size
+      ctx.lineTo border_size, size
+      ctx.quadraticCurveTo 0, size, 0, size-border_size
+      ctx.lineTo 0, border_size
+      ctx.quadraticCurveTo 0, 0, border_size, 0
+      ctx.fill()
+
+    ctx.fillStyle = hex_to_rgba o.hex
+
+
+  for r in [0..count-1]
+    for c in [0..count-1]
+      
+      #
+      # r is the row we are on
+      # ... and c is the column
+      #
+      # x and y are the top left starting points for our qr grid item
+      #
+      # o.square_size is the size of the grid item
+      #
+      # o.style is the type of drawing we are doing for that grid item
+
+      x = c*o.square_size+border_size
+      y = r*o.square_size+border_size
+        
+      if qr.isDark r,c
+        #
+        #
+        #
+        if o.style is 'square'
+          ctx.fillRect x, y, o.square_size, o.square_size
+        #
+        #
+        if o.style is 'circle'
+          ctx.beginPath()
+          ctx.arc x+quarter, y+quarter, quarter+1, 0, Math.PI*2
+          ctx.fill()
+        #
+        #
+        if o.style is 'round'
+          #
+          ctx.beginPath()
+          #
+          # top middle
+          ctx.moveTo x+quarter, y
+
+          # top right
+          if qr.isDark(r,c+1) or qr.isDark(r-1,c)
+            ctx.lineTo x+o.square_size, y
+          else
+            ctx.lineTo x+o.square_size-round, y
+            ctx.quadraticCurveTo x+o.square_size, y, x+o.square_size, y+round
+
+          # bottom right
+          if qr.isDark(r,c+1) or qr.isDark(r+1,c)
+            ctx.lineTo x+o.square_size, y+o.square_size
+          else
+            ctx.lineTo x+o.square_size, y+o.square_size-round
+            ctx.quadraticCurveTo x+o.square_size, y+o.square_size, x+o.square_size-round, y+o.square_size
+
+          # bottom left
+          if qr.isDark(r,c-1) or qr.isDark(r+1,c)
+            ctx.lineTo x, y+o.square_size
+          else
+            ctx.lineTo x+round, y+o.square_size
+            ctx.quadraticCurveTo x, y+o.square_size, x, y+o.square_size-round
+
+          # top left
+          if qr.isDark(r,c-1) or qr.isDark(r-1,c)
+            ctx.lineTo x, y
+          else
+            ctx.lineTo x, y+round
+            ctx.quadraticCurveTo x, y, x+round, y
+          
+
+          # return to top middle
+          ctx.lineTo x+quarter, y
+
+          # fill it all in
+          ctx.fill()
+          #
+          #
+      else
+        if o.style is 'round'
+          #
+          # top left
+          if qr.isDark(r-1,c-1) and qr.isDark(r-1,c) and qr.isDark(r,c-1)
+            ctx_inverted_arc ctx, x, y, x+quarter/2, y+quarter/2
+          #
+          # top right
+          if qr.isDark(r-1,c) and qr.isDark(r-1,c+1) and qr.isDark(r,c+1)
+            ctx_inverted_arc ctx, x+o.square_size, y, x+o.square_size-quarter/2, y+quarter/2
+          #
+          # bottom right
+          if qr.isDark(r,c+1) and qr.isDark(r+1,c+1) and qr.isDark(r+1,c)
+            ctx_inverted_arc ctx, x+o.square_size, y+o.square_size, x+o.square_size-quarter/2, y+o.square_size-quarter/2
+          #
+          # bottom left
+          if qr.isDark(r,c-1) and qr.isDark(r+1,c-1) and qr.isDark(r+1,c)
+            ctx_inverted_arc ctx, x, y+o.square_size, x+quarter/2, y+o.square_size-quarter/2
+  canvas
+
 
 #
 #
@@ -689,3 +893,4 @@ create = (url) ->
 # used when required :)
 unless typeof (exports) is "undefined"
   exports.create = create
+  exports.draw_qr = draw_qr
