@@ -1233,10 +1233,13 @@ app.post '/get-themes', (req,res,next) ->
 #
 #
 exec = require('child_process').exec
-puts = (error, stdout, stderr) -> 
-  console.log stderr
-  console.log stdout
-exec "rm -r /app/.fonts | mkdir /app/.fonts/ | cp ./public/fonts/* /app/.fonts/ | chown root /app/.fonts/* | mkfontdir /app/.fonts/ | fc-cache -fv /app/.fonts/", puts
+puts = (error, stdout, stderr) -> console.log stdout
+exec "rm -r /app/.fonts", puts
+exec "mkdir /app/.fonts/", puts
+exec "cp ./public/fonts/* /app/.fonts/", puts
+exec "chown root /app/.fonts/*", puts
+exec "mkfontdir /app/.fonts/", puts
+exec "fc-cache -fv /app/.fonts/", puts
 #
 add_urls_to_order = (order, user, res) ->
   #
@@ -1250,6 +1253,7 @@ add_urls_to_order = (order, user, res) ->
   volume = 250 if order.quantity*1 is 25
   volume = 500 if order.quantity*1 is 35
   volume = 1500 if order.quantity*1 is 70
+
   #
   #
   #
@@ -1289,7 +1293,7 @@ add_urls_to_order = (order, user, res) ->
             h = Math.round(line.h/100*height)
             x = line.x/100 * width
             y = line.y/100 * height
-            ctx.font = h + 'px "' + line.font_family + '"'
+            ctx.font = h + 'px slackey'
             ctx.fillText order.values[i], x, y+h
           
           canvas.toBuffer (err, buff) ->
