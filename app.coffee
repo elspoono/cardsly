@@ -1215,7 +1215,22 @@ app.post '/change-password', (req,res,next) ->
 #app.post '/send-password-reset', (req,res,next) ->
 #  if req.user.email and req.user.password_encrypted
 
-
+#
+hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
 #
 #
 # Get User
@@ -1397,6 +1412,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                 h = Math.round(line.h/100*height)
                 x = line.x/100*width
                 y = line.y/100*height
+                ctx.fillStyle = hex_to_rgba line.color
                 ctx.font = h + 'px ' + line.font_family
                 ctx.fillText order.values[i], x, y+h
 
