@@ -1895,8 +1895,8 @@ app.get '/buy', get_url_groups, (req, res, next) ->
 #
 #
 #
-app.get '/sigevent', (req, res) ->
-  res.render 'sigevent'
+app.get '/phx', (req, res) ->
+  res.render 'phx'
     user: req.user
     session: req.session
     #
