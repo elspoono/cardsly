@@ -902,11 +902,11 @@ draw_qr = (o) ->
   ctx.fillStyle = hex_to_rgba o.hex
   #
   #
-  font_size = border_size/1.5
+  font_size = border_size/1
   ctx.font = font_size+'px Courier New'
   parsed_url = o.url.replace('http:\/\/','')
   measure = ctx.measureText parsed_url, 0, 0
-  ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/2
+  ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/5
   #
   #
   # Return the canvas
