@@ -1446,10 +1446,8 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                   else
                     measure = ctx.measureText order.values[i], x, y+h
                     if line.text_align is 'right'
-                      console.log measure
                       ctx.fillText order.values[i], x+w-measure.width, y+h
                     if line.text_align is 'center'
-                      console.log measure
                       ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
 
 

@@ -784,15 +784,6 @@ draw_qr = (o) ->
   ctx.fillStyle = hex_to_rgba o.hex
   #
   #
-  font_size = border_size/1.5
-  ctx.font = font_size+'px Courier New'
-  parsed_url = o.url.replace('http:\/\/','')
-  measure = ctx.measureText parsed_url, 0, 0
-  console.log measure
-  ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/2
-
-  #
-  #
   if o.hex_2 isnt 'transparent'
     
     ctx.fillStyle = hex_to_rgba o.hex_2
@@ -905,6 +896,21 @@ draw_qr = (o) ->
           # bottom left
           if qr.isDark(r,c-1) and qr.isDark(r+1,c-1) and qr.isDark(r+1,c)
             ctx_inverted_arc ctx, x, y+o.square_size, x+quarter/2, y+o.square_size-quarter/2
+  #
+  #
+  # Draw the URL
+  ctx.fillStyle = hex_to_rgba o.hex
+  #
+  #
+  font_size = border_size/1.5
+  ctx.font = font_size+'px Courier New'
+  parsed_url = o.url.replace('http:\/\/','')
+  measure = ctx.measureText parsed_url, 0, 0
+  console.log measure
+  ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/2
+  #
+  #
+  # Return the canvas
   canvas
 #
 #
