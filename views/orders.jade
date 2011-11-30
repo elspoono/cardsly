@@ -8,6 +8,7 @@
         td.order_cell Date Submitted
         td.order_cell Paid
         td.order_cell Status
+        td.order_cell Action
       - for (var i in orders)
         tr.order_row
           td.order_cell
@@ -17,3 +18,5 @@
           td.order_cell=orders[i].date_added
           td.order_cell=orders[i].quantity
           td.order_cell=orders[i].status
+          td.order_cell
+            a(href='/pdf/' + orders[i]._id + '/?cards.ly',target='_blank') print

@@ -1381,6 +1381,123 @@ image_err = (res) ->
     , 200
 #
 #
+app.get '/pdf/:order_id', (req, res, next) ->
+  #
+  #
+  dpi = 300
+  #
+  #
+  url = 'cards.ly'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  mongo_order.findById req.params.order_id, (err, order) ->
+    #
+    #
+    #
+    #
+    mongo_theme.findById order.theme_id, (err, theme) ->
+      theme_template = theme.theme_templates[order.active_view]
+      if not order.active_view
+        image_err res
+      else
+        #
+        imagedata = ''
+        #
+        request = http.get
+          host: 'd3eo3eito2cquu.cloudfront.net'
+          port: 80
+          path: '/raw/'+theme_template.s3_id
+        , (response) ->
+            height = 2*dpi
+            width = 3.5*dpi
+            #
+            response.setEncoding 'binary'
+            #
+            response.on 'data', (chunk) ->
+              imagedata += chunk
+            response.on 'end', ->
+
+              if response.statusCode is 200
+                buff = new Buffer imagedata, 'binary'
+
+
+                canvas = new node_canvas(width,height)
+                ctx = canvas.getContext '2d'
+
+                img = new node_canvas.Image
+                img.src = buff
+                ctx.drawImage img, 0, 0, width, height
+                
+
+
+                for line,i in theme_template.lines
+                  h = Math.round(line.h/100*height)
+                  x = line.x/100*width
+                  y = line.y/100*height
+                  w = line.w/100*width
+                  ctx.fillStyle = hex_to_rgba line.color
+                  ctx.font = h + 'px ' + line.font_family
+                  if line.text_align is 'left'
+                    ctx.fillText order.values[i], x, y+h
+                  else
+                    measure = ctx.measureText order.values[i], x, y+h
+                    if line.text_align is 'right'
+                      ctx.fillText order.values[i], x+w-measure.width, y+h
+                    if line.text_align is 'center'
+                      ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
+
+
+
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                #
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: url
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2+alpha
+                #
+                #
+                #
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  qr_img = new node_canvas.Image
+                  qr_img.src = qr_buff
+
+
+                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                  
+                  
+                  canvas.toBuffer (err, buff) ->
+                    #
+                    #
+                    final_canvas = new node_canvas 8.5*dpi, 11*dpi
+                    final_ctx = final_canvas.getContext '2d'
+                    #
+                    #
+                    bg_img = new node_canvas.Image
+                    bg_img.src = buff
+                    #
+                    #
+                    for r in [0..4]
+                      for c in [0..1]
+                        #
+                        final_ctx.drawImage bg_img, .75*dpi + c*3.5*dpi, .5*dpi + r*2*dpi, 3.5*dpi, 2*dpi
+                        #
+                    #
+                    final_canvas.toBuffer (err, buff) ->
+                      #
+                      # 
+                      #
+                      res.send buff,
+                        'Content-Type': 'image/png'
+                      , 200
+              else
+                image_err res
+#
+  #
+  #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
   #
