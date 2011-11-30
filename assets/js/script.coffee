@@ -1639,9 +1639,9 @@ $ ->
                     shipping_email: $('.do_send_shipping input').is(':checked')
                     email: $('.email_to_send input').val()
                   success: (result) ->
-                    loading_close()
                     console.log result
                     if result.err
+                      loading_close()
                       $.load_alert
                         content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
                     else
@@ -1649,6 +1649,7 @@ $ ->
                       if result.charge.paid
                         document.location.href = '/cards/thank-you'
                       else
+                        loading_close()
                         $.load_alert
                           content: 'Our apoligies, something went wrong, please try again later'
                         
