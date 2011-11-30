@@ -1387,6 +1387,14 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   width = req.params.w*1
   widthheight = width+'x'+height
   widthheight = 'raw' if width is 1680
+  #
+  #
+  url = 'cards.ly'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  #
   mongo_order.findById req.params.order_id, (err, order) ->
     #
     #
@@ -1434,16 +1442,16 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                   ctx.fillText order.values[i], x, y+h
 
                 alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-
+                #
                 qr_canvas = qr_code.draw_qr
                   node_canvas: node_canvas
                   style: 'round'
-                  url: 'cards.ly'
+                  url: url
                   hex: theme_template.qr.color1
                   hex_2: theme_template.qr.color2+alpha
-                
-
-
+                #
+                #
+                #
                 qr_canvas.toBuffer (err, qr_buff) ->
                   qr_img = new node_canvas.Image
                   qr_img.src = qr_buff
