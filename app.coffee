@@ -1895,7 +1895,27 @@ app.get '/buy', get_url_groups, (req, res, next) ->
 #
 #
 #
-app.get '/sample-landing-page', get_url_groups, (req, res) ->
+app.get '/sigevent', (req, res) ->
+  res.render 'sigevent'
+    user: req.user
+    session: req.session
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Welcome Phoenix Networkers!'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    h1: '<span>QR code business cards Phoenix</span>'
+    #
+    # (Uncomment means remove the single # character at the start of it :)\
+#
+#
+#
+#
+app.get '/sample-landing-page', (req, res) ->
   res.render 'sample_landing_page'
     user: req.user
     session: req.session
@@ -1911,8 +1931,6 @@ app.get '/sample-landing-page', get_url_groups, (req, res) ->
     #h1: 'some other h1 tag'
     #
     # (Uncomment means remove the single # character at the start of it :)
-    #
-    url_groups: req.url_groups
 #
 #
 #
