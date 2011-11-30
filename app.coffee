@@ -1253,7 +1253,8 @@ app.post '/get-themes', (req,res,next) ->
     active: true
   ,[] ,
     sort:
-      date_updated: 0
+      category: -1
+      date_added: -1
   , (err, themes) ->
     if check_no_err_ajax err
       res.send
