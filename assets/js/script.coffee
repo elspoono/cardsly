@@ -745,29 +745,17 @@ $ ->
         $.ajax
           url: '/get-user'
           success: (user) ->
-            loading_close()
-            if user.err
-              $.load_alert
-                content: user.err
+            if path = '/login'
+              document.location.href = '/'
             else
-              $s = $ '.signins' 
-              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><ul><li class="do_send_confirm"><input type="checkbox" id="do_send_confirm" checked="checked"><label for="do_send_confirm">Send a confirmation email</label></li><li class="do_send_shipping"><input type="checkbox" id="do_send_shipping" checked="checked"><label for="do_send_shipping">Send a shipping receipt</label></li><li class="email_to_send"><label for="email_to_send">To:</label><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '"></li></ul></div>'
-              $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
-              ###
-              SAMURAI
-              if user.payment_method and user.payment_method.last_four_digits
-                #
-                # Hide the form
-                $existing_payment = $ '<div class="existing_payment"><div class="type"></div><div class="expiry">' + user.existing_payment.expiry_month + '/
-' + user.existing_payment.expiry_year + '</div><div class="last_4">**** - **** - **** - 
-' + user.existing_payment.last_four_digits + '</div><div class="small button gray">Use New Card</div></div>'
-                $existing_payment.find('.button').click ->
-                  $existing_payment.remove()
-                  $('.order_total form').show()
-                  false
-                $('.order_total form').hide()
-                #
-              ###
+              loading_close()
+              if user.err
+                $.load_alert
+                  content: user.err
+              else
+                $s = $ '.signins' 
+                $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><ul><li class="do_send_confirm"><input type="checkbox" id="do_send_confirm" checked="checked"><label for="do_send_confirm">Send a confirmation email</label></li><li class="do_send_shipping"><input type="checkbox" id="do_send_shipping" checked="checked"><label for="do_send_shipping">Send a shipping receipt</label></li><li class="email_to_send"><label for="email_to_send">To:</label><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '"></li></ul></div>'
+                $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
               #
               #
           error: (err) ->

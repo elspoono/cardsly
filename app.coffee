@@ -596,17 +596,20 @@ customer_questions_last_checked = 0
 
 # The checking function
 is_customer_questions_available = ->
-  if customer_questions_last_checked < (new Date() - 1000*60)
-    request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
-      if err or res.statusCode isnt 200
-        console.log 'ERR: campfire no response? - ', err
-      else
-        result = JSON.parse body
-        customer_questions_last_checked = new Date()
-        customer_questions_available = false
-        for user in result.room.users
-          if user.type is 'Member'
-            customer_questions_available = true
+  try
+    if customer_questions_last_checked < (new Date() - 1000*60)
+      request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
+        if err or res.statusCode isnt 200
+          console.log 'ERR: campfire no response? - ', err
+        else
+          result = JSON.parse body
+          customer_questions_last_checked = new Date()
+          customer_questions_available = false
+          for user in result.room.users
+            if user.type is 'Member'
+              customer_questions_available = true
+  catch err
+    console.log err
   customer_questions_available
 
 
@@ -1347,11 +1350,15 @@ add_urls_to_order = (order, user, res) ->
   volume
   #
 #
-#
-app.get '/add-test', (req, res, next) ->
-  mongo_order.findOne
-    user_id: req.user._id
-  , (err, order) ->
+app.get '/render/:w/:h/:order_id', (req, res, next) ->
+  #
+  height = req.params.h*1
+  width = req.params.w*1
+  widthheight = width+'x'+height
+  widthheight = 'raw' if width is 1680
+
+  console.log widthheight
+  mongo_order.findById req.params.order_id, (err, order) ->
     #
     #
     #
@@ -1364,7 +1371,7 @@ app.get '/add-test', (req, res, next) ->
       request = http.get
         host: 'd3eo3eito2cquu.cloudfront.net'
         port: 80
-        path: '/raw/'+theme_template.s3_id
+        path: '/'+widthheight+'/'+theme_template.s3_id
       , (response) ->
           #
           response.setEncoding 'binary'
@@ -1372,31 +1379,58 @@ app.get '/add-test', (req, res, next) ->
           response.on 'data', (chunk) ->
             imagedata += chunk
           response.on 'end', ->
-            buff = new Buffer imagedata, 'binary'
 
-            height = 960
-            width = 1680
-
-            canvas = new node_canvas(1680,960)
-            ctx = canvas.getContext '2d'
-
-            img = new node_canvas.Image
-            img.src = buff
-            ctx.drawImage img, 0, 0, width, height
-            
+            if response.statusCode is 200
+              buff = new Buffer imagedata, 'binary'
 
 
-            for line,i in theme_template.lines
-              h = Math.round(line.h/100*height)
-              x = line.x/100 * width
-              y = line.y/100 * height
-              ctx.font = h + 'px ' + line.font_family
-              ctx.fillText order.values[i], x, y+h
-            
-            canvas.toBuffer (err, buff) ->
-              res.send buff,
-                'Content-Type': 'image/png'
-              , 200
+              canvas = new node_canvas(width,height)
+              ctx = canvas.getContext '2d'
+
+              img = new node_canvas.Image
+              img.src = buff
+              ctx.drawImage img, 0, 0, width, height
+              
+
+
+              for line,i in theme_template.lines
+                h = Math.round(line.h/100*height)
+                x = line.x/100*width
+                y = line.y/100*height
+                ctx.font = h + 'px ' + line.font_family
+                ctx.fillText order.values[i], x, y+h
+
+              qr_canvas = qr_code.draw_qr
+                node_canvas: node_canvas
+                style: 'round'
+                url: 'cards.ly'
+                hex: theme_template.qr.color1
+                hex_2: theme_template.qr.color2
+              
+
+
+              qr_canvas.toBuffer (err, qr_buff) ->
+                qr_img = new node_canvas.Image
+                qr_img.src = qr_buff
+
+
+                ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                
+                
+                canvas.toBuffer (err, buff) ->
+                  res.send buff,
+                    'Content-Type': 'image/png'
+                  , 200
+            else
+              canvas = new node_canvas(width,height)
+              ctx = canvas.getContext '2d'
+              ctx.font = Math.round(40/100*height) + 'px Arial'
+              ctx.fillText 'whoops', width/2-40/100*width, height/2
+                
+              canvas.toBuffer (err, buff) ->
+                res.send buff,
+                  'Content-Type': 'image/png'
+                , 200
 #
 #
 #
