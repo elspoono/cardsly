@@ -1366,7 +1366,7 @@ add_urls_to_order = (order, user, res) ->
   #
 #
 #
-image_err = ->
+image_err = (res) ->
   height = 100
   width = 300
   canvas = new node_canvas(width,height)
@@ -1397,7 +1397,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
     mongo_theme.findById order.theme_id, (err, theme) ->
       theme_template = theme.theme_templates[order.active_view]
       if not order.active_view
-        image_err()
+        image_err res
       else
         #
         imagedata = ''
@@ -1457,7 +1457,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                       'Content-Type': 'image/png'
                     , 200
               else
-                image_err()
+                image_err res
 #
 #
 #
