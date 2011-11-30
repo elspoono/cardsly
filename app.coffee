@@ -1209,8 +1209,8 @@ app.post '/change-password', (req,res,next) ->
 #
 #
 
-app.post '/send-password-reset', (req,res,next) ->
-  if req.user.email and req.user.password_encrypted
+#app.post '/send-password-reset', (req,res,next) ->
+#  if req.user.email and req.user.password_encrypted
 
 
 #
