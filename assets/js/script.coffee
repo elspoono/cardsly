@@ -745,7 +745,7 @@ $ ->
         $.ajax
           url: '/get-user'
           success: (user) ->
-            if path is '/login'
+            if path is 'login'
               document.location.href = '/'
             else
               loading_close()

@@ -906,7 +906,6 @@ draw_qr = (o) ->
   ctx.font = font_size+'px Courier New'
   parsed_url = o.url.replace('http:\/\/','')
   measure = ctx.measureText parsed_url, 0, 0
-  console.log measure
   ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/2
   #
   #
