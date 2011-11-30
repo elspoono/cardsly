@@ -1365,6 +1365,22 @@ add_urls_to_order = (order, user, res) ->
   volume
   #
 #
+#
+image_err = ->
+  height = 100
+  width = 300
+  canvas = new node_canvas(width,height)
+  ctx = canvas.getContext '2d'
+  ctx.font = Math.round(40/100*height) + 'px Arial'
+  ctx.fillText 'whoops', width/2-40/100*width, height/2
+    
+  canvas.toBuffer (err, buff) ->
+    res.send buff,
+      'Content-Type': 'image/png'
+    , 200
+#
+#
+#
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
   #
   height = req.params.h*1
@@ -1380,73 +1396,68 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
     #
     mongo_theme.findById order.theme_id, (err, theme) ->
       theme_template = theme.theme_templates[order.active_view]
-      #
-      imagedata = ''
-      #
-      request = http.get
-        host: 'd3eo3eito2cquu.cloudfront.net'
-        port: 80
-        path: '/'+widthheight+'/'+theme_template.s3_id
-      , (response) ->
-          #
-          response.setEncoding 'binary'
-          #
-          response.on 'data', (chunk) ->
-            imagedata += chunk
-          response.on 'end', ->
+      if not order.active_view
+        image_err()
+      else
+        #
+        imagedata = ''
+        #
+        request = http.get
+          host: 'd3eo3eito2cquu.cloudfront.net'
+          port: 80
+          path: '/'+widthheight+'/'+theme_template.s3_id
+        , (response) ->
+            #
+            response.setEncoding 'binary'
+            #
+            response.on 'data', (chunk) ->
+              imagedata += chunk
+            response.on 'end', ->
 
-            if response.statusCode is 200
-              buff = new Buffer imagedata, 'binary'
-
-
-              canvas = new node_canvas(width,height)
-              ctx = canvas.getContext '2d'
-
-              img = new node_canvas.Image
-              img.src = buff
-              ctx.drawImage img, 0, 0, width, height
-              
+              if response.statusCode is 200
+                buff = new Buffer imagedata, 'binary'
 
 
-              for line,i in theme_template.lines
-                h = Math.round(line.h/100*height)
-                x = line.x/100*width
-                y = line.y/100*height
-                ctx.fillStyle = hex_to_rgba line.color
-                ctx.font = h + 'px ' + line.font_family
-                ctx.fillText order.values[i], x, y+h
+                canvas = new node_canvas(width,height)
+                ctx = canvas.getContext '2d'
 
-              qr_canvas = qr_code.draw_qr
-                node_canvas: node_canvas
-                style: 'round'
-                url: 'cards.ly'
-                hex: theme_template.qr.color1
-                hex_2: theme_template.qr.color2
-              
-
-
-              qr_canvas.toBuffer (err, qr_buff) ->
-                qr_img = new node_canvas.Image
-                qr_img.src = qr_buff
-
-
-                ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                img = new node_canvas.Image
+                img.src = buff
+                ctx.drawImage img, 0, 0, width, height
                 
+
+
+                for line,i in theme_template.lines
+                  h = Math.round(line.h/100*height)
+                  x = line.x/100*width
+                  y = line.y/100*height
+                  ctx.fillStyle = hex_to_rgba line.color
+                  ctx.font = h + 'px ' + line.font_family
+                  ctx.fillText order.values[i], x, y+h
+
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: 'cards.ly'
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2
                 
-                canvas.toBuffer (err, buff) ->
-                  res.send buff,
-                    'Content-Type': 'image/png'
-                  , 200
-            else
-              canvas = new node_canvas(width,height)
-              ctx = canvas.getContext '2d'
-              ctx.font = Math.round(40/100*height) + 'px Arial'
-              ctx.fillText 'whoops', width/2-40/100*width, height/2
-                
-              canvas.toBuffer (err, buff) ->
-                res.send buff,
-                  'Content-Type': 'image/png'
-                , 200
+
+
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  qr_img = new node_canvas.Image
+                  qr_img.src = qr_buff
+
+
+                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                  
+                  
+                  canvas.toBuffer (err, buff) ->
+                    res.send buff,
+                      'Content-Type': 'image/png'
+                    , 200
+              else
+                image_err()
 #
 #
 #
