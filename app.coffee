@@ -596,17 +596,20 @@ customer_questions_last_checked = 0
 
 # The checking function
 is_customer_questions_available = ->
-  if customer_questions_last_checked < (new Date() - 1000*60)
-    request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
-      if err or res.statusCode isnt 200
-        console.log 'ERR: campfire no response? - ', err
-      else
-        result = JSON.parse body
-        customer_questions_last_checked = new Date()
-        customer_questions_available = false
-        for user in result.room.users
-          if user.type is 'Member'
-            customer_questions_available = true
+  try
+    if customer_questions_last_checked < (new Date() - 1000*60)
+      request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
+        if err or res.statusCode isnt 200
+          console.log 'ERR: campfire no response? - ', err
+        else
+          result = JSON.parse body
+          customer_questions_last_checked = new Date()
+          customer_questions_available = false
+          for user in result.room.users
+            if user.type is 'Member'
+              customer_questions_available = true
+  catch err
+    console.log err
   customer_questions_available
 
 
@@ -1212,7 +1215,22 @@ app.post '/change-password', (req,res,next) ->
 #app.post '/send-password-reset', (req,res,next) ->
 #  if req.user.email and req.user.password_encrypted
 
-
+#
+hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
 #
 #
 # Get User
@@ -1348,55 +1366,106 @@ add_urls_to_order = (order, user, res) ->
   #
 #
 #
-app.get '/add-test', (req, res, next) ->
-  mongo_order.findOne
-    user_id: req.user._id
-  , (err, order) ->
+image_err = (res) ->
+  height = 100
+  width = 300
+  canvas = new node_canvas(width,height)
+  ctx = canvas.getContext '2d'
+  ctx.font = Math.round(40/100*height) + 'px Arial'
+  ctx.fillText 'whoops', width/2-40/100*width, height/2
+    
+  canvas.toBuffer (err, buff) ->
+    res.send buff,
+      'Content-Type': 'image/png'
+    , 200
+#
+#
+#
+app.get '/render/:w/:h/:order_id', (req, res, next) ->
+  #
+  height = req.params.h*1
+  width = req.params.w*1
+  widthheight = width+'x'+height
+  widthheight = 'raw' if width is 1680
+  #
+  #
+  url = 'cards.ly'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  #
+  mongo_order.findById req.params.order_id, (err, order) ->
     #
     #
     #
     #
     mongo_theme.findById order.theme_id, (err, theme) ->
       theme_template = theme.theme_templates[order.active_view]
-      #
-      imagedata = ''
-      #
-      request = http.get
-        host: 'd3eo3eito2cquu.cloudfront.net'
-        port: 80
-        path: '/raw/'+theme_template.s3_id
-      , (response) ->
-          #
-          response.setEncoding 'binary'
-          #
-          response.on 'data', (chunk) ->
-            imagedata += chunk
-          response.on 'end', ->
-            buff = new Buffer imagedata, 'binary'
+      if not order.active_view
+        image_err res
+      else
+        #
+        imagedata = ''
+        #
+        request = http.get
+          host: 'd3eo3eito2cquu.cloudfront.net'
+          port: 80
+          path: '/'+widthheight+'/'+theme_template.s3_id
+        , (response) ->
+            #
+            response.setEncoding 'binary'
+            #
+            response.on 'data', (chunk) ->
+              imagedata += chunk
+            response.on 'end', ->
 
-            height = 960
-            width = 1680
-
-            canvas = new node_canvas(1680,960)
-            ctx = canvas.getContext '2d'
-
-            img = new node_canvas.Image
-            img.src = buff
-            ctx.drawImage img, 0, 0, width, height
-            
+              if response.statusCode is 200
+                buff = new Buffer imagedata, 'binary'
 
 
-            for line,i in theme_template.lines
-              h = Math.round(line.h/100*height)
-              x = line.x/100 * width
-              y = line.y/100 * height
-              ctx.font = h + 'px ' + line.font_family
-              ctx.fillText order.values[i], x, y+h
-            
-            canvas.toBuffer (err, buff) ->
-              res.send buff,
-                'Content-Type': 'image/png'
-              , 200
+                canvas = new node_canvas(width,height)
+                ctx = canvas.getContext '2d'
+
+                img = new node_canvas.Image
+                img.src = buff
+                ctx.drawImage img, 0, 0, width, height
+                
+
+
+                for line,i in theme_template.lines
+                  h = Math.round(line.h/100*height)
+                  x = line.x/100*width
+                  y = line.y/100*height
+                  ctx.fillStyle = hex_to_rgba line.color
+                  ctx.font = h + 'px ' + line.font_family
+                  ctx.fillText order.values[i], x, y+h
+
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                #
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: url
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2+alpha
+                #
+                #
+                #
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  qr_img = new node_canvas.Image
+                  qr_img.src = qr_buff
+
+
+                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                  
+                  
+                  canvas.toBuffer (err, buff) ->
+                    res.send buff,
+                      'Content-Type': 'image/png'
+                    , 200
+              else
+                image_err res
 #
 #
 #
