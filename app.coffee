@@ -679,9 +679,9 @@ app.configure ->
     # Cut off at 60 characters 
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
-    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    description: 'Design and create your own QR code business cards. See analytics and manage QR code links anytime in the Cardsly dashboard.'
     # H1 tag - allows html to be passed in, using brackets and all, e.g.: 
-    h1: '<span>business cards done easi<span class="alt">ly</span></span>'
+    h1: '<span>QR code business cards done easi<span class="alt">ly</span></span>'
     #
     #
   app.use form
@@ -1805,7 +1805,7 @@ app.get '/about', (req, res) ->
     session: req.session
 #
 # How it Works Page
-app.get '/how-it-works/:whateverComesAfterHowItWorks?', (req, res) ->
+app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', (req, res) ->
   res.render 'how_it_works'
     user: req.user
     session: req.session
@@ -1903,7 +1903,27 @@ app.get '/buy', get_url_groups, (req, res, next) ->
 #
 #
 #
-app.get '/sample-landing-page', get_url_groups, (req, res) ->
+app.get '/phx', (req, res) ->
+  res.render 'phx'
+    user: req.user
+    session: req.session
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Welcome Phoenix Networkers!'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    h1: '<span>QR code business cards Phoenix</span>'
+    #
+    # (Uncomment means remove the single # character at the start of it :)\
+#
+#
+#
+#
+app.get '/sample-landing-page', (req, res) ->
   res.render 'sample_landing_page'
     user: req.user
     session: req.session
@@ -1919,10 +1939,9 @@ app.get '/sample-landing-page', get_url_groups, (req, res) ->
     #h1: 'some other h1 tag'
     #
     # (Uncomment means remove the single # character at the start of it :)
-    #
-    url_groups: req.url_groups
 #
 #
+
 #
 #
 # Real Index Page
