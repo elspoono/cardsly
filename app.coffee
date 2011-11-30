@@ -1986,7 +1986,7 @@ app.get '/phx', (req, res) ->
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
     #
     # Uncomment the following line to add a custom h1 tag!
-    h1: '<span>QR code business cards Phoenix</span>'
+    h1: '<span>QR code business cards for Phoenix</span>'
     #
     # (Uncomment means remove the single # character at the start of it :)\
 #
