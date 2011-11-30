@@ -1,7 +1,7 @@
 {
-  "name": "cham",
-  "version": "0.0.1",
-  "private": true,
+  "name": "cardsly",
+  "version": "0.0.2",
+  "private": false,
   "dependencies": {
     "express": ">= 0.0.1",
     "jade": ">= 0.0.1",

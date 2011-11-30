@@ -1,7 +1,7 @@
 #= require 'libs/jquery-1.6.2.js'
 #= require 'libs/jquery-ui-1.8.16.min.js'
 #= require 'date'
-#= require 'libs/qrcode.js'
+#= require 'libs/qrcode'
 
 
 
@@ -77,157 +77,42 @@ random_strings = 'taameer73,Heesoh750,hiyit510,tuhaat140,Caaran74,lehof520,canii
 #
 #
 #
-###
-###
 #
 #
 #
-$.fn.prep_qr = (options) ->
-  settings = 
-    url: 'http://cards.ly/'+random_strings[Math.floor(Math.random()*random_strings.length)]
-    number: Math.floor(Math.random()*100)
-  this.each (i) ->
-    if options
-      $.extend settings, options
-    $t = $(this)
-    #
-    # Canvas Setup
-    $canvas = $ '<canvas />'
-    $t.append $canvas
-    #
-    #
-    # QR Code
-    qrcode = new QRCode -1, QRErrorCorrectLevel.H
-    qrcode.addData settings.url
-    qrcode.make()
-    #
-    # Save that
-    $t.data 'number', settings.number
-    $t.data 'url', settings.url
-    $t.data 'qrcode', qrcode
-    #
-    # Prep the variables for the canvas
-    count = qrcode.getModuleCount()
-    scale = 6
-    size = count * scale + scale * 4
-    #
-    #
-    $t.css
-      height: size
-      width: size
-    $canvas.attr
-      height: size
-      width: size
 #
-$.hexToR = (h) -> parseInt(($.cutHex(h)).substring(0,2),16)
-$.hexToG = (h) -> parseInt(($.cutHex(h)).substring(2,4),16)
-$.hexToB = (h) -> parseInt(($.cutHex(h)).substring(4,6),16)
-$.cutHex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
-#
-$.hex_to_rgba = (h) ->
-  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
-  hex = cut_hex h
-  r = parseInt hex.substring(0,2), 16
-  g = parseInt hex.substring(2,4), 16
-  b = parseInt hex.substring(4,6), 16
-  a = hex.substring(6,8)
-  if a
-    a = (parseInt a, 16) / 255
-  else
-    a = 1
-  if a is 1
-    'rgb('+r+','+g+','+b+')'
-  else
-    'rgba('+r+','+g+','+b+','+a+')'
-#
-$.fn.draw_qr = (options) ->
-  settings = 
-    color: '000000'
-  this.each (i) ->
-    if options
-      $.extend settings, options
-    $t = $(this)
-    #
-    #
-    number = $t.data 'number'
-    url = $t.data 'url'
-    qrcode = $t.data 'qrcode'
-    #
-    # Prep the variables for the canvas
-    count = qrcode.getModuleCount()
-    scale = 6
-    size = count * scale + scale * 4
-    #
-    canvas = $t.find('canvas')[0]
-    if canvas and canvas.getContext
-      ctx = canvas.getContext "2d"
-      #
-      #
-      ctx.clearRect 0,0,size,size
-      #
-      #
-      ctx.fillStyle = $.hex_to_rgba settings.color
-
-      # Actual Drawing of the QR Code
-      for r in [0..count-1]
-        for c in [0..count-1]
-          ctx.fillRect r * scale + scale*2, c * scale + scale*2, scale, scale if qrcode.isDark(c,r)
-      #
-      url = url.replace('http://','')
-      #
-      do_style_one = ->
-        #
-        ctx.font = '8pt Courier New'
-        ctx.fillText url, 11, size-3, 400
-        #
-      do_style_two = ->
-        #
-        unit = scale*4
-        width = size-unit*2
-
-        ctx.clearRect unit, size*2/3-unit/2, width, unit
-
-        width = width-unit/2
-
-        start_size = '8'
-        measured_width = 0
-        re_measure = ->
-          ctx.font = start_size + 'px Arial'
-          dim = ctx.measureText url
-          measured_width = dim.width
-          if measured_width < width
-            start_size++
-            re_measure()
-        re_measure()
-        if measured_width > width
-          ctx.font = start_size-1 + 'px Arial'
-          dim = ctx.measureText url
-          measured_width = dim.width
-
-        ctx.fillText url, unit + unit/4 + (width-measured_width)/2, size*2/3+unit/4, 400
-        #
-      #
-      do_style_one()
-      #
-      ctx.font = '8pt Courier New'
-      ctx.fillText number, size-26, size-3, 11
 #
 $.fn.qr = (options) ->
   settings = 
     color: '000000'
     height: 50
     width: 50
+    url: 'cards.ly'
   this.each (i) ->
     if options
       $.extend settings, options
     $t = $(this)
     #
-    $t.prep_qr
+    #$t.prep_qr
+    #  url: settings.url
+    #
+    #$t.draw_qr
+    #  color: settings.color
+    #
+    #
+    $canvas = $t.find('canvas')
+    if not $canvas.length
+      $canvas = $ '<canvas />'
+      $t.append $canvas
+    #
+    #
+    #
+    #
+    $.draw_qr
+      $canvas: $canvas
       url: settings.url
-    #
-    $t.draw_qr
-      color: settings.color
-    #
+      hex: settings.color
+      hex_2: 'transparent'
     $t.css
       height: settings.height
       width: settings.width
@@ -1254,7 +1139,7 @@ $ ->
     card_inner_height = $card.height()
     card_inner_width = $card.width()
   update_card_size()
-  $qr.prep_qr()
+  #$qr.prep_qr()
 
 
 
@@ -1399,8 +1284,6 @@ $ ->
     $qr.show().css
       top: theme_template.qr.y/100 * card_height
       left: theme_template.qr.x/100 * card_width
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
     $qr.find('canvas').css
       height: theme_template.qr.h/100 * card_height
       width: theme_template.qr.h/100 * card_height
@@ -1410,8 +1293,10 @@ $ ->
       width: theme_template.qr.w/100 * card_width
       background: '#'+theme_template.qr.color2
     $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
-    $qr.draw_qr
+    $qr.qr
       color: theme_template.qr.color1
+      height: theme_template.qr.h/100 * card_height
+      width: theme_template.qr.h/100 * card_height
     #
     #
     # Move all the lines and their shit

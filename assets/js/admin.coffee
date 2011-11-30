@@ -18,13 +18,17 @@ Theme admin
 
 
 $ ->
-
   #############
+  #
+  #
+  #
+  #
   #
   # Instanstiate all of our jQuery objects we'll be reusing
   #
   # Grab all the guys we're going to use
   $designer = $ '.designer'
+  #
   #
   # Containers
   $options = $designer.find '.options'
@@ -81,8 +85,8 @@ $ ->
   #
   #
   ################
-
-
+  #
+  #
   # Set some constants
   active_theme = false
   active_view = 0
@@ -101,9 +105,11 @@ $ ->
     card_inner_width = $card.width()
   update_card_size()
   #
-  
-
-
+  #
+  #
+  #
+  #
+  ########################################################################
 
 
 
@@ -199,7 +205,7 @@ $ ->
   $web_fg2.hide()
   $web_bg.hide()
   
-  $qr.prep_qr()
+  #$qr.prep_qr()
 
 
   #############################
@@ -370,8 +376,10 @@ $ ->
   #
   # Changing QR Color on key presses
   $qr_color1.bind 'color_update', (e, options) ->
-    $qr.draw_qr
+    $qr.qr
       color: options.hex
+      height: active_theme.theme_templates[active_view].qr.height/100 * card_height
+      width: active_theme.theme_templates[active_view].qr.height/100 * card_height
     set_timers() if options.timer
   #
   $qr_color2.bind 'color_update', (e, options) ->
@@ -384,25 +392,9 @@ $ ->
     $web_bg.css
       background: '#' + options.hex
   #
-  add_transparent_gradient = (h, start, element) ->
-    rgb = $.hexToR(h) + ',' + $.hexToG(h) + ',' + $.hexToB(h)
-    backgrounds = [
-      '-moz-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
-      '-webkit-gradient(linear, left top, left bottom, color-stop(' + start + ',rgba(' + rgb + ',0)), color-stop(99%,rgba(' + rgb + ',1)))'
-      '-webkit-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
-      '-o-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
-      '-ms-linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
-      'linear-gradient(top, rgba(' + rgb + ',0) ' + start + ',rgba(' + rgb + ',1) 99%)'
-    ]
-    element.css
-      filter: 'progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#a6000000\', endColorstr=\'#00000000\',GradientType=0 )'
-    for i in backgrounds
-      element.css
-        background: i
-  #
   $color1.bind 'color_update', (e, options) ->
-    add_transparent_gradient options.hex, '40%', $web_fg
-    add_transparent_gradient options.hex, '80%', $web_fg2
+    #add_transparent_gradient options.hex, '40%', $web_fg
+    #add_transparent_gradient options.hex, '80%', $web_fg2
     
 
   #
@@ -911,8 +903,6 @@ $ ->
       $qr.show().css
         top: theme_template.qr.y/100 * card_height
         left: theme_template.qr.x/100 * card_width
-        height: theme_template.qr.h/100 * card_height
-        width: theme_template.qr.h/100 * card_height
       $qr.find('canvas').css
         height: theme_template.qr.h/100 * card_height
         width: theme_template.qr.h/100 * card_height
@@ -922,8 +912,10 @@ $ ->
         width: theme_template.qr.w/100 * card_width
         background: '#'+theme_template.qr.color2
       $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
-      $qr.draw_qr
+      $qr.qr
         color: theme_template.qr.color1
+        height: theme_template.qr.h/100 * card_height
+        width: theme_template.qr.h/100 * card_height
     #
     #
     # Move all the lines and their shit
