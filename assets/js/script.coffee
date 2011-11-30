@@ -160,19 +160,18 @@ $.create_card_from_theme = (options) ->
   #
   $my_qr = $my_card.find('.qr')
   #
+  $my_qr.html '<img src="/qr/' + theme_template.qr.color1 + '/?cards.ly" height=' + theme_template.qr.h/100 * settings.height + ' width=' + theme_template.qr.w/100 * settings.width + ' \/><div class="background" \/> '
+  #
   $my_qr_bg = $my_qr.find '.background'
   #
-  $my_qr.qr
-    color: theme_template.qr.color1
-    height: theme_template.qr.h/100 * settings.height
-    width: theme_template.qr.w/100 * settings.width
-  $my_qr.find('canvas').css
-    zIndex: 150
-    position: 'absolute'
   $my_qr.css
     position: 'absolute'
     top: theme_template.qr.y/100 * settings.height
     left: theme_template.qr.x/100 * settings.width
+    zIndex: 200
+  $my_qr.find('img').css
+    position: 'absolute'
+    zIndex: 150
   $my_qr_bg.css
     zIndex: 140
     position: 'absolute'
