@@ -9,10 +9,9 @@ $ ->
     else
       $.load_loading {}, (loading_close) ->
         $.ajax
-          url: '/change-password'
+          url: '/send-password-reset'
           data: JSON.stringify
-            current_password: $('.current_password').val()
-            new_password: $('.new_password').val()
+            email_password: $('.current_email').val()
           success: (data) ->
             loading_close()
             if data.err

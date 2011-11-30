@@ -1207,6 +1207,14 @@ app.post '/change-password', (req,res,next) ->
 #
 #
 #
+#
+
+app.post '/send-password-reset', (req,res,next) ->
+  if req.user.email and req.user.password_encrypted
+
+
+#
+#
 # Get User
 app.post '/get-user', (req,res,next) ->
   #console.log 'USER: ', req.user
