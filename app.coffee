@@ -1438,7 +1438,8 @@ app.get '/pdf/:order_id', (req, res, next) ->
                   y = line.y/100*height
                   w = line.w/100*width
                   ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px ' + line.font_family
+                  console.log line.font_family
+                  ctx.font = h + 'px "' + line.font_family + '"'
                   if line.text_align is 'left'
                     ctx.fillText order.values[i], x, y+h
                   else
@@ -1557,7 +1558,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                   y = line.y/100*height
                   w = line.w/100*width
                   ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px ' + line.font_family
+                  ctx.font = h + 'px "' + line.font_family + '"'
                   if line.text_align is 'left'
                     ctx.fillText order.values[i], x, y+h
                   else
