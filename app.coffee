@@ -1780,9 +1780,15 @@ app.get '/make-me-admin', securedPage, (req, res) ->
 #
 # login page
 app.get '/login', (req, res) ->
-  res.render 'login'
-    user: req.user
-    session: req.session
+  #
+  if req.user
+    res.send '',
+      Location: '/cards'
+    , 302
+  else
+    res.render 'login'
+      user: req.user
+      session: req.session
 #
 # About Page
 app.get '/about', (req, res) ->
@@ -2036,7 +2042,6 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
 
   canvas = qr_code.draw_qr
     node_canvas: node_canvas
-    square_size: 20
     style: params.style
     url: params.url
     hex: params.hex

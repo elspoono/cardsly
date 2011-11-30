@@ -1,45 +1,41 @@
+.section.form_narrow.first
+  .cell_bg
+  .cell_content
+    .signins
+      h3 Login with your existing social account:
+      .clear.center
+      .socials
+        a.button.twitter(href='/auth/twitter')
+          span Twitter
+        a.button.facebook(href='/auth/facebook')
+          span Facebook
+        a.button.linkedin(href='/auth/linkedin')
+          span LinkedIn
+        a.button.google(href='/auth/google')
+          span Google
+        .clear
 .section.form_narrow
   .cell_bg
   .cell_content
     .signins
-      if user
-        p.subtitle I see you've already signed in.
-        p
-          | Welcome back 
-          =user.name
-          =user.email
-      else
-        h3 Login with your existing social account:
-        .clear.center
-        .socials
-          a.button.twitter(href='/auth/twitter')
-            span Twitter
-          a.button.facebook(href='/auth/facebook')
-            span Facebook
-          a.button.linkedin(href='/auth/linkedin')
-            span LinkedIn
-          a.button.google(href='/auth/google')
-            span Google
-          .clear
-        p
-        h3 Or, sign in with:
-        form.login_form
-          ul
-            li
-              label.subtitle Email:
-              input.email_login
-            li
-              label.subtitle Password:
-              input(type='password').password_login
-            li
-              input(type='submit', value='Login').button.normal.login
-          .clear
-          p.center -or-
+      h3 Or, sign in with:
+      form.login_form
+        ul
+          li
+            label.subtitle Email:
+            input.email_login
+          li
+            label.subtitle Password:
+            input(type='password').password_login
+          li
+            input(type='submit', value='Login').button.normal.login
         .clear
-        .local
-          a.button.new(href='#')
-            span Create a username and password
-            span.subtitle username and password
-          .clear
+        p.center -or-
+      .clear
+      .local
+        a.button.new(href='#')
+          span Create a username and password
+          span.subtitle username and password
         .clear
+      .clear
 .clear

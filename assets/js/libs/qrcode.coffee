@@ -718,7 +718,7 @@ ctx_inverted_arc = (my_ctx, a, b, c, d) ->
   my_ctx.fill()
 #
 #
-create = (url) ->
+create_qr = (url) ->
     qrcode = new QRCode(-1, QRErrorCorrectLevel.H)
     qrcode.addData url
     qrcode.make()
@@ -739,7 +739,11 @@ draw_qr
 ###
 #
 draw_qr = (o) ->
-
+  #
+  #
+  o.square_size = 20 if not o.square_size
+  #
+  #
   if o.style is 'circle'
     o.round = 8
   else if o.style is 'square'
@@ -747,24 +751,33 @@ draw_qr = (o) ->
   else
     o.style = 'round'
     o.round = 10
-
-  qr = create o.url
-
-
-
+  #
+  #
+  qr = create_qr o.url
+  #
+  #
   count = qr.moduleCount
+  #
   #
   border_size = o.square_size * 2
   round = o.round
   #
+  #
   quarter = o.square_size/2
+  #
   #
   size = count * o.square_size + border_size * 2
   #
   #
   #
+  #
   if o.node_canvas
     canvas = new o.node_canvas(size,size)
+  if o.$canvas
+    canvas = o.$canvas[0]
+    o.$canvas.attr
+      height: size
+      width: size
   #
   #
   ctx = canvas.getContext '2d'
@@ -795,7 +808,6 @@ draw_qr = (o) ->
 
   for r in [0..count-1]
     for c in [0..count-1]
-      
       #
       # r is the row we are on
       # ... and c is the column
@@ -805,7 +817,7 @@ draw_qr = (o) ->
       # o.square_size is the size of the grid item
       #
       # o.style is the type of drawing we are doing for that grid item
-
+      #
       x = c*o.square_size+border_size
       y = r*o.square_size+border_size
         
@@ -829,39 +841,39 @@ draw_qr = (o) ->
           #
           # top middle
           ctx.moveTo x+quarter, y
-
+          #
           # top right
           if qr.isDark(r,c+1) or qr.isDark(r-1,c)
             ctx.lineTo x+o.square_size, y
           else
             ctx.lineTo x+o.square_size-round, y
             ctx.quadraticCurveTo x+o.square_size, y, x+o.square_size, y+round
-
+          #
           # bottom right
           if qr.isDark(r,c+1) or qr.isDark(r+1,c)
             ctx.lineTo x+o.square_size, y+o.square_size
           else
             ctx.lineTo x+o.square_size, y+o.square_size-round
             ctx.quadraticCurveTo x+o.square_size, y+o.square_size, x+o.square_size-round, y+o.square_size
-
+          #
           # bottom left
           if qr.isDark(r,c-1) or qr.isDark(r+1,c)
             ctx.lineTo x, y+o.square_size
           else
             ctx.lineTo x+round, y+o.square_size
             ctx.quadraticCurveTo x, y+o.square_size, x, y+o.square_size-round
-
+          #
           # top left
           if qr.isDark(r,c-1) or qr.isDark(r-1,c)
             ctx.lineTo x, y
           else
             ctx.lineTo x, y+round
             ctx.quadraticCurveTo x, y, x+round, y
-          
-
+          #
+          #
           # return to top middle
           ctx.lineTo x+quarter, y
-
+          #
           # fill it all in
           ctx.fill()
           #
@@ -885,12 +897,17 @@ draw_qr = (o) ->
           if qr.isDark(r,c-1) and qr.isDark(r+1,c-1) and qr.isDark(r+1,c)
             ctx_inverted_arc ctx, x, y+o.square_size, x+quarter/2, y+o.square_size-quarter/2
   canvas
-
-
 #
 #
 #
 # used when required :)
 unless typeof (exports) is "undefined"
-  exports.create = create
+  exports.create_qr = create_qr
   exports.draw_qr = draw_qr
+#
+#
+#
+# used when $ 'ed :)
+unless typeof ($) is "undefined"
+  $.create_qr = create_qr
+  $.draw_qr = draw_qr
