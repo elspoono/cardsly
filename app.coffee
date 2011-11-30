@@ -1804,6 +1804,16 @@ app.get '/settings', securedPage, (req, res) ->
       'settings'
     ]
 #
+
+# Forgot Password
+app.get '/forgot-password', (req, res) ->
+  res.render 'forgot_password'
+    user: req.user
+    session: req.session
+    scripts:[
+      'forgot'
+    ]
+
 # Splash Page
 app.get '/old-browser', (req, res) -> 
   res.render 'old_browser'
