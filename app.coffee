@@ -745,7 +745,7 @@ is_customer_questions_available = ->
             if user.type is 'Member'
               customer_questions_available = true
   catch err
-    console.log err
+    log_err err
   customer_questions_available
 
 
@@ -2120,7 +2120,7 @@ securedPage = (req, res, next) ->
     ,302
 check_no_err = (err, res) ->
   if err
-    console.log err
+    log_err err
     res.send '',
       Location: '/error'
     ,302
@@ -2221,7 +2221,7 @@ app.get '/admin', securedAdminPage, (req, res, next) ->
 app.get '/make-me-admin', securedPage, (req, res) ->
   req.user.role = 'admin'
   req.user.save (err) ->
-    console.log err if err
+    log_err err if err
     res.send '',
       Location: '/admin'
     , 302
@@ -2309,7 +2309,7 @@ app.get '/buy', get_url_groups, (req, res, next) ->
           date_added: -1
       , (err, found_order) ->
         if err
-          console.log err
+          log_err err
         else
           if found_order.length and found_order[0].values and found_order[0].address and found_order[0].city and found_order[0].full_address
             req.session.saved_form.values = found_order[0].values
