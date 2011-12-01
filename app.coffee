@@ -1520,8 +1520,6 @@ image_err = (res) ->
 app.get '/pdf/:order_id', (req, res, next) ->
   #
   #
-  # Set up the PDF Document
-  doc = new pdf_document()
   #
   #
   # Our resolutions we'll use for the PDFs and the Images
@@ -1646,8 +1644,10 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       #
                       #
                       url_i = 0
-                      pages = 1 #url_group.urls.length/10
+                      pages = url_group.urls.length/10
                       #
+                      # Set up the PDF Document
+                      doc = new pdf_document()
                       #
                       for page in [1..pages]
                         #
