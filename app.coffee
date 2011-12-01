@@ -1517,7 +1517,16 @@ image_err = (res) ->
     , 200
 #
 #
+start_timer = () ->
+  timer = new Date()
+  console.log timer - timer
+  timer
+check_timer = (timer) ->
+  console.log new Date()-timer
+#
+#
 app.get '/pdf/:order_id', (req, res, next) ->
+  timer = start_timer()
   #
   #
   #
@@ -1570,6 +1579,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
             # Set blank imagedata
             imagedata = ''
             #
+            check_timer timer
             #
             # Hit Amazon
             request = http.get
@@ -1591,6 +1601,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
                   # If we found the image on amazon
                   if response.statusCode is 200
                     # 
+                    check_timer timer
                     # 
                     buff = new Buffer imagedata, 'binary'
                     # 
@@ -1627,16 +1638,16 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     # 
                     # 
                     #
-                    qr_left = theme_template.qr.x/100*dpi*3.5
-                    qr_top = theme_template.qr.y/100*dpi*2
-                    qr_width = theme_template.qr.w/100*dpi*3.5
-                    qr_height = theme_template.qr.h/100*dpi*2
+                    qr_left = theme_template.qr.x/100*pdf_dpi*3.5
+                    qr_top = theme_template.qr.y/100*pdf_dpi*2
+                    qr_width = theme_template.qr.w/100*pdf_dpi*3.5
+                    qr_height = theme_template.qr.h/100*pdf_dpi*2
                     # 
                     canvas.toBuffer (err, s3_buff) ->
                       # 
                       # 
-                      final_canvas = new node_canvas 8.5*dpi, 11*dpi
-                      final_ctx = final_canvas.getContext '2d'
+                      #final_canvas = new node_canvas 8.5*dpi, 11*dpi
+                      #final_ctx = final_canvas.getContext '2d'
                       #
                       #
                       s3_img = new node_canvas.Image
@@ -1670,7 +1681,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       bg_buff = bg_canvas.toBuffer()
                       #
                       #
-                      #
                       for page in [1..pages]
                         #
                         page_canvas = new node_canvas 7*dpi, 10*dpi
@@ -1681,12 +1691,11 @@ app.get '/pdf/:order_id', (req, res, next) ->
                         for r in [0..4]
                           for c in [0..1]
                             #
-                            left = c*3.5*dpi 
-                            top = r*2*dpi
-                            width = 3.5*dpi
-                            height = 2*dpi
+                            left = c*3.5*pdf_dpi + .75*pdf_dpi
+                            top = r*2*pdf_dpi + .5*pdf_dpi
+                            width = 3.5*pdf_dpi
+                            height = 2*pdf_dpi
                             #
-
                             qr_canvas = qr_code.draw_qr
                               node_canvas: node_canvas
                               style: 'round'
@@ -1697,30 +1706,43 @@ app.get '/pdf/:order_id', (req, res, next) ->
                             # 
                             # 
                             qr_buff = qr_canvas.toBuffer()
-                            qr_img = new node_canvas.Image
-                            qr_img.src = qr_buff
-                            #
-                            qr_container_canvas = new node_canvas qr_width, qr_height
-                            qr_container_ctx = qr_container_canvas.getContext '2d'
-                            qr_container_ctx.drawImage qr_img, 0, 0, qr_width, qr_height
                             #
                             #
-                            qr_container_buff = qr_container_canvas.toBuffer()
-                            qr_container_img = new node_canvas.Image
-                            qr_container_img.src = qr_container_buff
+                            doc.image s3_buff, left, top,
+                              width: width
+                              height: height
+                            #
+                            check_timer timer
+                            #
+                            doc.image qr_buff, left+qr_left, top+qr_top,
+                              width: qr_width
+                              height: qr_height
                             #
                             #
-                            page_ctx.drawImage qr_img, left+qr_left, top+qr_top, qr_width, qr_height
+                            check_timer timer
+                            #
+                            #
+                            # ------------------------------------------
+                            #qr_img = new node_canvas.Image
+                            #qr_img.src = qr_buff
+                            #
+                            #
+                            #page_ctx.drawImage qr_img, left+qr_left, top+qr_top, qr_width, qr_height
+                            # ------------------------------------------
                             #
                             url_i++
                         #
-                        page_buff = page_canvas.toBuffer()
-                        doc.image bg_buff, .75*pdf_dpi, .5*pdf_dpi,
-                          width: 7*pdf_dpi
-                          height: 10*pdf_dpi
-                        doc.image page_buff, .75*pdf_dpi, .5*pdf_dpi,
-                          width: 7*pdf_dpi
-                          height: 10*pdf_dpi
+                        #
+                        # ------------------------------------------
+                        #doc.image bg_buff, .75*pdf_dpi, .5*pdf_dpi,
+                        #  width: 7*pdf_dpi
+                        #  height: 10*pdf_dpi
+                        #
+                        #page_buff = page_canvas.toBuffer()
+                        #doc.image page_buff, .75*pdf_dpi, .5*pdf_dpi,
+                        #  width: 7*pdf_dpi
+                        #  height: 10*pdf_dpi
+                        # ------------------------------------------
                         #
                         if page isnt pages
                           doc.addPage()
