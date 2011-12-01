@@ -24,6 +24,7 @@
     , "snockets": "1.3.3"
     , "underscore": "1.1.7"
     , "request": ">=0.0.1"
+    , "pdfkit": ">=0.0.1"
     , "canvas": "https://github.com/elspoono/node-canvas-heroku/tarball/master"
   },
   "devDependencies": {

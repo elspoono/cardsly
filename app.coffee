@@ -35,9 +35,15 @@ LIBRARY LOADING
 #
 #
 #
+log_err = (err) ->
+  to_output = '-----------------------------\n'
+  to_output+= 'COMPLETE:\n ' + util.inspect err
+  if typeof(err) is 'object' and err.stack
+    to_output+='\nSTACK:\n' + err.stack
+  to_output+= '\n-----------------------------'
+  console.log to_output
 #
-process.on 'uncaughtException', (err) ->
-  console.log 'UNCAUGHT', err
+process.on 'uncaughtException', log_err
 #
 # Create server and export `app` as a module for other modules to require as a dependency 
 # early in this file
@@ -66,7 +72,7 @@ geo = require('geo')
 #
 #
 require 'coffee-script'
-#PDFDocument = require 'pdfkit'
+pdf_document = require 'pdfkit'
 #
 nodemailer = require 'nodemailer'
 #
@@ -1438,7 +1444,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                   y = line.y/100*height
                   w = line.w/100*width
                   ctx.fillStyle = hex_to_rgba line.color
-                  console.log line.font_family
                   ctx.font = h + 'px "' + line.font_family + '"'
                   if line.text_align is 'left'
                     ctx.fillText order.values[i], x, y+h
@@ -1452,7 +1457,24 @@ app.get '/pdf/:order_id', (req, res, next) ->
 
 
                 alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+
+
+                doc = new pdf_document()
+
+
+                
+
+                
+                res.send new Buffer(doc.output(), 'binary'),
+                  'Content-Type': 'application/pdf'
+                , 200
+
                 #
+                #
+                #
+                #
+                #
+                ###
                 qr_canvas = qr_code.draw_qr
                   node_canvas: node_canvas
                   style: 'round'
@@ -1494,6 +1516,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       res.send buff,
                         'Content-Type': 'image/png'
                       , 200
+                ###
               else
                 image_err res
 #
