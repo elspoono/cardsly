@@ -1541,16 +1541,9 @@ image_err = (res) ->
     , 200
 #
 #
-start_timer = () ->
-  timer = new Date()
-  console.log timer - timer
-  timer
-check_timer = (timer) ->
-  console.log new Date()-timer
 #
 #
 app.get '/pdf/:order_id', (req, res, next) ->
-  timer = start_timer()
   #
   #
   #
@@ -1603,7 +1596,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
             # Set blank imagedata
             imagedata = ''
             #
-            check_timer timer
             #
             # Hit Amazon
             request = http.get
@@ -1625,7 +1617,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                   # If we found the image on amazon
                   if response.statusCode is 200
                     # 
-                    check_timer timer
                     # 
                     buff = new Buffer imagedata, 'binary'
                     # 
@@ -1716,14 +1707,12 @@ app.get '/pdf/:order_id', (req, res, next) ->
                               width: width
                               height: height
                             #
-                            check_timer timer
                             #
                             doc.image qr_buff, left+qr_left, top+qr_top,
                               width: qr_width
                               height: qr_height
                             #
                             #
-                            check_timer timer
                             #
                             #
                             url_i++
