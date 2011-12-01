@@ -19,4 +19,7 @@
           td.order_cell=orders[i].quantity
           td.order_cell=orders[i].status
           td.order_cell
-            a(href='/pdf/' + orders[i]._id + '/?cards.ly',target='_blank') print
+            - if(orders[i].s3_id)
+               a(href='https://d3eo3eito2cquu.cloudfront.net/pdfs/' + orders[i].s3_id + '.pdf',target='_blank') Print
+            - else
+              | Processing...
