@@ -1636,6 +1636,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     # 
                     alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
                     # 
+                    #
                     # 
                     #
                     qr_left = theme_template.qr.x/100*pdf_dpi*3.5
@@ -1646,9 +1647,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     canvas.toBuffer (err, s3_buff) ->
                       # 
                       # 
-                      #final_canvas = new node_canvas 8.5*dpi, 11*dpi
-                      #final_ctx = final_canvas.getContext '2d'
-                      #
                       #
                       s3_img = new node_canvas.Image
                       s3_img.src = s3_buff
@@ -1661,24 +1659,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       doc = new pdf_document()
                       #
                       #
-                      #
-                      # Create the Background
-                      bg_canvas = new node_canvas 7*dpi, 10*dpi
-                      bg_ctx = bg_canvas.getContext '2d'
-                      for r in [0..4]
-                        for c in [0..1]
-                          #
-                          left = c*3.5*dpi 
-                          top = r*2*dpi
-                          width = 3.5*dpi
-                          height = 2*dpi
-                          #
-                          #
-                          bg_ctx.drawImage s3_img, left, top, width, height
-                          #
-                          #
-                      #
-                      bg_buff = bg_canvas.toBuffer()
                       #
                       #
                       for page in [1..pages]
@@ -1722,27 +1702,8 @@ app.get '/pdf/:order_id', (req, res, next) ->
                             check_timer timer
                             #
                             #
-                            # ------------------------------------------
-                            #qr_img = new node_canvas.Image
-                            #qr_img.src = qr_buff
-                            #
-                            #
-                            #page_ctx.drawImage qr_img, left+qr_left, top+qr_top, qr_width, qr_height
-                            # ------------------------------------------
-                            #
                             url_i++
                         #
-                        #
-                        # ------------------------------------------
-                        #doc.image bg_buff, .75*pdf_dpi, .5*pdf_dpi,
-                        #  width: 7*pdf_dpi
-                        #  height: 10*pdf_dpi
-                        #
-                        #page_buff = page_canvas.toBuffer()
-                        #doc.image page_buff, .75*pdf_dpi, .5*pdf_dpi,
-                        #  width: 7*pdf_dpi
-                        #  height: 10*pdf_dpi
-                        # ------------------------------------------
                         #
                         if page isnt pages
                           doc.addPage()
@@ -1756,50 +1717,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     # 
                     # 
                     # 
-                    # 
-                    ### 
-                    qr_canvas = qr_code.draw_qr
-                      node_canvas: node_canvas
-                      style: 'round'
-                      url: url
-                      hex: theme_template.qr.color1
-                      hex_2: theme_template.qr.color2+alpha
-                    # 
-                    # 
-                    # 
-                    qr_canvas.toBuffer (err, qr_buff) ->
-                      qr_img = new node_canvas.Image
-                      qr_img.src = qr_buff
-
-
-                      ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
-                      
-                      
-                      canvas.toBuffer (err, buff) ->
-                        #
-                        #
-                        final_canvas = new node_canvas 8.5*dpi, 11*dpi
-                        final_ctx = final_canvas.getContext '2d'
-                        #
-                        #
-                        bg_img = new node_canvas.Image
-                        bg_img.src = buff
-                        #
-                        #
-                        for r in [0..4]
-                          for c in [0..1]
-                            #
-                            final_ctx.drawImage bg_img, .75*dpi + c*3.5*dpi, .5*dpi + r*2*dpi, 3.5*dpi, 2*dpi
-                            #
-                        #
-                        final_canvas.toBuffer (err, buff) ->
-                          #
-                          # 
-                          #
-                          res.send buff,
-                            'Content-Type': 'image/png'
-                          , 200
-                    ###
                   else
                     image_err res
 #
