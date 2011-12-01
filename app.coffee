@@ -72,7 +72,6 @@ geo = require('geo')
 #
 #
 require 'coffee-script'
-pdf_document = require 'pdfkit'
 #
 nodemailer = require 'nodemailer'
 #
@@ -173,6 +172,137 @@ ua_match =  (ua) ->
   result =
     browser: match[1] or ''
     version: match[2] or '0'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################################
+#
+#
+#
+#
+#
+###
+
+Allow pdfkit to accept buffers for images instead of reading from files
+
+###
+#
+#
+#
+#
+#
+pdf_document = require 'pdfkit'
+fs = require("fs")
+Data = require("pdfkit/lib/data")
+JPEG = require("pdfkit/lib/image/jpeg")
+PNG = require("pdfkit/lib/image/png")
+pdf_image = (->
+  pdf_image = ->
+  pdf_image.open = (filename) ->
+    data = undefined
+    firstByte = undefined
+    if typeof filename is "string"
+      @contents = fs.readFileSync(filename)
+      return  unless @contents
+      @data = new Data(@contents)
+    else if typeof filename is "object"
+      @data = new Data(filename)
+    else
+      return
+    @filter = null
+    data = @data
+    firstByte = data.byteAt(0)
+    if firstByte is 0xFF and data.byteAt(1) is 0xD8
+      new JPEG(data)
+    else if firstByte is 0x89 and data.stringAt(1, 3) is "PNG"
+      new PNG(data)
+    else
+      throw new Error("Unknown image format.")
+
+  pdf_image
+)()
+pdf_document.prototype.image = (src, x, y, options) ->
+  if typeof x is "object"
+    options = x
+    x = null
+  x = x or (if options? then options.x else undefined) or @x
+  y = y or (if options? then options.y else undefined) or @y
+  if @_imageRegistry[src]
+    _ref = @_imageRegistry[src]
+    image = _ref[0]
+    obj = _ref[1]
+    label = _ref[2]
+  else
+    image = pdf_image.open(src)
+    obj = image.object(this)
+    label = "I" + (++@_imageCount)
+    @_imageRegistry[src] = [ image, obj, label ]
+  w = (if options? then options.width else undefined) or image.width
+  h = (if options? then options.height else undefined) or image.height
+  if options
+    if options.width and not options.height
+      wp = w / image.width
+      w = image.width * wp
+      h = image.height * wp
+    else if options.height and not options.width
+      hp = h / image.height
+      w = image.width * hp
+      h = image.height * hp
+    else if options.scale
+      w = image.width * options.scale
+      h = image.height * options.scale
+    else if options.fit
+      _ref2 = options.fit
+      bw = _ref2[0]
+      bh = _ref2[1]
+
+      bp = bw / bh
+      ip = image.width / image.height
+      if ip > bp
+        w = bw
+        h = bw / ip
+      else
+        h = bh
+        w = bh * ip
+  @y += h  if @y is y
+  y = @page.height - y - h
+  _base[label] = obj  unless (_ref3 = (_base = @page.xobjects)[label])?
+  @save()
+  @addContent "" + w + " 0 0 " + h + " " + x + " " + y + " cm"
+  @addContent "/" + label + " Do"
+  @restore()
+  this
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+###########################################################
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1390,135 +1520,225 @@ image_err = (res) ->
 app.get '/pdf/:order_id', (req, res, next) ->
   #
   #
+  # Set up the PDF Document
+  doc = new pdf_document()
+  #
+  #
+  # Our resolutions we'll use for the PDFs and the Images
+  pdf_dpi = 72
   dpi = 300
   #
   #
+  #
+  # The default url
   url = 'cards.ly'
   parts = req.url.split '?'
   if parts.length > 1
     url = unescape req.url.replace /^[^\?]*\?/i, ''
   #
+  #
+  # Find the Order that's passed in
   mongo_order.findById req.params.order_id, (err, order) ->
     #
     #
     #
-    #
+    # Find the theme for that order
     mongo_theme.findById order.theme_id, (err, theme) ->
+      #
+      # The theme_template used based on the view from the order
       theme_template = theme.theme_templates[order.active_view]
+      #
+      # There's some bad data in production with this missing.
+      # This can maybe be removed eventually.
       if not order.active_view
         image_err res
       else
         #
-        imagedata = ''
         #
-        request = http.get
-          host: 'd3eo3eito2cquu.cloudfront.net'
-          port: 80
-          path: '/raw/'+theme_template.s3_id
-        , (response) ->
-            height = 2*dpi
-            width = 3.5*dpi
+        #
+        # Find the urls we're going to use
+        mongo_url_group.findOne
+          order_id: order._id
+        , (err, url_group) ->
+          #
+          #
+          if err or not url_group
+            image_err res
+          else
             #
-            response.setEncoding 'binary'
             #
-            response.on 'data', (chunk) ->
-              imagedata += chunk
-            response.on 'end', ->
-
-              if response.statusCode is 200
-                buff = new Buffer imagedata, 'binary'
-
-
-                canvas = new node_canvas(width,height)
-                ctx = canvas.getContext '2d'
-
-                img = new node_canvas.Image
-                img.src = buff
-                ctx.drawImage img, 0, 0, width, height
-                
-
-
-                for line,i in theme_template.lines
-                  h = Math.round(line.h/100*height)
-                  x = line.x/100*width
-                  y = line.y/100*height
-                  w = line.w/100*width
-                  ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px "' + line.font_family + '"'
-                  if line.text_align is 'left'
-                    ctx.fillText order.values[i], x, y+h
-                  else
-                    measure = ctx.measureText order.values[i], x, y+h
-                    if line.text_align is 'right'
-                      ctx.fillText order.values[i], x+w-measure.width, y+h
-                    if line.text_align is 'center'
-                      ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
-
-
-
-                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-
-
-                doc = new pdf_document()
-
-
-                
-
-                
-                res.send new Buffer(doc.output(), 'binary'),
-                  'Content-Type': 'application/pdf'
-                , 200
-
+            # We're going to grab the background image via an http request to amazon
+            #
+            # Set blank imagedata
+            imagedata = ''
+            #
+            #
+            # Hit Amazon
+            request = http.get
+              host: 'd3eo3eito2cquu.cloudfront.net'
+              port: 80
+              path: '/raw/'+theme_template.s3_id
+            , (response) ->
                 #
                 #
+                height = 2*dpi
+                width = 3.5*dpi
                 #
+                response.setEncoding 'binary'
                 #
-                #
-                ###
-                qr_canvas = qr_code.draw_qr
-                  node_canvas: node_canvas
-                  style: 'round'
-                  url: url
-                  hex: theme_template.qr.color1
-                  hex_2: theme_template.qr.color2+alpha
-                #
-                #
-                #
-                qr_canvas.toBuffer (err, qr_buff) ->
-                  qr_img = new node_canvas.Image
-                  qr_img.src = qr_buff
-
-
-                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
-                  
-                  
-                  canvas.toBuffer (err, buff) ->
+                response.on 'data', (chunk) ->
+                  imagedata += chunk
+                response.on 'end', ->
+                  #
+                  # If we found the image on amazon
+                  if response.statusCode is 200
+                    # 
+                    # 
+                    buff = new Buffer imagedata, 'binary'
+                    # 
+                    # 
+                    canvas = new node_canvas(width,height)
+                    ctx = canvas.getContext '2d'
                     #
+                    # 
+                    img = new node_canvas.Image
+                    img.src = buff
+                    ctx.drawImage img, 0, 0, width, height
+                    
+
+
+                    for line,i in theme_template.lines
+                      h = Math.round(line.h/100*height)
+                      x = line.x/100*width
+                      y = line.y/100*height
+                      w = line.w/100*width
+                      ctx.fillStyle = hex_to_rgba line.color
+                      ctx.font = h + 'px "' + line.font_family + '"'
+                      if line.text_align is 'left'
+                        ctx.fillText order.values[i], x, y+h
+                      else
+                        measure = ctx.measureText order.values[i], x, y+h
+                        if line.text_align is 'right'
+                          ctx.fillText order.values[i], x+w-measure.width, y+h
+                        if line.text_align is 'center'
+                          ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
+                    # 
+                    # 
+                    # 
+                    alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                    # 
+                    # 
                     #
-                    final_canvas = new node_canvas 8.5*dpi, 11*dpi
-                    final_ctx = final_canvas.getContext '2d'
-                    #
-                    #
-                    bg_img = new node_canvas.Image
-                    bg_img.src = buff
-                    #
-                    #
-                    for r in [0..4]
-                      for c in [0..1]
-                        #
-                        final_ctx.drawImage bg_img, .75*dpi + c*3.5*dpi, .5*dpi + r*2*dpi, 3.5*dpi, 2*dpi
-                        #
-                    #
-                    final_canvas.toBuffer (err, buff) ->
-                      #
+                    qr_left = theme_template.qr.x/100*pdf_dpi*3.5
+                    qr_top = theme_template.qr.y/100*pdf_dpi*2
+                    qr_width = theme_template.qr.w/100*pdf_dpi*3.5
+                    qr_height = theme_template.qr.h/100*pdf_dpi*2
+                    # 
+                    canvas.toBuffer (err, buff) ->
+                      # 
+                      # 
+                      final_canvas = new node_canvas 8.5*dpi, 11*dpi
+                      final_ctx = final_canvas.getContext '2d'
                       # 
                       #
-                      res.send buff,
-                        'Content-Type': 'image/png'
+                      url_i = 0
+                      pages = url_group.urls.length/10
+                      #
+                      #
+                      for page in [1..pages]
+                        #
+                        # Add the backgrounds for this page
+                        for r in [0..4]
+                          for c in [0..1]
+                            #
+                            left = .75*pdf_dpi + c*3.5*pdf_dpi 
+                            top = .5*pdf_dpi + r*2*pdf_dpi
+                            #
+                            doc.image buff, left, top,
+                              width: 3.5*pdf_dpi
+                              height: 2*pdf_dpi
+                              #
+                              #
+                            #
+
+                            qr_canvas = qr_code.draw_qr
+                              node_canvas: node_canvas
+                              style: 'round'
+                              url: 'http://cards.ly/'+url_group.urls[url_i].url_string
+                              card_number: 'http://cards.ly/'+url_group.urls[url_i].card_number
+                              hex: theme_template.qr.color1
+                              hex_2: theme_template.qr.color2+alpha
+                            # 
+                            # 
+                            # 
+                            qr_buff = qr_canvas.toBuffer()
+                            #
+                            #
+                            doc.image qr_buff, left+qr_left, top+qr_top,
+                              width: qr_width
+                              height: qr_height
+                            #
+                            url_i++
+                        #
+                        #
+                        if page isnt pages
+                          doc.addPage()
+                      # 
+                      # 
+                      # Finally send the pdf output back to the browser
+                      res.send new Buffer(doc.output(), 'binary'),
+                        'Content-Type': 'application/pdf'
                       , 200
-                ###
-              else
-                image_err res
+                    # 
+                    # 
+                    # 
+                    # 
+                    # 
+                    ### 
+                    qr_canvas = qr_code.draw_qr
+                      node_canvas: node_canvas
+                      style: 'round'
+                      url: url
+                      hex: theme_template.qr.color1
+                      hex_2: theme_template.qr.color2+alpha
+                    # 
+                    # 
+                    # 
+                    qr_canvas.toBuffer (err, qr_buff) ->
+                      qr_img = new node_canvas.Image
+                      qr_img.src = qr_buff
+
+
+                      ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                      
+                      
+                      canvas.toBuffer (err, buff) ->
+                        #
+                        #
+                        final_canvas = new node_canvas 8.5*dpi, 11*dpi
+                        final_ctx = final_canvas.getContext '2d'
+                        #
+                        #
+                        bg_img = new node_canvas.Image
+                        bg_img.src = buff
+                        #
+                        #
+                        for r in [0..4]
+                          for c in [0..1]
+                            #
+                            final_ctx.drawImage bg_img, .75*dpi + c*3.5*dpi, .5*dpi + r*2*dpi, 3.5*dpi, 2*dpi
+                            #
+                        #
+                        final_canvas.toBuffer (err, buff) ->
+                          #
+                          # 
+                          #
+                          res.send buff,
+                            'Content-Type': 'image/png'
+                          , 200
+                    ###
+                  else
+                    image_err res
 #
   #
   #
