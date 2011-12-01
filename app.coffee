@@ -573,6 +573,10 @@ view_schema = new schema
     type: Date
     default: Date.now
 mongo_view = mongoose.model 'views', view_schema
+
+# Password Reset
+password_reset = new schema
+  password_reset: Date
 #
 #
 #
@@ -1346,10 +1350,30 @@ app.post '/change-password', (req,res,next) ->
 #
 #
 #
-#
-
-#app.post '/send-password-reset', (req,res,next) ->
-#  if req.user.email and req.user.password_encrypted
+###
+# Password Reset and Sending Email
+app.post '/send-password-reset', (req,res,next) ->
+  if !req.user.email or !req.user.password_encrypted
+    res.send
+      err: 'Invalid Parameters'
+  else
+    mongo_user.authenticate req.user.email, req.user.password_encrypted, (err, user) ->
+      if err or !user
+        res.send
+          err: err or 'User not found'
+      else
+        password_reset = new password_reset
+          res.send
+              succesfulFeedback:'This worked!'
+          nodemailer.send_mail
+            sender: 'help@cards.ly'
+            to: req.user.emai.val()
+            subject:'Password Reset from Cardsly'
+            html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
+          , (err, data) ->
+            if err
+              console.log 'ERR: Password Reset Email did not send - ', err, req.body.email, req.body.content
+###
 
 #
 hex_to_rgba = (h) ->
