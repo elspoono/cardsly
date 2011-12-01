@@ -19,7 +19,7 @@ $ ->
                 content: data.err
             else
               $.load_alert
-                content: 'Password Successfully Changed!'
+                content: 'Password Reset Sent'
               $('.set_new_password').replaceWith '<p>Password changes successfully!</p>'
           error: (err) ->
             loading_close()
