@@ -1649,11 +1649,35 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       # Set up the PDF Document
                       doc = new pdf_document()
                       #
+                      #
+                      #
+                      # Create the Background
+                      bg_canvas = new node_canvas 7*dpi, 10*dpi
+                      bg_ctx = bg_canvas.getContext '2d'
+                      for r in [0..4]
+                        for c in [0..1]
+                          #
+                          left = c*3.5*dpi 
+                          top = r*2*dpi
+                          width = 3.5*dpi
+                          height = 2*dpi
+                          #
+                          #
+                          bg_ctx.drawImage s3_img, left, top, width, height
+                          #
+                          #
+                      #
+                      bg_buff = bg_canvas.toBuffer()
+                      #
+                      #
+                      #
                       for page in [1..pages]
                         #
                         page_canvas = new node_canvas 7*dpi, 10*dpi
                         page_ctx = page_canvas.getContext '2d'
-                        # Add the backgrounds for this page
+                        #
+                        #
+                        # Add the QRs
                         for r in [0..4]
                           for c in [0..1]
                             #
@@ -1661,9 +1685,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
                             top = r*2*dpi
                             width = 3.5*dpi
                             height = 2*dpi
-                            #
-                            #
-                            page_ctx.drawImage s3_img, left, top, width, height
                             #
 
                             qr_canvas = qr_code.draw_qr
@@ -1675,10 +1696,18 @@ app.get '/pdf/:order_id', (req, res, next) ->
                               hex_2: theme_template.qr.color2+alpha
                             # 
                             # 
-                            # 
                             qr_buff = qr_canvas.toBuffer()
                             qr_img = new node_canvas.Image
                             qr_img.src = qr_buff
+                            #
+                            qr_container_canvas = new node_canvas qr_width, qr_height
+                            qr_container_ctx = qr_container_canvas.getContext '2d'
+                            qr_container_ctx.drawImage qr_img, 0, 0, qr_width, qr_height
+                            #
+                            #
+                            qr_container_buff = qr_container_canvas.toBuffer()
+                            qr_container_img = new node_canvas.Image
+                            qr_container_img.src = qr_container_buff
                             #
                             #
                             page_ctx.drawImage qr_img, left+qr_left, top+qr_top, qr_width, qr_height
@@ -1686,6 +1715,9 @@ app.get '/pdf/:order_id', (req, res, next) ->
                             url_i++
                         #
                         page_buff = page_canvas.toBuffer()
+                        doc.image bg_buff, .75*pdf_dpi, .5*pdf_dpi,
+                          width: 7*pdf_dpi
+                          height: 10*pdf_dpi
                         doc.image page_buff, .75*pdf_dpi, .5*pdf_dpi,
                           width: 7*pdf_dpi
                           height: 10*pdf_dpi
