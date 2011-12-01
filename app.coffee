@@ -1629,36 +1629,41 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     # 
                     # 
                     #
-                    qr_left = theme_template.qr.x/100*pdf_dpi*3.5
-                    qr_top = theme_template.qr.y/100*pdf_dpi*2
-                    qr_width = theme_template.qr.w/100*pdf_dpi*3.5
-                    qr_height = theme_template.qr.h/100*pdf_dpi*2
+                    qr_left = theme_template.qr.x/100*dpi*3.5
+                    qr_top = theme_template.qr.y/100*dpi*2
+                    qr_width = theme_template.qr.w/100*dpi*3.5
+                    qr_height = theme_template.qr.h/100*dpi*2
                     # 
-                    canvas.toBuffer (err, buff) ->
+                    canvas.toBuffer (err, s3_buff) ->
                       # 
                       # 
                       final_canvas = new node_canvas 8.5*dpi, 11*dpi
                       final_ctx = final_canvas.getContext '2d'
-                      # 
+                      #
+                      #
+                      s3_img = new node_canvas.Image
+                      s3_img.src = s3_buff
+                      #
                       #
                       url_i = 0
-                      pages = 1
+                      pages = 1 #url_group.urls.length/10
                       #
                       #
                       for page in [1..pages]
                         #
+                        page_canvas = new node_canvas 7*dpi, 10*dpi
+                        page_ctx = page_canvas.getContext '2d'
                         # Add the backgrounds for this page
                         for r in [0..4]
                           for c in [0..1]
                             #
-                            left = .75*pdf_dpi + c*3.5*pdf_dpi 
-                            top = .5*pdf_dpi + r*2*pdf_dpi
+                            left = c*3.5*dpi 
+                            top = r*2*dpi
+                            width = 3.5*dpi
+                            height = 2*dpi
                             #
-                            doc.image buff, left, top,
-                              width: 3.5*pdf_dpi
-                              height: 2*pdf_dpi
-                              #
-                              #
+                            #
+                            page_ctx.drawImage s3_img, left, top, width, height
                             #
 
                             qr_canvas = qr_code.draw_qr
@@ -1672,14 +1677,18 @@ app.get '/pdf/:order_id', (req, res, next) ->
                             # 
                             # 
                             qr_buff = qr_canvas.toBuffer()
+                            qr_img = new node_canvas.Image
+                            qr_img.src = qr_buff
                             #
                             #
-                            doc.image qr_buff, left+qr_left, top+qr_top,
-                              width: qr_width
-                              height: qr_height
+                            page_ctx.drawImage qr_img, left+qr_left, top+qr_top, qr_width, qr_height
                             #
                             url_i++
                         #
+                        page_buff = page_canvas.toBuffer()
+                        doc.image page_buff, .75*pdf_dpi, .5*pdf_dpi,
+                          width: 7*pdf_dpi
+                          height: 10*pdf_dpi
                         #
                         if page isnt pages
                           doc.addPage()
