@@ -518,6 +518,7 @@ order_schema = new schema
   email: String
   shipping_email: String
   confirm_email: String
+  s3_id: String
   charge:
     id: String
     paid: Boolean
@@ -1421,17 +1422,6 @@ app.post '/get-themes', (req,res,next) ->
         themes: themes
 #
 #
-###
-exec = require('child_process').exec
-puts = (error, stdout, stderr) -> console.log stdout
-exec "rm -r /app/.fonts", puts
-exec "mkdir /app/.fonts/", puts
-exec "cp ./public/fonts/* /app/.fonts/", puts
-exec "chown root /app/.fonts/*", puts
-exec "mkfontdir /app/.fonts/", puts
-exec "fc-cache -fv /app/.fonts/", puts
-#
-###
 add_urls_to_order = (order, user, res) ->
   #
   #
@@ -1446,55 +1436,6 @@ add_urls_to_order = (order, user, res) ->
   volume = 1500 if order.quantity*1 is 70
 
   #
-  #
-  #
-  ###
-  mongo_theme.findById order.theme_id, (err, theme) ->
-    theme_template = theme.theme_templates[order.active_view]
-    #
-    imagedata = ''
-    #
-    request = http.get
-      host: 'd3eo3eito2cquu.cloudfront.net'
-      port: 80
-      path: '/raw/'+theme_template.s3_id
-    , (response) ->
-        #
-        response.setEncoding 'binary'
-        #
-        response.on 'data', (chunk) ->
-          imagedata += chunk
-        response.on 'end', ->
-          buff = new Buffer imagedata, 'binary'
-
-          height = 960
-          width = 1680
-
-          canvas = new node_canvas(1680,960)
-          ctx = canvas.getContext '2d'
-
-          img = new node_canvas.Image
-          
-          img.src = buff
-          ctx.drawImage img, 0, 0, width, height
-          
-
-
-          
-          for line,i in theme_template.lines
-            h = Math.round(line.h/100*height)
-            x = line.x/100 * width
-            y = line.y/100 * height
-            ctx.font = h + 'px slackey'
-            ctx.fillText order.values[i], x, y+h
-          
-          canvas.toBuffer (err, buff) ->
-            res.send buff,
-              'Content-Type': 'image/png'
-            , 200
-
-
-  ###
   #
   create_urls
     redirect_to: redirect_to
@@ -1543,9 +1484,7 @@ image_err = (res) ->
 #
 #
 #
-app.get '/pdf/:order_id', (req, res, next) ->
-  #
-  #
+process_pdf = (order_id) ->
   #
   #
   # Our resolutions we'll use for the PDFs and the Images
@@ -1553,17 +1492,8 @@ app.get '/pdf/:order_id', (req, res, next) ->
   dpi = 300
   #
   #
-  #
-  # The default url
-  url = 'cards.ly'
-  parts = req.url.split '?'
-  if parts.length > 1
-    url = unescape req.url.replace /^[^\?]*\?/i, ''
-  #
-  #
   # Find the Order that's passed in
-  mongo_order.findById req.params.order_id, (err, order) ->
-    #
+  mongo_order.findById order_id, (err, order) ->
     #
     #
     # Find the theme for that order
@@ -1577,7 +1507,6 @@ app.get '/pdf/:order_id', (req, res, next) ->
       if not order.active_view
         image_err res
       else
-        #
         #
         #
         # Find the urls we're going to use
@@ -1596,14 +1525,12 @@ app.get '/pdf/:order_id', (req, res, next) ->
             # Set blank imagedata
             imagedata = ''
             #
-            #
             # Hit Amazon
             request = http.get
               host: 'd3eo3eito2cquu.cloudfront.net'
               port: 80
               path: '/raw/'+theme_template.s3_id
             , (response) ->
-                #
                 #
                 height = 2*dpi
                 width = 3.5*dpi
@@ -1617,20 +1544,17 @@ app.get '/pdf/:order_id', (req, res, next) ->
                   # If we found the image on amazon
                   if response.statusCode is 200
                     # 
-                    # 
                     buff = new Buffer imagedata, 'binary'
-                    # 
-                    # 
+                    #
                     canvas = new node_canvas(width,height)
                     ctx = canvas.getContext '2d'
                     #
-                    # 
+                    #
                     img = new node_canvas.Image
                     img.src = buff
                     ctx.drawImage img, 0, 0, width, height
-                    
-
-
+                    #
+                    #
                     for line,i in theme_template.lines
                       h = Math.round(line.h/100*height)
                       x = line.x/100*width
@@ -1647,12 +1571,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
                         if line.text_align is 'center'
                           ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
                     # 
-                    # 
-                    # 
                     alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                    # 
-                    #
-                    # 
                     #
                     qr_left = theme_template.qr.x/100*pdf_dpi*3.5
                     qr_top = theme_template.qr.y/100*pdf_dpi*2
@@ -1660,12 +1579,9 @@ app.get '/pdf/:order_id', (req, res, next) ->
                     qr_height = theme_template.qr.h/100*pdf_dpi*2
                     # 
                     canvas.toBuffer (err, s3_buff) ->
-                      # 
-                      # 
                       #
                       s3_img = new node_canvas.Image
                       s3_img.src = s3_buff
-                      #
                       #
                       url_i = 0
                       pages = url_group.urls.length/10
@@ -1673,14 +1589,10 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       # Set up the PDF Document
                       doc = new pdf_document()
                       #
-                      #
-                      #
-                      #
                       for page in [1..pages]
                         #
                         page_canvas = new node_canvas 7*dpi, 10*dpi
                         page_ctx = page_canvas.getContext '2d'
-                        #
                         #
                         # Add the QRs
                         for r in [0..4]
@@ -1698,43 +1610,30 @@ app.get '/pdf/:order_id', (req, res, next) ->
                               card_number: 'http://cards.ly/'+url_group.urls[url_i].card_number
                               hex: theme_template.qr.color1
                               hex_2: theme_template.qr.color2+alpha
-                            # 
-                            # 
-                            qr_buff = qr_canvas.toBuffer()
                             #
+                            qr_buff = qr_canvas.toBuffer()
                             #
                             doc.image s3_buff, left, top,
                               width: width
                               height: height
                             #
-                            #
                             doc.image qr_buff, left+qr_left, top+qr_top,
                               width: qr_width
                               height: qr_height
                             #
-                            #
-                            #
-                            #
                             url_i++
-                        #
                         #
                         if page isnt pages
                           doc.addPage()
-                      # 
-                      # 
-                      # Finally send the pdf output back to the browser
-                      res.send new Buffer(doc.output(), 'binary'),
-                        'Content-Type': 'application/pdf'
-                      , 200
-                    # 
-                    # 
-                    # 
-                    # 
+                      #
+                      # save doc.output() to amazon????
+                      #
+                      # And update the database with the s3 id found.
+                      #
+                    #
                   else
                     image_err res
 #
-  #
-  #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
   #
