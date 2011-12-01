@@ -1458,12 +1458,17 @@ add_urls_to_order = (order, user, res) ->
     url_group.save (err, saved_group) ->
       if err
         console.log 'ERR: saving group - ', err
+      else
+        #
+        # This is where we kick off the processing of the pdf
+        process_pdf order._id
     #
     #
     user.save (err, saved_user) ->
       if err
         console.log 'ERR: saving user - ', err
-
+    #
+    #
   volume
   #
 #
@@ -1475,7 +1480,7 @@ image_err = (res) ->
   ctx = canvas.getContext '2d'
   ctx.font = Math.round(40/100*height) + 'px Arial'
   ctx.fillText 'whoops', width/2-40/100*width, height/2
-    
+  #
   canvas.toBuffer (err, buff) ->
     res.send buff,
       'Content-Type': 'image/png'
@@ -1626,13 +1631,34 @@ process_pdf = (order_id) ->
                         if page isnt pages
                           doc.addPage()
                       #
-                      # save doc.output() to amazon????
                       #
-                      # And update the database with the s3 id found.
+                      # FINALLY - Save it to Amazon
+                      #
+                      s3_id = order_id + '_' + random_url()
+                      knox_buff = new Buffer doc.output(), 'binary'
+                      #
+                      knoxReq = knoxClient.put '/pdfs/'+s3_id+'.pdf',
+                        'Content-Length': knox_buff.length
+                        'Content-Type' : 'application/pdf'
+                      knoxReq.on 'response', (res) ->
+                        if res.statusCode != 200
+                          console.log 'ERR', res
+                        else
+                          #
+                          # And update the database with the s3 id found.
+                          order.s3_id = s3_id
+                          order.save (err, saved_order) ->
+                            log_err err if err
+                          #
+                      knoxReq.end knox_buff
                       #
                     #
                   else
                     image_err res
+#
+#
+#
+#
 #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
@@ -1861,8 +1887,10 @@ app.post '/confirm-purchase', (req, res, next) ->
           ################################
           #
           #
-          #
+          # Generate the Urls
           volume = add_urls_to_order new_order, req.user
+          #
+          #
           #
           #
           ############
