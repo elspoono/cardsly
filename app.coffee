@@ -1642,7 +1642,7 @@ app.get '/pdf/:order_id', (req, res, next) ->
                       # 
                       #
                       url_i = 0
-                      pages = url_group.urls.length/10
+                      pages = 1
                       #
                       #
                       for page in [1..pages]
