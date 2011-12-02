@@ -21,3 +21,23 @@
             input(type='submit', value='Change').button.normal.set_new_password
           .clear
   .clear
+.section
+  .cell_bg
+  .cell_content
+    h3 Orders
+    table.order_status
+      tr.order_row_top
+        td.order_cell Card
+        td.order_cell Order ID
+        td.order_cell Paid
+        td.order_cell Date
+        td.order_cell Status
+      - for (var i in req.orders)
+        tr.order_row
+          td.order_cell
+            a(href='/render/1680/900/' + req.orders[i]._id + '/?cards.ly',target='_blank')
+              img(src='/render/158/90/' + req.orders[i]._id + '/?cards.ly')
+          td.order_cell=req.orders[i].order_number
+          td.order_cell='$'+(req.orders[i].amount/100)+''
+          td.order_cell=req.orders[i].date_added
+          td.order_cell=req.orders[i].Status

@@ -1135,7 +1135,7 @@ app.post '/upload-image', (req, res) ->
 #
 #
 # Generic Ajax Error Handling
-check_no_err_ajax = (err) ->
+check_no_err_ajax = (err, res) ->
   if err
     log_err err
     res.send
@@ -1160,7 +1160,7 @@ app.post '/save-theme', (req, res) ->
     # If we're updating do this
     if params.theme._id
       mongo_theme.findById params.theme._id, (err, found_theme) ->
-        if check_no_err_ajax err
+        if check_no_err_ajax err, res
           found_theme.category
           found_theme.date_updated = new Date()
           if typeof(params.theme.active) is 'boolean'
@@ -1172,7 +1172,7 @@ app.post '/save-theme', (req, res) ->
           #
           #
           found_theme.save (err,theme_saved) ->
-            if check_no_err_ajax err
+            if check_no_err_ajax err, res
               res.send
                 success: true
                 theme: theme_saved
@@ -1191,7 +1191,7 @@ app.post '/save-theme', (req, res) ->
       #
       #
       new_theme.save (err,theme_saved) ->
-        if check_no_err_ajax err
+        if check_no_err_ajax err, res
           res.send
             success: true
             theme: theme_saved
@@ -1337,7 +1337,7 @@ app.post '/change-password', (req,res,next) ->
       else
         req.user.password_encrypted = encrypted req.body.new_password
         req.user.save (err, user_saved) ->
-          if check_no_err_ajax err
+          if check_no_err_ajax err, res
             res.send
               success: true
 #
@@ -1409,7 +1409,7 @@ app.post '/get-themes', (req,res,next) ->
       category: -1
       date_added: -1
   , (err, themes) ->
-    if check_no_err_ajax err
+    if check_no_err_ajax err, res
       res.send
         themes: themes
 #
@@ -1831,7 +1831,7 @@ app.post '/confirm-purchase', (req, res, next) ->
   order.shipping_email = req.body.shipping_email
   order.confirm_email = req.body.confirm_email
   order.save (err, new_order) ->
-    if check_no_err_ajax err
+    if check_no_err_ajax err, res
       req.order = new_order
       #
       #
@@ -1898,7 +1898,7 @@ app.post '/confirm-purchase', (req, res, next) ->
     #  - This is used to show the "contact page" for an order
     #
     create_url 'http://cards.ly/order/'+new_order._id, (err, order_url) ->
-      if check_no_err_ajax err
+      if check_no_err_ajax err, res
         #
         #
         # Save that url to the order
@@ -2140,13 +2140,13 @@ get_url_groups = (req, res, next) ->
     next()
 #
 # cards Page Mockup
-app.get '/cards', securedPage, get_order_info, get_url_groups, (req, res) ->
+app.get '/cards', securedPage, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_order_info, get_url_groups, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: true
@@ -2206,7 +2206,7 @@ app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', (req,
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
 #
 # Settings Page
-app.get '/settings', securedPage, (req, res) ->
+app.get '/settings', get_order_info, securedPage, (req, res) ->
   res.render 'settings'
     req: req
     scripts:[
