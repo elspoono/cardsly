@@ -1619,9 +1619,9 @@ process_pdf = (order_id) ->
                       r_limit = 5
                       #
                       #
-                      domain = 'http://cards.ly/'
+                      short_domain = 'http://cards.ly/'
                       if process.env and process.env.SHORT_URL
-                        domain = 'http://'+process.env.SHORT_URL
+                        short_domain = 'http://'+process.env.SHORT_URL+'/'
                       #
                       #
                       next_card = ->
@@ -1649,7 +1649,7 @@ process_pdf = (order_id) ->
                           qr_canvas = qr_code.draw_qr
                             node_canvas: node_canvas
                             style: 'round'
-                            url: domain+url_group.urls[url_i].url_string
+                            url: short_domain+url_group.urls[url_i].url_string
                             card_number: url_group.urls[url_i].card_number
                             hex: theme_template.qr.color1
                             hex_2: theme_template.qr.color2+alpha
