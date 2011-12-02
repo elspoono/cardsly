@@ -909,6 +909,11 @@ draw_qr = (o) ->
   ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/5
   #
   #
+  # Draw the Card Number
+  if o.card_number
+    ctx.fillText '#'+o.card_number, border_size, size-font_size/5 
+  #
+  #
   # Return the canvas
   canvas
 #
