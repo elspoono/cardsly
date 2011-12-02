@@ -1588,35 +1588,81 @@ process_pdf = (order_id) ->
                       s3_img = new node_canvas.Image
                       s3_img.src = s3_buff
                       #
-                      url_i = 0
-                      pages = url_group.urls.length/10
-                      #
                       # Set up the PDF Document
                       doc = new pdf_document()
                       #
-                      for page in [1..pages]
+                      #
+                      # Set up the finalize function for later
+                      finalize_it = ->
                         #
-                        page_canvas = new node_canvas 7*dpi, 10*dpi
-                        page_ctx = page_canvas.getContext '2d'
+                        # FINALLY - Save it to Amazon
                         #
-                        # Add the QRs
-                        for r in [0..4]
-                          for c in [0..1]
+                        s3_id = order_id + '_' + random_url()
+                        knox_buff = new Buffer doc.output(), 'binary'
+                        #
+                        knoxReq = knoxClient.put '/pdfs/'+s3_id+'.pdf',
+                          'Content-Length': knox_buff.length
+                          'Content-Type' : 'application/pdf'
+                        knoxReq.on 'response', (res) ->
+                          if res.statusCode != 200
+                            console.log 'ERR', res
+                          else
                             #
-                            left = c*3.5*pdf_dpi + .75*pdf_dpi
-                            top = r*2*pdf_dpi + .5*pdf_dpi
-                            width = 3.5*pdf_dpi
-                            height = 2*pdf_dpi
+                            # And update the database with the s3 id found.
+                            order.s3_id = s3_id
+                            order.save (err, saved_order) ->
+                              log_err err if err
                             #
-                            qr_canvas = qr_code.draw_qr
-                              node_canvas: node_canvas
-                              style: 'round'
-                              url: 'http://cards.ly/'+url_group.urls[url_i].url_string
-                              card_number: 'http://cards.ly/'+url_group.urls[url_i].card_number
-                              hex: theme_template.qr.color1
-                              hex_2: theme_template.qr.color2+alpha
+                        knoxReq.end knox_buff
+                      #
+                      #
+                      #
+                      url_i = 0
+                      page = 0
+                      c = 0
+                      r = 0
+                      url_i_limit = url_group.urls.length
+                      page_limit = url_group.urls.length
+                      c_limit = 2
+                      r_limit = 5
+                      #
+                      #
+                      #
+                      #
+                      next_card = ->
+                        #
+                        #
+                        #
+                        #
+                        if url_i is url_i_limit
+                          finalize_it()
+                        else
+                          c = 0 if c is c_limit
+                          r = 0 if r is r_limit
+                          if page is page_limit
+                            page = 0  
+                            doc.addPage()
+                          #
+                          #
+                          #
+                          #
+                          left = c*3.5*pdf_dpi + .75*pdf_dpi
+                          top = r*2*pdf_dpi + .5*pdf_dpi
+                          width = 3.5*pdf_dpi
+                          height = 2*pdf_dpi
+                          #
+                          qr_canvas = qr_code.draw_qr
+                            node_canvas: node_canvas
+                            style: 'round'
+                            url: 'http://cards.ly/'+url_group.urls[url_i].url_string
+                            card_number: 'http://cards.ly/'+url_group.urls[url_i].card_number
+                            hex: theme_template.qr.color1
+                            hex_2: theme_template.qr.color2+alpha
+                          #
+                          qr_canvas.toBuffer (err, qr_buff) ->
                             #
-                            qr_buff = qr_canvas.toBuffer()
+                            #
+                            #
                             #
                             doc.image s3_buff, left, top,
                               width: width
@@ -1627,30 +1673,18 @@ process_pdf = (order_id) ->
                               height: qr_height
                             #
                             url_i++
-                        #
-                        if page isnt pages
-                          doc.addPage()
-                      #
-                      #
-                      # FINALLY - Save it to Amazon
-                      #
-                      s3_id = order_id + '_' + random_url()
-                      knox_buff = new Buffer doc.output(), 'binary'
-                      #
-                      knoxReq = knoxClient.put '/pdfs/'+s3_id+'.pdf',
-                        'Content-Length': knox_buff.length
-                        'Content-Type' : 'application/pdf'
-                      knoxReq.on 'response', (res) ->
-                        if res.statusCode != 200
-                          console.log 'ERR', res
-                        else
+                            #
+                            next_card()
                           #
-                          # And update the database with the s3 id found.
-                          order.s3_id = s3_id
-                          order.save (err, saved_order) ->
-                            log_err err if err
                           #
-                      knoxReq.end knox_buff
+                          #
+                          c++
+                          r++
+                          page++
+                      #
+                      #
+                      next_card()
+                      #
                       #
                     #
                   else
