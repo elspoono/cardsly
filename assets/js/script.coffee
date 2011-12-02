@@ -1400,8 +1400,8 @@ $ ->
       $input.keyup (e) ->
         if e.keyCode is 16
           shift_pressed = false
-        update_cards i, this.value
-        $t.html this.value
+        update_cards i, this.value.replace /( )/g, '&nbsp;'
+        $t.html this.value.replace /( )/g, '&nbsp;'
         set_timers()
 
       remove_input = (e) ->
