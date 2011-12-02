@@ -353,14 +353,6 @@ user_schema = new schema
       exp_year: Number
       last4: String
       card_type: String
-  ###
-  payment_method:
-    token: String
-    card_type: String
-    last_four_digits: String
-    expiry_month: String
-    expiry_year: String
-  ###
   card_number:
     type: Number
     default: 0
