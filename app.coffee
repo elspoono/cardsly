@@ -1614,7 +1614,7 @@ process_pdf = (order_id) ->
                       c = 0
                       r = 0
                       url_i_limit = url_group.urls.length
-                      page_limit = url_group.urls.length
+                      page_limit = url_group.urls.length/10
                       c_limit = 2
                       r_limit = 5
                       #
