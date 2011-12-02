@@ -2,21 +2,22 @@
   .cell_bg
   .cell_content
     h3 Settings
-    h2
-      span.subtitle Use this to change your password.
-      form.set_new_password
-        ul
-          li
-            label.current_password_text Current Password:
-            input(type='password').current_password
-        ul
-          li
-            label New:
-            input(type='password').new_password
-          li
-            label Re-type New:
-            input(type='password').new_password2
-        .buttons          
-          input(type='submit', value='Change').button.normal.set_new_password
-        .clear
+    - if(req.user && req.user.password_encrypted)
+      h2
+        span.subtitle Use this to change your password.
+        form.set_new_password
+          ul
+            li
+              label.current_password_text Current Password:
+              input(type='password').current_password
+          ul
+            li
+              label New:
+              input(type='password').new_password
+            li
+              label Re-type New:
+              input(type='password').new_password2
+          .buttons          
+            input(type='submit', value='Change').button.normal.set_new_password
+          .clear
   .clear

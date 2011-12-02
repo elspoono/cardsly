@@ -638,7 +638,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
   #
   mongo_user.findOne userSearch, (err,existinguser) ->
     if err
-      console.log 'ERR: ', err
+      log_err err
       promise.fail err
     else if existinguser
       #console.log 'user exists: ', existinguser
@@ -652,7 +652,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
       user.email = userSearch.email
       user.save (err, createduser) -> 
         if err
-          console.log 'ERR: ', err
+          log_err err
           promise.fail err
         else
           #console.log 'user created: ', createduser
@@ -728,12 +728,12 @@ customer_questions_available = true
 customer_questions_last_checked = 0
 
 # The checking function
-is_customer_questions_available = ->
+campfire_check = (req, res, next) ->
   try
     if customer_questions_last_checked < (new Date() - 1000*60)
       request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
         if err or res.statusCode isnt 200
-          console.log 'ERR: campfire no response? - ', err
+          log_err err
         else
           result = JSON.parse body
           customer_questions_last_checked = new Date()
@@ -743,8 +743,8 @@ is_customer_questions_available = ->
               customer_questions_available = true
   catch err
     log_err err
-  customer_questions_available
-
+  req.customer_questions_available = customer_questions_available
+  next()
 
 
 
@@ -810,7 +810,6 @@ app.configure ->
     user: false
     session: false
     error_message: false
-    is_customer_questions_available: is_customer_questions_available
     #
     # Cut off at 60 characters 
     title: 'Cardsly | Create and buy QR code business cards you control'
@@ -833,6 +832,7 @@ app.configure ->
   app.use express.static(__dirname + '/public')
   app.use everyauth.middleware()
   app.use require('./assets/js/libs/assets.js')()
+  app.use campfire_check
 
 
 # ### Environment based settings
@@ -1061,7 +1061,7 @@ app.post '/upload-image', (req, res) ->
   #
   # Set up our failure function
   s3_fail = (err) ->
-    console.log 'ERR: ', err
+    log_err err
     res.send '<script>parent.window.$.s3_result(false);</script>'
   #
   try
@@ -1137,7 +1137,7 @@ app.post '/upload-image', (req, res) ->
 # Generic Ajax Error Handling
 check_no_err_ajax = (err) ->
   if err
-    console.log 'ERR: ', err
+    log_err err
     res.send
       err: err
   !err
@@ -1293,7 +1293,7 @@ app.post '/send-feedback', (req,res,next) ->
     html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
   , (err, data) ->
     if err
-      console.log 'ERR: Feedback Email did not send - ', err, req.body.email, req.body.content
+      log_err err
 #
 #
 #
@@ -1365,7 +1365,7 @@ app.post '/send-password-reset', (req,res,next) ->
             html: '<p>Please click the following link to change the password of your Cardsly account</p><p><a href="http://cards.ly/password-reset'+new_password_reset._id+'"></a></p>'
           , (err, data) ->
             if err
-              console.log 'ERR: Password Reset Email did not send - ', err, req.body.email, req.body.content
+              log_err err
 ###
 
 #
@@ -1449,7 +1449,7 @@ add_urls_to_order = (order, user, res) ->
     #
     url_group.save (err, saved_group) ->
       if err
-        console.log 'ERR: saving group - ', err
+        log_err err
       else
         #
         # This is where we kick off the processing of the pdf
@@ -1458,7 +1458,7 @@ add_urls_to_order = (order, user, res) ->
     #
     user.save (err, saved_user) ->
       if err
-        console.log 'ERR: saving user - ', err
+        log_err err
     #
     #
   volume
@@ -1840,7 +1840,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           description: req.user.name or req.user.email or req.user.id
         , (err, customer) ->
           if err
-            console.log 'ERR: stripe customer create resulted in ', err, customer
+            log_err err
             res.send
               err: customer.error.message
           else
@@ -1853,7 +1853,7 @@ app.post '/confirm-purchase', (req, res, next) ->
             #console.log req.user.stripe
             req.user.save (err, user_saved) ->
               if err
-                console.log 'ERR: database ', err
+                log_err err
             #
             #
             next()
@@ -1908,12 +1908,12 @@ app.post '/confirm-purchase', (req, res, next) ->
         #
         new_order.save (err, final_order) ->
           if err
-            console.log 'ERR: database ', err
+            log_err err
         #
         #
         #
         if err
-          console.log 'ERR: stripe charge resulted in ', err
+          log_err err
           res.send
             err: charge.error.message
         else if not charge.paid
@@ -1956,7 +1956,7 @@ app.post '/confirm-purchase', (req, res, next) ->
               html: message
             , (err, data) ->
               if err
-                console.log 'ERR: Confirm email did not send - ', err, new_order.order_number
+                log_err err
           #
           # Send us an email
           nodemailer.send_mail
@@ -1966,7 +1966,7 @@ app.post '/confirm-purchase', (req, res, next) ->
             html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
           , (err, data) ->
             if err
-              console.log 'ERR: Notification email did not send - ', err, new_order.order_number
+              log_err err
 #
 #
 #
@@ -2142,19 +2142,13 @@ get_url_groups = (req, res, next) ->
 # cards Page Mockup
 app.get '/cards', securedPage, get_order_info, get_url_groups, (req, res) ->
   res.render 'cards'
-    orders: req.orders
-    user: req.user
-    session: req.session
-    url_groups: req.url_groups
+    req: req
     thankyou: false
 #
 # cards Page Mockup
 app.get '/cards/thank-you', securedPage, get_order_info, get_url_groups, (req, res) ->
   res.render 'cards'
-    orders: req.orders
-    user: req.user
-    session: req.session
-    url_groups: req.url_groups
+    req: req
     thankyou: true
 #
 # Orders Page
@@ -2164,9 +2158,8 @@ app.get '/orders', securedAdminPage, (req, res, next) ->
   , (err, orders) ->
     if check_no_err err, res
       res.render 'orders'
-        user: req.user
+        req: req
         orders: orders
-        session: req.session
         scripts:[
           'orders'
         ]
@@ -2174,8 +2167,7 @@ app.get '/orders', securedAdminPage, (req, res, next) ->
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
   res.render 'admin'
-    user: req.user
-    session: req.session
+    req: req
     scripts:[
       'libs/colorpicker.js'
       'admin'
@@ -2229,8 +2221,7 @@ app.get '/settings', securedPage, (req, res) ->
 # Forgot Password
 app.get '/forgot-password', (req, res) ->
   res.render 'forgot_password'
-    user: req.user
-    session: req.session
+    req: req
     scripts:[
       'forgot'
     ]
@@ -2247,22 +2238,19 @@ app.get '/reset-password/:password_reset_id', (req, res) ->
 # Splash Page
 app.get '/old-browser', (req, res) -> 
   res.render 'old_browser'
-    user: req.user
-    session: req.session
+    req: req
     layout: 'layout_min'
 #
 # Error Page
 app.get '/error', (req, res) -> 
   res.render 'error'
-    user: req.user
-    session: req.session
+    req: req
     layout: 'layout_min'
 
 # Cute Animal PAges
 app.get '/cute-animal', (req, res) -> 
   res.render 'cute_animal'
-    user: req.user
-    session: req.session
+    req: req
     layout: 'layout_min'
 #
 #
@@ -2297,8 +2285,7 @@ app.get '/buy', get_url_groups, (req, res, next) ->
     next()
 , (req, res, next) ->
   res.render 'order_form'
-    user: req.user
-    session: req.session
+    req: req
     #
     # Cut off at 60 characters 
     #
@@ -2319,8 +2306,7 @@ app.get '/buy', get_url_groups, (req, res, next) ->
 #
 app.get '/phx', (req, res) ->
   res.render 'phx'
-    user: req.user
-    session: req.session
+    req: req
     #
     # Cut off at 60 characters 
     #
@@ -2339,8 +2325,7 @@ app.get '/phx', (req, res) ->
 #
 app.get '/sample-landing-page', (req, res) ->
   res.render 'sample_landing_page'
-    user: req.user
-    session: req.session
+    req: req
     #
     # Cut off at 60 characters 
     #
@@ -2374,8 +2359,7 @@ app.get '/', get_url_groups, (req, res) ->
 
     if (ua.browser is 'msie' and parseInt(ua.version, 10) < 9) or ua_string.match /mobile/i
       res.render 'simple_home'
-        user: req.user
-        session: req.session
+        req: req
         #
         # Cut off at 60 characters 
         #
@@ -2392,8 +2376,7 @@ app.get '/', get_url_groups, (req, res) ->
         url_groups: req.url_groups
     else
       res.render 'home'
-        user: req.user
-        session: req.session
+        req: req
         #
         # Cut off at 60 characters 
         #
@@ -2440,8 +2423,7 @@ app.get '/beepBoop10', (req, res) ->
 #
 app.get '/make', (req, res, next) ->
   res.render 'make'
-    user: req.user
-    session: req.session
+    req: req
     #
     # Cut off at 60 characters 
     #

@@ -9,14 +9,14 @@ if thankyou
         p Let us know how we can help improve the product or any interaction you've had with cards.ly. We really value input as we grow and become more awesomer because of people like you!
 
 if env != 'production'
-  if url_groups.length 
+  if req.url_groups.length 
     .section
       .cell_bg
       .cell_content
         .add_bar
           input.url(placeholder='http://')
           .button.normal Add URL
-        -for url_group in url_groups
+        -for url_group in req.url_groups
           .group
             span.total
               =url_group.urls.length

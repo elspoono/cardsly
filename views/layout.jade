@@ -7,15 +7,15 @@ html
         .small_nav_container
           //This is the small navigation bar at the top of the page.
           ul.small_nav
-            if user
+            if req.user
               li.account_link
                 a(href='/settings')
-                  if user.name
-                    =user.name
-                  else if user.email
-                    =user.email
+                  if req.user.name
+                    =req.user.name
+                  else if req.user.email
+                    =req.user.email
                     .hidden_email
-                      =user.email
+                      =req.user.email
                   .gear
                     img(src='/images/buttons/gear.png')
                 ul.account_menu
@@ -36,7 +36,7 @@ html
               img(src='/images/logo.png')
               
           ul.navigation
-            if user && user.role && user.role == 'admin'
+            if req.user && req.user.role && req.user.role == 'admin'
               li
                 a(href='/cards') Cards
               li
@@ -45,7 +45,7 @@ html
                 a(href='/orders') Q
               li
                 a(href='/admin') Themes
-            else if user
+            else if req.user
               li
                 a(href='/cards') Edit Cards
               li
@@ -56,7 +56,7 @@ html
               li
                 a(href='/how-QR-code-business-cards-work') How it Works
           h1 !{h1}
-          if !user
+          if !req.user
             .button.design_button.normal Get Started
           .img_loader
             img(src='/images/buttons/design-click.png')

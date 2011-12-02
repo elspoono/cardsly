@@ -1193,10 +1193,12 @@ $ ->
         $view_buttons.filter('.active').removeClass 'active'
         $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
         #
-        load_theme_thumbnails()
         #
         #
         active_theme._id = $('.active_theme_id').html()
+        #
+        #
+        load_theme_thumbnails()
         #
       #
       #

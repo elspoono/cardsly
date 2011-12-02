@@ -19,21 +19,21 @@
       .cell_content
           h3 Step 1 : Design Your Cards
           .active_view
-            if session && session.saved_form && session.saved_form.active_view
-              =session.saved_form.active_view
+            if req.session && req.session.saved_form && req.session.saved_form.active_view
+              =req.session.saved_form.active_view
           .active_theme_id
-            if session && session.saved_form && session.saved_form.active_theme_id
-              =session.saved_form.active_theme_id
+            if req.session && req.session.saved_form && req.session.saved_form.active_theme_id
+              =req.session.saved_form.active_theme_id
           .home_designer
             .card_container
               .card
                 .qr
                   .background
-                if session && session.saved_form && session.saved_form.values && session.saved_form.values.length
+                if req.session && req.session.saved_form && req.session.saved_form.values && req.session.saved_form.values.length
                   .content
-                    - for(var i=0; i<session.saved_form.values.length; i++)
+                    - for(var i=0; i<req.session.saved_form.values.length; i++)
                       .line
-                        =session.saved_form.values[i]
+                        =req.session.saved_form.values[i]
                 else
                   .content.defaults
                     .line John Stamos
@@ -66,8 +66,8 @@
         li
           p Quantity:
         - quantity = 10
-        if session && session.saved_form && session.saved_form.quantity
-          - quantity = session.saved_form.quantity
+        if req.session && req.session.saved_form && req.session.saved_form.quantity
+          - quantity = req.session.saved_form.quantity
         li
           .promo
             img.promo_img(src='/images/promo.png')
@@ -114,8 +114,8 @@
         li
           p Speed:
         - shipping_method = 0
-        if session && session.saved_form && session.saved_form.shipping_method
-          - shipping_method = session.saved_form.shipping_method
+        if req.session && req.session.saved_form && req.session.saved_form.shipping_method
+          - shipping_method = req.session.saved_form.shipping_method
         li
           input(
             type='radio'
@@ -143,20 +143,20 @@
           label Address
           input.address(
             placeholder='221 Baker, Suite B'
-            value= (session.saved_address ? session.saved_address.address : '')
+            value= (req.session.saved_address ? req.session.saved_address.address : '')
           )
         li
           label City or Zip
           input.city(
             placeholder='90210'
-            value= (session.saved_address ? session.saved_address.city : '')
+            value= (req.session.saved_address ? req.session.saved_address.city : '')
           )
         li
           .address_container
             h5 Shipping Address
             .address_result
-              if session && session.saved_address
-                !=session.saved_address.full_address
+              if req.session && req.session.saved_address
+                !=req.session.saved_address.full_address
       .clear
 
     .img_loader
@@ -176,7 +176,7 @@
   .cell_content
     h3 Step 3: Set up an Account
     .signins
-      if user
+      if req.user
         .check
           ul
             li.do_send_confirm
@@ -193,7 +193,7 @@
               input(
                 name='email_to_send'
                 id='email_to_send'
-                value=user.email
+                value=req.user.email
                 placeholder='my@email.com'
               )
 
@@ -214,7 +214,7 @@
             p Or, create a new account:
           .local
             a.button.new(href='#')
-              span Create a username and password
+              span Create a req.username and password
             .clear
 .help_container
   .help_trigger.button.gray ?
@@ -238,36 +238,36 @@
           .address_container
             h5 Shipping Address
             .address_result
-              if session && session.saved_address
-                !=session.saved_address.full_address
+              if req.session && req.session.saved_address
+                !=req.session.saved_address.full_address
         .details
           .total Total Price: &nbsp;
             .price $10
-          if user && user.stripe && user.stripe.id
+          if req.user && req.user.stripe && req.user.stripe.id
             .existing_payment
               .type
-                =user.stripe.active_card.card_type
+                =req.user.stripe.active_card.card_type
               .expiry
-                =user.stripe.active_card.exp_month
+                =req.user.stripe.active_card.exp_month
                 | /
-                =user.stripe.active_card.exp_year
+                =req.user.stripe.active_card.exp_year
               .last_4
                 | **** - **** - **** - 
-                =user.stripe.active_card.last4
+                =req.user.stripe.active_card.last4
               .small.button.gray Use New Card
             .use_existing_payment
               .small.button.gray Use Existing
-          if user && user.payment_method && user.payment_method.token
+          if req.user && req.user.payment_method && req.user.payment_method.token
             .existing_payment
               .type
-                =user.payment_method.card_type
+                =req.user.payment_method.card_type
               .expiry
-                =user.payment_method.expiry_month
+                =req.user.payment_method.expiry_month
                 | /
-                =user.payment_method.expiry_year
+                =req.user.payment_method.expiry_year
               .last_4
                 | **** - **** - **** - 
-                =user.payment_method.last_four_digits
+                =req.user.payment_method.last_four_digits
               .small.button.gray Use New Card
           form(action='https://api.samurai.feefighters.com/v1/payment_methods',method='POST')
             input(name='redirect_url', type='hidden', value='http://cards.ly/thank-you')
