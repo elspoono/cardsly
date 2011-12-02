@@ -2379,7 +2379,7 @@ app.get '/', get_url_groups, (req, res) ->
         title: 'Cardsly | Create and buy QR code business cards you control'
         # Cut off at 140 to 150 characters
         #
-        description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+        description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
         #
         # Uncomment the following line to add a custom h1 tag!
         #h1: 'some other h1 tag'
@@ -2426,7 +2426,7 @@ app.get '/make', (req, res, next) ->
     title: 'Cardsly | Create and buy QR code business cards you control'
     # Cut off at 140 to 150 characters
     #
-    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
     #
     # Uncomment the following line to add a custom h1 tag!
     #h1: 'some other h1 tag'
