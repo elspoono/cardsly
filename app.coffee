@@ -1560,13 +1560,13 @@ process_pdf = (order_id) ->
                       ctx.fillStyle = hex_to_rgba line.color
                       ctx.font = h + 'px "' + line.font_family + '"'
                       if line.text_align is 'left'
-                        ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x, y+h
+                        ctx.fillText order.values[i], x, y+h
                       else
-                        measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' '), x, y+h
+                        measure = ctx.measureText order.values[i], x, y+h
                         if line.text_align is 'right'
-                          ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x+w-measure.width, y+h
+                          ctx.fillText order.values[i], x+w-measure.width, y+h
                         if line.text_align is 'center'
-                          ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x+(w-measure.width)/2, y+h
+                          ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
                     # 
                     alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
                     #
@@ -1714,6 +1714,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   width = req.params.w*1
   widthheight = width+'x'+height
   widthheight = 'raw' if width is 1680
+  widthheight = '158x90' if width is 79
   #
   #
   url = 'cards.ly'
@@ -1768,13 +1769,13 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                   ctx.fillStyle = hex_to_rgba line.color
                   ctx.font = h + 'px "' + line.font_family + '"'
                   if line.text_align is 'left'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x, y+h
+                    ctx.fillText order.values[i], x, y+h
                   else
-                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' '), x, y+h
+                    measure = ctx.measureText order.values[i], x, y+h
                     if line.text_align is 'right'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x+w-measure.width, y+h
+                      ctx.fillText order.values[i], x+w-measure.width, y+h
                     if line.text_align is 'center'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' '), x+(w-measure.width)/2, y+h
+                      ctx.fillText order.values[i], x+(w-measure.width)/2, y+h
 
 
 

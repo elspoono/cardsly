@@ -1373,7 +1373,7 @@ $ ->
       style = $t.attr 'style'
       $input = $ '<input class="line" />'
       $input.attr 'style', style
-      $input.val $t.html().replace /&nbsp;/g, ' '
+      $input.val $t.html()
       $t.after $input
       $t.hide()
       $input.focus().select()
@@ -1400,8 +1400,8 @@ $ ->
       $input.keyup (e) ->
         if e.keyCode is 16
           shift_pressed = false
-        update_cards i, this.value.replace /( )/g, '&nbsp;'
-        $t.html this.value.replace /( )/g, '&nbsp;'
+        update_cards i, this.value
+        $t.html this.value
         set_timers()
 
       remove_input = (e) ->
