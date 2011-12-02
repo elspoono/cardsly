@@ -6,6 +6,7 @@
         td.order_cell Card
         td.order_cell Order ID
         td.order_cell Date Submitted
+        td.order_cell Shipping Address
         td.order_cell Paid
         td.order_cell Status
         td.order_cell Action
@@ -16,6 +17,7 @@
               img(src='/render/158/90/' + req.orders[i]._id + '/?cards.ly')
           td.order_cell=req.orders[i].order_number
           td.order_cell=req.orders[i].date_added
+          td.order_cell=req.orders[i].full_address
           td.order_cell=req.orders[i].quantity
           td.order_cell=req.orders[i].status
           td.order_cell
