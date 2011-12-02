@@ -1666,7 +1666,9 @@ process_pdf = (order_id) ->
                             #
                             url_i++
                             #
-                            next_card()
+                            setTimeout ->
+                              next_card()
+                            , 200
                           #
                           #
                           #
