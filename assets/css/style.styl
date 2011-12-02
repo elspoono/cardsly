@@ -640,6 +640,7 @@ input.normal,input.gray
 
 .button.small
   width 110px
+  height 20px
   relative_size(.7)
   padding 4px 8px
   
@@ -847,7 +848,6 @@ input.normal,input.gray
 //
 .add_new
   float right
-  height 20px
 .home_designer
   .card
     width 505px
@@ -1597,22 +1597,48 @@ input value=["Send Feedback"]
     margin-top -4px
     float left
     width 120px
-// Group
-.group
-  alpha_bg($c_bg_dark,.5)
-  box_shadow(1px,$c_black)
-  margin 10px
-  padding 0 30px
-  border_radius(45px)
-  color $c_light
-  overflow hidden
-  .pic, .total
-    img
-      display block
-    line-height 45px
+// URL GROUPS
+.url_groups
+  .link_main_row
+    alpha_bg($c_bg_dark,.5)
+    box_shadow(1px,$c_black)
+    margin 20px 0
+    padding 0 35px
+    border_radius(45px)
+    color $c_light
+    overflow hidden
+    .pic, .total, .redirect_to
+      img
+        display block
+      line-height 45px
+      float left
+      margin 10px
+    .total
+      width 80px
+  .link_row
+    margin -20px 35px 20px 35px
+    alpha_bg($c_bg_light,.5)
+    border 1px solid $c_bg_dark
+    border-top none
+    overflow hidden
+    .label
+      width 79px
+    .label, .total, .redirect_to, .visited
+      float left
+      margin 10px
+    .total
+      width 80px
+      input
+        height 25px
+        font-size 12px
+        line-height 25px
+        width 40px
+        margin 0 -10px
+    .visited
+      float right
+  .button
     float left
-    margin 10px
-  
+    margin 0 0 20px 35px
 
 
 

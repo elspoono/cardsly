@@ -153,6 +153,14 @@ knoxClient = knox.createClient
 #
 #
 #
+#
+# MOO API Key
+# 4739b76c5a56a3c0f03bfcefd3248ed804ed95ae2
+# 
+# MOO Secret
+# bec6f97d58f1121cd90e16502e6c8e4e
+#
+#
 # END LIBRARY LOADING
 #
 #
@@ -1705,7 +1713,189 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
             Location: '/orders'
           , 302
 #
+
+line_copy = [
+  'Jimbo jo Jiming'
+  'Banker Extraordinaire'
+  'Cool Cats Cucumbers'
+  '57 Bakers, Edwarstonville'
+  '555.555.5555'
+  'New York'
+  'Apt. #666'
+  'M thru F - 10 to 7'
+  'fb.com/my_facebook'
+  '@my_twitter'
+]
 #
+app.get '/test/:theme_id', (req, res, next) ->
+  #
+  # Our resolutions we'll use for the PDFs and the Images
+  pdf_dpi = 72
+  dpi = 300
+  #
+  #
+  # Find the theme for that order
+  mongo_theme.findById req.params.theme_id, (err, theme) ->
+    #
+    # The theme_template used based on the view from the order
+    theme_template = theme.theme_templates[0]
+    #
+    #
+    # We're going to grab the background image via an http request to amazon
+    #
+    # Set blank imagedata
+    imagedata = ''
+    #
+    # Hit Amazon
+    request = http.get
+      host: 'd3eo3eito2cquu.cloudfront.net'
+      port: 80
+      path: '/raw/'+theme_template.s3_id
+    , (response) ->
+        #
+        height = 2*dpi
+        width = 3.5*dpi
+        #
+        response.setEncoding 'binary'
+        #
+        response.on 'data', (chunk) ->
+          imagedata += chunk
+        response.on 'end', ->
+          #
+          # If we found the image on amazon
+          if response.statusCode is 200
+            # 
+            buff = new Buffer imagedata, 'binary'
+            #
+            canvas = new node_canvas(width,height)
+            ctx = canvas.getContext '2d'
+            #
+            #
+            img = new node_canvas.Image
+            img.src = buff
+            ctx.drawImage img, 0, 0, width, height
+            #
+            #
+            for line,i in theme_template.lines
+              h = Math.round(line.h/100*height)
+              x = line.x/100*width
+              y = line.y/100*height
+              w = line.w/100*width
+              ctx.fillStyle = hex_to_rgba line.color
+              ctx.font = h + 'px "' + line.font_family + '"'
+              if line.text_align is 'left'
+                ctx.fillText line_copy[i], x, y+h
+              else
+                measure = ctx.measureText line_copy[i], x, y+h
+                if line.text_align is 'right'
+                  ctx.fillText line_copy[i], x+w-measure.width, y+h
+                if line.text_align is 'center'
+                  ctx.fillText line_copy[i], x+(w-measure.width)/2, y+h
+            # 
+            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+            #
+            qr_left = theme_template.qr.x/100*pdf_dpi*3.5
+            qr_top = theme_template.qr.y/100*pdf_dpi*2
+            qr_width = theme_template.qr.w/100*pdf_dpi*3.5
+            qr_height = theme_template.qr.h/100*pdf_dpi*2
+            # 
+            canvas.toBuffer (err, s3_buff) ->
+              #
+              s3_img = new node_canvas.Image
+              s3_img.src = s3_buff
+              #
+              # Set up the PDF Document
+              doc = new pdf_document()
+              #
+              #
+              # Set up the finalize function for later
+              finalize_it = ->
+                #
+                # FINALLY - Send it to the browser
+                #
+                res.send new Buffer(doc.output(), 'binary'),
+                  'Content-Type' : 'application/pdf'
+                , 200
+              #
+              #
+              #
+              url_i = 0
+              page = 0
+              c = 0
+              r = 0
+              url_i_limit = 10
+              page_limit = 1
+              c_limit = 2
+              r_limit = 5
+              #
+              #
+              short_domain = 'http://cards.ly/'
+              if process.env and process.env.SHORT_URL
+                short_domain = 'http://'+process.env.SHORT_URL+'/'
+              #
+              #
+              next_card = ->
+                #
+                #
+                #
+                #
+                if url_i is url_i_limit
+                  finalize_it()
+                else
+                  c = 0 if c is c_limit
+                  r = 0 if r is r_limit
+                  if page is page_limit
+                    page = 0  
+                    doc.addPage()
+                  #
+                  #
+                  #
+                  #
+                  left = c*3.5*pdf_dpi + .75*pdf_dpi
+                  top = r*2*pdf_dpi + .5*pdf_dpi
+                  width = 3.5*pdf_dpi
+                  height = 2*pdf_dpi
+                  #
+                  qr_canvas = qr_code.draw_qr
+                    node_canvas: node_canvas
+                    style: 'round'
+                    url: short_domain+'/test'
+                    card_number: url_i
+                    hex: theme_template.qr.color1
+                    hex_2: theme_template.qr.color2+alpha
+                  #
+                  qr_canvas.toBuffer (err, qr_buff) ->
+                    #
+                    #
+                    #
+                    #
+                    doc.image s3_buff, left, top,
+                      width: width
+                      height: height
+                    #
+                    doc.image qr_buff, left+qr_left, top+qr_top,
+                      width: qr_width
+                      height: qr_height
+                    #
+                    url_i++
+                    #
+                    setTimeout ->
+                      next_card()
+                    , 100
+                  #
+                  #
+                  #
+                  c++
+                  r++ if c is c_limit
+                  page++ if r is r_limit
+              #
+              #
+              next_card()
+              #
+              #
+            #
+          else
+            image_err res
 #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
