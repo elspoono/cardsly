@@ -2057,11 +2057,8 @@ app.get '/path-you-want', (req, res, next) ->
   req.result = do
   next()
 , (req, res, next) ->
-  result = req.result
   res.render 'path_you_want'
-    user: req.user
-    session: req.session
-    result: result
+    req: req
 
 ###
 #
@@ -2192,27 +2189,23 @@ app.get '/login', (req, res) ->
     , 302
   else
     res.render 'login'
-      user: req.user
-      session: req.session
+      req: req
 #
 # About Page
 app.get '/about', (req, res) ->
   res.render 'about'
-    user: req.user
-    session: req.session
+    req: req
 #
 # How it Works Page
 app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', (req, res) ->
   res.render 'how_it_works'
-    user: req.user
-    session: req.session
+    req: req
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
 #
 # Settings Page
 app.get '/settings', securedPage, (req, res) ->
   res.render 'settings'
-    user: req.user
-    session: req.session
+    req: req
     scripts:[
       'settings'
     ]
@@ -2229,8 +2222,7 @@ app.get '/forgot-password', (req, res) ->
 # Password Reset
 app.get '/reset-password/:password_reset_id', (req, res) ->
   res.render 'reset_password'
-    user: req.user
-    session: req.session
+    req: req
     scripts:[
       'reset_password'
     ]
