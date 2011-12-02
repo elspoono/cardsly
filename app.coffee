@@ -1647,7 +1647,7 @@ process_pdf = (order_id) ->
                             node_canvas: node_canvas
                             style: 'round'
                             url: 'http://cards.ly/'+url_group.urls[url_i].url_string
-                            card_number: 'http://cards.ly/'+url_group.urls[url_i].card_number
+                            card_number: url_group.urls[url_i].card_number
                             hex: theme_template.qr.color1
                             hex_2: theme_template.qr.color2+alpha
                           #
@@ -1683,6 +1683,22 @@ process_pdf = (order_id) ->
                     image_err res
 #
 #
+app.get '/re-process-pdf/:order_id', (req, res, next) ->
+  #
+  #
+  # This is where we kick off the processing of the pdf
+  process_pdf req.params.order_id
+  #
+  # Find the Order that's passed in
+  mongo_order.findById req.params.order_id, (err, order) ->
+    if check_no_err err
+      order.date_added = new Date()
+      order.save (err, saved_order) ->
+        if check_no_err err
+          #
+          res.send '',
+            Location: '/orders'
+          , 302
 #
 #
 #

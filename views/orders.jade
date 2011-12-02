@@ -23,3 +23,6 @@
                a(href='https://d3eo3eito2cquu.cloudfront.net/pdfs/' + orders[i].s3_id + '.pdf',target='_blank') Print
             - else
               | Processing...
+              - if ((new Date())*1 > ((orders[i].date_added)*1 + 1000*60*5))
+                br
+                a(href='/re-process-pdf/'+orders[i]._id) Fix
