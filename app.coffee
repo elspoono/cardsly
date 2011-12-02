@@ -721,7 +721,7 @@ everyauth.google.fetchOAuthUser (accessToken) ->
 
 
 
-request = require 'request'
+http_request = require 'request'
 
 # Variables we'll re-use
 customer_questions_available = true
@@ -731,7 +731,7 @@ customer_questions_last_checked = 0
 campfire_check = (req, res, next) ->
   try
     if customer_questions_last_checked < (new Date() - 1000*60)
-      request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
+      http_request 'https://9fc02ebc1276b9a8b87e0fff796d5e29d7ab61f5:X@jodesco.campfirenow.com/room/455425.json', (err, res, body) ->
         if err or res.statusCode isnt 200
           log_err err
         else
