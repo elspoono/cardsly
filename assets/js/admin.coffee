@@ -155,7 +155,10 @@ $ ->
           $t.data 'theme', active_theme
     if theme
       load_theme theme
-      history = [theme]
+      history = [$.extend true, {}, active_theme]
+  #
+  #
+  #
   #
   #
   #
@@ -235,26 +238,18 @@ $ ->
       current_theme = history.pop()
       new_theme = history[history.length-1]
       if new_theme
-        redo_history.push current_theme
+        redo_history.push $.extend true, {}, current_theme
         load_theme new_theme
       else
-        history.push current_theme
-        if $('.modal').length is 0
-          $.load_alert
-            content: 'No more to undo'
+        history.push $.extend true, {}, current_theme
     #
     # Redo
     if ctrl_pressed and shift_pressed and e.keyCode is 90
       e.preventDefault()
       new_theme = redo_history.pop()
       if new_theme
-        history.push new_theme
+        history.push $.extend true, {}, new_theme
         load_theme new_theme
-      else
-        redo_history.push new_theme
-        if $('.modal').length is 0
-          $.load_alert
-            content: 'No more to redo'
     #
     #
     #
@@ -964,7 +959,7 @@ $ ->
     temp_theme = $.extend true, {}, default_theme
     #
     # Restart the history
-    history = [temp_theme]
+    history = [$.extend true, {}, temp_theme]
     #
     # Load it up
     $new_card = $ '<div class="card" />'

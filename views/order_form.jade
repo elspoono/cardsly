@@ -33,7 +33,7 @@
                   .content
                     - for(var i=0; i<req.session.saved_form.values.length; i++)
                       .line
-                        =req.session.saved_form.values[i]
+                        !{unescape(req.session.saved_form.values[i])}
                 else
                   .content.defaults
                     .line John Stamos
