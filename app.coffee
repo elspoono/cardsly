@@ -2284,6 +2284,18 @@ check_no_err = (err, res) ->
   !err
 #
 #
+#
+#
+app.get '/[A-Za-z0-9]{6,}/?$', (req, res, next) ->
+  search_string = req.url.replace /[^a-z0-9]/ig, ''
+
+  console.log search_string
+
+  next()
+#
+#
+#
+#
 if app.settings.env is 'production'
   app.get '*', (req,res,next) ->
     headers = req.headers
