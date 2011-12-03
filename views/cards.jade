@@ -23,6 +23,8 @@ if env != 'production'
               .redirect_to
                 =url_group.urls[0].redirect_to.replace('http://','')
             .link_row
+              .add Edit by #'s
+            .link_row
               .label
               .total 1-15
               .redirect_to linkedin.com/in/derekbredensteiner
@@ -45,10 +47,9 @@ if env != 'production'
             .link_row
               .label
               .total
-                input(value='1-10')
+                input(placeholder='1-10')
               .redirect_to
-                =url_group.urls[0].redirect_to.replace('http://','')
-              .visited
-                a(href='#') 0 visits
-            .button.normal.small Edit Range [+]
+                input(placeholder='http://')
+            .link_row
+              .add Add Row
             .clear

@@ -1599,6 +1599,12 @@ input value=["Send Feedback"]
     width 120px
 // URL GROUPS
 .url_groups
+  color $c_light
+  input
+    height 25px
+    font-size 12px
+    line-height 25px
+    margin 0 -10px
   .link_main_row
     alpha_bg($c_bg_dark,.5)
     box_shadow(1px,$c_black)
@@ -1611,31 +1617,29 @@ input value=["Send Feedback"]
       img
         display block
       line-height 45px
-      float left
-      margin 10px
-    .total
-      width 80px
   .link_row
     margin -20px 35px 20px 35px
     alpha_bg($c_bg_light,.5)
     border 1px solid $c_bg_dark
     border-top none
     overflow hidden
-    .label
-      width 79px
-    .label, .total, .redirect_to, .visited
-      float left
-      margin 10px
-    .total
-      width 80px
-      input
-        height 25px
-        font-size 12px
-        line-height 25px
-        width 40px
-        margin 0 -10px
-    .visited
-      float right
+  .label
+    width 79px
+  .pic, .label, .total, .redirect_to, .visited
+    float left
+    margin 10px
+  .total
+    width 80px
+    input
+      width 40px
+  .redirect_to
+    input
+      width 300px
+  .visited
+    float right
+  .add
+    cursor pointer
+    margin 2px 10px
   .button
     float left
     margin 0 0 20px 35px

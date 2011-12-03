@@ -536,19 +536,28 @@ order_schema = new schema
 mongo_order = mongoose.model 'orders', order_schema
 #
 #
+# Visits (for stats)
+visit_schema = new schema
+  ip_address: String
+  user_agent: String
+  card_id: String
+  date_added:
+    type: Date
+    default: Date.now
 #
 #
 #
-small_url_schema = new schema
+url_schema = new schema
   url_string: String
   card_number: String
+  visits: [visit_schema]
   redirect_to: String
 #
 #
 url_group_schema = new schema
   user_id: String
   order_id: String
-  urls: [small_url_schema]
+  urls: [url_schema]
   date_added:
     type: Date
     default: Date.now
@@ -565,16 +574,9 @@ url_redirect_schema = new schema
 mongo_url_redirect = mongoose.model 'url_redirects', url_redirect_schema
 #
 #
-# Views (for stats)
-view_schema = new schema
-  ip_address: String
-  user_agent: String
-  card_id: String
-  date_added:
-    type: Date
-    default: Date.now
-mongo_view = mongoose.model 'views', view_schema
-
+#
+#
+#
 # Password Reset
 password_reset = new schema
   password_reset: Date
