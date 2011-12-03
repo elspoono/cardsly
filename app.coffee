@@ -138,6 +138,7 @@ everyauth = require 'everyauth'
 Promise = everyauth.Promise
 #
 #
+require './assets/js/date'
 #
 #
 ###
@@ -1065,6 +1066,14 @@ create_urls = (options, next) ->
 #
 #
 #
+app.post '/update-order-status', (req, res) ->
+  mongo_order.findById req.body.order_id, (err, order) ->
+    if check_no_err_ajax err, res
+      order.status = req.body.status
+      order.save (err, saved_order) ->
+        if check_no_err_ajax err, res
+          res.send
+            success: true
 #
 # Form request for multipart form uploading image
 app.post '/upload-image', (req, res) ->
@@ -2375,6 +2384,8 @@ app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
 app.get '/orders', securedAdminPage, (req, res, next) ->
   mongo_order.find
     'charge.paid': true
+    'status':
+      '$ne': 'Shipped'
   , (err, orders) ->
     req.orders = orders
     if check_no_err err, res

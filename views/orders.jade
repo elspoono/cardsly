@@ -11,23 +11,23 @@
         td.order_cell Status
         td.order_cell Action
       - for (var i in req.orders)
-        tr.order_row
+        tr.order_row(order_id=req.orders[i]._id)
           td.order_cell
             a(href='/render/1680/900/' + req.orders[i]._id + '/?cards.ly',target='_blank')
               img(src='/render/158/90/' + req.orders[i]._id + '/?cards.ly')
           td.order_cell=req.orders[i].order_number
-          td.order_cell=req.orders[i].date_added
-          td.order_cell=req.orders[i].full_address
+          td.order_cell=req.orders[i].date_added.format('m/dd/yyyy h:mm tt')
+          td.order_cell
+            !{req.orders[i].full_address}
           td.order_cell=req.orders[i].quantity
-          td.order_cell=req.orders[i].status
+          td.order_cell.status=req.orders[i].status
           td.order_cell
             - if(req.orders[i].s3_id)
-               a(href='https://d3eo3eito2cquu.cloudfront.net/pdfs/' + req.orders[i].s3_id + '.pdf',target='_blank') Print
-               br
-               br
-               a(href='/re-process-pdf/'+req.orders[i]._id) remake pdf
+               a.printed(href='https://d3eo3eito2cquu.cloudfront.net/pdfs/' + req.orders[i].s3_id + '.pdf',target='_blank') Print
             - else
               | Processing...
               - if ((new Date())*1 > ((req.orders[i].date_added)*1 + 1000*60*5))
                 br
                 a(href='/re-process-pdf/'+req.orders[i]._id) Fix
+            br
+            a.shipped(href='#') Shipped
