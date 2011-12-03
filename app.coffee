@@ -988,7 +988,7 @@ random_url = () ->
   add_consonant = ->
     for i in [0..0]
       psuedo += consonants[Math.round(mrg.generate_real()*c_l)]
-  add_consonant_upper()
+  add_consonant()
   add_vowel()
   add_consonant()
   add_vowel()
@@ -2291,7 +2291,22 @@ app.get '/[A-Za-z0-9]{6,}/?$', (req, res, next) ->
 
   console.log search_string
 
-  next()
+  mongo_url_redirect.find
+    url_string: search_string
+  , (err, url_redirects) ->
+    if err
+      log_err err
+    if err or not url_redirects.length
+      next()
+    else
+      res.send '',
+        'Location' : url_redirects[0].redirect_to
+      , 302
+      mongo_url_group.find
+        'urls.url_string': search_string
+      , (err, url_groups) ->
+        console.log err
+        console.log url_groups
 #
 #
 #
