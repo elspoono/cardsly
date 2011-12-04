@@ -18,38 +18,21 @@ if env != 'production'
             .link_main_row
               .pic
                 img(src='/render/79/45/' + url_group.order_id + '/?cards.ly')
-              .total
-                ='84/'+url_group.urls.length
+              .range
+                ='#'+url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
               .redirect_to
                 =url_group.urls[0].redirect_to.replace('http://','')
-            .link_row
-              .add Edit by #'s
-            .link_row
-              .label
-              .total 1-15
-              .redirect_to linkedin.com/in/derekbredensteiner
-              .visited
-                a(href='#') 0 visits
-            .link_row
-              .label
-              .total 37
-              .redirect_to
-                =url_group.urls[0].redirect_to.replace('http://','')
-              .visited
-                a(href='#') 1 visit
-            .link_row
-              .label
-              .total 39
-              .redirect_to
-                =url_group.urls[0].redirect_to.replace('http://','')
-              .visited
-                a(href='#') 3 visits
-            .link_row
-              .label
-              .total
-                input(placeholder='1-10')
-              .redirect_to
-                input(placeholder='http://')
+            - for url,i in url_group.urls
+              - if(url.visits != 0)
+                .link_row
+                  .label
+                  .range
+                    ='#'+url.card_number
+                  .redirect_to
+                    =url.redirect_to.replace('http://','')
+                  .visited
+                    a(href='#')
+                      =url.visits+' visits'
             .link_row
               .add Add Row
             .clear

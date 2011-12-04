@@ -563,6 +563,9 @@ mongo_visit = mongoose.model 'visits', visit_schema
 url_schema = new schema
   url_string: String
   card_number: String
+  last_updated:
+    type: Date
+    default: Date.now
   visits:
     type: Number
     default: 0
@@ -940,13 +943,18 @@ mrg = require(__dirname + '/assets/js/libs/mrg')
 valid_url_characters = []
 pre_vowels = [
   ['e',12]
+  ['ee',8]
+  ['ea',8]
   ['a',8]
   ['o',7]
+  ['oo',7]
+  ['oa',7]
+  ['oi',7]
   ['i',7]
   ['u',3]
   ['y',2]
 ]
-pre_consonants = [
+pre_hard_consonants = [
   ['t',9]
   ['n',7]
   ['s',6]
@@ -959,13 +967,33 @@ pre_consonants = [
   ['w',2]
   ['f',2]
   ['g',2]
+  ['p',2]
+  ['b',2]
+  ['k',1]
+  ['j',1]
+  ['qu',1]
+  ['z',1]
+]
+pre_consonants = [
+  ['t',9]
+  ['n',7]
+  ['s',6]
+  ['h',6]
+  ['r',5]
+  ['d',4]
+  ['l',4]
+  ['c',3]
+  ['ck',3]
+  ['m',2]
+  ['w',2]
+  ['f',2]
+  ['g',2]
   ['y',2]
   ['p',2]
   ['b',2]
   ['k',1]
   ['j',1]
   ['x',1]
-  ['qu',1]
   ['z',1]
 ]
 vowels = []
@@ -976,9 +1004,14 @@ consonants = []
 for l in pre_consonants
   for i in [1..l[1]]
     consonants.push l[0]
-numbers = ['',1,2,3,4,5,6,7,8,9]
+hard_consonants = []
+for l in pre_hard_consonants
+  for i in [1..l[1]]
+    hard_consonants.push l[0]
+numbers = ['',0,1,2,3,4,5,6,7,8,9]
 random_url = () ->
   psuedo = ''
+  h_c_l = hard_consonants.length - 1
   c_l = consonants.length - 1
   v_l = vowels.length - 1
   n_l = numbers.length - 1
@@ -987,23 +1020,17 @@ random_url = () ->
       psuedo += numbers[Math.round(mrg.generate_real()*n_l)]
     if Math.round(mrg.generate_real())
       psuedo += 0
-  add_consonant_upper = ->
-    for i in [0..0]
-      consonant = consonants[Math.round(mrg.generate_real()*c_l)]
-      if Math.round(mrg.generate_real())
-        psuedo += consonant
-      else
-        psuedo += consonant.toUpperCase()
   add_vowel = ->
     for i in [0..0]
       vowel = vowels[Math.round(mrg.generate_real()*v_l)]
       psuedo += vowel
-      if Math.round(mrg.generate_real())
-        psuedo += vowel
   add_consonant = ->
     for i in [0..0]
       psuedo += consonants[Math.round(mrg.generate_real()*c_l)]
-  add_consonant()
+  add_hard_consonant = ->
+    for i in [0..0]
+      psuedo += hard_consonants[Math.round(mrg.generate_real()*h_c_l)]
+  add_hard_consonant()
   add_vowel()
   add_consonant()
   add_vowel()
@@ -2209,35 +2236,36 @@ log_visit = (req, res, next) ->
   if req.headers['x-real-ip']
     ip = req.headers['x-real-ip']
   if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
-    console.log 'Local Ip Address'
-  else
-    http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
-      if err or res.statusCode isnt 200
-        log_err err
-      else
-        result = body.split /\|/
-        #
-        #
-        visit = new mongo_visit
-        visit.ip_address = ip
-        visit.user_agent = req.headers['user-agent']
-        visit.details =
-          city: result[0]
-          state: result[1]
-          country: result[2]
-          provider: result[3]
-          lat: result[4]
-          long: result[5]
-          iso: result[6]
-        visit.save (err, saved_visit) ->
-          log_err err if err
+    ip = '72.222.222.120'
+
+  
+  http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
+    if err or res.statusCode isnt 200
+      log_err err
+    else
+      result = body.split /\|/
+      #
+      #
+      visit = new mongo_visit
+      visit.ip_address = ip
+      visit.user_agent = req.headers['user-agent']
+      visit.details =
+        city: result[0]
+        state: result[1]
+        country: result[2]
+        provider: result[3]
+        lat: result[4]
+        long: result[5]
+        iso: result[6]
+      visit.save (err, saved_visit) ->
+        log_err err if err
   #
   # Continue Immediatelly, but save this info
   next()
 #
 #
 #
-app.get '/[A-Za-z0-9]{6,}/?$', log_visit, (req, res, next) ->
+app.get '/[A-Za-z0-9]{5,}/?$', log_visit, (req, res, next) ->
   #
   # Prep the string to search for
   search_string = req.url.replace /[^a-z0-9]/ig, ''
@@ -2275,6 +2303,7 @@ app.get '/[A-Za-z0-9]{6,}/?$', log_visit, (req, res, next) ->
               if not url.visits
                 url.visits = 0
               url.visits++
+              url.last_updated = new Date()
           url_group.save (err, saved_url_group) ->
             log_err err if err
 
