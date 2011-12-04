@@ -513,7 +513,24 @@ $.scrollbar_width = () ->
 #
 #
 #
+jQuery.fn.sortElements = (->
+  sort = [].sort
+  (comparator, getSortable) ->
+    getSortable = getSortable or ->
+      this
 
+    placements = @map(->
+      sortElement = getSortable.call(this)
+      parentNode = sortElement.parentNode
+      nextSibling = parentNode.insertBefore(document.createTextNode(""), sortElement.nextSibling)
+      ->
+        throw new Error("You can't sort elements if any one is a descendant of another.")  if parentNode is this
+        parentNode.insertBefore this, nextSibling
+        parentNode.removeChild nextSibling
+    )
+    sort.call(this, comparator).each (i) ->
+      placements[i].call getSortable.call(this)
+)()
 
 #
 #
@@ -1360,6 +1377,12 @@ $ ->
       $t.find('.line:eq('+rowNumber+')').html value
   #
   #
+  # Prevent Backspace
+  $('body').keydown (e) ->
+    if e.keyCode is 8
+      $t = $ e.target
+      if not $t.closest('input').andSelf().filter('input').length
+        e.preventDefault()
   #
   # Form Fields
   shift_pressed = false
@@ -1368,12 +1391,12 @@ $ ->
     $t.data 'timer', 0
     
     $t.click -> 
-      if i is 6
-        $view_buttons.filter(':last').click()
       style = $t.attr 'style'
       $input = $ '<input class="line" />'
       $input.attr 'style', style
       $input.val $t.html().replace /&nbsp;/g, ' '
+      tt = Math.round $t.offset().top/3
+      tl = Math.round $t.offset().left/3
       $t.after $input
       $t.hide()
       $input.focus().select()
@@ -1381,25 +1404,53 @@ $ ->
         if e.keyCode is 16
           shift_pressed = true
         if e.keyCode is 13 or e.keyCode is 9
+          #
+          #
+          $others = $t.siblings('div:visible')
+
+          $next = false
+          $a = false
+          $b = false
+          $c = false
+          $others.each ->
+            $a = $ this
+            at = Math.round $a.offset().top/3
+            al = Math.round $a.offset().left/3
+
+            if shift_pressed
+              if (at is tt and al < tl) or at < tt
+                $b = $a if not $b
+                bt = Math.round $b.offset().top/3
+                bl = Math.round $b.offset().left/3
+                if (at is bt and al > bl) or at > bt
+                  $b = $a 
+              $c = $a if not $c
+              ct = Math.round $c.offset().top/3
+              cl = Math.round $c.offset().left/3
+              if (at is ct and al > cl) or at > ct
+                $c = $a
+            else
+              if (at is tt and al > tl) or at > tt
+                $b = $a if not $b
+                bt = Math.round $b.offset().top/3
+                bl = Math.round $b.offset().left/3
+                if (at is bt and al < bl) or at < bt
+                  $b = $a
+              $c = $a if not $c
+              ct = Math.round $c.offset().top/3
+              cl = Math.round $c.offset().left/3
+              if (at is ct and al < cl) or at < ct
+                $c = $a
           e.preventDefault()
-          $next = $t.nextAll('div:visible:first')
-          if shift_pressed
-            $next = $t.prev()
-            if not $next.length
-              $next = $lines.filter(':visible:last')
+          if $b
+            $b.click()
           else
-            ###
-            Uncomment this to allow entering to 10 mode
-            if i is 5
-              $next = $t.nextAll('div:first')
-            ###
-            if not $next.length
-              $next = $lines.filter(':first')
-          $next.click()
-          return false
+            $c.click()
       $input.keyup (e) ->
         if e.keyCode is 16
           shift_pressed = false
+        if e.keyCode is 13 or e.keyCode is 9
+          e.preventDefault()
         update_cards i, this.value.replace /( )/g, '&nbsp;'
         $t.html this.value.replace /( )/g, '&nbsp;'
         set_timers()

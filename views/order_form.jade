@@ -174,7 +174,7 @@
 .section
   .cell_bg
   .cell_content
-    h3 Step 3: Set up an Account
+    h3 Step 3: Account
     .signins
       if req.user
         .check
@@ -212,7 +212,9 @@
         p
           .socials
             p
-              | Sign in with your existing social account:
+              | Sign in with a method below:
+            a.button.new(href='#')
+              span Create a req.username and password
             a.button.twitter(href='/auth/twitter')
               span Twitter
             a.button.facebook(href='/auth/facebook')
@@ -221,11 +223,6 @@
               span LinkedIn
             a.button.google(href='/auth/google')
               span Google
-            .clear
-            p Or, create a new account:
-          .local
-            a.button.new(href='#')
-              span Create a req.username and password
             .clear
 .help_container
   .help_trigger.button.gray Show Help
