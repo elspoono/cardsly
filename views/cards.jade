@@ -13,13 +13,43 @@ if env != 'production'
     .section.first
       .cell_bg
       .cell_content
-        .add_bar
-          input.url(placeholder='http://')
-          .button.normal Add URL
-        -for url_group in req.url_groups
-          .group
-            .pic
-              img(src='/render/79/45/' + url_group.order_id + '/?cards.ly')
-            .total
-              | 100 / 
-              =url_group.urls.length
+        .url_groups
+          -for url_group in req.url_groups
+            .link_main_row
+              .pic
+                img(src='/render/79/45/' + url_group.order_id + '/?cards.ly')
+              .total
+                ='84/'+url_group.urls.length
+              .redirect_to
+                =url_group.urls[0].redirect_to.replace('http://','')
+            .link_row
+              .add Edit by #'s
+            .link_row
+              .label
+              .total 1-15
+              .redirect_to linkedin.com/in/derekbredensteiner
+              .visited
+                a(href='#') 0 visits
+            .link_row
+              .label
+              .total 37
+              .redirect_to
+                =url_group.urls[0].redirect_to.replace('http://','')
+              .visited
+                a(href='#') 1 visit
+            .link_row
+              .label
+              .total 39
+              .redirect_to
+                =url_group.urls[0].redirect_to.replace('http://','')
+              .visited
+                a(href='#') 3 visits
+            .link_row
+              .label
+              .total
+                input(placeholder='1-10')
+              .redirect_to
+                input(placeholder='http://')
+            .link_row
+              .add Add Row
+            .clear

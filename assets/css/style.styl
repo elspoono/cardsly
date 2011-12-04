@@ -244,12 +244,13 @@ body
   relative_size(.75)
   font-family $base_font_family
   background $c_body_bg url('/images/little_pluses.png')
-input, select
+input, select, textarea
   font-size 12px
   line-height 40px
-  height 40px
   padding 0 10px
   border 1px solid $c_black
+input, select
+  height 40px
 // END Base Tag Definitions
 
 blockquote
@@ -294,6 +295,13 @@ blockquote
   position relative
   .help_trigger
     display none
+  .signin_over .help_img
+    margin -50px 0 0 80px
+  .quantity_over .help_img
+    margin 200px 0 0 40px
+  .ship_over .help_img
+    margin -320px 180px 0 0
+    float right
   .enter_card .help_img
     margin 155px 0 0 40px
   .click_more_card .help_img
@@ -322,17 +330,22 @@ blockquote
         width 220px
         height 150px
         margin 110px 0 0 20px
+    .left_down
+      background url('/images/help_left_down.png')
+      .text
+        margin-left 90px
+        margin-top 70px
     .left
       background url('/images/help_left.png')
       .text
         margin-left 90px
   .help_close,.help_trigger
     position absolute
-    top -20px
-    right -15px
-    width 25px
+    top 30px
+    right 30px
+    width 100px
     height 30px
-    font-size 30px
+    font-size 20px
     line-height 30px
     z-index 152
   .help_overlay
@@ -608,7 +621,9 @@ blockquote
 
 // Hide Images
 .img_loader
-  display none
+  position absolute
+  left -2000px
+  top 0
 .clear
   clear both
 
@@ -640,6 +655,7 @@ input.normal,input.gray
 
 .button.small
   width 110px
+  height 20px
   relative_size(.7)
   padding 4px 8px
   
@@ -847,7 +863,6 @@ input.normal,input.gray
 //
 .add_new
   float right
-  height 20px
 .home_designer
   .card
     width 505px
@@ -1437,6 +1452,8 @@ label
       font-style normal
       font-size 48px
     relative_size(1.5)
+  li
+    position absolute
   img
     position absolute
     display none
@@ -1508,26 +1525,17 @@ p
 
 //Order Status and Pre Edit Card Screen
 .order_status
+  img
+    display block
   border 1px solid $c_extra_dark
-  padding 15px
-  border_radius(5px)
   .order_row_top
     border 2px solid $c_extra_dark
-    padding 15px
     font-size 20px
-    border_radius(5px)
-    .order_cell
-      border 1px solid $c_extra_dark
-      padding 15px
-      border_radius(5px)
-  .order_row
+  .order_cell
+    vertical-align top
     border 1px solid $c_extra_dark
     padding 15px
     border_radius(5px)
-    .order_cell
-      border 1px solid $c_extra_dark
-      padding 15px
-      border_radius(5px)
 
 
 
@@ -1537,7 +1545,7 @@ p
 // HOME PAGE ADD = SECOT
 .chat
   position fixed
-  z-index 150
+  z-index 160
   bottom 5px
   right 20px
   img
@@ -1554,11 +1562,10 @@ input value=["Send Feedback"]
   input
   margin 15px auto
 .feedback_text
-  font-size 14px
-  width 350px
+  width 280px
+  height 200px
 .emailNotUser
-  font-size 12px
-  width 492px
+  width 280px
 .feedback
   top 40%
   right -45px
@@ -1597,22 +1604,52 @@ input value=["Send Feedback"]
     margin-top -4px
     float left
     width 120px
-// Group
-.group
-  alpha_bg($c_bg_dark,.5)
-  box_shadow(1px,$c_black)
-  margin 10px
-  padding 0 30px
-  border_radius(45px)
+// URL GROUPS
+.url_groups
   color $c_light
-  overflow hidden
-  .pic, .total
-    img
-      display block
-    line-height 45px
+  input
+    height 25px
+    font-size 12px
+    line-height 25px
+    margin 0 -10px
+  .link_main_row
+    alpha_bg($c_bg_dark,.7)
+    box_shadow(1px,$c_black)
+    margin 20px 0
+    padding 0 35px
+    border_radius(45px)
+    color $c_light
+    overflow hidden
+    .pic, .total, .redirect_to
+      img
+        display block
+      line-height 45px
+  .link_row
+    cursor pointer
+    margin -20px 35px 20px 35px
+    alpha_bg($c_bg_dark,.5)
+    border 1px solid $c_bg_dark
+    border-top none
+    overflow hidden
+  .label
+    width 79px
+  .pic, .label, .total, .redirect_to, .visited
     float left
-    margin 10px
-  
+    padding 10px
+  .total
+    width 80px
+    input
+      width 40px
+  .redirect_to
+    input
+      width 300px
+  .visited
+    float right
+  .add
+    padding 2px 10px
+  .button
+    float left
+    margin 0 0 20px 35px
 
 
 

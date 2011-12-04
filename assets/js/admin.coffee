@@ -813,6 +813,9 @@ $ ->
   load_theme = (theme) ->
     #
     #
+    # Update Test Link
+    $('.test_link a').attr 'href', '/test/'+theme._id
+    #
     # Set Constants
     theme_template = theme.theme_templates[active_view]
     #

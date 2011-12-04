@@ -138,6 +138,7 @@ everyauth = require 'everyauth'
 Promise = everyauth.Promise
 #
 #
+require './assets/js/date'
 #
 #
 ###
@@ -151,6 +152,14 @@ knoxClient = knox.createClient
   bucket: 'cardsly'
 #
 #
+#
+#
+#
+# MOO API Key
+# 4739b76c5a56a3c0f03bfcefd3248ed804ed95ae2
+# 
+# MOO Secret
+# bec6f97d58f1121cd90e16502e6c8e4e
 #
 #
 # END LIBRARY LOADING
@@ -467,6 +476,9 @@ theme_template_schema = new schema
 theme_schema = new schema
   category: String
   theme_templates: [theme_template_schema]
+  color1: String
+  color2: String
+  s3_id: String
   date_updated:
     type: Date
     default: Date.now
@@ -528,19 +540,29 @@ order_schema = new schema
 mongo_order = mongoose.model 'orders', order_schema
 #
 #
+# Visits (for stats)
+visit_schema = new schema
+  ip_address: String
+  user_agent: String
+  date_added:
+    type: Date
+    default: Date.now
 #
 #
 #
-small_url_schema = new schema
+url_schema = new schema
   url_string: String
   card_number: String
+  visits:
+    type: Number
+    default: 0
   redirect_to: String
 #
 #
 url_group_schema = new schema
   user_id: String
   order_id: String
-  urls: [small_url_schema]
+  urls: [url_schema]
   date_added:
     type: Date
     default: Date.now
@@ -557,16 +579,9 @@ url_redirect_schema = new schema
 mongo_url_redirect = mongoose.model 'url_redirects', url_redirect_schema
 #
 #
-# Views (for stats)
-view_schema = new schema
-  ip_address: String
-  user_agent: String
-  card_id: String
-  date_added:
-    type: Date
-    default: Date.now
-mongo_view = mongoose.model 'views', view_schema
-
+#
+#
+#
 # Password Reset
 password_reset = new schema
   password_reset: Date
@@ -978,7 +993,7 @@ random_url = () ->
   add_consonant = ->
     for i in [0..0]
       psuedo += consonants[Math.round(mrg.generate_real()*c_l)]
-  add_consonant_upper()
+  add_consonant()
   add_vowel()
   add_consonant()
   add_vowel()
@@ -1055,6 +1070,14 @@ create_urls = (options, next) ->
 #
 #
 #
+app.post '/update-order-status', (req, res) ->
+  mongo_order.findById req.body.order_id, (err, order) ->
+    if check_no_err_ajax err, res
+      order.status = req.body.status
+      order.save (err, saved_order) ->
+        if check_no_err_ajax err, res
+          res.send
+            success: true
 #
 # Form request for multipart form uploading image
 app.post '/upload-image', (req, res) ->
@@ -1479,14 +1502,203 @@ image_err = (res) ->
     , 200
 #
 #
+render_urls_to_doc = (urls, theme_template, line_copy, next) ->
+  #
+  #
+  # We're going to grab the background image via an http request to amazon
+  #
+  # Set blank imagedata
+  imagedata = ''
+  #
+  # Hit Amazon
+  request = http.get
+    host: 'd3eo3eito2cquu.cloudfront.net'
+    port: 80
+    path: '/raw/'+theme_template.s3_id
+  , (response) ->
+      #
+      #
+      dpi = 300
+      #
+      #
+      height = 2*dpi
+      width = 3.5*dpi
+      #
+      response.setEncoding 'binary'
+      #
+      response.on 'data', (chunk) ->
+        imagedata += chunk
+      response.on 'end', ->
+        #
+        # If we found the image on amazon
+        if response.statusCode is 200
+          # 
+          s3_bg_buff = new Buffer imagedata, 'binary'
+          #
+          canvas = new node_canvas(width,height)
+          ctx = canvas.getContext '2d'
+          #
+          #
+          img = new node_canvas.Image
+          img.src = s3_bg_buff
+          ctx.drawImage img, 0, 0, width, height
+          #
+          #
+          for line,i in theme_template.lines
+            h = Math.round(line.h/100*height)
+            x = line.x/100*width
+            y = line.y/100*height
+            w = line.w/100*width
+            ctx.fillStyle = hex_to_rgba line.color
+            ctx.font = h + 'px "' + line.font_family + '"'
+            this_line_copy = line_copy[i].replace(/&nbsp;/g, ' ').replace(/\n/g, '')
+            if line.text_align is 'left'
+              ctx.fillText this_line_copy, x, y+h
+            else
+              measure = ctx.measureText this_line_copy, x, y+h
+              if line.text_align is 'right'
+                ctx.fillText this_line_copy, x+w-measure.width, y+h
+              if line.text_align is 'center'
+                ctx.fillText this_line_copy, x+(w-measure.width)/2, y+h
+            #
+          #
+          canvas.toBuffer (err, bg_buff) ->
+            #
+            #
+            #
+            #
+            #
+            #
+            #
+            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+            #
+            # Set up the PDF Document
+            doc = new pdf_document()
+            #
+            #
+            #
+            pdf_dpi = 72
+            #
+            url_i = 0
+            page = 0
+            c = 0
+            r = 0
+            url_i_limit = urls.length
+            page_limit = 1
+            c_limit = 2
+            r_limit = 5
+            #
+            qr_left = theme_template.qr.x/100*pdf_dpi*3.5
+            qr_top = theme_template.qr.y/100*pdf_dpi*2
+            qr_width = theme_template.qr.w/100*pdf_dpi*3.5
+            qr_height = theme_template.qr.h/100*pdf_dpi*2
+            # 
+            #
+            short_domain = 'http://cards.ly/'
+            if process.env and process.env.SHORT_URL
+              short_domain = 'http://'+process.env.SHORT_URL+'/'
+            #
+            #
+            #
+            next_card = ->
+              #
+              #
+              #
+              #
+              if url_i is url_i_limit
+                next doc
+              else
+                c = 0 if c is c_limit
+                r = 0 if r is r_limit
+                if page is page_limit
+                  page = 0  
+                  doc.addPage()
+                #
+                #
+                card_width = 3.5*pdf_dpi
+                card_height = 2*pdf_dpi
+                #
+                width_x_height =
+                  width: card_width
+                  height: card_height
+                #
+                left = c*card_width + .75*pdf_dpi
+                top = r*card_height + .5*pdf_dpi
+                #
+                #
+                #
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: short_domain+urls[url_i].url_string
+                  card_number: urls[url_i].card_number
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2+alpha
+                #
+                #
+                #
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  #
+                  #
+                  #
+                  # Start with it's base background
+                  doc.image bg_buff, left, top, width_x_height
+                  #
+                  # Top Left Row Expand
+                  doc.image s3_bg_buff, left-card_width, top-card_height, width_x_height if r is 0 and c is 0
+                  #
+                  # Top Row Expand
+                  doc.image s3_bg_buff, left, top-card_height, width_x_height if r is 0
+                  #
+                  # Top Right Row Expand
+                  doc.image s3_bg_buff, left+card_width, top-card_height, width_x_height if r is 0 and c is c_limit-1
+                  #
+                  # Bottom Row Expand
+                  doc.image s3_bg_buff, left, top+card_height, width_x_height if r is r_limit-1
+                  #
+                  # Left Column Expand
+                  doc.image s3_bg_buff, left-card_width, top, width_x_height if c is 0
+                  #
+                  # Bottom Left Row Expand
+                  doc.image s3_bg_buff, left-card_width, top+card_height, width_x_height if r is r_limit-1 and c is 0
+                  #
+                  # Right Column Expand
+                  doc.image s3_bg_buff, left+card_width, top, width_x_height if c is c_limit-1
+                  #
+                  # Bottom Right Row Expand
+                  doc.image s3_bg_buff, left+card_width, top+card_height, width_x_height if r is r_limit-1 and c is c_limit-1
+                  #
+                  #
+                  #
+                  #
+                  #
+                  #
+                  doc.image qr_buff, left+qr_left, top+qr_top,
+                    width: qr_width
+                    height: qr_height
+                  #
+                  #
+                  url_i++
+                  #
+                  #
+                  # Delay Quarter of Second
+                  setTimeout ->
+                    next_card()
+                  , 100
+                  #
+                  #
+                  #
+                  r++
+                  c++ if r is r_limit
+                  page++ if r is r_limit and c is c_limit
+            #
+            #
+            next_card()
+            #
 #
 #
 process_pdf = (order_id) ->
   #
-  #
-  # Our resolutions we'll use for the PDFs and the Images
-  pdf_dpi = 72
-  dpi = 300
   #
   #
   # Find the Order that's passed in
@@ -1496,196 +1708,45 @@ process_pdf = (order_id) ->
     # Find the theme for that order
     mongo_theme.findById order.theme_id, (err, theme) ->
       #
-      # The theme_template used based on the view from the order
-      theme_template = theme.theme_templates[order.active_view]
       #
-      # There's some bad data in production with this missing.
-      # This can maybe be removed eventually.
-      if not order.active_view
-        image_err res
-      else
+      # Find the urls we're going to use
+      mongo_url_group.findOne
+        order_id: order._id
+      , (err, url_group) ->
         #
         #
-        # Find the urls we're going to use
-        mongo_url_group.findOne
-          order_id: order._id
-        , (err, url_group) ->
+        if err
+          log_err err
+        else
           #
           #
-          if err or not url_group
-            image_err res
-          else
+          # The theme_template used based on the view from the order
+          theme_template = theme.theme_templates[order.active_view]
+          #
+          #
+          # Set up the finalize function for later
+          render_urls_to_doc url_group.urls, theme_template, order.values, (doc) ->
             #
+            # FINALLY - Save it to Amazon
             #
-            # We're going to grab the background image via an http request to amazon
+            s3_id = order_id + '_' + random_url()
+            knox_buff = new Buffer doc.output(), 'binary'
             #
-            # Set blank imagedata
-            imagedata = ''
-            #
-            # Hit Amazon
-            request = http.get
-              host: 'd3eo3eito2cquu.cloudfront.net'
-              port: 80
-              path: '/raw/'+theme_template.s3_id
-            , (response) ->
+            knoxReq = knoxClient.put '/pdfs/'+s3_id+'.pdf',
+              'Content-Length': knox_buff.length
+              'Content-Type' : 'application/pdf'
+            knoxReq.on 'response', (res) ->
+              if res.statusCode != 200
+                console.log 'ERR', res
+              else
                 #
-                height = 2*dpi
-                width = 3.5*dpi
+                # And update the database with the s3 id found.
+                order.s3_id = s3_id
+                order.save (err, saved_order) ->
+                  log_err err if err
                 #
-                response.setEncoding 'binary'
-                #
-                response.on 'data', (chunk) ->
-                  imagedata += chunk
-                response.on 'end', ->
-                  #
-                  # If we found the image on amazon
-                  if response.statusCode is 200
-                    # 
-                    buff = new Buffer imagedata, 'binary'
-                    #
-                    canvas = new node_canvas(width,height)
-                    ctx = canvas.getContext '2d'
-                    #
-                    #
-                    img = new node_canvas.Image
-                    img.src = buff
-                    ctx.drawImage img, 0, 0, width, height
-                    #
-                    #
-                    for line,i in theme_template.lines
-                      h = Math.round(line.h/100*height)
-                      x = line.x/100*width
-                      y = line.y/100*height
-                      w = line.w/100*width
-                      ctx.fillStyle = hex_to_rgba line.color
-                      ctx.font = h + 'px "' + line.font_family + '"'
-                      if line.text_align is 'left'
-                        ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                      else
-                        measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                        if line.text_align is 'right'
-                          ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                        if line.text_align is 'center'
-                          ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-                    # 
-                    alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                    #
-                    qr_left = theme_template.qr.x/100*pdf_dpi*3.5
-                    qr_top = theme_template.qr.y/100*pdf_dpi*2
-                    qr_width = theme_template.qr.w/100*pdf_dpi*3.5
-                    qr_height = theme_template.qr.h/100*pdf_dpi*2
-                    # 
-                    canvas.toBuffer (err, s3_buff) ->
-                      #
-                      s3_img = new node_canvas.Image
-                      s3_img.src = s3_buff
-                      #
-                      # Set up the PDF Document
-                      doc = new pdf_document()
-                      #
-                      #
-                      # Set up the finalize function for later
-                      finalize_it = ->
-                        #
-                        # FINALLY - Save it to Amazon
-                        #
-                        s3_id = order_id + '_' + random_url()
-                        knox_buff = new Buffer doc.output(), 'binary'
-                        #
-                        knoxReq = knoxClient.put '/pdfs/'+s3_id+'.pdf',
-                          'Content-Length': knox_buff.length
-                          'Content-Type' : 'application/pdf'
-                        knoxReq.on 'response', (res) ->
-                          if res.statusCode != 200
-                            console.log 'ERR', res
-                          else
-                            #
-                            # And update the database with the s3 id found.
-                            order.s3_id = s3_id
-                            order.save (err, saved_order) ->
-                              log_err err if err
-                            #
-                        knoxReq.end knox_buff
-                      #
-                      #
-                      #
-                      url_i = 0
-                      page = 0
-                      c = 0
-                      r = 0
-                      url_i_limit = url_group.urls.length
-                      page_limit = url_group.urls.length/10
-                      c_limit = 2
-                      r_limit = 5
-                      #
-                      #
-                      short_domain = 'http://cards.ly/'
-                      if process.env and process.env.SHORT_URL
-                        short_domain = 'http://'+process.env.SHORT_URL+'/'
-                      #
-                      #
-                      next_card = ->
-                        #
-                        #
-                        #
-                        #
-                        if url_i is url_i_limit
-                          finalize_it()
-                        else
-                          c = 0 if c is c_limit
-                          r = 0 if r is r_limit
-                          if page is page_limit
-                            page = 0  
-                            doc.addPage()
-                          #
-                          #
-                          #
-                          #
-                          left = c*3.5*pdf_dpi + .75*pdf_dpi
-                          top = r*2*pdf_dpi + .5*pdf_dpi
-                          width = 3.5*pdf_dpi
-                          height = 2*pdf_dpi
-                          #
-                          qr_canvas = qr_code.draw_qr
-                            node_canvas: node_canvas
-                            style: 'round'
-                            url: short_domain+url_group.urls[url_i].url_string
-                            card_number: url_group.urls[url_i].card_number
-                            hex: theme_template.qr.color1
-                            hex_2: theme_template.qr.color2+alpha
-                          #
-                          qr_canvas.toBuffer (err, qr_buff) ->
-                            #
-                            #
-                            #
-                            #
-                            doc.image s3_buff, left, top,
-                              width: width
-                              height: height
-                            #
-                            doc.image qr_buff, left+qr_left, top+qr_top,
-                              width: qr_width
-                              height: qr_height
-                            #
-                            url_i++
-                            #
-                            setTimeout ->
-                              next_card()
-                            , 200
-                          #
-                          #
-                          #
-                          c++
-                          r++
-                          page++
-                      #
-                      #
-                      next_card()
-                      #
-                      #
-                    #
-                  else
-                    image_err res
+            knoxReq.end knox_buff
+          #
 #
 #
 app.get '/re-process-pdf/:order_id', (req, res, next) ->
@@ -1705,7 +1766,43 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
             Location: '/orders'
           , 302
 #
+
 #
+app.get '/test/:theme_id', (req, res, next) ->
+  #
+  #
+  # Find the theme for that order
+  mongo_theme.findById req.params.theme_id, (err, theme) ->
+    #
+    # The theme_template used based on the view from the order
+    theme_template = theme.theme_templates[0]
+    #
+    urls =
+      (
+        url_string: 'test'
+        card_number: i
+      ) for i in [1..10]
+    #
+    render_urls_to_doc urls, theme_template, [
+      'Jimbo jo Jiming'
+      'Banker Extraordinaire'
+      'Cool Cats Cucumbers'
+      '57 Bakers, Edwarstonville'
+      '555.555.5555'
+      'New York'
+      'Apt. #666'
+      'M thru F - 10 to 7'
+      'fb.com/my_facebook'
+      '@my_twitter'
+    ], (doc) ->
+      #
+      # FINALLY - Send it to the browser
+      #
+      res.send new Buffer(doc.output(), 'binary'),
+        'Content-Type' : 'application/pdf'
+      , 200
+    #
+    #
 #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
@@ -2092,6 +2189,90 @@ check_no_err = (err, res) ->
   !err
 #
 #
+#
+#
+log_visit = (req, res, next) ->
+  #
+  #
+  #
+  ip = req.socket.remoteAddress
+  if req.headers['x-real-ip']
+    ip = req.headers['x-real-ip']
+  if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
+    console.log 'Local Ip Address'
+  else
+    http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
+      if err or res.statusCode isnt 200
+        log_err err
+      else
+        result = body.split /\|/
+        #
+        #
+        visit = new mongo_visit
+        visit.ip_address = ip
+        visit.user_agent = req.headers['user-agent']
+        visit.details =
+          city: result[0]
+          state: result[1]
+          country: reuult[2]
+          provider: result[3]
+          lat: result[4]
+          long: result[5]
+          iso: result[6]
+        visit.save (err, saved_visit) ->
+          log_err err if err
+  #
+  # Continue Immediatelly, but save this info
+  next()
+#
+#
+#
+app.get '/[A-Za-z0-9]{6,}/?$', log_visit, (req, res, next) ->
+  #
+  # Prep the string to search for
+  search_string = req.url.replace /[^a-z0-9]/ig, ''
+  #
+  #
+  mongo_url_redirect.find
+    url_string: search_string
+  , (err, url_redirects) ->
+    if err
+      log_err err
+      next()
+    else if not url_redirects.length
+      next()
+    else
+      #
+      # Go ahead and redirect them now
+      res.send '',
+        'Location' : url_redirects[0].redirect_to
+      , 302
+      #
+      #
+      # And in the mean time ...
+      # Let's log a hit
+      mongo_url_group.find
+        'urls.url_string': search_string
+      , (err, url_groups) ->
+        if err
+          log_err err
+        else if not url_groups.length
+          console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
+        else
+          url_group = url_groups[0]
+          for url in url_group.urls
+            if url.url_string is search_string
+              if not url.visits
+                url.visits = 0
+              url.visits++
+          url_group.save (err, saved_url_group) ->
+            log_err err if err
+
+                
+#
+#
+#
+#
 if app.settings.env is 'production'
   app.get '*', (req,res,next) ->
     headers = req.headers
@@ -2156,6 +2337,8 @@ app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
 app.get '/orders', securedAdminPage, (req, res, next) ->
   mongo_order.find
     'charge.paid': true
+    'status':
+      '$ne': 'Shipped'
   , (err, orders) ->
     req.orders = orders
     if check_no_err err, res
