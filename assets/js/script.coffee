@@ -695,22 +695,21 @@ $ ->
   # HELP OVERLAYS
   #
   #
-  $('.help_container').each ->
-    $t = $ this
-    $overlay = $t.find '.help_overlay'
-    $close = $t.find '.help_close'
-    $trigger = $t.find '.help_trigger'
-    do_close = ->
-      $overlay.hide()
-      $close.hide()
-      $trigger.show()
-    do_show = ->
-      $overlay.show()
-      $close.show()
-      $trigger.hide()
-    $overlay.click do_close
-    $close.click do_close
-    $trigger.click do_show
+  $all_help = $('.help_container')
+  $overlay = $all_help.find '.help_overlay'
+  $close = $all_help.find '.help_close'
+  $trigger = $all_help.find '.help_trigger'
+  do_close = ->
+    $overlay.hide()
+    $close.hide()
+    $trigger.show()
+  do_show = ->
+    $overlay.show()
+    $close.show()
+    $trigger.hide()
+  $overlay.click do_close
+  $close.click do_close
+  $trigger.click do_show
   #
   #
   # END HELP OVERLAYS
