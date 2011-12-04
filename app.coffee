@@ -476,6 +476,9 @@ theme_template_schema = new schema
 theme_schema = new schema
   category: String
   theme_templates: [theme_template_schema]
+  color1: String
+  color2: String
+  s3_id: String
   date_updated:
     type: Date
     default: Date.now
