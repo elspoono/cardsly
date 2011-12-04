@@ -544,9 +544,19 @@ mongo_order = mongoose.model 'orders', order_schema
 visit_schema = new schema
   ip_address: String
   user_agent: String
+  details:
+    city: String
+    state: String
+    country: String
+    provider: String
+    lat: String
+    long: String
+    iso: String
   date_added:
     type: Date
     default: Date.now
+#
+mongo_visit = mongoose.model 'visits', visit_schema
 #
 #
 #
@@ -2214,7 +2224,7 @@ log_visit = (req, res, next) ->
         visit.details =
           city: result[0]
           state: result[1]
-          country: reuult[2]
+          country: result[2]
           provider: result[3]
           lat: result[4]
           long: result[5]
