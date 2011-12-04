@@ -684,24 +684,24 @@ $ ->
   #################################################################
 
 
-###################################################################
-###
-#
-# Header Navigation
-#
-# 
-  $hm = $h.find '.header'
-  $body = $(document)
-  $('.navigation li').live 'mouseenter', ->
-    $(this).addClass 'hover'
-  $('.navigation li').live 'mouseleave', ->
-    $(this).removeClass 'hover'
+  ###################################################################
+  ###
+  #
+  # Header Navigation
+  #
+  # 
+    $hm = $h.find '.header'
+    $body = $(document)
+    $('.navigation li').live 'mouseenter', ->
+      $(this).addClass 'hover'
+    $('.navigation li').live 'mouseleave', ->
+      $(this).removeClass 'hover'
 
-#
-#
-#
-###
-###################################################################
+  #
+  #
+  #
+  ###
+  ###################################################################
 
   #################################################################
   #
