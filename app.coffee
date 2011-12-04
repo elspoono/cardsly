@@ -2198,6 +2198,7 @@ log_visit = (req, res, next) ->
   ip = req.socket.remoteAddress
   if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
     console.log 'Local Ip Address'
+    console.log req.headers
   else
     http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
       if err or res.statusCode isnt 200
