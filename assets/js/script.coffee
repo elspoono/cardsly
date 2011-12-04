@@ -844,7 +844,7 @@ $ ->
     $.load_modal
       content: '<div class="create_form"><p>Email Address:<br><input class="email"></p><p>Password:<br><input type="password" class="password"></p></p><p>Repeat Password:<br><input type="password" class="password2"></p></div>'
       buttons: [
-        label: 'Create New'
+        label: 'Sign In'
         action: (form_close) ->
           email = $ '.email'
           password = $ '.password'
