@@ -624,7 +624,7 @@ blockquote
 // Hide Images
 .img_loader
   position absolute
-  left -2000px
+  left -9000px
   top 0
 .clear
   clear both
@@ -1609,11 +1609,14 @@ input value=["Send Feedback"]
 // URL GROUPS
 .url_group
   color $c_light
-  input
+  input, textarea
     height 25px
     font-size 12px
     line-height 25px
     margin 0 -10px
+  textarea
+    width 280px
+    height 75px
   .link_main_row
     alpha_bg($c_bg_dark,.7)
     box_shadow(1px,$c_black)
@@ -1626,6 +1629,8 @@ input value=["Send Feedback"]
       img
         display block
       line-height 45px
+    .status
+      line-height 14px
   .link_row
     cursor pointer
     margin -30px 35px 30px 35px
@@ -1639,15 +1644,19 @@ input value=["Send Feedback"]
   .range
     width 140px
     input
-      width 40px
-  .redirect_to
-    input
-      width 300px
-  .add, .time
+      width 120px
+  .add, .time, .text, .status, .helper
     opacity .9
     font-style italic
     font-size 14px
+  .add, .time, .text
     float right
+  .redirect_to
+    cursor pointer
+    .status
+      width 280px
+      padding 0 10px
+      text-align right
   .add
     width 100%
     text-align center

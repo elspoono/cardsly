@@ -1096,53 +1096,251 @@ $ ->
 
 
 
-
-
+  #################################################################
+  #
+  #
+  # URL GROUPS
+  #
+  #
+  #
   $url_groups = $ '.url_group'
   $url_groups.each ->
     $g = $ this
-    $rows = $g.find '.link_row'
-    $rows.each ->
-      $r = $ this
-      url_string = $r.attr 'url_string'
-      $v = $r.find '.visited'
-      $v_dialog = $ '<div class="visit_dialog" />'
-      $v.append $v_dialog
-      $v_dialog.hide()
-      $v.hover ->
-        if not $v_dialog.is(':visible')
-          $v_dialog.html 'Loading ...'
-          $('.visit_dialog').each ->
-            $t = $ this
-            clearTimeout $t.data('fade_timer')
-            $t.hide()
-          $v_dialog.data('fade_timer', setTimeout ->
-              $v_dialog.stop(true,true).fadeIn()
-            , 300
-          )
-          $.ajax
-            url: '/get-visits'
-            data: JSON.stringify
-              url_string: url_string
-            success: (result) ->
-              $v_dialog.html ''
-              if result.visits
-                for visit in result.visits
-                  $item = $ '<div class="item" />'
-                  $item.append '<div class="cell">'+new Date(visit.date_added).format('m/dd/yyyy h:MM tt')+'</div>'
-                  $item.append '<div class="cell">'+visit.browser+'</div>'
-                  $item.append '<div class="cell">'+visit.location+'</div>'
-                  $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
-                  $v_dialog.append $item
-      , ->
-        clearTimeout $v_dialog.data('fade_timer')
+    g_id = $g.attr('id')
+    $rows = $g.find '.link_row[id]'
+    $edit_button = $g.find '.link_row.edit'
+    #
+    #
+    #
+    # Set up the main editing function
+    $main_row = $g.find '.link_main_row'
+    # Start up some events!
+    main_start_edit = ->
+      #
+      #
+      #
+      $redirect = $main_row.find '.redirect_to'
+      #
+      $edit_button.hide()
+      #
+      # Set up the link input
+      action = $redirect.html()
+      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" />'
+      $textarea = $redirect.find 'textarea'
+      $status = $redirect.find '.status'
+      #
+      #
+      $textarea.focus()[0].select()
+      #
+      edit_timer = 0
+      set_edit_timers = ->
+        clearTimeout edit_timer
+        if $textarea.val()
+          edit_timer = setTimeout ->
+            $status.html 'Saving...'
+            $.ajax
+              url: '/save-main-redirect'
+              data: JSON.stringify
+                url_group_id: g_id
+                redirect_to: $textarea.val()
+              success: (result) ->
+                $status.html 'Unknown Error'
+                if result
+                  if result.err
+                    $status.html err
+                  else if result.success
+                    $status.html 'Saved'
+              error: ->
+                $status.html 'Unknown Error'
+          , 500
+      #
+      #
+      $textarea.keydown (e) ->
+        set_edit_timers()
+        if e.keyCode is 13 or e.keyCode is 9
+          e.preventDefault()
+          $body.click()
+      #
+      #
+      #
+      remove_me = (e) ->
+        $target = $ e.target
+        if $target[0] isnt $main_row[0] and $target.closest('.link_main_row')[0] isnt $main_row[0]
+          set_edit_timers()
+          $redirect.html $textarea.val()
+          $main_row.one 'click', main_start_edit
+          if $g.find('textarea').length is 0
+            $edit_button.show()
+          $body.unbind 'click', remove_me
+      $body.bind 'click', remove_me
+      #
+      #
+      #
+
+    $main_row.one 'click', main_start_edit
+    #
+    #
+    #
+    # Create the Edit event we'll use a couple of places
+    bind_edit_event_to = ($r) ->
+      #
+      #
+      $range = $r.find '.range'
+      $redirect = $r.find '.redirect_to'
+      # Start up some events!
+      start_edit = ->
+        #
+        #
+        $edit_button.hide()
+        #
+        #
+        # Set up the range input
+        range = $range.html().replace /#/, ''
+        $range.html '<div class="helper">Enter #\'s</div><input value="'+range+'" />'
+        $input = $range.find 'input'
+        #
+        # Set up the link input
+        action = $redirect.html()
+        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" />'
+        $textarea = $redirect.find 'textarea'
+        $status = $redirect.find '.status'
+        #
+        #
+        if range
+          $textarea.focus()[0].select()
+        else
+          $input.focus()[0].select()
+        #
+        edit_timer = 0
+        set_edit_timers = ->
+          clearTimeout edit_timer
+          if $input.val() and $textarea.val()
+            edit_timer = setTimeout ->
+              $status.html 'Saving...'
+              $.ajax
+                url: '/save-redirect'
+                data: JSON.stringify
+                  url_group_id: g_id
+                  range: $input.val()
+                  redirect_to: $textarea.val()
+                success: (result) ->
+                  $status.html 'Unknown Error'
+                  if result
+                    if result.err
+                      $status.html err
+                    else if result.success
+                      $status.html 'Saved'
+                error: ->
+                  $status.html 'Unknown Error'
+            , 500
+        #
+        $textarea.keydown (e) ->
+          set_edit_timers()
+          if e.keyCode is 13 or e.keyCode is 9
+            e.preventDefault()
+            $body.click()
+        #
+        $input.keydown (e) ->
+          set_edit_timers()
+          if e.keyCode is 13
+            e.preventDefault()
+            $body.click()
+        #
         remove_me = (e) ->
           $target = $ e.target
-          if $target[0] isnt $v[0]
-            $v_dialog.stop(true,true).fadeOut()
+          if $target[0] isnt $r[0] and $target.closest('.link_row')[0] isnt $r[0]
+            set_edit_timers()
+            if $input.val() or $textarea.val()
+              $range.html '#'+$input.val()
+              $redirect.html $textarea.val()
+              $r.one 'click', start_edit
+            else
+              $r.remove()
+            if $g.find('textarea').length is 0
+              $edit_button.show()
             $body.unbind 'click', remove_me
         $body.bind 'click', remove_me
+        #
+        #
+        #
 
+      $r.one 'click', start_edit
+      #
+    #
+    #
+    $edit_button.click (e) ->
+      $new_row = $ '<div class="link_row"><div class="visited" /><div class="range" /><div class="redirect_to" /><div class="time" /></div>'
+      $edit_button.before $new_row
+      bind_edit_event_to $new_row
+      setTimeout ->
+        $new_row.click()
+      , 0
+    #
+    #
+    # Bind the default events to the existing markup
+    $rows.each ->
+      #
+      # Just Setting up Variables
+      $r = $ this
+      #
+      #
+      bind_edit_event_to $r
+      #
+      #
+      #
+      url_string = $r.attr 'url_string'
+      if url_string
+        # 
+        # Creating some elements
+        $v = $r.find '.visited'
+        $v_dialog = $ '<div class="visit_dialog" />'
+        $v.append $v_dialog
+        $v_dialog.hide()
+        #
+        #
+        #
+        # This Visit Hover Dialog Dealy bob
+        $v.hover ->
+          if not $v_dialog.is(':visible')
+            $v_dialog.html 'Loading ...'
+            $('.visit_dialog').each ->
+              $t = $ this
+              clearTimeout $t.data('fade_timer')
+              $t.hide()
+            $v_dialog.data('fade_timer', setTimeout ->
+                $v_dialog.stop(true,true).fadeIn()
+              , 300
+            )
+            $.ajax
+              url: '/get-visits'
+              data: JSON.stringify
+                url_string: url_string
+              success: (result) ->
+                $v_dialog.html ''
+                if result.visits
+                  for visit in result.visits
+                    $item = $ '<div class="item" />'
+                    $item.append '<div class="cell">'+new Date(visit.date_added).format('m/dd/yyyy h:MM tt')+'</div>'
+                    $item.append '<div class="cell">'+visit.browser+'</div>'
+                    $item.append '<div class="cell">'+visit.location+'</div>'
+                    $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
+                    $v_dialog.append $item
+        , ->
+          clearTimeout $v_dialog.data('fade_timer')
+          remove_me = (e) ->
+            $target = $ e.target
+            if $target[0] isnt $v[0]
+              $v_dialog.stop(true,true).fadeOut()
+              $body.unbind 'click', remove_me
+          $body.bind 'click', remove_me
+  #
+  #
+  #
+  # END URL GROUPS
+  #
+  #
+  #
+  #################################################################
 
 
   
