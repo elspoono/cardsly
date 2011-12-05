@@ -1134,10 +1134,12 @@ $ ->
       #
       # Set up the link input
       action = $redirect.html()
-      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" />'
+      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button normal small save">Save</div></div>'
+      $add_button = $redirect.find '.save'
       $textarea = $redirect.find 'textarea'
       $status = $redirect.find '.status'
       #
+      $add_button.click -> $body.click()
       #
       $textarea.focus()[0].select()
       #

@@ -786,7 +786,7 @@ $ ->
   default_theme = 
     category: ''
     not_saved: true
-    s3_id = ''
+    s3_id: ''
     theme_templates: [
       color1: 'FFFFFF'
       color2: '000000'
