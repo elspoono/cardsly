@@ -2736,6 +2736,30 @@ app.get '/sample-landing-page', (req, res) ->
 #
 #
 
+# AB Test Pages
+# Purchase
+app.get '/home1', get_order_info, securedPage, (req, res) ->
+  res.render 'homep'
+    req: req
+    scripts:[
+      'home'
+    ]
+
+# Checkout
+app.get '/home2', get_order_info, securedPage, (req, res) ->
+  res.render 'homec'
+    req: req
+    scripts:[
+      'home'
+    ]
+# Buy
+app.get '/home3', get_order_info, securedPage, (req, res) ->
+  res.render 'homeb'
+    req: req
+    scripts:[
+      'home'
+    ]
+#
 #
 #
 # Real Index Page
