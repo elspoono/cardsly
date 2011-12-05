@@ -689,11 +689,20 @@ $ ->
   #
   # Header Navigation
   #
-  
-  current_nav = ->
-   path = location.pathname.substring(1);
-   if path 
-     $('#sidebar_content a[href$="' + path + '"]').attr('class', '.selected')
+  ###
+  $b = $('.header').find 'navigation'
+  $body = $(document)
+  $('.navigation li').live 'mouseenter', ->
+    $(this).addClass 'hover'
+  $('.navigation li').live 'mouseleave', ->
+    $(this).removeClass 'hover'
+  ###
+
+  $('.navigation').ready ->
+    page = window.location.href.split("/")[3]
+    if page is ''
+      page = 'home'
+    $(this).find('a[href$='+page+']').addClass('current_nav')
 
   
   ###################################################################
