@@ -840,6 +840,7 @@ app.configure ->
     user: false
     session: false
     error_message: false
+    _: _
     #
     # Cut off at 60 characters 
     title: 'Cardsly | Create and buy QR code business cards you control'
@@ -1105,6 +1106,82 @@ create_urls = (options, next) ->
         else
           new_urls.push new_url
           check_if_done()
+#
+#
+#
+app.post '/save-main-redirect', (req, res) ->
+  #
+  # Set up the redirect
+  if not req.body.redirect_to.match /http:\/\//i
+    req.body.redirect_to = 'http://'+req.body.redirect_to
+  #
+  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
+    if check_no_err_ajax err, res
+      if url_group.user_id+'' isnt req.user._id+''
+        res.send
+          err: 'No Permission'
+      else
+        for url in url_group.urls
+          if url.redirect_to is url_group.redirect_to and url.visits*1 is 0
+            url.redirect_to = req.body.redirect_to
+            url.last_updated = new Date()
+
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
+        url_group.redirect_to = req.body.redirect_to
+        url_group.save (err, saved_url_group) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+#
+#
+app.post '/save-redirect', (req, res) ->
+  #
+  # Set up the redirect
+  if not req.body.redirect_to.match /http:\/\//i
+    req.body.redirect_to = 'http://'+req.body.redirect_to
+  #
+  # Set up the Card Numbers from the range given
+  card_numbers = []
+  parts = req.body.range.split ','
+  for part in parts
+    range = part.split '-'
+    spaced = part.split ' '
+    if range.length > 1
+      card_numbers.push(i) for i in [range[0]..range[1]]
+    else if spaced.length > 1
+      card_numbers.push(i) for i in spaced
+    else
+      card_numbers.push part
+  for card_number,i in card_numbers
+    card_numbers[i] = card_number*1
+  #
+  #
+  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
+    if check_no_err_ajax err, res
+      if url_group.user_id+'' isnt req.user._id+''
+        res.send
+          err: 'No Permission'
+      else
+        for url in url_group.urls
+          if _(card_numbers).contains url.card_number*1
+            url.redirect_to = req.body.redirect_to
+            url.last_updated = new Date()
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
+        url_group.save (err, saved_url_group) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+#
 #
 #
 app.post  '/get-visits', (req, res) ->
@@ -2391,10 +2468,68 @@ get_url_groups = (req, res, next) ->
       if check_no_err err
         #
         #
-        # Sort by last updated within the url groups
         for url_group in url_groups
+          #
+          #
+          # Sort by last updated within the url groups
           url_group.urls = _(url_group.urls).sortBy (url) ->
             url.last_updated
+          url_group.urls.reverse()
+          #
+          #
+          #
+          # -
+          # ------
+          # ---------------
+          # --------------------------------------------------
+          # Try to group the ranges of numbers, BLEGH! :O
+          #
+          #
+          url_group.ranged_urls = []
+          #
+          # Get the groups
+          # Filter out the visited
+          not_visited = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
+          grouped = _(not_visited).groupBy (url) ->
+            url.redirect_to
+          for redirect_to,group of grouped
+            #
+            #
+            group = _(group).sortBy (url) ->
+              url.card_number
+            #
+            #
+            final = group[0]
+            #
+            prev_card_number = final.card_number-1
+            length = 0
+            for url in group
+              if url.card_number*1 isnt prev_card_number*1+1
+                if length > 1
+                  final.card_number = final.card_number + '-' + prev_card_number
+                final.card_number = final.card_number + ', ' + url.card_number
+                length = 0
+              length++
+              prev_card_number = url.card_number
+              #
+            #
+            if length > 1
+              final.card_number = final.card_number + '-' + prev_card_number
+            #
+            #
+            url_group.ranged_urls.push final
+          #
+          #
+          #
+          # --------------------------------------------------
+          # ---------------
+          # ------
+          # -
+          #
+          #
+        #
+        #
         #
         req.url_groups = url_groups
         #
