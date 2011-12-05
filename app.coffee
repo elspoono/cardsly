@@ -576,6 +576,7 @@ url_schema = new schema
 url_group_schema = new schema
   user_id: String
   order_id: String
+  redirect_to: String
   urls: [url_schema]
   date_added:
     type: Date
@@ -1497,6 +1498,12 @@ add_urls_to_order = (order, user, res) ->
   #
   #
   redirect_to = 'http://cards.ly/'+order.order_number
+  for value in order.values
+    parsed = value.replace /(&nbsp;|\n)/ig, ''
+    if parsed.match(/[a-z0-9]{2,}\.[a-z0-9]{2,}/i) and not parsed.match(/@/)
+      redirect_to = parsed
+  if not redirect_to.match /http:\/\//
+    redirect_to = 'http://'+redirect_to
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
@@ -1515,6 +1522,7 @@ add_urls_to_order = (order, user, res) ->
     url_group = new mongo_url_group
     url_group.order_id = order._id
     url_group.user_id = user._id
+    url_group.redirect_to = redirect_to
     url_group.urls = []
     #
     for new_url in new_urls
