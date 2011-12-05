@@ -1125,6 +1125,13 @@ app.post '/save-main-redirect', (req, res) ->
           if url.redirect_to is url_group.redirect_to and url.visits*1 is 0
             url.redirect_to = req.body.redirect_to
             url.last_updated = new Date()
+
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
         url_group.redirect_to = req.body.redirect_to
         url_group.save (err, saved_url_group) ->
           if check_no_err_ajax err, res
@@ -1164,6 +1171,12 @@ app.post '/save-redirect', (req, res) ->
           if _(card_numbers).contains url.card_number*1
             url.redirect_to = req.body.redirect_to
             url.last_updated = new Date()
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
         url_group.save (err, saved_url_group) ->
           if check_no_err_ajax err, res
             res.send

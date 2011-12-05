@@ -1629,7 +1629,8 @@ $ ->
     if e.keyCode is 8
       $t = $ e.target
       if not $t.closest('input').andSelf().filter('input').length
-        e.preventDefault()
+        if not $t.closest('textarea').andSelf().filter('textarea').length
+          e.preventDefault()
   #
   # Form Fields
   shift_pressed = false
