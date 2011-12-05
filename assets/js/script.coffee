@@ -1167,7 +1167,7 @@ $ ->
         $target = $ e.target
         if $target[0] isnt $main_row[0] and $target.closest('.link_main_row')[0] isnt $main_row[0]
           set_edit_timers()
-          $redirect.html $textarea.val()
+          $redirect.html $textarea.val().replace('http://','')
           $main_row.one 'click', main_start_edit
           if $g.find('textarea').length is 0
             $edit_button.show()
@@ -1252,7 +1252,7 @@ $ ->
             set_edit_timers()
             if $input.val() or $textarea.val()
               $range.html '#'+$input.val()
-              $redirect.html $textarea.val()
+              $redirect.html $textarea.val().replace('http://','')
               $r.one 'click', start_edit
             else
               $r.remove()
