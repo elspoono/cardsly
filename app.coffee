@@ -2738,7 +2738,7 @@ app.get '/sample-landing-page', (req, res) ->
 
 # AB Test Pages
 # Purchase
-app.get '/home1', get_order_info, securedPage, (req, res) ->
+app.get '/home1', (req, res) ->
   res.render 'homep'
     req: req
     scripts:[
@@ -2746,14 +2746,14 @@ app.get '/home1', get_order_info, securedPage, (req, res) ->
     ]
 
 # Checkout
-app.get '/home2', get_order_info, securedPage, (req, res) ->
+app.get '/home2', (req, res) ->
   res.render 'homec'
     req: req
     scripts:[
       'home'
     ]
 # Buy
-app.get '/home3', get_order_info, securedPage, (req, res) ->
+app.get '/home3', (req, res) ->
   res.render 'homeb'
     req: req
     scripts:[
