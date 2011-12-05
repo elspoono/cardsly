@@ -16,7 +16,7 @@
             a(href='/render/1680/900/' + req.orders[i]._id + '/?cards.ly',target='_blank')
               img(src='/render/158/90/' + req.orders[i]._id + '/?cards.ly')
           td.order_cell=req.orders[i].order_number
-          td.order_cell=req.orders[i].date_added.format('m/dd/yyyy h:mm tt')
+          td.order_cell=req.orders[i].date_added.format('m/dd/yyyy h:MM tt')
           td.order_cell
             !{req.orders[i].full_address}
           td.order_cell=req.orders[i].quantity

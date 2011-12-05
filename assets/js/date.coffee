@@ -101,6 +101,37 @@ class date_format
     dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #
+ago = (distanceMillis) ->
+  substitute = (stringOrFunction, number) ->
+    string = (if typeof(stringOrFunction) is 'function' then stringOrFunction(number, distanceMillis) else stringOrFunction)
+    value = ($l.numbers and $l.numbers[number]) or number
+    string.replace /%d/i, value
+  $l = 
+    prefixAgo: null
+    prefixFromNow: null
+    suffixAgo: ""
+    suffixFromNow: "from now"
+    seconds: "just now"
+    minute: "a minute ago"
+    minutes: "%d minutes ago"
+    hour: "an hour ago"
+    hours: "%d hours ago"
+    day: "a day ago"
+    days: "%d days ago"
+    month: "a month ago"
+    months: "%d months ago"
+    year: "a year ago"
+    years: "%d years ago"
+    numbers: []
+  prefix = $l.prefixAgo
+  suffix = $l.suffixAgo
+  seconds = distanceMillis / 1000
+  minutes = seconds / 60
+  hours = minutes / 60
+  days = hours / 24
+  years = days / 365
+  words = seconds < 45 and substitute($l.seconds, Math.round(seconds)) or seconds < 90 and substitute($l.minute, 1) or minutes < 45 and substitute($l.minutes, Math.round(minutes)) or minutes < 90 and substitute($l.hour, 1) or hours < 24 and substitute($l.hours, Math.round(hours)) or hours < 48 and substitute($l.day, 1) or days < 30 and substitute($l.days, Math.floor(days)) or days < 60 and substitute($l.month, 1) or days < 365 and substitute($l.months, Math.floor(days / 30)) or years < 2 and substitute($l.year, 1) or substitute($l.years, Math.floor(years))
+  [ prefix, words, suffix ].join(" ").replace /(^ *| *$)/ig, ''
 #
 #
 #
@@ -108,5 +139,9 @@ class date_format
 Date::format = (mask, utc) ->
   a = new date_format
   a.format(this, mask, utc)
+#
+#
+Date::ago = () ->
+  ago new Date() - this
 #
 exports = date_format

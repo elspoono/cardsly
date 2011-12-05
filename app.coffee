@@ -98,12 +98,12 @@ schema = mongoose.Schema
 object_id = schema.ObjectId
 #
 #
-#
-#
-#
 qr_code = require './assets/js/libs/qrcode'
 _ = require 'underscore'
 node_canvas = require 'canvas'
+#
+#
+#
 #
 #
 #
@@ -542,6 +542,7 @@ mongo_order = mongoose.model 'orders', order_schema
 #
 # Visits (for stats)
 visit_schema = new schema
+  url_string: String
   ip_address: String
   user_agent: String
   details:
@@ -1105,6 +1106,23 @@ create_urls = (options, next) ->
           check_if_done()
 #
 #
+app.post  '/get-visits', (req, res) ->
+  mongo_visit.find
+    url_string: req.body.url_string
+    , (err, visits) ->
+      if check_no_err_ajax err, res
+        sorted_visits = _(visits).sortBy (visit) -> visit.date_added
+        sorted_visits.reverse()
+        sent_visits = []
+        for visit in sorted_visits
+          ua =  ua_match visit.user_agent
+          has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+          sent_visits.push
+            browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+            location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+            date_added: visit.date_added
+        res.send
+          visits: sent_visits  
 #
 #
 app.post '/update-order-status', (req, res) ->
@@ -1786,160 +1804,6 @@ process_pdf = (order_id) ->
           #
 #
 #
-app.get '/re-process-pdf/:order_id', (req, res, next) ->
-  #
-  #
-  # This is where we kick off the processing of the pdf
-  process_pdf req.params.order_id
-  #
-  # Find the Order that's passed in
-  mongo_order.findById req.params.order_id, (err, order) ->
-    if check_no_err err
-      order.date_added = new Date()
-      order.save (err, saved_order) ->
-        if check_no_err err
-          #
-          res.send '',
-            Location: '/orders'
-          , 302
-#
-
-#
-app.get '/test/:theme_id', (req, res, next) ->
-  #
-  #
-  # Find the theme for that order
-  mongo_theme.findById req.params.theme_id, (err, theme) ->
-    #
-    # The theme_template used based on the view from the order
-    theme_template = theme.theme_templates[0]
-    #
-    urls =
-      (
-        url_string: 'test'
-        card_number: i
-      ) for i in [1..10]
-    #
-    render_urls_to_doc urls, theme_template, [
-      'Jimbo jo Jiming'
-      'Banker Extraordinaire'
-      'Cool Cats Cucumbers'
-      '57 Bakers, Edwarstonville'
-      '555.555.5555'
-      'New York'
-      'Apt. #666'
-      'M thru F - 10 to 7'
-      'fb.com/my_facebook'
-      '@my_twitter'
-    ], (doc) ->
-      #
-      # FINALLY - Send it to the browser
-      #
-      res.send new Buffer(doc.output(), 'binary'),
-        'Content-Type' : 'application/pdf'
-      , 200
-    #
-    #
-#
-#
-app.get '/render/:w/:h/:order_id', (req, res, next) ->
-  #
-  height = req.params.h*1
-  width = req.params.w*1
-  widthheight = width+'x'+height
-  widthheight = 'raw' if width is 1680
-  widthheight = '158x90' if width is 79
-  #
-  #
-  url = 'cards.ly'
-  parts = req.url.split '?'
-  if parts.length > 1
-    url = unescape req.url.replace /^[^\?]*\?/i, ''
-  #
-  #
-  mongo_order.findById req.params.order_id, (err, order) ->
-    #
-    #
-    #
-    #
-    mongo_theme.findById order.theme_id, (err, theme) ->
-      theme_template = theme.theme_templates[order.active_view]
-      if not order.active_view
-        image_err res
-      else
-        #
-        imagedata = ''
-        #
-        request = http.get
-          host: 'd3eo3eito2cquu.cloudfront.net'
-          port: 80
-          path: '/'+widthheight+'/'+theme_template.s3_id
-        , (response) ->
-            #
-            response.setEncoding 'binary'
-            #
-            response.on 'data', (chunk) ->
-              imagedata += chunk
-            response.on 'end', ->
-
-              if response.statusCode is 200
-                buff = new Buffer imagedata, 'binary'
-
-
-                canvas = new node_canvas(width,height)
-                ctx = canvas.getContext '2d'
-
-                img = new node_canvas.Image
-                img.src = buff
-                ctx.drawImage img, 0, 0, width, height
-                
-
-
-                for line,i in theme_template.lines
-                  h = Math.round(line.h/100*height)
-                  x = line.x/100*width
-                  y = line.y/100*height
-                  w = line.w/100*width
-                  ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px "' + line.font_family + '"'
-                  if line.text_align is 'left'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                  else
-                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                    if line.text_align is 'right'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                    if line.text_align is 'center'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-
-
-
-                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                #
-                qr_canvas = qr_code.draw_qr
-                  node_canvas: node_canvas
-                  style: 'round'
-                  url: url
-                  hex: theme_template.qr.color1
-                  hex_2: theme_template.qr.color2+alpha
-                #
-                #
-                #
-                qr_canvas.toBuffer (err, qr_buff) ->
-                  qr_img = new node_canvas.Image
-                  qr_img.src = qr_buff
-
-
-                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
-                  
-                  
-                  canvas.toBuffer (err, buff) ->
-                    res.send buff,
-                      'Content-Type': 'image/png'
-                    , 200
-              else
-                image_err res
-#
-#
 #
 if app.settings.env is 'development'
   # Test
@@ -2247,6 +2111,7 @@ log_visit = (req, res, next) ->
       #
       #
       visit = new mongo_visit
+      visit.url_string = req.url.replace /[^a-z0-9]/ig, ''
       visit.ip_address = ip
       visit.user_agent = req.headers['user-agent']
       visit.details =
@@ -2324,6 +2189,171 @@ if app.settings.env is 'production'
 
 #
 #
+#
+#
+#
+#
+#
+#
+app.get '/re-process-pdf/:order_id', (req, res, next) ->
+  #
+  #
+  # This is where we kick off the processing of the pdf
+  process_pdf req.params.order_id
+  #
+  # Find the Order that's passed in
+  mongo_order.findById req.params.order_id, (err, order) ->
+    if check_no_err err
+      order.date_added = new Date()
+      order.save (err, saved_order) ->
+        if check_no_err err
+          #
+          res.send '',
+            Location: '/orders'
+          , 302
+#
+
+#
+app.get '/test/:theme_id', (req, res, next) ->
+  #
+  #
+  # Find the theme for that order
+  mongo_theme.findById req.params.theme_id, (err, theme) ->
+    #
+    # The theme_template used based on the view from the order
+    theme_template = theme.theme_templates[0]
+    #
+    urls =
+      (
+        url_string: 'test'
+        card_number: i
+      ) for i in [1..10]
+    #
+    render_urls_to_doc urls, theme_template, [
+      'Jimbo jo Jiming'
+      'Banker Extraordinaire'
+      'Cool Cats Cucumbers'
+      '57 Bakers, Edwarstonville'
+      '555.555.5555'
+      'New York'
+      'Apt. #666'
+      'M thru F - 10 to 7'
+      'fb.com/my_facebook'
+      '@my_twitter'
+    ], (doc) ->
+      #
+      # FINALLY - Send it to the browser
+      #
+      res.send new Buffer(doc.output(), 'binary'),
+        'Content-Type' : 'application/pdf'
+      , 200
+    #
+    #
+#
+#
+app.get '/render/:w/:h/:order_id', (req, res, next) ->
+  #
+  height = req.params.h*1
+  width = req.params.w*1
+  widthheight = width+'x'+height
+  widthheight = 'raw' if width is 1680
+  widthheight = '158x90' if width is 79
+  #
+  #
+  url = 'cards.ly'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  #
+  mongo_order.findById req.params.order_id, (err, order) ->
+    #
+    #
+    #
+    #
+    mongo_theme.findById order.theme_id, (err, theme) ->
+      theme_template = theme.theme_templates[order.active_view]
+      if not order.active_view
+        image_err res
+      else
+        #
+        imagedata = ''
+        #
+        request = http.get
+          host: 'd3eo3eito2cquu.cloudfront.net'
+          port: 80
+          path: '/'+widthheight+'/'+theme_template.s3_id
+        , (response) ->
+            #
+            response.setEncoding 'binary'
+            #
+            response.on 'data', (chunk) ->
+              imagedata += chunk
+            response.on 'end', ->
+
+              if response.statusCode is 200
+                buff = new Buffer imagedata, 'binary'
+
+
+                canvas = new node_canvas(width,height)
+                ctx = canvas.getContext '2d'
+
+                img = new node_canvas.Image
+                img.src = buff
+                ctx.drawImage img, 0, 0, width, height
+                
+
+
+                for line,i in theme_template.lines
+                  h = Math.round(line.h/100*height)
+                  x = line.x/100*width
+                  y = line.y/100*height
+                  w = line.w/100*width
+                  ctx.fillStyle = hex_to_rgba line.color
+                  ctx.font = h + 'px "' + line.font_family + '"'
+                  if line.text_align is 'left'
+                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                  else
+                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                    if line.text_align is 'right'
+                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                    if line.text_align is 'center'
+                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+
+
+
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                #
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: url
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2+alpha
+                #
+                #
+                #
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  qr_img = new node_canvas.Image
+                  qr_img.src = qr_buff
+
+
+                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                  
+                  
+                  canvas.toBuffer (err, buff) ->
+                    res.send buff,
+                      'Content-Type': 'image/png'
+                    , 200
+              else
+                image_err res
+#
+#
+#
+#
+#
+#
+#
 # Success Page
 #
 # Where they land after authenticating
@@ -2353,8 +2383,12 @@ get_url_groups = (req, res, next) ->
       if check_no_err err
         #
         #
-        req.url_groups = url_groups
+        # Sort by last updated within the url groups
+        for url_group in url_groups
+          url_group.urls = _(url_group.urls).sortBy (url) ->
+            url.last_updated
         #
+        req.url_groups = url_groups
         #
         next()
   else

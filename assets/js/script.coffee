@@ -1098,8 +1098,50 @@ $ ->
 
 
 
-
-
+  $url_groups = $ '.url_group'
+  $url_groups.each ->
+    $g = $ this
+    $rows = $g.find '.link_row'
+    $rows.each ->
+      $r = $ this
+      url_string = $r.attr 'url_string'
+      $v = $r.find '.visited'
+      $v_dialog = $ '<div class="visit_dialog" />'
+      $v.append $v_dialog
+      $v_dialog.hide()
+      $v.hover ->
+        if not $v_dialog.is(':visible')
+          $v_dialog.html 'Loading ...'
+          $('.visit_dialog').each ->
+            $t = $ this
+            clearTimeout $t.data('fade_timer')
+            $t.hide()
+          $v_dialog.data('fade_timer', setTimeout ->
+              $v_dialog.stop(true,true).fadeIn()
+            , 300
+          )
+          $.ajax
+            url: '/get-visits'
+            data: JSON.stringify
+              url_string: url_string
+            success: (result) ->
+              $v_dialog.html ''
+              if result.visits
+                for visit in result.visits
+                  $item = $ '<div class="item" />'
+                  $item.append '<div class="cell">'+new Date(visit.date_added).format('m/dd/yyyy h:MM tt')+'</div>'
+                  $item.append '<div class="cell">'+visit.browser+'</div>'
+                  $item.append '<div class="cell">'+visit.location+'</div>'
+                  $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
+                  $v_dialog.append $item
+      , ->
+        clearTimeout $v_dialog.data('fade_timer')
+        remove_me = (e) ->
+          $target = $ e.target
+          if $target[0] isnt $v[0]
+            $v_dialog.stop(true,true).fadeOut()
+            $body.unbind 'click', remove_me
+        $body.bind 'click', remove_me
 
 
 
