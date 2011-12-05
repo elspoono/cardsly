@@ -685,22 +685,20 @@ $ ->
 
 
   ###################################################################
-  ###
+  
   #
   # Header Navigation
   #
-  # 
-    $hm = $h.find '.header'
-    $body = $(document)
-    $('.navigation li').live 'mouseenter', ->
-      $(this).addClass 'hover'
-    $('.navigation li').live 'mouseleave', ->
-      $(this).removeClass 'hover'
+  ###
+  $() ->
+    var path =location.pathname.substring(1)
+     if path
+        $('.navigation_menu a[href$="' + path + '"]').attr('class', 'current_nav')
 
   #
   #
   #
-  ###
+  
   ###################################################################
 
   #################################################################
