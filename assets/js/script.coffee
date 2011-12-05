@@ -689,11 +689,11 @@ $ ->
   #
   # Header Navigation
   #
-  ###
-  $() ->
-    var path =location.pathname.substring(1)
-     if path
-        $('.navigation_menu a[href$="' + path + '"]').attr('class', 'current_nav')
+  
+  current_nav = ->
+   path = location.pathname.substring(1);
+   if path 
+     $('#sidebar_content a[href$="' + path + '"]').attr('class', '.selected')
 
   #
   #
