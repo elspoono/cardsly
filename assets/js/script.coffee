@@ -1134,10 +1134,17 @@ $ ->
       #
       # Set up the link input
       action = $redirect.html()
-      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button normal small save">Save</div></div>'
+      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="buttons"><div class="button normal small save">Save</div><div class="button gray small cancel">X</div></div><div class="clear" /><div class="status" />'
       $add_button = $redirect.find '.save'
       $textarea = $redirect.find 'textarea'
       $status = $redirect.find '.status'
+      $cancel_button = $redirect.find '.cancel'
+      #
+      #
+      #
+      $cancel_button.click ->
+        $textarea.val action
+        $body.click()
       #
       $add_button.click -> $body.click()
       #
@@ -1148,6 +1155,7 @@ $ ->
         clearTimeout edit_timer
         if $textarea.val()
           edit_timer = setTimeout ->
+            $status.stop(true,true).show()
             $status.html 'Saving...'
             $.ajax
               url: '/save-main-redirect'
@@ -1161,6 +1169,7 @@ $ ->
                     $status.html err
                   else if result.success
                     $status.html 'Saved'
+                    $status.stop(true,true).delay(1000).fadeOut(2000)
               error: ->
                 $status.html 'Unknown Error'
           , 500
@@ -1212,7 +1221,7 @@ $ ->
         #
         # Set up the link input
         action = $redirect.html()
-        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button gray small cancel">X</div><div class="button normal small save">Save</div></div>'
+        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="buttons"><div class="button normal small save">Save</div><div class="button gray small cancel">X</div></div><div class="clear" /><div class="status" />'
         $textarea = $redirect.find 'textarea'
         $add_button = $redirect.find '.save'
         $cancel_button = $redirect.find '.cancel'
@@ -1223,20 +1232,19 @@ $ ->
           $edit_button.click()
           
         #
-        $cancel_button.click -> $body.click()
+        $cancel_button.click -> 
+          $input.val range
+          $textarea.val action
+          $body.click()
         #
         $add_button.click do_add_new
-        #
-        if range
-          $textarea.focus()[0].select()
-        else
-          $input.focus()[0].select()
         #
         edit_timer = 0
         set_edit_timers = ->
           clearTimeout edit_timer
           if $input.val() and $textarea.val()
             edit_timer = setTimeout ->
+              $status.stop(true,true).show()
               $status.html 'Saving...'
               $.ajax
                 url: '/save-redirect'
@@ -1251,6 +1259,7 @@ $ ->
                       $status.html err
                     else if result.success
                       $status.html 'Saved'
+                    $status.stop(true,true).delay(1000).fadeOut(2000)
                 error: ->
                   $status.html 'Unknown Error'
             , 500
@@ -1273,6 +1282,7 @@ $ ->
         remove_me = (e) ->
           $target = $ e.target
           if $target[0] isnt $r[0] and $target.closest('.link_row')[0] isnt $r[0]
+            $r.removeClass 'expanded'
             set_edit_timers()
             if $input.val() or $textarea.val()
               $range.html '#'+$input.val()
@@ -1283,13 +1293,13 @@ $ ->
             if $g.find('textarea').length is 0
               $edit_button.show()
             $body.unbind 'click', remove_me
-            $v_dialog.remove()
-            $r.removeClass 'expanded'
+            if typeof($v_dialog) isnt 'undefined'
+              $v_dialog.remove()
         $body.bind 'click', remove_me
         #
         #
         #
-        #
+        # Only on visited ones, do this stuff
         url_string = $r.attr 'url_string'
         if $r.find('.visited').html() isnt ''
           # 
@@ -1312,6 +1322,14 @@ $ ->
                   $item.append '<div class="cell">'+visit.location+'</div>'
                   $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
                   $v_dialog.append $item
+        #
+        # On non visited ones, we focus and select
+        else
+          #
+          if range
+            $textarea.focus()[0].select()
+          else
+            $input.focus()[0].select()
       #
       #
       $r.one 'click', start_edit

@@ -1615,7 +1615,7 @@ input value=["Send Feedback"]
     line-height 25px
     margin 0 -10px
   textarea
-    width 280px
+    width 250px
     height 50px
   .link_main_row
     alpha_bg($c_bg_dark,.7)
@@ -1625,10 +1625,12 @@ input value=["Send Feedback"]
     border_radius(45px)
     color $c_light
     overflow hidden
-    .pic, .range, .redirect_to
+    .pic, .redirect_to
       img
         display block
       line-height 45px
+    .range
+      line-height 23px
     .status
       line-height 14px
   .link_row
@@ -1638,15 +1640,13 @@ input value=["Send Feedback"]
     border 1px solid $c_bg_dark
     border-top none
     overflow hidden
-  .link_row.visit
-    alpha_bg($c_bg_dark,.4)
-    .pic, .time, .range, .redirect_to, .visited,.add
-      padding 5px 10px
   .pic, .time, .range, .redirect_to, .visited,.add
     float left
     padding 10px
   .range
     width 140px
+    .bottom
+      font-size 10px
     input
       width 120px
   .add, .time, .text, .status, .helper
@@ -1657,43 +1657,50 @@ input value=["Send Feedback"]
     float right
   .redirect_to
     cursor pointer
+    overflow hidden
     .status
       position absolute
-      margin-left -10px
-      width 60px
+      width 380px
+      margin-top -15px
+      text-align right
+    textarea
+      float left
   .buttons
+    float left
     padding 1px 4px 4px 1px
-    margin 0 -10px
     overflow auto
     .button
-      float right
+      float left
     .save
       width 50px
-    .addcard
-      width 80px
+      margin-left 20px
     .cancel
-      margin-left 10px
       width 20px
+      margin-left 10px
   .add
     width 100%
     text-align center
+  .link_row.visit
+    alpha_bg($c_bg_dark,.65)
+    .pic, .time, .range, .redirect_to, .visited,.add
+      padding 5px 10px
   .visited
     width 79px
   .link_row.expanded
+    alpha_bg($c_bg_dark,.8)
     .visited
-      padding 90px 0 0 20px
-      margin-bottom -30px
+      padding 70px 0 0 20px
+      margin-bottom -20px
   .visit_dialog
     cursor default
-    alpha_bg($c_bg_dark,.1)
     font-size 10px
-    margin 20px 0 20px 20px
+    margin 30px 0 20px 20px
     .item
       overflow hidden
       border-top 1px solid $c_light
     .cell
       float left
-      padding 2px 10px
+      padding 2px 20px 2px 0
       width 120px
 
 

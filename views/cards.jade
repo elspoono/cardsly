@@ -18,6 +18,10 @@ if req.url_groups.length
               .pic
                 img(src='/render/79/45/' + url_group.order_id + '/?cards.ly')
               .range
+                .top
+                  ='#'+url_group.range
+                .bottom
+                  =''+url_group.at_defaults+' / '+url_group.urls.length+''
               .redirect_to
                 =url_group.redirect_to.replace('http://','')
             - for url, i in url_group.ranged_urls

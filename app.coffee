@@ -2482,10 +2482,17 @@ get_url_groups = (req, res, next) ->
         for url_group in url_groups
           #
           #
+          #
+          #
+          #
+          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
+          #
+          #
           # Sort by last updated within the url groups
           url_group.urls = _(url_group.urls).sortBy (url) ->
             url.last_updated
           url_group.urls.reverse()
+          #
           #
           #
           #
@@ -2502,6 +2509,15 @@ get_url_groups = (req, res, next) ->
           # Filter out the visited
           not_visited = _(url_group.urls).filter (url) ->
             url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
+          #
+          #
+
+          at_defaults = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
+          #
+          url_group.at_defaults = at_defaults.length
+          #
+          #
           grouped = _(not_visited).groupBy (url) ->
             url.redirect_to
           for redirect_to,group of grouped
