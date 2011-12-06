@@ -896,7 +896,7 @@ input.normal,input.gray
     width 525px
     margin 0 auto
     alpha_bg($c_bg_dark,.2)
-    border_radius_except_bottom_left(10px)
+    border_radius_top_only(10px)
 .active_view,.active_theme_id
   display none
 .home_options
@@ -916,7 +916,11 @@ input.normal,input.gray
   .subtitle
     margin-bottom 3px
     relative_size(.8)
-
+  .advanced
+    float right
+    alpha_bg($c_bg_dark,.2)
+    border_radius_bottom_only(10px)
+    padding 10px
 .designer
   margin-bottom 60px
   .card
