@@ -697,12 +697,20 @@ $ ->
   $('.navigation li').live 'mouseleave', ->
     $(this).removeClass 'hover'
   ###
-
-  $('.navigation').ready ->
+  $navigation = $ '.navigation'
+  $navigation.ready ->
     page = window.location.href.split("/")[3]
-    if page is ''
-      page = 'home'
-    $(this).find('a[href$='+page+']').closest('li').addClass('current_nav')
+    $navigation.find('a[href$='+page+']:first').closest('li').addClass('current_nav')
+    $navigation.find('li').hover ->
+      $(this).addClass 'hover'
+    , ->
+      $(this).removeClass 'hover'
+    .click (e) ->
+      $a = $(this).find 'a'
+      if $a.length > 0
+        e.preventDefault()
+        document.location.href = $a.attr 'href'
+
 
   
   ###################################################################

@@ -497,14 +497,17 @@ blockquote
   
   //This is the styling of the buttons that are too the right of the logo that are contained within the header.
   .navigation
-    .current_nav
+    .hover
       background $c_bg_light
+    .current_nav
+      background $c_bg_dark
     font-family $display_font_family
     gradient($c_bg_light,$c_bg_dark)
     float right
     margin 0
     border_radius(10px)
     li
+      cursor pointer
       relative_size(1)
       margin 0
       float left
@@ -514,7 +517,6 @@ blockquote
       border-right 1px solid $c_a_nav
       //padding 7px 30px
       padding 7px 29px
-      border_radius(10px)
 //This is the background of the header
 .header_back
   gradient($c_bg_light,$c_bg_dark)
