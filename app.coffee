@@ -494,6 +494,21 @@ mongo_theme = mongoose.model 'themes', theme_schema
 #
 #
 #
+
+mongo_theme.find
+  s3_id: null
+  theme_templates:
+    '$elemMatch':
+      s3_id:
+        '$exists': true
+, (err, themes) ->
+  for theme in themes
+    if theme.theme_templates[0].s3_id
+      theme.s3_id = theme.theme_templates[0].s3_id
+      theme.save()
+
+
+
 #
 #
 # Style Field Positions
