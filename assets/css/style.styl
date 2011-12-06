@@ -497,6 +497,8 @@ blockquote
   
   //This is the styling of the buttons that are too the right of the logo that are contained within the header.
   .navigation
+    .current_nav
+      background $c_bg_light
     font-family $display_font_family
     gradient($c_bg_light,$c_bg_dark)
     float right
@@ -506,8 +508,6 @@ blockquote
       relative_size(1)
       margin 0
       float left
-      .current_nav
-        background $c_bg_light
       a
         text-decoration none
         color $c_a_nav

@@ -702,7 +702,7 @@ $ ->
     page = window.location.href.split("/")[3]
     if page is ''
       page = 'home'
-    $(this).find('a[href$='+page+']').addClass('current_nav')
+    $(this).find('a[href$='+page+']').closest('li').addClass('current_nav')
 
   
   ###################################################################
