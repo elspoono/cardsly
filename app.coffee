@@ -1500,6 +1500,19 @@ app.post '/login', (req, res, next) ->
         userId: user._id
       res.send
         success: true
+
+      #
+      if req.sessionID
+        #
+        #
+        mongo_theme.find
+          active: true
+          user_id: req.sessionID
+        , (err, themes) ->
+          if not err
+            for theme in themes
+              theme.user_id = user._id
+              theme.save()
 #
 #
 #
