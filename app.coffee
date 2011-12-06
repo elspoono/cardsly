@@ -474,6 +474,7 @@ theme_template_schema = new schema
 #
 # Groups of Themes
 theme_schema = new schema
+  user_id: String
   category: String
   theme_templates: [theme_template_schema]
   color1: String
@@ -609,24 +610,6 @@ password_reset = new schema
 #
 #
 ###########################################################
-
-
-
-
-
-mongo_theme.find
-  s3_id: null
-  theme_templates:
-    '$elemMatch':
-      s3_id:
-        '$exists': true
-, (err, themes) ->
-  for theme in themes
-    if theme.theme_templates[0].s3_id
-      theme.s3_id = theme.theme_templates[0].s3_id
-      theme.save()
-
-
 
 
 
@@ -1311,7 +1294,64 @@ check_no_err_ajax = (err, res) ->
 #
 #
 # AJAX request for saving theme
+app.post '/save-my-theme', (req, res) ->
+  #
+  # Put it into a nice pretty JSON object 
+  params = req.body
+  #
+  #
+  #
+  if req.user and req.user._id
+    params.theme.user_id = req.user._id
+  else
+    params.theme.user_id = req.sessionID
+  #
+  #
+  #
+  # If we're updating do this
+  if params.theme._id
+    mongo_theme.findById params.theme._id, (err, found_theme) ->
+      if check_no_err_ajax err, res
+        found_theme.date_updated = new Date()
+        if typeof(params.theme.active) is 'boolean'
+          found_theme.active = params.theme.active
+        found_theme.category = params.theme.category
+        found_theme.s3_id = params.theme.s3_id
+        #
+        # Push the new template in
+        found_theme.theme_templates = params.theme.theme_templates
+        #
+        #
+        found_theme.save (err,theme_saved) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+              theme: theme_saved
+  #
+  #
+  #
+  # This indicates we are creating a new one, nothing to update
+  else
+    new_theme = new mongo_theme
+    if typeof(params.theme.active) is 'boolean'
+      new_theme.active = params.theme.active
+    new_theme.category = params.theme.category
+    new_theme.s3_id = params.theme.s3_id
+    #
+    # Push the new template in
+    new_theme.theme_templates = params.theme.theme_templates
+    #
+    #
+    new_theme.save (err,theme_saved) ->
+      if check_no_err_ajax err, res
+        res.send
+          success: true
+          theme: theme_saved
 #
+#
+#
+#
+# AJAX request for saving theme
 app.post '/save-theme', (req, res) ->
   #
   # Put it into a nice pretty JSON object 
@@ -1328,11 +1368,11 @@ app.post '/save-theme', (req, res) ->
     if params.theme._id
       mongo_theme.findById params.theme._id, (err, found_theme) ->
         if check_no_err_ajax err, res
-          found_theme.category
           found_theme.date_updated = new Date()
           if typeof(params.theme.active) is 'boolean'
             found_theme.active = params.theme.active
           found_theme.category = params.theme.category
+          found_theme.s3_id = params.theme.s3_id
           #
           # Push the new template in
           found_theme.theme_templates = params.theme.theme_templates
@@ -1352,6 +1392,7 @@ app.post '/save-theme', (req, res) ->
       if typeof(params.theme.active) is 'boolean'
         new_theme.active = params.theme.active
       new_theme.category = params.theme.category
+      new_theme.s3_id = params.theme.s3_id
       #
       # Push the new template in
       new_theme.theme_templates = params.theme.theme_templates
@@ -1569,8 +1610,26 @@ app.post '/get-user', (req,res,next) ->
 #
 # Get Themes (post route for get themes :)
 app.post '/get-themes', (req,res,next) ->
+  #
+  #
+  #
+  user_to_find = null
+  #
+  #
+  #
+  if req.user and req.user._id
+    user_to_find = 
+      $in: [null,req.user._id]
+  #
+  else if req.sessionID
+    user_to_find = 
+      $in: [null,req.sessionID]
+  #
+  #
+  #
   mongo_theme.find
     active: true
+    user_id: user_to_find
   ,[] ,
     sort:
       category: -1
@@ -1653,7 +1712,7 @@ image_err = (res) ->
     , 200
 #
 #
-render_urls_to_doc = (urls, theme_template, line_copy, next) ->
+render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
   #
   #
   # We're going to grab the background image via an http request to amazon
@@ -1665,7 +1724,7 @@ render_urls_to_doc = (urls, theme_template, line_copy, next) ->
   request = http.get
     host: 'd3eo3eito2cquu.cloudfront.net'
     port: 80
-    path: '/raw/'+theme_template.s3_id
+    path: '/raw/'+s3_id
   , (response) ->
       #
       #
@@ -1876,7 +1935,7 @@ process_pdf = (order_id) ->
           #
           #
           # Set up the finalize function for later
-          render_urls_to_doc url_group.urls, theme_template, order.values, (doc) ->
+          render_urls_to_doc url_group.urls, theme_template, order.values, theme.s3_id, (doc) ->
             #
             # FINALLY - Save it to Amazon
             #
@@ -2336,7 +2395,7 @@ app.get '/test/:theme_id', (req, res, next) ->
       'M thru F - 10 to 7'
       'fb.com/my_facebook'
       '@my_twitter'
-    ], (doc) ->
+    ], theme.s3_id, (doc) ->
       #
       # FINALLY - Send it to the browser
       #
@@ -2378,7 +2437,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
         request = http.get
           host: 'd3eo3eito2cquu.cloudfront.net'
           port: 80
-          path: '/'+widthheight+'/'+theme_template.s3_id
+          path: '/'+widthheight+'/'+theme.s3_id
         , (response) ->
             #
             response.setEncoding 'binary'

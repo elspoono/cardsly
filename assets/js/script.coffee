@@ -1052,19 +1052,21 @@ $ ->
     top: 0
   $('.category .card').live 'click', () ->
     $t = $ this
-    $('.card').removeClass 'active'
-    $t.addClass('active')
-    if $gs.offset().top == $t.offset().top-5
-      $gs.animate
-        left: $t.offset().left-5
-      ,300
-    else
-      $gs.stop(true,false).animate
-        top: $t.offset().top-5
-      ,300,'linear',() ->
-          $gs.animate
-            left: $t.offset().left-5
-          ,300,'linear'
+    setTimeout ->
+      $('.card').removeClass 'active'
+      $t.addClass('active')
+      if $gs.offset().top == $t.offset().top-5
+        $gs.animate
+          left: $t.offset().left-5
+        ,300
+      else
+        $gs.stop(true,false).animate
+          top: $t.offset().top-5
+        ,300,'linear',() ->
+            $gs.animate
+              left: $t.offset().left-5
+            ,300,'linear'
+    , 0
   #
   # 
   # Category Expand/Collapse
@@ -1534,6 +1536,10 @@ $ ->
     theme_template = theme.theme_templates[active_view] or theme.theme_templates[0]
     # 
     #
+    if theme.category is 'My Own'
+      show_advanced()
+    else
+      hide_advanced()
     #
     # set this theme as the active_theme
     active_theme = theme
@@ -1761,6 +1767,84 @@ $ ->
 
 
 
+
+
+
+
+
+
+
+
+
+
+  #############################################################
+  #
+  #
+  # ADVANCED CARD DESIGNER
+  #
+  #
+  #
+  #
+  show_advanced = ->
+    $home_options.hide()
+    $advanced_options.show()
+
+  hide_advanced = ->
+    $home_options.show()
+    $advanced_options.hide()
+  #
+  #
+  #
+  my_theme_save_timer = 0
+  set_my_theme_save_timers = ->
+    if active_theme.category is 'My Own'
+      clearTimeout my_theme_save_timer
+      my_theme_save_timer = setTimeout ->
+        $.ajax
+          url: '/save-my-theme'
+          data: JSON.stringify
+            theme: active_theme
+          success: ->
+            console.log 'Saved'
+          error: ->
+            console.log 'Error'
+      , 1000
+  #
+  #
+  #
+  $home_options = $ '.home_options'
+  $advanced_options = $ '.advanced_options'
+  $design_my_own = $home_options.find '.advanced'
+  $number_of_fields = $home_options.find '.views'
+  $design_my_own.click ->
+    #
+    #
+    active_theme = $.extend true, {}, active_theme
+    #
+    active_theme.category = 'My Own'
+    active_theme._id = ''
+    #
+    #
+    $new_card = $.create_card_from_theme 
+      theme: active_theme
+      active_view: active_view
+    $.add_card_to_category $new_card, active_theme
+    $new_card.closest('.category').find('h4').click()
+    #
+    #
+    set_my_theme_save_timers()
+    #
+    #
+
+  #
+  #
+  #
+  #
+  #
+  # END ADVANCED CARD DESIGNER
+  #
+  #
+  #############################################################
 
 
 
