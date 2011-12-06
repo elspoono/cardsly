@@ -1212,9 +1212,9 @@ $ ->
         #
         # Set up the link input
         action = $redirect.html()
-        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button gray small cancel">X</div><div class="button normal small addcard">Add Card</div></div>'
+        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button gray small cancel">X</div><div class="button normal small save">Save</div></div>'
         $textarea = $redirect.find 'textarea'
-        $add_button = $redirect.find '.addcard'
+        $add_button = $redirect.find '.save'
         $cancel_button = $redirect.find '.cancel'
         $status = $redirect.find '.status'
         #
@@ -1267,6 +1267,9 @@ $ ->
             e.preventDefault()
             do_add_new()
         #
+        #
+        $r.addClass 'expanded'
+        #
         remove_me = (e) ->
           $target = $ e.target
           if $target[0] isnt $r[0] and $target.closest('.link_row')[0] isnt $r[0]
@@ -1281,13 +1284,14 @@ $ ->
               $edit_button.show()
             $body.unbind 'click', remove_me
             $v_dialog.remove()
+            $r.removeClass 'expanded'
         $body.bind 'click', remove_me
         #
         #
         #
         #
         url_string = $r.attr 'url_string'
-        if url_string
+        if $r.find('.visited').html() isnt ''
           # 
           # Creating some elements
           $v_dialog = $ '<div class="visit_dialog" />'
@@ -1308,7 +1312,8 @@ $ ->
                   $item.append '<div class="cell">'+visit.location+'</div>'
                   $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
                   $v_dialog.append $item
-
+      #
+      #
       $r.one 'click', start_edit
       #
       #
