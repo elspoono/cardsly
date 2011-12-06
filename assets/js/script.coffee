@@ -198,7 +198,7 @@ $.create_card_from_theme = (options) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + theme_template.s3_id + '\')'
+    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -1134,10 +1134,12 @@ $ ->
       #
       # Set up the link input
       action = $redirect.html()
-      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" />'
+      $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button normal small save">Save</div></div>'
+      $add_button = $redirect.find '.save'
       $textarea = $redirect.find 'textarea'
       $status = $redirect.find '.status'
       #
+      $add_button.click -> $body.click()
       #
       $textarea.focus()[0].select()
       #
@@ -1205,15 +1207,25 @@ $ ->
         #
         # Set up the range input
         range = $range.html().replace /#/, ''
-        $range.html '<div class="helper">Enter #\'s</div><input value="'+range+'" />'
+        $range.html '<input value="'+range+'" />'
         $input = $range.find 'input'
         #
         # Set up the link input
         action = $redirect.html()
-        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" />'
+        $redirect.html '<textarea placeholder="http://">'+action+'</textarea><div class="status" /><div class="buttons"><div class="button gray small cancel">X</div><div class="button normal small save">Save</div></div>'
         $textarea = $redirect.find 'textarea'
+        $add_button = $redirect.find '.save'
+        $cancel_button = $redirect.find '.cancel'
         $status = $redirect.find '.status'
         #
+        #
+        do_add_new = ->
+          $edit_button.click()
+          
+        #
+        $cancel_button.click -> $body.click()
+        #
+        $add_button.click do_add_new
         #
         if range
           $textarea.focus()[0].select()
@@ -1247,13 +1259,16 @@ $ ->
           set_edit_timers()
           if e.keyCode is 13 or e.keyCode is 9
             e.preventDefault()
-            $body.click()
+            do_add_new()
         #
         $input.keydown (e) ->
           set_edit_timers()
           if e.keyCode is 13
             e.preventDefault()
-            $body.click()
+            do_add_new()
+        #
+        #
+        $r.addClass 'expanded'
         #
         remove_me = (e) ->
           $target = $ e.target
@@ -1268,12 +1283,41 @@ $ ->
             if $g.find('textarea').length is 0
               $edit_button.show()
             $body.unbind 'click', remove_me
+            $v_dialog.remove()
+            $r.removeClass 'expanded'
         $body.bind 'click', remove_me
         #
         #
         #
-
+        #
+        url_string = $r.attr 'url_string'
+        if $r.find('.visited').html() isnt ''
+          # 
+          # Creating some elements
+          $v_dialog = $ '<div class="visit_dialog" />'
+          $r.append '<div class="clear" />'
+          $r.append $v_dialog
+          $v_dialog.html 'Loading ...'
+          $.ajax
+            url: '/get-visits'
+            data: JSON.stringify
+              url_string: url_string
+            success: (result) ->
+              $v_dialog.html ''
+              if result.visits
+                for visit in result.visits
+                  $item = $ '<div class="item" />'
+                  $item.append '<div class="cell">'+new Date(visit.date_added).format('m/dd/yyyy h:MM tt')+'</div>'
+                  $item.append '<div class="cell">'+visit.browser+'</div>'
+                  $item.append '<div class="cell">'+visit.location+'</div>'
+                  $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
+                  $v_dialog.append $item
+      #
+      #
       $r.one 'click', start_edit
+      #
+      #
+      #
       #
     #
     #
@@ -1296,52 +1340,6 @@ $ ->
       bind_edit_event_to $r
       #
       #
-      #
-      url_string = $r.attr 'url_string'
-      if url_string
-        # 
-        # Creating some elements
-        $v = $r.find '.visited'
-        $v_dialog = $ '<div class="visit_dialog" />'
-        $v.append $v_dialog
-        $v_dialog.hide()
-        #
-        #
-        #
-        # This Visit Hover Dialog Dealy bob
-        $v.hover ->
-          if not $v_dialog.is(':visible')
-            $v_dialog.html 'Loading ...'
-            $('.visit_dialog').each ->
-              $t = $ this
-              clearTimeout $t.data('fade_timer')
-              $t.hide()
-            $v_dialog.data('fade_timer', setTimeout ->
-                $v_dialog.stop(true,true).fadeIn()
-              , 300
-            )
-            $.ajax
-              url: '/get-visits'
-              data: JSON.stringify
-                url_string: url_string
-              success: (result) ->
-                $v_dialog.html ''
-                if result.visits
-                  for visit in result.visits
-                    $item = $ '<div class="item" />'
-                    $item.append '<div class="cell">'+new Date(visit.date_added).format('m/dd/yyyy h:MM tt')+'</div>'
-                    $item.append '<div class="cell">'+visit.browser+'</div>'
-                    $item.append '<div class="cell">'+visit.location+'</div>'
-                    $item.append '<div class="cell">'+new Date(visit.date_added).ago()+'</div>'
-                    $v_dialog.append $item
-        , ->
-          clearTimeout $v_dialog.data('fade_timer')
-          remove_me = (e) ->
-            $target = $ e.target
-            if $target[0] isnt $v[0]
-              $v_dialog.stop(true,true).fadeOut()
-              $body.unbind 'click', remove_me
-          $body.bind 'click', remove_me
   #
   #
   #
@@ -1516,9 +1514,9 @@ $ ->
     #
     #
     # Card Background
-    if theme_template.s3_id
+    if theme.s3_id
       $card.css
-        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme_template.s3_id + '\')'
+        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme.s3_id + '\')'
     else
       $card.css
         background: '#FFFFFF'

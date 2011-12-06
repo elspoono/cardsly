@@ -763,6 +763,7 @@ $ ->
   $.s3_result = (s3_id) ->
     if not no_theme() and s3_id
       active_theme.theme_templates[active_view].s3_id = s3_id
+      active_theme.s3_id = s3_id
       set_timers()
       $card.css
         background: 'url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + s3_id + '\')'
@@ -785,6 +786,7 @@ $ ->
   default_theme = 
     category: ''
     not_saved: true
+    s3_id: ''
     theme_templates: [
       color1: 'FFFFFF'
       color2: '000000'
@@ -860,9 +862,9 @@ $ ->
     #
     #
     # Card Background
-    if theme_template.s3_id
+    if theme.s3_id
       $card.css
-        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme_template.s3_id + '\')'
+        background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + theme.s3_id + '\')'
     else
       $card.css
         background: '#FFFFFF'

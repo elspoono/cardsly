@@ -32,3 +32,6 @@
               - if ((new Date())*1 > ((req.orders[i].date_added)*1 + 1000*60*5))
                 br
                 a(href='/re-process-pdf/'+req.orders[i]._id) Fix
+                br
+                br
+                a.shipped(href='#') Shipped
