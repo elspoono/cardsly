@@ -1216,7 +1216,7 @@ $ ->
         #
         # Set up the range input
         range = $range.html().replace /#/, ''
-        $range.html '<input value="'+range+'" />'
+        $range.html '<div class="helper">card #\'s</div><input value="'+range+'" />'
         $input = $range.find 'input'
         #
         # Set up the link input
