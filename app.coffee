@@ -2575,6 +2575,7 @@ app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: true
+    conversion: true
 #
 # Orders Page
 app.get '/orders', securedAdminPage, (req, res, next) ->
@@ -2837,6 +2838,7 @@ app.get '/', get_url_groups, (req, res) ->
         # (Uncomment means remove the single # character at the start of it :)
         #
         url_groups: req.url_groups
+        test_code: true
         #
         #
         scripts:[
