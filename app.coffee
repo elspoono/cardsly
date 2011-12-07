@@ -59,6 +59,7 @@ app = module.exports = express.createServer()
 im = require 'imagemagick'
 #
 #
+xml2json = require 'xml2json'
 #
 samurai = require 'samurai'
 samurai.setup
@@ -449,6 +450,16 @@ line_schema = new schema
 #
 #
 #
+pattern_schema = new schema
+  s3_id: String
+  title: String
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+mongo_pattern = mongoose.model 'patterns', pattern_schema
 #
 #
 #
@@ -1636,6 +1647,10 @@ app.post '/get-user', (req,res,next) ->
 #
 #
 #
+#
+#
+#
+#
 # Get Themes (post route for get themes :)
 app.post '/get-themes', (req,res,next) ->
   #
@@ -1724,6 +1739,8 @@ add_urls_to_order = (order, user, res) ->
     #
   volume
   #
+  #
+#
 #
 #
 image_err = (res) ->
@@ -2369,8 +2386,110 @@ if app.settings.env is 'production'
       , 302
     else
       next()
-
 #
+#
+#
+#
+app.get '/update-patterns', (req, res, next) ->
+  mongo_pattern.find
+    active: true
+  , (err, patterns) ->
+    for pattern in patterns
+      pattern.active = false
+      pattern.save()
+  http_request 'http://feeds.feedburner.com/SubtlePatterns', (err, response, body) ->
+    parsed = xml2json.toJson body,
+      object: true
+    for pattern,i in parsed.rss.channel.item
+      png_links = pattern['content:encoded'].match /[^"^\(]*\.png/ig
+      do (png_links) ->
+        if png_links and png_links.length
+          #
+          #
+          #
+          imagedata = ''
+          #
+          #
+          #
+          request = http.get
+            host: 'subtlepatterns.com'
+            port: 80
+            path: '/'+png_links[0]
+          , (response) ->
+              #
+              #
+              #
+              response.setEncoding 'binary'
+              #
+              #
+              #
+              response.on 'data', (chunk) ->
+                imagedata += chunk
+              response.on 'end', ->
+                if response.statusCode is 200
+                  #
+                  #
+                  buff = new Buffer imagedata, 'binary'
+                  #
+                  img = new node_canvas.Image
+                  img.src = buff
+                  #
+                  width = 100
+                  height = 100
+                  #
+                  new_w = Math.round img.width/4
+                  new_h = Math.round img.height/4
+                  #
+                  canvas = new node_canvas(width,height)
+                  ctx = canvas.getContext '2d'
+                  #
+                  #
+                  t = 0
+                  l = 0
+                  add_row = ->
+                    l = 0
+                    ctx.drawImage img, l, t, new_w, new_h
+                    l += new_w
+                    add_col = ->
+                      ctx.drawImage img, l, t, new_w, new_h
+                      l += new_w
+                    add_col() while l < width
+                    t += new_h
+                  add_row() while t < height
+                  #
+                  #
+                  canvas.toBuffer (err, canvas_buff) ->
+                    log_err err if err
+                    #
+                    # Send that new file to Amazon to be saved!
+                    knoxReq = knoxClient.put '/thumbs/'+png_links[0],
+                      'Content-Length': canvas_buff.length
+                      'Content-Type' : 'image/png'
+                    knoxReq.on 'response', (awsRes) ->
+                      if awsRes.statusCode != 200
+                        console.log 'ERR', awsRes 
+                    knoxReq.end canvas_buff
+                  #
+                  pattern = new mongo_pattern
+                  pattern.s3_id = '/'+png_links[0]
+                  pattern.title = png_links[1]
+                  pattern.save()
+                  #
+                  #
+                  #
+                  # Send that new file to Amazon to be saved!
+                  knoxReq = knoxClient.put '/'+png_links[0],
+                    'Content-Length': buff.length
+                    'Content-Type' : 'image/png'
+                  knoxReq.on 'response', (awsRes) ->
+                    if awsRes.statusCode != 200
+                      console.log 'ERR', awsRes 
+                  knoxReq.end buff
+    #
+    #
+    #
+    res.send
+      blegh: true
 #
 #
 #
@@ -2395,7 +2514,6 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
             Location: '/orders'
           , 302
 #
-
 #
 app.get '/test/:theme_id', (req, res, next) ->
   #
