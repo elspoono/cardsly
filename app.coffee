@@ -1596,13 +1596,14 @@ app.post '/send-password-reset', (req,res,next) ->
   res.send
     succesfulFeedback:'This worked!'
   nodemailer.send_mail
-    sender: 'support@cards.ly'
+    sender: 'supportcards.ly'
     to: req.body.email_password
     subject:'Password Reset from Cardsly'
     html: '<p>Please click the following link to change the password of your Cardsly account</p>'
   , (err, data) ->
     if err
       log_err err
+
 
 
 #
