@@ -60,7 +60,14 @@
           .advanced_options
             ul.area
               li.active
-                input(type='file')
+                .upload
+                  .title upload 1680x900 png
+                  input(type='file')
+                .patterns
+                  .title or choose pattern
+                  .thumbs
+                    -for pattern in req.patterns
+                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id)
               li Blegh
               li Blegh
             ul.tab_button
@@ -318,4 +325,11 @@
             .error=error_message
           .button.normal.checkout Purchase
         .clear
-
+//
+//
+// Wow, IE downloads everything
+// So google won't load anything, unless we chunk it up into segments of 6 or less
+link(rel='stylesheet', href='//fonts.googleapis.com/css?family=IM+Fell+English+SC|Julee|Syncopate|Gravitas+One|Quicksand')
+link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Vast+Shadow|Smokum|Ovo|Rancho|Poly')
+link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Chivo|Prata|Abril+Fatface|Ultra')
+link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister|Carter+One|Gruppo|Slackey')

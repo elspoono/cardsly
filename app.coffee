@@ -2434,57 +2434,60 @@ app.get '/update-patterns', (req, res, next) ->
                   img = new node_canvas.Image
                   img.src = buff
                   #
-                  width = 100
-                  height = 100
                   #
-                  new_w = Math.round img.width/4
-                  new_h = Math.round img.height/4
+                  my_new_id = random_url()+random_url()+random_url()+'.png'
                   #
-                  canvas = new node_canvas(width,height)
-                  ctx = canvas.getContext '2d'
+                  save_pattern_to = (width, height, dir) ->
+                      #
+                      #
+                      if width is 100
+                        new_w = Math.round img.width/4
+                        new_h = Math.round img.height/4
+                      else
+                        new_w = img.width
+                        new_h = img.height
+                      #
+                      #
+                      canvas = new node_canvas(width,height)
+                      ctx = canvas.getContext '2d'
+                      #
+                      #
+                      t = 0
+                      l = 0
+                      add_row = ->
+                        l = 0
+                        ctx.drawImage img, l, t, new_w, new_h
+                        l += new_w
+                        add_col = ->
+                          ctx.drawImage img, l, t, new_w, new_h
+                          l += new_w
+                        add_col() while l < width
+                        t += new_h
+                      add_row() while t < height
+                      #
+                      canvas.toBuffer (err, canvas_buff) ->
+                        log_err err if err
+                        #
+                        # Send that new file to Amazon to be saved!
+                        knoxReq = knoxClient.put '/'+dir+'/'+my_new_id,
+                          'Content-Length': canvas_buff.length
+                          'Content-Type' : 'image/png'
+                        knoxReq.on 'response', (awsRes) ->
+                          if awsRes.statusCode != 200
+                            console.log 'ERR', awsRes
+                        knoxReq.end canvas_buff
                   #
                   #
-                  t = 0
-                  l = 0
-                  add_row = ->
-                    l = 0
-                    ctx.drawImage img, l, t, new_w, new_h
-                    l += new_w
-                    add_col = ->
-                      ctx.drawImage img, l, t, new_w, new_h
-                      l += new_w
-                    add_col() while l < width
-                    t += new_h
-                  add_row() while t < height
-                  #
-                  #
-                  canvas.toBuffer (err, canvas_buff) ->
-                    log_err err if err
-                    #
-                    # Send that new file to Amazon to be saved!
-                    knoxReq = knoxClient.put '/thumbs/'+png_links[0],
-                      'Content-Length': canvas_buff.length
-                      'Content-Type' : 'image/png'
-                    knoxReq.on 'response', (awsRes) ->
-                      if awsRes.statusCode != 200
-                        console.log 'ERR', awsRes 
-                    knoxReq.end canvas_buff
+                  save_pattern_to 100, 100, 'pattern-thumbs'
+                  save_pattern_to 1680, 900, 'raw'
+                  save_pattern_to 158, 90, '158x90'
+                  save_pattern_to 525, 300, '525x300'
                   #
                   pattern = new mongo_pattern
-                  pattern.s3_id = '/'+png_links[0]
+                  pattern.s3_id = my_new_id
                   pattern.title = png_links[1]
                   pattern.save()
                   #
-                  #
-                  #
-                  # Send that new file to Amazon to be saved!
-                  knoxReq = knoxClient.put '/'+png_links[0],
-                    'Content-Length': buff.length
-                    'Content-Type' : 'image/png'
-                  knoxReq.on 'response', (awsRes) ->
-                    if awsRes.statusCode != 200
-                      console.log 'ERR', awsRes 
-                  knoxReq.end buff
     #
     #
     #
@@ -2676,6 +2679,20 @@ get_order_info = (req, res, next) ->
       next()
 #
 #
+#
+get_patterns = (req, res, next) ->
+  mongo_pattern.find
+    active: true
+  , (err, patterns) ->
+    if err
+      log_err err
+    else
+      req.patterns = _(patterns).sortBy (pattern) ->
+        Math.random()
+    next()
+#
+#
+#
 get_url_groups = (req, res, next) ->
   if req.user
     mongo_url_group.find
@@ -2770,13 +2787,13 @@ get_url_groups = (req, res, next) ->
     next()
 #
 # cards Page Mockup
-app.get '/cards', securedPage, get_url_groups, (req, res) ->
+app.get '/cards', securedPage, get_patterns, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_patterns, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: true
@@ -2886,7 +2903,7 @@ app.get '/cute-animal', (req, res) ->
 #
 #
 #
-app.get '/buy', get_url_groups, (req, res, next) ->
+app.get '/buy', get_patterns, get_url_groups, (req, res, next) ->
   session = req.session
   if req.user
     if (session and session.saved_form and session.saved_form.values and session.saved_form.values.length > 0 and session.saved_form.values[0] is "John Stamos") or !session or !session.saved_form or !session.saved_form.values or !session.saved_form.values.length
@@ -2932,7 +2949,7 @@ app.get '/buy', get_url_groups, (req, res, next) ->
 #
 #
 #
-app.get '/phx', (req, res) ->
+app.get '/phx', get_patterns, (req, res) ->
   res.render 'phx'
     req: req
     #
@@ -2951,7 +2968,7 @@ app.get '/phx', (req, res) ->
 #
 #
 #
-app.get '/sample-landing-page', (req, res) ->
+app.get '/sample-landing-page', get_patterns, (req, res) ->
   res.render 'sample_landing_page'
     req: req
     #
@@ -2996,7 +3013,7 @@ app.get '/home3', (req, res) ->
 #
 #
 # Real Index Page
-app.get '/', get_url_groups, (req, res) -> 
+app.get '/', get_patterns, get_url_groups, (req, res) -> 
   #
   #
   if req.user

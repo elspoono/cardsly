@@ -907,12 +907,35 @@ input.normal,input.gray
   display none
   width 545px
   margin 0 auto
+  input
+    border 0
+    width auto
+    padding 0
   .area
     li
       padding 15px
       width 515px
       alpha_bg($c_bg_dark,.3)
       display none
+      overflow hidden
+      .upload
+        float left
+        width 180px
+      .patterns
+        width 320px
+        float right
+      .thumbs
+        height 230px
+        width 340px
+        overflow-y scroll
+        .thumb
+          cursor pointer
+          float left
+          margin 9px 9px 0 0
+          border 1px solid $c_black
+          background #FFF
+          height 100px
+          width 100px
     .active
       display block
   .tab_button
