@@ -59,6 +59,7 @@ app = module.exports = express.createServer()
 im = require 'imagemagick'
 #
 #
+xml2json = require 'xml2json'
 #
 samurai = require 'samurai'
 samurai.setup
@@ -449,6 +450,16 @@ line_schema = new schema
 #
 #
 #
+pattern_schema = new schema
+  s3_id: String
+  title: String
+  date_added:
+    type: Date
+    default: Date.now
+  active:
+    type: Boolean
+    default: true
+mongo_pattern = mongoose.model 'patterns', pattern_schema
 #
 #
 #
@@ -474,6 +485,7 @@ theme_template_schema = new schema
 #
 # Groups of Themes
 theme_schema = new schema
+  user_id: String
   category: String
   theme_templates: [theme_template_schema]
   color1: String
@@ -493,6 +505,21 @@ mongo_theme = mongoose.model 'themes', theme_schema
 #
 #
 #
+
+mongo_theme.find
+  s3_id: null
+  theme_templates:
+    '$elemMatch':
+      s3_id:
+        '$exists': true
+, (err, themes) ->
+  for theme in themes
+    if theme.theme_templates[0].s3_id
+      theme.s3_id = theme.theme_templates[0].s3_id
+      theme.save()
+
+
+
 #
 #
 # Style Field Positions
@@ -609,24 +636,6 @@ password_reset = new schema
 #
 #
 ###########################################################
-
-
-
-
-
-mongo_theme.find
-  s3_id: null
-  theme_templates:
-    '$elemMatch':
-      s3_id:
-        '$exists': true
-, (err, themes) ->
-  for theme in themes
-    if theme.theme_templates[0].s3_id
-      theme.s3_id = theme.theme_templates[0].s3_id
-      theme.save()
-
-
 
 
 
@@ -1311,7 +1320,64 @@ check_no_err_ajax = (err, res) ->
 #
 #
 # AJAX request for saving theme
+app.post '/save-my-theme', (req, res) ->
+  #
+  # Put it into a nice pretty JSON object 
+  params = req.body
+  #
+  #
+  #
+  if req.user and req.user._id
+    params.theme.user_id = req.user._id
+  else
+    params.theme.user_id = req.sessionID
+  #
+  #
+  #
+  # If we're updating do this
+  if params.theme._id
+    mongo_theme.findById params.theme._id, (err, found_theme) ->
+      if check_no_err_ajax err, res
+        found_theme.date_updated = new Date()
+        if typeof(params.theme.active) is 'boolean'
+          found_theme.active = params.theme.active
+        found_theme.category = params.theme.category
+        found_theme.s3_id = params.theme.s3_id
+        #
+        # Push the new template in
+        found_theme.theme_templates = params.theme.theme_templates
+        #
+        #
+        found_theme.save (err,theme_saved) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+              theme: theme_saved
+  #
+  #
+  #
+  # This indicates we are creating a new one, nothing to update
+  else
+    new_theme = new mongo_theme
+    if typeof(params.theme.active) is 'boolean'
+      new_theme.active = params.theme.active
+    new_theme.category = params.theme.category
+    new_theme.s3_id = params.theme.s3_id
+    #
+    # Push the new template in
+    new_theme.theme_templates = params.theme.theme_templates
+    #
+    #
+    new_theme.save (err,theme_saved) ->
+      if check_no_err_ajax err, res
+        res.send
+          success: true
+          theme: theme_saved
 #
+#
+#
+#
+# AJAX request for saving theme
 app.post '/save-theme', (req, res) ->
   #
   # Put it into a nice pretty JSON object 
@@ -1328,11 +1394,11 @@ app.post '/save-theme', (req, res) ->
     if params.theme._id
       mongo_theme.findById params.theme._id, (err, found_theme) ->
         if check_no_err_ajax err, res
-          found_theme.category
           found_theme.date_updated = new Date()
           if typeof(params.theme.active) is 'boolean'
             found_theme.active = params.theme.active
           found_theme.category = params.theme.category
+          found_theme.s3_id = params.theme.s3_id
           #
           # Push the new template in
           found_theme.theme_templates = params.theme.theme_templates
@@ -1352,6 +1418,7 @@ app.post '/save-theme', (req, res) ->
       if typeof(params.theme.active) is 'boolean'
         new_theme.active = params.theme.active
       new_theme.category = params.theme.category
+      new_theme.s3_id = params.theme.s3_id
       #
       # Push the new template in
       new_theme.theme_templates = params.theme.theme_templates
@@ -1444,6 +1511,19 @@ app.post '/login', (req, res, next) ->
         userId: user._id
       res.send
         success: true
+
+      #
+      if req.sessionID
+        #
+        #
+        mongo_theme.find
+          active: true
+          user_id: req.sessionID
+        , (err, themes) ->
+          if not err
+            for theme in themes
+              theme.user_id = user._id
+              theme.save()
 #
 #
 #
@@ -1557,10 +1637,32 @@ app.post '/get-user', (req,res,next) ->
 #
 #
 #
+#
+#
+#
+#
 # Get Themes (post route for get themes :)
 app.post '/get-themes', (req,res,next) ->
+  #
+  #
+  #
+  user_to_find = null
+  #
+  #
+  #
+  if req.user and req.user._id
+    user_to_find = 
+      $in: [null,req.user._id]
+  #
+  else if req.sessionID
+    user_to_find = 
+      $in: [null,req.sessionID]
+  #
+  #
+  #
   mongo_theme.find
     active: true
+    user_id: user_to_find
   ,[] ,
     sort:
       category: -1
@@ -1627,6 +1729,8 @@ add_urls_to_order = (order, user, res) ->
     #
   volume
   #
+  #
+#
 #
 #
 image_err = (res) ->
@@ -1643,7 +1747,7 @@ image_err = (res) ->
     , 200
 #
 #
-render_urls_to_doc = (urls, theme_template, line_copy, next) ->
+render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
   #
   #
   # We're going to grab the background image via an http request to amazon
@@ -1655,7 +1759,7 @@ render_urls_to_doc = (urls, theme_template, line_copy, next) ->
   request = http.get
     host: 'd3eo3eito2cquu.cloudfront.net'
     port: 80
-    path: '/raw/'+theme_template.s3_id
+    path: '/raw/'+s3_id
   , (response) ->
       #
       #
@@ -1866,7 +1970,7 @@ process_pdf = (order_id) ->
           #
           #
           # Set up the finalize function for later
-          render_urls_to_doc url_group.urls, theme_template, order.values, (doc) ->
+          render_urls_to_doc url_group.urls, theme_template, order.values, theme.s3_id, (doc) ->
             #
             # FINALLY - Save it to Amazon
             #
@@ -2272,8 +2376,110 @@ if app.settings.env is 'production'
       , 302
     else
       next()
-
 #
+#
+#
+#
+app.get '/update-patterns', (req, res, next) ->
+  mongo_pattern.find
+    active: true
+  , (err, patterns) ->
+    for pattern in patterns
+      pattern.active = false
+      pattern.save()
+  http_request 'http://feeds.feedburner.com/SubtlePatterns', (err, response, body) ->
+    parsed = xml2json.toJson body,
+      object: true
+    for pattern,i in parsed.rss.channel.item
+      png_links = pattern['content:encoded'].match /[^"^\(]*\.png/ig
+      do (png_links) ->
+        if png_links and png_links.length
+          #
+          #
+          #
+          imagedata = ''
+          #
+          #
+          #
+          request = http.get
+            host: 'subtlepatterns.com'
+            port: 80
+            path: '/'+png_links[0]
+          , (response) ->
+              #
+              #
+              #
+              response.setEncoding 'binary'
+              #
+              #
+              #
+              response.on 'data', (chunk) ->
+                imagedata += chunk
+              response.on 'end', ->
+                if response.statusCode is 200
+                  #
+                  #
+                  buff = new Buffer imagedata, 'binary'
+                  #
+                  img = new node_canvas.Image
+                  img.src = buff
+                  #
+                  width = 100
+                  height = 100
+                  #
+                  new_w = Math.round img.width/4
+                  new_h = Math.round img.height/4
+                  #
+                  canvas = new node_canvas(width,height)
+                  ctx = canvas.getContext '2d'
+                  #
+                  #
+                  t = 0
+                  l = 0
+                  add_row = ->
+                    l = 0
+                    ctx.drawImage img, l, t, new_w, new_h
+                    l += new_w
+                    add_col = ->
+                      ctx.drawImage img, l, t, new_w, new_h
+                      l += new_w
+                    add_col() while l < width
+                    t += new_h
+                  add_row() while t < height
+                  #
+                  #
+                  canvas.toBuffer (err, canvas_buff) ->
+                    log_err err if err
+                    #
+                    # Send that new file to Amazon to be saved!
+                    knoxReq = knoxClient.put '/thumbs/'+png_links[0],
+                      'Content-Length': canvas_buff.length
+                      'Content-Type' : 'image/png'
+                    knoxReq.on 'response', (awsRes) ->
+                      if awsRes.statusCode != 200
+                        console.log 'ERR', awsRes 
+                    knoxReq.end canvas_buff
+                  #
+                  pattern = new mongo_pattern
+                  pattern.s3_id = '/'+png_links[0]
+                  pattern.title = png_links[1]
+                  pattern.save()
+                  #
+                  #
+                  #
+                  # Send that new file to Amazon to be saved!
+                  knoxReq = knoxClient.put '/'+png_links[0],
+                    'Content-Length': buff.length
+                    'Content-Type' : 'image/png'
+                  knoxReq.on 'response', (awsRes) ->
+                    if awsRes.statusCode != 200
+                      console.log 'ERR', awsRes 
+                  knoxReq.end buff
+    #
+    #
+    #
+    res.send
+      blegh: true
 #
 #
 #
@@ -2298,7 +2504,6 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
             Location: '/orders'
           , 302
 #
-
 #
 app.get '/test/:theme_id', (req, res, next) ->
   #
@@ -2326,7 +2531,7 @@ app.get '/test/:theme_id', (req, res, next) ->
       'M thru F - 10 to 7'
       'fb.com/my_facebook'
       '@my_twitter'
-    ], (doc) ->
+    ], theme.s3_id, (doc) ->
       #
       # FINALLY - Send it to the browser
       #
@@ -2368,7 +2573,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
         request = http.get
           host: 'd3eo3eito2cquu.cloudfront.net'
           port: 80
-          path: '/'+widthheight+'/'+theme_template.s3_id
+          path: '/'+widthheight+'/'+theme.s3_id
         , (response) ->
             #
             response.setEncoding 'binary'
