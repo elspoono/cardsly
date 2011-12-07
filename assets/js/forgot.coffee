@@ -1,6 +1,6 @@
 $ ->
   #Email Password
-  $('.email_for_password').submit ->
+  $('.email_password').submit ->
     err = false
     if $('.current_email').val() is ''
       err =  'Please enter your email address.'
@@ -19,8 +19,7 @@ $ ->
                 content: data.err
             else
               $.load_alert
-                content: 'Password Reset Sent'
-              $('.set_new_password').replaceWith '<p>Password changes successfully!</p>'
+                content: 'Password Reset Email Sent'
           error: (err) ->
             loading_close()
             $.load_alert
