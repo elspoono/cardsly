@@ -2742,7 +2742,7 @@ app.get '/cards/thank-you', securedPage, get_patterns, get_url_groups, (req, res
   res.render 'cards'
     req: req
     thankyou: true
-    conversion: true
+    abtest: 14
 #
 # Orders Page
 app.get '/orders', securedAdminPage, (req, res, next) ->
@@ -2931,35 +2931,38 @@ app.get '/sample-landing-page', get_patterns, (req, res) ->
 #
 # AB Test Pages
 
-### Page 1 Purchase
-app.get '/home1', (req, res) ->
+# Page 1 Purchase
+app.get '/home1', get_patterns, get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 1
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
 
 
 # Page 2 Checkout
-app.get '/home2', (req, res) ->
+app.get '/home2', get_patterns, get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 2
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
 
 # Page 3 Buy
-app.get '/home3', (req, res) ->
+app.get '/home3',get_patterns, get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 3
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
 
-###
+#
 #
 #
 # Real Index Page
@@ -2996,6 +2999,7 @@ app.get '/', get_patterns, get_url_groups, (req, res) ->
     else
       res.render 'home'
         req: req
+        abtest: 4
         #
         # Cut off at 60 characters 
         #

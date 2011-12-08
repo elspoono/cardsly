@@ -267,7 +267,14 @@
   .section
     .cell_bg
     .cell_content
-      h3 Step 4: Confirm and Buy
+      if abtest == 1
+        h3 Step 4: Confirm and Purchase
+      else if abtest == 2
+        h3 Step 4: Confirm and Checkout
+      else if abtest == 3
+        h3 Step 4: Confirm and Buy
+      else
+        h3 Step 4: Confirm and Buy
       .order_total
         .card_side
           .my_card
@@ -330,7 +337,14 @@
           .clear
           if error_message
             .error=error_message
-          .button.normal.checkout Purchase
+          if abtest == 1
+            .button.normal.checkout Purchase
+          else if abtest == 2
+            .button.normal.checkout Checkout
+          else if abtest == 3
+            .button.normal.checkout Buy
+          else
+            .button.normal.checkout Purchase
         .clear
 //
 //
