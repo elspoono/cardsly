@@ -891,6 +891,14 @@ input.normal,input.gray
       overflow visible
       white-space nowrap
       position absolute
+    .highlight_box
+      position absolute
+      border 1px solid $c_logo_alt
+      z-index 1000
+    .active
+      border 4px solid $c_logo_alt
+      margin -3px
+      cursor move
   .card_container
     padding 10px
     width 525px
@@ -931,11 +939,11 @@ input.normal,input.gray
         background $c_light
         overflow-y scroll
         .font_family
-          margin 4px
-          padding 8px
+          margin 2px 4px
+          padding 4px 8px
           cursor pointer
         .active
-          padding 4px
+          padding 2px 4px
           border 4px solid $c_logo_alt
       .thumbs
         height 230px

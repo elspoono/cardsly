@@ -1622,7 +1622,7 @@ app.post '/get-themes', (req,res,next) ->
   , (err, themes) ->
     if check_no_err_ajax err, res
       themes = _(themes).sortBy (theme) ->
-        if theme.user_id then '0' else theme.category + theme.date_added*1
+        if theme.user_id then '0' else theme.category + theme.date_added
       themes.reverse()
       res.send
         themes: themes

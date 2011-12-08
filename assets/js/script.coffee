@@ -1562,11 +1562,6 @@ $ ->
     active_theme = theme
     #
     #
-    if theme.category is 'My Own'
-      show_advanced()
-    else
-      hide_advanced()
-    #
     # Card Background
     if theme.s3_id
       $card.css
@@ -1624,11 +1619,11 @@ $ ->
     #
     #
     #
-    ###
-    TODO
-
-    - this probably doesn't need to update every time. Could make page faster not doing this.
-    ###
+    if theme.category is 'My Own'
+      show_advanced()
+    else
+      hide_advanced()
+    #
     #
   #
   #
@@ -1686,111 +1681,112 @@ $ ->
     $t.data 'timer', 0
     
     $t.click -> 
-      style = $t.attr 'style'
-      $input = $ '<input class="line" />'
-      $delete_button = $ '<div class="button gray small">X</div>'
-      $delete_button.css
-        width: 20
-        height: $t.height()
-        lineHeight: $t.height()+'px'
-        position: 'absolute'
-        top: parseInt($t.css('top'))-5
-        left: parseInt($t.css('left'))+$t.width()+10
-      $input.attr 'style', style
-      $input.val $t.html().replace /&nbsp;/g, ' '
-      tt = Math.round $t.offset().top/3
-      tl = Math.round $t.offset().left/3
-      $t.after $input
-      $input.after $delete_button
-      $t.hide()
-      #
-      #
-      $delete_button.click (e) ->
-        $input.val ''
-        update_value()
-        setTimeout ->
-          go_to_next()
-        , 0
-      #
-      #
-      #
-      update_value = ->
-        update_cards i, $input[0].value.replace /( )/g, '&nbsp;'
-        $t.html $input[0].value.replace /( )/g, '&nbsp;'
-        set_timers()
-      #
-      #
-      #
-      go_to_next = ->
-        $others = $t.siblings('div:visible:not(.button)')
+      if not $t.hasClass 'active'
+        style = $t.attr 'style'
+        $input = $ '<input class="line" />'
+        $delete_button = $ '<div class="button gray small">X</div>'
+        $delete_button.css
+          width: 20
+          height: $t.height()
+          lineHeight: $t.height()+'px'
+          position: 'absolute'
+          top: parseInt($t.css('top'))-5
+          left: parseInt($t.css('left'))+$t.width()+10
+        $input.attr 'style', style
+        $input.val $t.html().replace /&nbsp;/g, ' '
+        tt = Math.round $t.offset().top/3
+        tl = Math.round $t.offset().left/3
+        $t.after $input
+        $input.after $delete_button
+        $t.hide()
+        #
+        #
+        $delete_button.click (e) ->
+          $input.val ''
+          update_value()
+          setTimeout ->
+            go_to_next()
+          , 0
+        #
+        #
+        #
+        update_value = ->
+          update_cards i, $input[0].value.replace /( )/g, '&nbsp;'
+          $t.html $input[0].value.replace /( )/g, '&nbsp;'
+          set_timers()
+        #
+        #
+        #
+        go_to_next = ->
+          $others = $t.siblings('div:visible:not(.button)')
 
-        $next = false
-        $a = false
-        $b = false
-        $c = false
-        $others.each ->
-          $a = $ this
-          at = Math.round $a.offset().top/3
-          al = Math.round $a.offset().left/3
+          $next = false
+          $a = false
+          $b = false
+          $c = false
+          $others.each ->
+            $a = $ this
+            at = Math.round $a.offset().top/3
+            al = Math.round $a.offset().left/3
 
-          if shift_pressed
-            if (at is tt and al < tl) or at < tt
-              $b = $a if not $b
-              bt = Math.round $b.offset().top/3
-              bl = Math.round $b.offset().left/3
-              if (at is bt and al > bl) or at > bt
-                $b = $a 
-            $c = $a if not $c
-            ct = Math.round $c.offset().top/3
-            cl = Math.round $c.offset().left/3
-            if (at is ct and al > cl) or at > ct
-              $c = $a
+            if shift_pressed
+              if (at is tt and al < tl) or at < tt
+                $b = $a if not $b
+                bt = Math.round $b.offset().top/3
+                bl = Math.round $b.offset().left/3
+                if (at is bt and al > bl) or at > bt
+                  $b = $a 
+              $c = $a if not $c
+              ct = Math.round $c.offset().top/3
+              cl = Math.round $c.offset().left/3
+              if (at is ct and al > cl) or at > ct
+                $c = $a
+            else
+              if (at is tt and al > tl) or at > tt
+                $b = $a if not $b
+                bt = Math.round $b.offset().top/3
+                bl = Math.round $b.offset().left/3
+                if (at is bt and al < bl) or at < bt
+                  $b = $a
+              $c = $a if not $c
+              ct = Math.round $c.offset().top/3
+              cl = Math.round $c.offset().left/3
+              if (at is ct and al < cl) or at < ct
+                $c = $a
+          if $b
+            $b.click()
           else
-            if (at is tt and al > tl) or at > tt
-              $b = $a if not $b
-              bt = Math.round $b.offset().top/3
-              bl = Math.round $b.offset().left/3
-              if (at is bt and al < bl) or at < bt
-                $b = $a
-            $c = $a if not $c
-            ct = Math.round $c.offset().top/3
-            cl = Math.round $c.offset().left/3
-            if (at is ct and al < cl) or at < ct
-              $c = $a
-        if $b
-          $b.click()
-        else
-          $c.click()
-      #
-      #
-      #
-      $input.focus().select()
-      $input.keydown (e) ->
-        if not e
-          e = 
-            keyCode: 13
-        if e.keyCode is 16
-          shift_pressed = true
-        if e.keyCode is 13 or e.keyCode is 9
-          e.preventDefault()
-          #
-          #
-          go_to_next()
-      $input.keyup (e) ->
-        if e.keyCode is 16
-          shift_pressed = false
-        if e.keyCode is 13 or e.keyCode is 9
-          e.preventDefault()
-        update_value()
+            $c.click()
+        #
+        #
+        #
+        $input.focus().select()
+        $input.keydown (e) ->
+          if not e
+            e = 
+              keyCode: 13
+          if e.keyCode is 16
+            shift_pressed = true
+          if e.keyCode is 13 or e.keyCode is 9
+            e.preventDefault()
+            #
+            #
+            go_to_next()
+        $input.keyup (e) ->
+          if e.keyCode is 16
+            shift_pressed = false
+          if e.keyCode is 13 or e.keyCode is 9
+            e.preventDefault()
+          update_value()
 
-      remove_input = (e) ->
-        $target = $ e.target
-        if $target[0] isnt $t[0] and $target[0] isnt $input[0] and $target[0] isnt $delete_button[0]
-          $body.unbind 'click', remove_input
-          $input.remove()
-          $delete_button.remove()
-          $t.show()
-      $body.bind 'click', remove_input
+        remove_input = (e) ->
+          $target = $ e.target
+          if $target[0] isnt $t[0] and $target[0] isnt $input[0] and $target[0] isnt $delete_button[0]
+            $body.unbind 'click', remove_input
+            $input.remove()
+            $delete_button.remove()
+            $t.show()
+        $body.bind 'click', remove_input
   #
   #
   #
@@ -1856,17 +1852,6 @@ $ ->
     #
     #
     #
-    highlight_thumb = ->
-      $thumbs.removeClass 'active'
-      $thumbs.each ->
-        $t = $ this
-        if $t.attr('s3_id') is active_theme.s3_id
-          $t.addClass 'active'
-          $patterns.find('.thumbs').scrollTo $t
-    #
-    highlight_thumb()
-    #
-    #
     $thumbs.unbind().click ->
       $t = $ this
       active_theme.s3_id = $t.attr 's3_id'
@@ -1890,17 +1875,205 @@ $ ->
       $t.addClass 'active'
       #
       #
+      $lines.removeClass 'active'
+      #
+      # **********************************************************************
+      # 
+      #                          BACKGROUND TAB
+      #
+      # **********************************************************************
       if $t.html() is 'Background'
-        highlight_thumb()
+        $thumbs.removeClass 'active'
+        $thumbs.each ->
+          $t = $ this
+          if $t.attr('s3_id') is active_theme.s3_id
+            $t.addClass 'active'
+            $patterns.find('.thumbs').scrollTo $t
+      #
+      #
+      #
+      # **********************************************************************
+      #
+      #                            TEXT TAB
+      #
+      # **********************************************************************
       if $t.html() is 'Text'
+        #
+        #
+        #
+        card_o = $card.offset()
+        card_w = $card.outerWidth()
+        card_h = $card.outerHeight()
+        # Area Selecting Binding Event Nonsense
+        $card.unbind().bind 'mousedown', (e) ->
+          #
+          e_t = e.pageY - card_o.top
+          e_l = e.pageX - card_o.left
+          #
+          e.preventDefault()
+          $visible_lines = $lines.filter ':visible'
+          $active_lines = $lines.filter '.active'
+          #
+          #
+          # ----------------------
+          # Determine where we touched down at
+          # ----------------------
+          hit = false
+          #
+          $active_lines.each ->
+            $l = $ this
+            l_o = $l.offset()
+            l_o_l = l_o.left - card_o.left
+            l_o_t = l_o.top - card_o.top
+            l_w = $l.width()
+            l_h = $l.height()
+            if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
+              hit = true
+          #
+          #
+          if hit
+            # ----------------------
+            # Move Stuff Around
+            # ----------------------
+            $active_lines.each ->
+              $a = $ this
+              $a.data 'o', $a.offset()
+              $a.data 'h', $a.height()
+              $a.data 'w', $a.width()
+
+            $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+              e_2.preventDefault()
+              x = e.pageX - e_2.pageX
+              y = e.pageY - e_2.pageY
+              $active_lines.each ->
+                $a = $ this
+                o = $a.data 'o'
+                h = $a.data 'h'
+                w = $a.data 'w'
+                #
+                # Figure out our dimensions
+                new_t = o.top - card_o.top - y 
+                new_l = o.left - card_o.left - x
+                max_t = card_h - h
+                max_l = card_w - w
+                new_w = w
+                #
+                #
+                # Make it skinnier if need be
+                if new_l < -100
+                  new_w = new_w+new_l+100
+                if new_l > max_l+100
+                  new_w = new_w+(max_l+100-new_l)
+                  max_l = card_w - new_w
+                new_w = 50 if new_w < 50
+                #
+                # Boundary that shit
+                new_t = 0 if new_t < 0
+                new_l = 0 if new_l < 0
+                new_t = max_t if new_t > max_t
+                new_l = max_l if new_l > max_l
+                #
+                # Then set it
+                $a.css
+                  top: new_t
+                  left: new_l
+                  width: new_w
+            $body.bind 'mouseup', (e_3) ->
+              e_3.preventDefault()
+              $body.unbind 'mousemove'
+              $body.unbind 'mouseup'
+
+          else
+            # ----------------------
+            # Area drag selector
+            # ----------------------
+            $active_lines.removeClass 'active'
+            $card.find('.highlight_box').remove()
+            $highlight_box = $ '<div class="highlight_box" />'
+            $card.append $highlight_box
+            $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+              e_2.preventDefault()
+              t = e_t
+              l = e_l
+              w = Math.abs(e.pageX - e_2.pageX)
+              h = Math.abs(e.pageY - e_2.pageY)
+              if e_2.pageX < e.pageX
+                l = e_2.pageX - card_o.left
+              if e_2.pageY < e.pageY
+                t = e_2.pageY - card_o.top
+              within = (x1,y1,x2,y2) -> x1 < (l+w) and x2 > l and y1 < t+h and y2 > t
+              $highlight_box.css
+                top: t
+                left: l
+                width: w
+                height: h
+              $visible_lines.each ->
+                $l = $ this
+                l_o = $l.offset()
+                l_w = $l.width()
+                l_h = $l.height()
+                l_o_l = l_o.left - card_o.left
+                l_o_t = l_o.top - card_o.top
+                if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
+                  $l.addClass 'active' 
+                else
+                  $l.removeClass 'active'
+            $body.bind 'mouseup', (e_3) ->
+              e_3.preventDefault()
+              $highlight_box.remove()
+              $body.unbind 'mousemove'
+              $body.unbind 'mouseup'
+
+        #
+        #
+        #
+        #
+        $lines.filter(':eq(0)').addClass 'active'
+        #
+        #
+        $active_lines = $lines.filter '.active'
+        #
+        #
         $font_families = $advanced_options.find '.font_family'
         $font_families.removeClass 'active'
+        #
+        # Selec the currently active one on load
         $font_families.each ->
           $f = $ this
-          if $f.html() is 'Arial'
+          if $f.html() is $active_lines.css('font-family').replace(/'/g,'')
             $f.addClass 'active'
             $advanced_options.find('.font_families').scrollTo $f
+        #
+        #
+        $font_families.click ->
+          $f = $ this
+          #
+          new_font_family = $f.html()
+          #
+          $font_families.removeClass 'active'
+          $f.addClass 'active'
+          #
+          $active_lines = $lines.filter '.active'
+          $active_lines.css 'font-family', new_font_family
+          $active_lines.each ->
+            $a = $ this
+            index = console.log $a.prevAll().length
+            active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
+            set_my_theme_save_timers()
+      #
+      #
+      # **********************************************************************
+      #
+      #                              QR TAB
+      #
+      # **********************************************************************
+      if $t.html() is 'QR'
+        #
+        #
+        #
+        console.log 'QR'
 
+    $tabs.filter('.active').click()
     #
     #
   hide_advanced = ->
@@ -1922,8 +2095,9 @@ $ ->
           data: JSON.stringify
             theme: active_theme
             do_save: true
-          success: ->
-            console.log 'Saved'
+          success: (result) ->
+            if not result.success
+              console.log 'Error'
           error: ->
             console.log 'Error'
       , 1000
