@@ -1318,62 +1318,6 @@ check_no_err_ajax = (err, res) ->
   !err
 #
 #
-# AJAX request for saving theme
-app.post '/save-my-theme', (req, res) ->
-  #
-  # Put it into a nice pretty JSON object 
-  params = req.body
-  #
-  #
-  #
-  if req.user and req.user._id
-    params.theme.user_id = req.user._id
-  else
-    params.theme.user_id = req.sessionID
-  #
-  #
-  #
-  # If we're updating do this
-  if params.theme._id
-    mongo_theme.findById params.theme._id, (err, found_theme) ->
-      if check_no_err_ajax err, res
-        found_theme.date_updated = new Date()
-        if typeof(params.theme.active) is 'boolean'
-          found_theme.active = params.theme.active
-        found_theme.category = params.theme.category
-        found_theme.s3_id = params.theme.s3_id
-        #
-        # Push the new template in
-        found_theme.theme_templates = params.theme.theme_templates
-        #
-        #
-        found_theme.save (err,theme_saved) ->
-          if check_no_err_ajax err, res
-            res.send
-              success: true
-              theme: theme_saved
-  #
-  #
-  #
-  # This indicates we are creating a new one, nothing to update
-  else
-    new_theme = new mongo_theme
-    if typeof(params.theme.active) is 'boolean'
-      new_theme.active = params.theme.active
-    new_theme.category = params.theme.category
-    new_theme.s3_id = params.theme.s3_id
-    #
-    # Push the new template in
-    new_theme.theme_templates = params.theme.theme_templates
-    #
-    #
-    new_theme.save (err,theme_saved) ->
-      if check_no_err_ajax err, res
-        res.send
-          success: true
-          theme: theme_saved
-#
-#
 #
 #
 # AJAX request for saving theme
@@ -1398,6 +1342,11 @@ app.post '/save-theme', (req, res) ->
             found_theme.active = params.theme.active
           found_theme.category = params.theme.category
           found_theme.s3_id = params.theme.s3_id
+          if params.theme.category is 'My Own'
+            if req.user and req.user._id
+              found_theme.user_id = req.user._id
+            else
+              found_theme.user_id = req.sessionID
           #
           # Push the new template in
           found_theme.theme_templates = params.theme.theme_templates
@@ -1418,6 +1367,11 @@ app.post '/save-theme', (req, res) ->
         new_theme.active = params.theme.active
       new_theme.category = params.theme.category
       new_theme.s3_id = params.theme.s3_id
+      if params.theme.category is 'My Own'
+        if req.user and req.user._id
+          new_theme.user_id = req.user._id
+        else
+          new_theme.user_id = req.sessionID
       #
       # Push the new template in
       new_theme.theme_templates = params.theme.theme_templates
@@ -1522,6 +1476,7 @@ app.post '/login', (req, res, next) ->
           if not err
             for theme in themes
               theme.user_id = user._id
+              console.log theme
               theme.save()
 #
 #
@@ -1663,12 +1618,11 @@ app.post '/get-themes', (req,res,next) ->
   mongo_theme.find
     active: true
     user_id: user_to_find
-  ,[] ,
-    sort:
-      category: -1
-      date_added: -1
   , (err, themes) ->
     if check_no_err_ajax err, res
+      themes = _(themes).sortBy (theme) ->
+        if theme.user_id then '0' else theme.category + theme.date_added*1
+      themes.reverse()
       res.send
         themes: themes
 #

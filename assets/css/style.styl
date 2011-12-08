@@ -913,6 +913,7 @@ input.normal,input.gray
     padding 0
   .area
     li
+      height 260px
       padding 15px
       width 515px
       alpha_bg($c_bg_dark,.3)
@@ -924,6 +925,18 @@ input.normal,input.gray
       .patterns
         width 320px
         float left
+      .font_families
+        height 230px
+        width 240px
+        background $c_light
+        overflow-y scroll
+        .font_family
+          margin 4px
+          padding 8px
+          cursor pointer
+        .active
+          padding 4px
+          border 4px solid $c_logo_alt
       .thumbs
         height 230px
         width 340px
@@ -931,11 +944,14 @@ input.normal,input.gray
         .thumb
           cursor pointer
           float left
-          margin 9px 9px 0 0
+          margin 5px 5px 4px 4px
           border 1px solid $c_black
           background #FFF
           height 100px
           width 100px
+        .active
+          border 4px solid $c_logo_alt
+          margin 2px 2px 1px 1px
     .active
       display block
   .tab_button

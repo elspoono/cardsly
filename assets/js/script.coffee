@@ -2,6 +2,7 @@
 #= require 'libs/jquery-ui-1.8.16.min.js'
 #= require 'date'
 #= require 'libs/qrcode'
+#= require 'libs/scrollTo.js'
 
 
 
@@ -1557,14 +1558,14 @@ $ ->
     theme_template = theme.theme_templates[active_view] or theme.theme_templates[0]
     # 
     #
+    # set this theme as the active_theme
+    active_theme = theme
+    #
+    #
     if theme.category is 'My Own'
       show_advanced()
     else
       hide_advanced()
-    #
-    # set this theme as the active_theme
-    active_theme = theme
-    #
     #
     # Card Background
     if theme.s3_id
@@ -1814,10 +1815,6 @@ $ ->
 
 
 
-
-
-
-
   #############################################################
   #
   #
@@ -1859,11 +1856,53 @@ $ ->
     #
     #
     #
-    $thumbs.click ->
+    highlight_thumb = ->
+      $thumbs.removeClass 'active'
+      $thumbs.each ->
+        $t = $ this
+        if $t.attr('s3_id') is active_theme.s3_id
+          $t.addClass 'active'
+          $patterns.find('.thumbs').scrollTo $t
+    #
+    highlight_thumb()
+    #
+    #
+    $thumbs.unbind().click ->
       $t = $ this
       active_theme.s3_id = $t.attr 's3_id'
+      $thumbs.removeClass 'active'
+      $t.addClass 'active'
       update_background_of_active()
+    #
+    #
+    $tabs = $advanced_options.find '.tab_button li'
+    $areas = $advanced_options.find '.area li'
+    $tabs.unbind().click ->
+      $t = $ this
+      i = $t.prevAll().length
+      $a = $areas.filter(':eq('+i+')')
+      #
+      #
+      $areas.removeClass 'active'
+      $a.addClass 'active'
+      #
+      $tabs.removeClass 'active'
+      $t.addClass 'active'
+      #
+      #
+      if $t.html() is 'Background'
+        highlight_thumb()
+      if $t.html() is 'Text'
+        $font_families = $advanced_options.find '.font_family'
+        $font_families.removeClass 'active'
+        $font_families.each ->
+          $f = $ this
+          if $f.html() is 'Arial'
+            $f.addClass 'active'
+            $advanced_options.find('.font_families').scrollTo $f
 
+    #
+    #
   hide_advanced = ->
     $home_options.show()
     $advanced_options.hide()
@@ -1879,9 +1918,10 @@ $ ->
         $active_thumb.data 'theme', active_theme
         update_preview_card_at_bottom()
         $.ajax
-          url: '/save-my-theme'
+          url: '/save-theme'
           data: JSON.stringify
             theme: active_theme
+            do_save: true
           success: ->
             console.log 'Saved'
           error: ->
@@ -1901,6 +1941,11 @@ $ ->
     #
     active_theme.category = 'My Own'
     active_theme._id = ''
+    delete active_theme._id
+    for theme_template, i in active_theme.theme_templates
+      delete active_theme.theme_templates[i]._id
+      for line, j in active_theme.theme_templates[i].lines
+        delete active_theme.theme_templates[i].lines[j]._id
     #
     #
     $new_card = $.create_card_from_theme 
