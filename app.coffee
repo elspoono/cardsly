@@ -860,6 +860,7 @@ app.configure ->
     user: false
     session: false
     error_message: false
+    abtest: 0
     _: _
     #
     # Cut off at 60 characters 
@@ -2928,32 +2929,37 @@ app.get '/sample-landing-page', get_patterns, (req, res) ->
     #
     # (Uncomment means remove the single # character at the start of it :)
 #
-#
-
 # AB Test Pages
-# Purchase
+
+### Page 1 Purchase
 app.get '/home1', (req, res) ->
-  res.render 'homep'
+  res.render 'home'
     req: req
+    abtest: 1
     scripts:[
       'home'
     ]
 
-# Checkout
+
+# Page 2 Checkout
 app.get '/home2', (req, res) ->
-  res.render 'homec'
+  res.render 'home'
     req: req
+    abtest: 2
     scripts:[
       'home'
     ]
-# Buy
+
+# Page 3 Buy
 app.get '/home3', (req, res) ->
-  res.render 'homeb'
+  res.render 'home'
     req: req
+    abtest: 3
     scripts:[
       'home'
     ]
-#
+
+###
 #
 #
 # Real Index Page
@@ -3004,7 +3010,6 @@ app.get '/', get_patterns, get_url_groups, (req, res) ->
         # (Uncomment means remove the single # character at the start of it :)
         #
         url_groups: req.url_groups
-        test_code: true
         #
         #
         scripts:[
