@@ -61,13 +61,16 @@
             ul.area
               li.active
                 .upload
-                  .title upload 1680x900 png
-                  input(type='file')
+                  .title Or upload 1050x600
+                  form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
+                    input(type='file',name='image')
+                  .img_loader
+                    iframe(name='hiddenFrame')
                 .patterns
-                  .title or choose pattern
+                  .title Choose a pattern
                   .thumbs
                     -for pattern in req.patterns
-                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id)
+                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id,s3_id=pattern.s3_id)
               li Blegh
               li Blegh
             ul.tab_button

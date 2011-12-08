@@ -654,22 +654,22 @@ $ ->
   $qr.resizable
     grid: 10
     resize: (e, ui) ->
-        $t = $(ui.element)
-        h = $t.height()
-        w = $t.width()
-        $t.find('canvas').css
-          height: h
-          width: w
-        $t.find('.background').css
-          height: h
-          width: w
-        
+      $t = $(ui.element)
+      h = $t.height()
+      w = $t.width()
+      $t.find('canvas').css
+        height: h
+        width: w
+      $t.find('.background').css
+        height: h
+        width: w
+      #
+      #
     containment: '.designer .card'
     handles: 'se'
     aspectRatio: 1
     stop: set_timers
   #
-
   #
   # On upload selection, submit that form
   $upload.change ->
@@ -760,13 +760,12 @@ $ ->
         if next then next()
   #
   # This catches the script parent.window call sent from app.coffee on the s3 form submit
-  $.s3_result = (s3_id) ->
-    if not no_theme() and s3_id
-      active_theme.theme_templates[active_view].s3_id = s3_id
-      active_theme.s3_id = s3_id
+  $.s3_result = (o) ->
+    if o and o.s3_id
+      active_theme.s3_id = o.s3_id
       set_timers()
       $card.css
-        background: 'url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + s3_id + '\')'
+        background: 'url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + o.s3_id + '\')'
     else
       $.load_alert
         content: 'I had trouble saving that image, please try again later.'

@@ -1233,77 +1233,76 @@ app.post '/update-order-status', (req, res) ->
             success: true
 #
 # Form request for multipart form uploading image
-app.post '/upload-image', (req, res) ->
+app.post '/up', (req, res) ->
   #
   # Set up our failure function
   s3_fail = (err) ->
     log_err err
     res.send '<script>parent.window.$.s3_result(false);</script>'
   #
-  try
-    # Wait for the upload of the large file to finish before doing anything
-    req.form.complete (err, fields, files) ->
-      if err
-        s3_fail err
-      else
-        # Find the file we just created
-        path = files.image.path
-        # Identify it's filname
-        fileName = path.replace /.*tmp\//ig, ''
-        # And it's extension
-        ext = fileName.replace /.*\./ig, ''
-
-        # Define the sizes we will resize too
-        sizes = [
-          '158x90'
-          '525x300'
-        ]
-        for size in sizes
-          do (size) ->
-            # Resize it with ImageMagick
-            im.convert [
-              path
-              '-filter','Quadratic'
-              '-resize',size
-              '/tmp/'+size+fileName
-            ], (err, smallImg, stderr) ->
-              if err
-                s3_fail err
-              else
-                # Read the resized File with node FS libary
-                fs.readFile '/tmp/'+size+fileName, (err, buff) ->
-                  if err
-                    console.log 'ERR:', err
-                  else
-                    # Send that new file to Amazon to be saved!
-                    knoxReq = knoxClient.put '/'+size+'/'+fileName,
-                      'Content-Length': buff.length
-                      'Content-Type' : 'image/'+ext
-                    knoxReq.on 'response', (awsRes) ->
-                      console.log 'ERR', awsRes if awsRes.statusCode != 200
-                      # Only send this response once we get the 525x300 that we need
-                      if size is '525x300'
-                        if awsRes.statusCode is 200
-                          res.send '<script>parent.window.$.s3_result(\'' + fileName + '\');</script>'
-                        else
-                          s3_fail awsRes
-                    knoxReq.end buff
-                    # Finally, delete that temporary resized file. Keep shit clean.
-                    fs.unlink '/tmp/'+size+fileName, (err) ->
-                      if err
-                        console.log 'ERR:', err
-        
-        # Read the raw File
-        fs.readFile path, (err, buff) ->
-          # Send that raw file to Amazon to be saved!
-          knoxReq = knoxClient.put '/raw/'+fileName,
-            'Content-Length': buff.length
-            'Content-Type' : 'image/'+ext
-          knoxReq.on 'response', (res) ->
-            console.log 'ERR', res if res.statusCode != 200
-          knoxReq.end buff
-  catch err
-    s3_fail err
+  console.log req.form
+  console.log 2
+  #
+  # Find the file we just created
+  path = req.body.image.path
+  #
+  #
+  # Identify it's filname
+  #
+  #
+  s3_id = random_url()+random_url()+random_url()+'.png'
+  #
+  #
+  # Resize it with ImageMagick
+  im.convert [
+    path
+    '-filter','Quadratic'
+    '-resize','1680x900'
+    'png:-'
+  ], (err, rawImg, stderr) ->
+    if err
+      s3_fail err
+    else
+      #
+      console.log 3
+      #
+      buff = new Buffer rawImg, 'binary'
+      img = new node_canvas.Image
+      img.src = buff
+      #
+      #
+      console.log img.width, img.height
+      #
+      #
+      #
+      save_image_to = (width, height, dir) ->
+          #
+          #
+          #
+          canvas = new node_canvas(width,height)
+          ctx = canvas.getContext '2d'
+          #
+          ctx.drawImage img, 0, 0, width, height
+          #
+          #
+          canvas.toBuffer (err, canvas_buff) ->
+            log_err err if err
+            #
+            # Send that new file to Amazon to be saved!
+            knoxReq = knoxClient.put '/'+dir+'/'+s3_id,
+              'Content-Length': canvas_buff.length
+              'Content-Type' : 'image/png'
+            knoxReq.on 'response', (awsRes) ->
+              if awsRes.statusCode != 200
+                console.log 'ERR', awsRes
+              if width is 525
+                res.send '<script>parent.window.$.s3_result({s3_id:\''+s3_id+'\',width:'+img.width+',height:'+img.height+'});</script>'
+            knoxReq.end canvas_buff
+      #
+      save_image_to 158, 90, '158x90'
+      save_image_to 525, 300, '525x300'
+      save_image_to 1050, 600, 'raw'
+      #
 #
 #
 #

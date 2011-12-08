@@ -24,7 +24,7 @@
               input(placeholder='Professional')
             li.image
               label Background
-              form(target='hiddenFrame',action='/upload-image',method='POST',enctype='multipart/form-data')
+              form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
                 input(type='file',name='image')
               .img_loader
                 iframe(name='hiddenFrame')

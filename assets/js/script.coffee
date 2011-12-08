@@ -1052,9 +1052,9 @@ $ ->
     top: 0
   $('.category .card').live 'click', () ->
     $t = $ this
+    $('.card').removeClass 'active'
+    $t.addClass('active')
     setTimeout ->
-      $('.card').removeClass 'active'
-      $t.addClass('active')
       if $gs.offset().top == $t.offset().top-5
         $gs.animate
           left: $t.offset().left-5
@@ -1530,6 +1530,27 @@ $ ->
   # - timer events save form fields periodically to server
   #
   #
+  update_preview_card_at_bottom = ->
+    #
+    # For the home page, show the selected card at the bottom
+    $active_card = $.create_card_from_theme
+      theme: active_theme
+      height: 300
+      width: 525
+      active_view: active_view
+    $('.my_card').children().remove()
+    $('.my_card').append $active_card
+    $active_card.find('.qr canvas').css
+      left: 0
+      margin: 0
+    #
+    #
+    #
+    $lines.each (i) ->
+      update_cards i, $(this).html()
+  #
+  #
+  #
   load_theme = (theme) ->
     #
     # Set Constants
@@ -1598,18 +1619,7 @@ $ ->
         textAlign: pos.text_align
         color: '#'+pos.color
     #
-    #
-    # For the home page, show the selected card at the bottom
-    $active_card = $.create_card_from_theme
-      theme: active_theme
-      height: 300
-      width: 525
-      active_view: active_view
-    $('.my_card').children().remove()
-    $('.my_card').append $active_card
-    $active_card.find('.qr canvas').css
-      left: 0
-      margin: 0
+    update_preview_card_at_bottom()
     #
     #
     #
@@ -1619,9 +1629,6 @@ $ ->
     - this probably doesn't need to update every time. Could make page faster not doing this.
     ###
     #
-    #
-    $lines.each (i) ->
-      update_cards i, $(this).html()
   #
   #
   #
@@ -1680,73 +1687,107 @@ $ ->
     $t.click -> 
       style = $t.attr 'style'
       $input = $ '<input class="line" />'
+      $delete_button = $ '<div class="button gray small">X</div>'
+      $delete_button.css
+        width: 20
+        height: $t.height()
+        lineHeight: $t.height()+'px'
+        position: 'absolute'
+        top: parseInt($t.css('top'))-5
+        left: parseInt($t.css('left'))+$t.width()+10
       $input.attr 'style', style
       $input.val $t.html().replace /&nbsp;/g, ' '
       tt = Math.round $t.offset().top/3
       tl = Math.round $t.offset().left/3
       $t.after $input
+      $input.after $delete_button
       $t.hide()
+      #
+      #
+      $delete_button.click (e) ->
+        $input.val ''
+        update_value()
+        setTimeout ->
+          go_to_next()
+        , 0
+      #
+      #
+      #
+      update_value = ->
+        update_cards i, $input[0].value.replace /( )/g, '&nbsp;'
+        $t.html $input[0].value.replace /( )/g, '&nbsp;'
+        set_timers()
+      #
+      #
+      #
+      go_to_next = ->
+        $others = $t.siblings('div:visible:not(.button)')
+
+        $next = false
+        $a = false
+        $b = false
+        $c = false
+        $others.each ->
+          $a = $ this
+          at = Math.round $a.offset().top/3
+          al = Math.round $a.offset().left/3
+
+          if shift_pressed
+            if (at is tt and al < tl) or at < tt
+              $b = $a if not $b
+              bt = Math.round $b.offset().top/3
+              bl = Math.round $b.offset().left/3
+              if (at is bt and al > bl) or at > bt
+                $b = $a 
+            $c = $a if not $c
+            ct = Math.round $c.offset().top/3
+            cl = Math.round $c.offset().left/3
+            if (at is ct and al > cl) or at > ct
+              $c = $a
+          else
+            if (at is tt and al > tl) or at > tt
+              $b = $a if not $b
+              bt = Math.round $b.offset().top/3
+              bl = Math.round $b.offset().left/3
+              if (at is bt and al < bl) or at < bt
+                $b = $a
+            $c = $a if not $c
+            ct = Math.round $c.offset().top/3
+            cl = Math.round $c.offset().left/3
+            if (at is ct and al < cl) or at < ct
+              $c = $a
+        if $b
+          $b.click()
+        else
+          $c.click()
+      #
+      #
+      #
       $input.focus().select()
       $input.keydown (e) ->
+        if not e
+          e = 
+            keyCode: 13
         if e.keyCode is 16
           shift_pressed = true
         if e.keyCode is 13 or e.keyCode is 9
-          #
-          #
-          $others = $t.siblings('div:visible')
-
-          $next = false
-          $a = false
-          $b = false
-          $c = false
-          $others.each ->
-            $a = $ this
-            at = Math.round $a.offset().top/3
-            al = Math.round $a.offset().left/3
-
-            if shift_pressed
-              if (at is tt and al < tl) or at < tt
-                $b = $a if not $b
-                bt = Math.round $b.offset().top/3
-                bl = Math.round $b.offset().left/3
-                if (at is bt and al > bl) or at > bt
-                  $b = $a 
-              $c = $a if not $c
-              ct = Math.round $c.offset().top/3
-              cl = Math.round $c.offset().left/3
-              if (at is ct and al > cl) or at > ct
-                $c = $a
-            else
-              if (at is tt and al > tl) or at > tt
-                $b = $a if not $b
-                bt = Math.round $b.offset().top/3
-                bl = Math.round $b.offset().left/3
-                if (at is bt and al < bl) or at < bt
-                  $b = $a
-              $c = $a if not $c
-              ct = Math.round $c.offset().top/3
-              cl = Math.round $c.offset().left/3
-              if (at is ct and al < cl) or at < ct
-                $c = $a
           e.preventDefault()
-          if $b
-            $b.click()
-          else
-            $c.click()
+          #
+          #
+          go_to_next()
       $input.keyup (e) ->
         if e.keyCode is 16
           shift_pressed = false
         if e.keyCode is 13 or e.keyCode is 9
           e.preventDefault()
-        update_cards i, this.value.replace /( )/g, '&nbsp;'
-        $t.html this.value.replace /( )/g, '&nbsp;'
-        set_timers()
+        update_value()
 
       remove_input = (e) ->
         $target = $ e.target
-        if $target[0] isnt $t[0] and $target[0] isnt $input[0]
+        if $target[0] isnt $t[0] and $target[0] isnt $input[0] and $target[0] isnt $delete_button[0]
           $body.unbind 'click', remove_input
           $input.remove()
+          $delete_button.remove()
           $t.show()
       $body.bind 'click', remove_input
   #
@@ -1783,11 +1824,45 @@ $ ->
   # ADVANCED CARD DESIGNER
   #
   #
+  update_background_of_active = ->
+    $card.css
+      background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + active_theme.s3_id + '\')'
+    $active_thumb = $ '.category .card.active'
+    $active_thumb.css
+      background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/158x90/' + active_theme.s3_id + '\')'
+    set_my_theme_save_timers()
   #
+  #
+  $('.upload input[type=file]').change ->
+    $('.upload form').submit()
+  #
+  #
+  # This catches the script parent.window call sent from app.coffee on the s3 form submit
+  $.s3_result = (o) ->
+    console.log o
+    if o and o.s3_id
+      active_theme.s3_id = o.s3_id
+      update_background_of_active()
+    else
+      $.load_alert
+        content: 'I had trouble saving that image, please try again later.'
   #
   show_advanced = ->
     $home_options.hide()
     $advanced_options.show()
+    #
+    #
+    #
+    #
+    $patterns = $ '.patterns'
+    $thumbs = $patterns.find '.thumb'
+    #
+    #
+    #
+    $thumbs.click ->
+      $t = $ this
+      active_theme.s3_id = $t.attr 's3_id'
+      update_background_of_active()
 
   hide_advanced = ->
     $home_options.show()
@@ -1800,6 +1875,9 @@ $ ->
     if active_theme.category is 'My Own'
       clearTimeout my_theme_save_timer
       my_theme_save_timer = setTimeout ->
+        $active_thumb = $ '.category .card.active'
+        $active_thumb.data 'theme', active_theme
+        update_preview_card_at_bottom()
         $.ajax
           url: '/save-my-theme'
           data: JSON.stringify
