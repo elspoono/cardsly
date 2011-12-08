@@ -1681,7 +1681,9 @@ $ ->
     $t.data 'timer', 0
     
     $t.click -> 
-      if not $t.hasClass 'active'
+      if $('.tab_button .active').html() is 'Text'
+        $t.addClass 'active'
+      else if not $t.hasClass 'active'
         style = $t.attr 'style'
         $input = $ '<input class="line" />'
         $delete_button = $ '<div class="button gray small">X</div>'
@@ -1915,6 +1917,39 @@ $ ->
           $active_lines = $lines.filter '.active'
           #
           #
+          #
+          # Helper Function for getting the position in percentage from an elements top, left, height and width
+          get_position = ($t) ->
+            # Get it's CSS Values
+            height = parseInt $t.height()
+            width = parseInt $t.width()
+            left = parseInt $t.css 'left'
+            top = parseInt $t.css 'top'
+            #
+            # Stop me if something went wrong :)
+            if isNaN(height) or isNaN(width) or isNaN(top) or isNaN(left)
+               return false
+            #
+            # Calculate a percentage and send it
+            result = 
+              h: Math.round(height / card_height * 10000) / 100
+              w: Math.round(width / card_width * 10000) / 100
+              x: Math.round(left / card_width * 10000) / 100
+              y: Math.round(top / card_height * 10000) / 100
+          #
+          #
+          save_pos_and_size = ->
+            $visible_lines.each ->
+              $v = $ this
+              pos = get_position $v
+              index = $v.prevAll().length
+              active_theme.theme_templates[active_view].lines[index].h = pos.h
+              active_theme.theme_templates[active_view].lines[index].w = pos.w
+              active_theme.theme_templates[active_view].lines[index].x = pos.x
+              active_theme.theme_templates[active_view].lines[index].y = pos.y
+            set_my_theme_save_timers()
+          #
+          #
           # ----------------------
           # Determine where we touched down at
           # ----------------------
@@ -1954,8 +1989,8 @@ $ ->
                 # Figure out our dimensions
                 new_t = o.top - card_o.top - y 
                 new_l = o.left - card_o.left - x
-                max_t = card_h - h
-                max_l = card_w - w
+                max_t = card_h - h - 10
+                max_l = card_w - w - 10
                 new_w = w
                 #
                 #
@@ -1964,12 +1999,12 @@ $ ->
                   new_w = new_w+new_l+100
                 if new_l > max_l+100
                   new_w = new_w+(max_l+100-new_l)
-                  max_l = card_w - new_w
+                  max_l = card_w - new_w - 10
                 new_w = 50 if new_w < 50
                 #
                 # Boundary that shit
-                new_t = 0 if new_t < 0
-                new_l = 0 if new_l < 0
+                new_t = 10 if new_t < 10
+                new_l = 10 if new_l < 10
                 new_t = max_t if new_t > max_t
                 new_l = max_l if new_l > max_l
                 #
@@ -1982,6 +2017,7 @@ $ ->
               e_3.preventDefault()
               $body.unbind 'mousemove'
               $body.unbind 'mouseup'
+              save_pos_and_size()
 
           else
             # ----------------------
@@ -2057,7 +2093,7 @@ $ ->
           $active_lines.css 'font-family', new_font_family
           $active_lines.each ->
             $a = $ this
-            index = console.log $a.prevAll().length
+            index = $a.prevAll().length
             active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
             set_my_theme_save_timers()
       #
