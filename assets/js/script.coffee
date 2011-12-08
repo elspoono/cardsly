@@ -3,6 +3,7 @@
 #= require 'date'
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
+#= require 'libs/underscore.js'
 
 
 
@@ -1683,6 +1684,7 @@ $ ->
     $t.click -> 
       if $('.tab_button .active').html() is 'Text'
         $t.addClass 'active'
+        add_buttons_to_active()
       else if not $t.hasClass 'active'
         style = $t.attr 'style'
         $input = $ '<input class="line" />'
@@ -1819,6 +1821,137 @@ $ ->
   # ADVANCED CARD DESIGNER
   #
   #
+  # Helper Function for getting the position in percentage from an elements top, left, height and width
+  get_position = ($t) ->
+    # Get it's CSS Values
+    height = parseInt $t.height()
+    width = parseInt $t.width()
+    left = parseInt $t.css 'left'
+    top = parseInt $t.css 'top'
+    #
+    # Stop me if something went wrong :)
+    if isNaN(height) or isNaN(width) or isNaN(top) or isNaN(left)
+       return false
+    #
+    # Calculate a percentage and send it
+    result = 
+      h: Math.round(height / card_height * 10000) / 100
+      w: Math.round(width / card_width * 10000) / 100
+      x: Math.round(left / card_width * 10000) / 100
+      y: Math.round(top / card_height * 10000) / 100
+  #
+  #
+  save_pos_and_size = ->
+    $visible_lines = $lines.filter ':visible'
+    $visible_lines.each ->
+      $v = $ this
+      pos = get_position $v
+      index = $v.prevAll().length
+      active_theme.theme_templates[active_view].lines[index].h = pos.h
+      active_theme.theme_templates[active_view].lines[index].w = pos.w
+      active_theme.theme_templates[active_view].lines[index].x = pos.x
+      active_theme.theme_templates[active_view].lines[index].y = pos.y
+    set_my_theme_save_timers()
+  #
+  #
+  #
+  card_o = $card.offset()
+  card_w = $card.outerWidth()
+  card_h = $card.outerHeight()
+  #
+  #
+  add_buttons_to_active = ->
+    #
+    remove_buttons_from_active()
+    #
+    $active_lines = $lines.filter '.active'
+    #
+    if $active_lines.length
+      #
+      $active_lines = _($active_lines).sortBy (a) ->
+        $(a).offset().top
+      #
+      $first = $($active_lines[0])
+      $last = $(_($active_lines).last())
+      #
+      #
+      $font_decrease = $ '<div class="font_decrease">-</div>'
+      $card.append $font_decrease
+      #
+      $width_increase = $ '<div class="width_increase">></div>'
+      $card.append $width_increase
+      #
+      $font_increase = $ '<div class="font_increase">+</div>'
+      $card.append $font_increase
+      #
+      #
+      position_these_buttons = ->
+        #
+        $font_decrease.css
+          top: $first.offset().top - 20 - card_o.top
+          left: $first.offset().left + $first.outerWidth() - 30 - card_o.left
+        $width_increase.css
+          top: $first.offset().top - card_o.top
+          left: $first.offset().left + $first.outerWidth() - card_o.left
+          height: $first.outerHeight()
+          lineHeight: $first.outerHeight() + 'px'
+        $font_increase.css
+          top: $last.offset().top - card_o.top + $last.outerHeight()
+          left: $last.offset().left + $last.outerWidth() - 30 - card_o.left
+      #
+      #
+      position_these_buttons()
+      #
+      #
+      #
+      #
+      $active_lines = $lines.filter '.active'
+      #
+      # And finally, the events for that shit
+      $font_decrease.click (e) ->
+        e.preventDefault()
+        $active_lines.each ->
+          $a = $ this
+          c_s = $a.height()
+          c_s = c_s-5
+          $a.css
+            'font-size': c_s+'px'
+            'line-height': c_s+'px'
+            'height': c_s
+        position_these_buttons()
+        save_pos_and_size()
+      $font_increase.click (e) ->
+        e.preventDefault()
+        $active_lines.each ->
+          $a = $ this
+          c_s = $a.height()
+          c_s = c_s+5
+          $a.css
+            'font-size': c_s+'px'
+            'line-height': c_s+'px'
+            'height': c_s
+        position_these_buttons()
+        save_pos_and_size()
+      $width_increase.click (e) ->
+        e.preventDefault()
+        $active_lines.each ->
+          $a = $ this
+          $a.css
+            'width': card_w-20
+            'left': 10
+        position_these_buttons()
+        save_pos_and_size()
+  #
+  #
+  remove_buttons_from_active = ->
+    $('.font_increase').remove()
+    $('.font_decrease').remove()
+    $('.width_increase').remove()
+  #
+  #
+  #
+  #
+  #
   update_background_of_active = ->
     $card.css
       background: '#FFFFFF url(\'//d3eo3eito2cquu.cloudfront.net/525x300/' + active_theme.s3_id + '\')'
@@ -1877,6 +2010,8 @@ $ ->
       $t.addClass 'active'
       #
       #
+      #
+      remove_buttons_from_active()
       $lines.removeClass 'active'
       #
       # **********************************************************************
@@ -1903,11 +2038,20 @@ $ ->
         #
         #
         #
-        card_o = $card.offset()
-        card_w = $card.outerWidth()
-        card_h = $card.outerHeight()
+        #
+        #
+        #
+        #
+        #
+        #
+        #
         # Area Selecting Binding Event Nonsense
         $card.unbind().bind 'mousedown', (e) ->
+          #
+          if e.target.className is 'font_decrease' or e.target.className is 'font_increase' or e.target.className is 'width_increase'
+            return false
+          #
+          #
           #
           e_t = e.pageY - card_o.top
           e_l = e.pageX - card_o.left
@@ -1918,37 +2062,9 @@ $ ->
           #
           #
           #
-          # Helper Function for getting the position in percentage from an elements top, left, height and width
-          get_position = ($t) ->
-            # Get it's CSS Values
-            height = parseInt $t.height()
-            width = parseInt $t.width()
-            left = parseInt $t.css 'left'
-            top = parseInt $t.css 'top'
-            #
-            # Stop me if something went wrong :)
-            if isNaN(height) or isNaN(width) or isNaN(top) or isNaN(left)
-               return false
-            #
-            # Calculate a percentage and send it
-            result = 
-              h: Math.round(height / card_height * 10000) / 100
-              w: Math.round(width / card_width * 10000) / 100
-              x: Math.round(left / card_width * 10000) / 100
-              y: Math.round(top / card_height * 10000) / 100
           #
           #
-          save_pos_and_size = ->
-            $visible_lines.each ->
-              $v = $ this
-              pos = get_position $v
-              index = $v.prevAll().length
-              active_theme.theme_templates[active_view].lines[index].h = pos.h
-              active_theme.theme_templates[active_view].lines[index].w = pos.w
-              active_theme.theme_templates[active_view].lines[index].x = pos.x
-              active_theme.theme_templates[active_view].lines[index].y = pos.y
-            set_my_theme_save_timers()
-          #
+          remove_buttons_from_active()
           #
           # ----------------------
           # Determine where we touched down at
@@ -2018,6 +2134,7 @@ $ ->
               $body.unbind 'mousemove'
               $body.unbind 'mouseup'
               save_pos_and_size()
+              add_buttons_to_active()
 
           else
             # ----------------------
@@ -2059,12 +2176,15 @@ $ ->
               $highlight_box.remove()
               $body.unbind 'mousemove'
               $body.unbind 'mouseup'
+              add_buttons_to_active()
 
         #
         #
         #
         #
         $lines.filter(':eq(0)').addClass 'active'
+        #
+        add_buttons_to_active()
         #
         #
         $active_lines = $lines.filter '.active'
