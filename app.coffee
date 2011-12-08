@@ -860,6 +860,7 @@ app.configure ->
     user: false
     session: false
     error_message: false
+    abtest: 0
     _: _
     #
     # Cut off at 60 characters 
@@ -2741,7 +2742,7 @@ app.get '/cards/thank-you', securedPage, get_patterns, get_url_groups, (req, res
   res.render 'cards'
     req: req
     thankyou: true
-    conversion: true
+    abtest: 14
 #
 # Orders Page
 app.get '/orders', securedAdminPage, (req, res, next) ->
@@ -2928,31 +2929,39 @@ app.get '/sample-landing-page', get_patterns, (req, res) ->
     #
     # (Uncomment means remove the single # character at the start of it :)
 #
-#
-
 # AB Test Pages
-# Purchase
-app.get '/home1', (req, res) ->
-  res.render 'homep'
+
+# Page 1 Purchase
+app.get '/home1', get_patterns, get_url_groups, (req, res) ->
+  res.render 'home'
     req: req
+    abtest: 1
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
 
-# Checkout
-app.get '/home2', (req, res) ->
-  res.render 'homec'
+
+# Page 2 Checkout
+app.get '/home2', get_patterns, get_url_groups, (req, res) ->
+  res.render 'home'
     req: req
+    abtest: 2
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
-# Buy
-app.get '/home3', (req, res) ->
-  res.render 'homeb'
+
+# Page 3 Buy
+app.get '/home3',get_patterns, get_url_groups, (req, res) ->
+  res.render 'home'
     req: req
+    abtest: 3
+    url_groups: req.url_groups
     scripts:[
       'home'
     ]
+
 #
 #
 #
@@ -2990,6 +2999,7 @@ app.get '/', get_patterns, get_url_groups, (req, res) ->
     else
       res.render 'home'
         req: req
+        abtest: 4
         #
         # Cut off at 60 characters 
         #
@@ -3004,7 +3014,6 @@ app.get '/', get_patterns, get_url_groups, (req, res) ->
         # (Uncomment means remove the single # character at the start of it :)
         #
         url_groups: req.url_groups
-        test_code: true
         #
         #
         scripts:[
