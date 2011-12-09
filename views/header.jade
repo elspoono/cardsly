@@ -10,7 +10,7 @@ head
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   else if abtest == 4
-    // Google Website Optimizer Tracking Script Used for Control Page
+    // Google Website Optimizer Tracking Script Used for Control Page and Tracking
     script
       function utmx_section(){}function utmx(){}
       (function(){var k='1646005366',d=document,l=d.location,c=d.cookie;function f(n){
@@ -22,8 +22,6 @@ head
       +new Date().valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
       '" type="text/javascript" charset="utf-8"></sc'+'ript>')})();
       </script><script>utmx("url",'A/B');</script>
-      <!-- End of Google Website Optimizer Control Script -->
-      <!-- Google Website Optimizer Tracking Script -->
       <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['gwo._setAccount', 'UA-25705975-3']);
