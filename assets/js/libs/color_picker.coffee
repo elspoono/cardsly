@@ -9,12 +9,12 @@ class $.refresh.Web.ColorPicker
   constructor: (id, settings) ->
     @id = id
     @settings = $.extend($.extend({}, $.refresh.Web.DefaultColorPickerSettings), settings or {})
-    @_hueRadio = $(@id + "_HueRadio")
-    @_saturationRadio = $(@id + "_SaturationRadio")
-    @_valueRadio = $(@id + "_BrightnessRadio")
-    @_redRadio = $(@id + "_RedRadio")
-    @_greenRadio = $(@id + "_GreenRadio")
-    @_blueRadio = $(@id + "_BlueRadio")
+    @_hueRadio = $('#' + @id + "_HueRadio")
+    @_saturationRadio = $('#' + @id + "_SaturationRadio")
+    @_valueRadio = $('#' + @id + "_BrightnessRadio")
+    @_redRadio = $('#' + @id + "_RedRadio")
+    @_greenRadio = $('#' + @id + "_GreenRadio")
+    @_blueRadio = $('#' + @id + "_BlueRadio")
     @_hueRadio.value = "h"
     @_saturationRadio.value = "s"
     @_valueRadio.value = "v"
@@ -41,7 +41,7 @@ class $.refresh.Web.ColorPicker
       height: 256
       margin: 0
     @_mapBase.append @_mapL1
-    @_mapL2 = $('img').css
+    @_mapL2 = $('<img />').css
       src: @settings.clientFilesPath + "blank.gif"
       width: 256
       height: 256
@@ -49,49 +49,42 @@ class $.refresh.Web.ColorPicker
       margin: '-256px 0px 0px 0px'
     @_mapBase.append @_mapL2
     @_mapL2.fadeTo 0, .5
-    @_bar = $(@id + "_ColorBar").css
+    @_bar = $('#' + @id + "_ColorBar").css
       width: 20
       height: 256
       padding: 0
       margin: '0px 10px'
       border: 'solid 1px #000'
-    ###
-
-
-    YOU LEFT OFF HERE!!!
-
-
-    ###
-    @_barL1 = $('img').css
+    @_barL1 = $('<img />').css
       src: @settings.clientFilesPath + "blank.gif"
       width: 20
       height: 256
-    @_barL1.style.margin = "0px"
+      margin : 0
     @_bar.append @_barL1
-    @_barL2 = $('img').css
+    @_barL2 = $('<img />').css
       src: @settings.clientFilesPath + "blank.gif"
       width: 20
       height: 256
-    @_barL2.style.margin = "-256px 0px 0px 0px"
+      margin : '-256px 0px 0px 0px'
     @_bar.append @_barL2
-    @_barL3 = $('img').css
+    @_barL3 = $('<img />').css
       src: @settings.clientFilesPath + "blank.gif"
       width: 20
       height: 256
-    @_barL3.style.margin = "-256px 0px 0px 0px"
-    @_barL3.style.backgroundColor = "#ff0000"
+      margin: '-256px 0px 0px 0px'
+      backgroundColor: '#ff0000'
     @_bar.append @_barL3
-    @_barL4 = $('img').css
+    @_barL4 = $('<img />').css
       src: @settings.clientFilesPath + "bar-brightness.png"
       width: 20
       height: 256
-    @_barL4.style.margin = "-256px 0px 0px 0px"
+      margin: '-256px 0px 0px 0px'
     @_bar.append @_barL4
-    @_map = new $.refresh.Web.Slider(@_mapL2).css
+    @_map = new $.refresh.Web.Slider @_mapL2,
       xMaxValue: 255
       yMinValue: 255
       arrowImage: @settings.clientFilesPath + "mappoint.gif"
-    @_slider = new $.refresh.Web.Slider(@_barL4).css
+    @_slider = new $.refresh.Web.Slider @_barL4,
       xMinValue: 1
       xMaxValue: 1
       yMinValue: 255
@@ -118,15 +111,15 @@ class $.refresh.Web.ColorPicker
     @color = null
 
   show: ->
-    @_map.Arrow.style.display = ""
-    @_slider.Arrow.style.display = ""
+    @_map.Arrow.show()
+    @_slider.Arrow.show()
     @_map.setPositioningVariables()
     @_slider.setPositioningVariables()
     @positionMapAndSliderArrows()
 
   hide: ->
-    @_map.Arrow.style.display = "none"
-    @_slider.Arrow.style.display = "none"
+    @_map.Arrow.hide()
+    @_slider.Arrow.hide()
 
   _onRadioClicked: (e) ->
     @setColorMode e.target.value
@@ -141,9 +134,10 @@ class $.refresh.Web.ColorPicker
   setColorMode: (colorMode) ->
     resetImage = (cp, img) ->
       cp.setAlpha img, 100
-      img.style.backgroundColor = ""
-      img.src = cp.settings.clientFilesPath + "blank.gif"
-      img.style.filter = ""
+      img.css
+        backgroundColor: ''
+        src: cp.settings.clientFilesPath + 'blank.gif'
+        filter: ''
     @color = @_cvp.color
     resetImage this, @_mapL1
     resetImage this, @_mapL2
@@ -160,8 +154,10 @@ class $.refresh.Web.ColorPicker
     switch colorMode
       when "h"
         @_hueRadio.checked = true
-        @_mapL1.style.backgroundColor = "#" + @color.hex
-        @_mapL2.style.backgroundColor = "transparent"
+        @_mapL1.css
+          backgroundColor: "#" + @color.hex
+        @_mapL2.css
+          backgroundColor: "transparent"
         @setImg @_mapL2, @settings.clientFilesPath + "map-hue.png"
         @setAlpha @_mapL2, 100
         @setImg @_barL4, @settings.clientFilesPath + "bar-hue.png"
@@ -182,7 +178,8 @@ class $.refresh.Web.ColorPicker
         @_valueRadio.checked = true
         @setBG @_mapL1, "000"
         @setImg @_mapL2, @settings.clientFilesPath + "map-brightness.png"
-        @_barL3.style.backgroundColor = "#" + @color.hex
+        @_barL3.css
+          backgroundColor: "#" + @color.hex
         @setImg @_barL4, @settings.clientFilesPath + "bar-brightness.png"
         @_map.settings.xMaxValue = 359
         @_map.settings.yMaxValue = 100
@@ -328,7 +325,8 @@ class $.refresh.Web.ColorPicker
 
   updatePreview: ->
     try
-      @_preview.style.backgroundColor = "#" + @_cvp.color.hex
+      @_preview.css
+        backgroundColor: "#" + @_cvp.color.hex
 
   updateMapVisuals: ->
     @color = @_cvp.color
@@ -391,20 +389,25 @@ class $.refresh.Web.ColorPicker
 
   setBG: (el, c) ->
     try
-      el.style.backgroundColor = "#" + c
+      el.css
+        backgroundColor: "#" + c
 
   setImg: (img, src) ->
     if src.indexOf("png") and @isLessThanIE7
-      img.pngSrc = src
-      img.src = @settings.clientFilesPath + "blank.gif"
-      img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "');"
+      img.attr
+        pngSrc: src
+        src: @settings.clientFilesPath + "blank.gif"
+      img.css
+        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "');"
     else
-      img.src = src
+      img.attr
+        src: src
 
   setAlpha: (obj, alpha) ->
     if @isLessThanIE7
       src = obj.pngSrc
-      obj.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "') progid:DXImageTransform.Microsoft.Alpha(opacity=" + alpha + ")"  if src? and src.indexOf("map-hue") is -1
+      obj.css
+        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "') progid:DXImageTransform.Microsoft.Alpha(opacity=" + alpha + ")"  if src? and src.indexOf("map-hue") is -1
     else
       obj.fadeTo 0, alpha / 100
 
@@ -412,13 +415,13 @@ class $.refresh.Web.ColorValuePicker
   constructor: (id) ->
     @id = id
     @onValuesChanged = null
-    @_hueInput = $(@id + "_Hue")
-    @_valueInput = $(@id + "_Brightness")
-    @_saturationInput = $(@id + "_Saturation")
-    @_redInput = $(@id + "_Red")
-    @_greenInput = $(@id + "_Green")
-    @_blueInput = $(@id + "_Blue")
-    @_hexInput = $(@id + "_Hex")
+    @_hueInput = $('#' + @id + "_Hue")
+    @_valueInput = $('#' + @id + "_Brightness")
+    @_saturationInput = $('#' + @id + "_Saturation")
+    @_redInput = $('#' + @id + "_Red")
+    @_greenInput = $('#' + @id + "_Green")
+    @_blueInput = $('#' + @id + "_Blue")
+    @_hexInput = $('#' + @id + "_Hex")
     @_hueInput.keyup @_event_onHsvKeyUp
     @_valueInput.keyup @_event_onHsvKeyUp
     @_saturationInput.keyup @_event_onHsvKeyUp
@@ -534,40 +537,39 @@ $.refresh.Web.DefaultSliderSettings =
 class $.refresh.Web.Slider
   _bar: null
   _arrow: null
-  constructor: (id, settings) ->
-    @id = id
+  constructor: (passed_in, settings) ->
     @settings = $.extend($.extend({}, $.refresh.Web.DefaultSliderSettings), settings or {})
     @xValue = 0
     @yValue = 0
-    @_bar = $(@id)
-    @_arrow = document.createElement("img")
-    @_arrow.border = 0
-    @_arrow.src = @settings.arrowImage
-    @_arrow.margin = 0
-    @_arrow.padding = 0
-    @_arrow.style.position = "absolute"
-    @_arrow.style.top = "0px"
-    @_arrow.style.left = "0px"
-    document.body.append @_arrow
+    @_bar = passed_in
+    @_arrow = $ '<img />'
+    @_arrow.attr
+      border: 0
+      src: @settings.arrowImage
+      margin: 0
+      padding: 0
+      position: 'absolute'
+      top: 0
+      left: 0
+    $(document.body).append @_arrow
     slider = this
     @setPositioningVariables()
-    @_bar.mousedown @_bar_mouseDown
-    @_arrow.mousedown @_arrow_mouseDown
+    @_bar.mousedown @_mouseDown
+    @_arrow.mousedown @_mouseDown
     @setArrowPositionFromValues()
     @onValuesChanged this  if @onValuesChanged
     $.refresh.Web.SlidersList.push this
-
   setPositioningVariables: ->
-    @_barWidth = @_bar.getWidth()
-    @_barHeight = @_bar.getHeight()
-    pos = @_bar.cumulativeOffset()
+    @_barWidth = @_bar.width()
+    @_barHeight = @_bar.height()
+    pos = @_bar.offset()
     @_barTop = pos.top
     @_barLeft = pos.left
     @_barBottom = @_barTop + @_barHeight
     @_barRight = @_barLeft + @_barWidth
     @_arrow = $(@_arrow)
-    @_arrowWidth = @_arrow.getWidth()
-    @_arrowHeight = @_arrow.getHeight()
+    @_arrowWidth = @_arrow.width()
+    @_arrowHeight = @_arrow.height()
     @MinX = @_barLeft
     @MinY = @_barTop
     @MaxX = @_barRight
@@ -626,14 +628,9 @@ class $.refresh.Web.Slider
       posY = posY - (@_arrowHeight / 2 - @_barHeight / 2)
     else
       posY = posY - parseInt(@_arrowHeight / 2)
-    @_arrow.style.left = posX + "px"
-    @_arrow.style.top = posY + "px"
-
-  _bar_mouseDown: (e) ->
-    @_mouseDown e
-
-  _arrow_mouseDown: (e) ->
-    @_mouseDown e
+    @_arrow.css
+      left: posX + 'px'
+      top: posY + 'px'
 
   _mouseDown: (e) ->
     $.refresh.Web.ActiveSlider = this
@@ -641,6 +638,12 @@ class $.refresh.Web.Slider
     document.mousemove @_event_docMouseMove
     documentmouseup @_event_docMouseUp
     Event.stop e
+
+  _bar_mouseDown: (e) ->
+    @_mouseDown e
+
+  _arrow_mouseDown: (e) ->
+    @_mouseDown e
 
   _docMouseMove: (e) ->
     @setValuesFromMousePosition e
