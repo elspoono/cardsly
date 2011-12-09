@@ -1843,7 +1843,68 @@ input value=["Send Feedback"]
       width 120px
 
 
+.color_picker
+  input
+    position absolute
+    width 185px
+    padding 80px 0 0 0
+    height 105px
+    line-height 105px
+    margin 5px
+    border_radius(93px)
+    text-align center
+    text_shadow()
+    color #FFF
+    font-size 24px
+/**
+ * Farbtastic Color Picker 1.2
+ * © 2008 Steven Wittens
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+.farbtastic
+  position relative
 
+.farbtastic *
+  position absolute
+  cursor crosshair
+
+.farbtastic, .farbtastic .wheel
+  width 195px
+  height 195px
+
+.farbtastic .color, .farbtastic .overlay
+  top 39px
+  left 57px
+  width 81px
+  height 81px
+
+.farbtastic .wheel
+  background url('/images/colorpicker/wheel.png') no-repeat
+  width 195px
+  height 195px
+
+.farbtastic .overlay
+  background url('/images/colorpicker/mask.png') no-repeat
+
+.farbtastic .marker
+  width 17px
+  height 17px
+  margin -8px 0 0 -8px
+  overflow hidden
+  background url('/images/colorpicker/marker.png') no-repeat
 
 @import 'libs/colorpicker'
 

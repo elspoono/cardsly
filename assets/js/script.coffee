@@ -4,8 +4,7 @@
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
-#= require 'libs/color_picker'
-#= require 'libs/underscore.js'
+#= require 'libs/farbtastic'
 
 
 
@@ -2039,6 +2038,8 @@ $ ->
     #
     #
     #
+    #
+    #
     $thumbs.unbind().click ->
       $t = $ this
       active_theme.s3_id = $t.attr 's3_id'
@@ -2093,6 +2094,10 @@ $ ->
         #
         #
         #
+        $color_picker = $a.find '.color_picker'
+        $color_input = $color_picker.find 'input'
+        $color_picker.find('.wheel').farbtastic $color_input
+        $color_input.val '336699'
         #
         #
         #
