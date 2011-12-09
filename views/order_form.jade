@@ -82,6 +82,8 @@
                   .alignment.center(alignment='center')
                   .alignment.right(alignment='right')
                 .color_picker
+                  input
+                  .wheel
               li Blegh
             ul.tab_button
               li.active Background
@@ -116,7 +118,6 @@
               img.promo_img(src='/images/promo.png')
               input(
                 type='radio'
-                name='quantity'
                 value='10'
                 checked= (quantity==10 ? 'checked' : false)
                 id='quantity_1'

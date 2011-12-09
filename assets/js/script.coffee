@@ -4,6 +4,7 @@
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
+#= require 'libs/farbtastic'
 
 
 
@@ -2093,6 +2094,10 @@ $ ->
         #
         #
         #
+        $color_picker = $a.find '.color_picker'
+        $color_input = $color_picker.find 'input'
+        $color_picker.find('.wheel').farbtastic $color_input
+        $color_input.val '336699'
         #
         #
         #
