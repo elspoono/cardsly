@@ -4,8 +4,6 @@
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
-#= require 'libs/color_picker'
-#= require 'libs/underscore.js'
 
 
 
@@ -2036,6 +2034,8 @@ $ ->
     #
     $patterns = $ '.patterns'
     $thumbs = $patterns.find '.thumb'
+    #
+    #
     #
     #
     #

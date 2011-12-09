@@ -1,14 +1,14 @@
-$.refresh = {}
-$.refresh.Web = {}
-$.refresh.Web.DefaultColorPickerSettings =
+
+$.ref_web = {}
+$.ref_web.DefaultColorPickerSettings =
   startMode: "h"
   startHex: "ff0000"
   clientFilesPath: "/images/colorpicker/"
 
-class $.refresh.Web.ColorPicker
+class $.ref_web.ColorPicker
   constructor: (id, settings) ->
     @id = id
-    @settings = $.extend($.extend({}, $.refresh.Web.DefaultColorPickerSettings), settings or {})
+    @settings = $.extend($.extend({}, $.ref_web.DefaultColorPickerSettings), settings or {})
     @_hueRadio = $('#' + @id + "_HueRadio")
     @_saturationRadio = $('#' + @id + "_SaturationRadio")
     @_valueRadio = $('#' + @id + "_BrightnessRadio")
@@ -80,16 +80,16 @@ class $.refresh.Web.ColorPicker
       height: 256
       margin: '-256px 0px 0px 0px'
     @_bar.append @_barL4
-    @_map = new $.refresh.Web.Slider @_mapL2,
+    @_map = new $.ref_web.Slider @_mapL2,
       xMaxValue: 255
       yMinValue: 255
       arrowImage: @settings.clientFilesPath + "mappoint.gif"
-    @_slider = new $.refresh.Web.Slider @_barL4,
+    @_slider = new $.ref_web.Slider @_barL4,
       xMinValue: 1
       xMaxValue: 1
       yMinValue: 255
       arrowImage: @settings.clientFilesPath + "rangearrows.gif"
-    @_cvp = new $.refresh.Web.ColorValuePicker(@id)
+    @_cvp = new $.ref_web.ColorValuePicker(@id)
     cp = this
     @_slider.onValuesChanged = ->
       cp.sliderValueChanged()
@@ -332,7 +332,7 @@ class $.refresh.Web.ColorPicker
     @color = @_cvp.color
     switch @ColorMode
       when "h"
-        color = new $.refresh.Web.Color(
+        color = new $.ref_web.Color(
           h: @color.h
           s: 100
           v: 100
@@ -353,14 +353,14 @@ class $.refresh.Web.ColorPicker
     @color = @_cvp.color
     switch @ColorMode
       when "h", "s"
-        saturatedColor = new $.refresh.Web.Color(
+        saturatedColor = new $.ref_web.Color(
           h: @color.h
           s: 100
           v: @color.v
         )
         @setBG @_barL3, saturatedColor.hex
       when "v"
-        valueColor = new $.refresh.Web.Color(
+        valueColor = new $.ref_web.Color(
           h: @color.h
           s: @color.s
           v: 100
@@ -411,7 +411,7 @@ class $.refresh.Web.ColorPicker
     else
       obj.fadeTo 0, alpha / 100
 
-class $.refresh.Web.ColorValuePicker
+class $.ref_web.ColorValuePicker
   constructor: (id) ->
     @id = id
     @onValuesChanged = null
@@ -435,7 +435,7 @@ class $.refresh.Web.ColorValuePicker
     @_greenInput.blur @_event_onRgbBlur
     @_blueInput.blur @_event_onRgbBlur
     @_hexInput.keyup @_event_onHexKeyUp
-    @color = new $.refresh.Web.Color()
+    @color = new $.ref_web.Color()
     @color.setHex @_hexInput.value  unless @_hexInput.value is ""
     @_hexInput.value = @color.hex
     @_redInput.value = @color.r
@@ -526,159 +526,186 @@ class $.refresh.Web.ColorValuePicker
     @_valueInput.value = @color.v
 
 
-$.refresh.Web.SlidersList = []
-$.refresh.Web.DefaultSliderSettings =
-  xMinValue: 0
-  xMaxValue: 100
-  yMinValue: 0
-  yMaxValue: 100
-  arrowImage: "refresh_web/colorpicker/images/rangearrows.gif"
+$.ref_web.SlidersList = []
 
-class $.refresh.Web.Slider
-  _bar: null
-  _arrow: null
-  constructor: (passed_in, settings) ->
-    @settings = $.extend($.extend({}, $.refresh.Web.DefaultSliderSettings), settings or {})
-    @xValue = 0
-    @yValue = 0
-    @_bar = passed_in
-    @_arrow = $ '<img />'
-    @_arrow.attr
+
+class $.ref_web.Slider
+  constructor: (passed_in, passed_settings) ->
+    #
+    settings = 
+      x_min_value: 0
+      x_max_value: 100
+      y_min_value: 0
+      y_max_value: 100
+      arrow_image: '/images/colorpicker/rangearrows.gif'
+    #
+    $.extend settings, passed_settings
+    x_value = 0
+    y_value = 0
+    $bar = passed_in
+    $arrow = $ '<img />'
+    $arrow.attr
       border: 0
-      src: @settings.arrowImage
+      src: settings.arrowImage
       margin: 0
       padding: 0
       position: 'absolute'
       top: 0
       left: 0
-    $(document.body).append @_arrow
+    $(document.body).append $arrow
     slider = this
-    @setPositioningVariables()
-    @_bar.mousedown @_mouseDown
-    @_arrow.mousedown @_mouseDown
+    $document = $ document
+    
+
+
+    #
+    #
+    #
+    # LEFT OFF HERE
+    #
+    #
+    #
+
+    #
+    #
+    # Repetitive Code!!
+    bar_width = $bar.width()
+    bar_height = $bar.height()
+    pos = $bar.offset()
+    bar_top = pos.top
+    bar_left = pos.left
+    bar_bottom = bar_top + bar_height
+    bar_right = bar_left + bar_width
+    arrowWidth = $arrow.width()
+    arrowHeight = $arrow.height()
+    min_x = bar_left
+    min_y = bar_top
+    max_x = bar_right
+    min_y = bar_bottom
+    set_position_variables = ->
+      bar_width = $bar.width()
+      bar_height = $bar.height()
+      pos = $bar.offset()
+      bar_top = pos.top
+      bar_left = pos.left
+      bar_bottom = bar_top + bar_height
+      bar_right = bar_left + bar_width
+      arrowWidth = $arrow.width()
+      arrowHeight = $arrow.height()
+      min_x = bar_left
+      min_y = bar_top
+      max_x = bar_right
+      min_y = bar_bottom
+
+
+
+
+
+
+
+    setArrowPositionFromValues = (e) ->
+      @setPositioningVariables()
+      arrowOffsetX = 0
+      arrowOffsetY = 0
+      unless settings.xMinValue is settings.xMaxValue
+        if @xValue is settings.xMinValue
+          arrowOffsetX = 0
+        else if @xValue is settings.xMaxValue
+          arrowOffsetX = @_barWidth - 1
+        else
+          xMax = settings.xMaxValue
+          xMax = xMax + Math.abs(settings.xMinValue) + 1  if settings.xMinValue < 1
+          xValue = @xValue
+          xValue = xValue + 1  if @xValue < 1
+          arrowOffsetX = xValue / xMax * @_barWidth
+          if parseInt(arrowOffsetX) is (xMax - 1)
+            arrowOffsetX = xMax
+          else
+            arrowOffsetX = parseInt(arrowOffsetX)
+          arrowOffsetX = arrowOffsetX - Math.abs(settings.xMinValue) - 1  if settings.xMinValue < 1
+      unless settings.yMinValue is settings.yMaxValue
+        if @yValue is settings.yMinValue
+          arrowOffsetY = 0
+        else if @yValue is settings.yMaxValue
+          arrowOffsetY = @_barHeight - 1
+        else
+          yMax = settings.yMaxValue
+          yMax = yMax + Math.abs(settings.yMinValue) + 1  if settings.yMinValue < 1
+          yValue = @yValue
+          yValue = yValue + 1  if @yValue < 1
+          arrowOffsetY = yValue / yMax * @_barHeight
+          if parseInt(arrowOffsetY) is (yMax - 1)
+            arrowOffsetY = yMax
+          else
+            arrowOffsetY = parseInt(arrowOffsetY)
+          arrowOffsetY = arrowOffsetY - Math.abs(settings.yMinValue) - 1  if settings.yMinValue < 1
+      @_setArrowPosition arrowOffsetX, arrowOffsetY
+
+    _setArrowPosition = (offsetX, offsetY) ->
+      offsetX = 0  if offsetX < 0
+      offsetX = @_barWidth  if offsetX > @_barWidth
+      offsetY = 0  if offsetY < 0
+      offsetY = @_barHeight  if offsetY > @_barHeight
+      posX = @_barLeft + offsetX
+      posY = @_barTop + offsetY
+      if @_arrowWidth > @_barWidth
+        posX = posX - (@_arrowWidth / 2 - @_barWidth / 2)
+      else
+        posX = posX - parseInt(@_arrowWidth / 2)
+      if @_arrowHeight > @_barHeight
+        posY = posY - (@_arrowHeight / 2 - @_barHeight / 2)
+      else
+        posY = posY - parseInt(@_arrowHeight / 2)
+      @_arrow.css
+        left: posX + 'px'
+        top: posY + 'px'
+
+    set_values_from_mouse_pos = (e) ->
+      mouse = 
+        x: e.pageX
+        y: e.pageY
+      relativeX = 0
+      relativeY = 0
+      if mouse.x < @_barLeft
+        relativeX = 0
+      else if mouse.x > @_barRight
+        relativeX = @_barWidth
+      else
+        relativeX = mouse.x - @_barLeft + 1
+      if mouse.y < @_barTop
+        relativeY = 0
+      else if mouse.y > @_barBottom
+        relativeY = @_barHeight
+      else
+        relativeY = mouse.y - @_barTop + 1
+      newXValue = parseInt(relativeX / @_barWidth * settings.xMaxValue)
+      newYValue = parseInt(relativeY / @_barHeight * settings.yMaxValue)
+      @xValue = newXValue
+      @yValue = newYValue
+      relativeX = 0  if settings.xMaxValue is settings.xMinValue
+      relativeY = 0  if settings.yMaxValue is settings.yMinValue
+      @_setArrowPosition relativeX, relativeY
+      @onValuesChanged this  if @onValuesChanged
+
+    doc_mouse_up = (e) ->
+      $document.unbind 'mouseup', doc_mouse_up
+      $document.unbind 'mousemove', set_values_from_mouse_pos
+
+    mouse_down = (e) ->
+      $.ref_web.ActiveSlider = this
+      set_values_from_mouse_pos e
+      $document.mousemove set_values_from_mouse_pos
+      $document.mouseup doc_mouse_up
+
+    @_bar.mousedown mouse_down
+    @_arrow.mousedown mouse_down
     @setArrowPositionFromValues()
     @onValuesChanged this  if @onValuesChanged
-    $.refresh.Web.SlidersList.push this
-  setPositioningVariables: ->
-    @_barWidth = @_bar.width()
-    @_barHeight = @_bar.height()
-    pos = @_bar.offset()
-    @_barTop = pos.top
-    @_barLeft = pos.left
-    @_barBottom = @_barTop + @_barHeight
-    @_barRight = @_barLeft + @_barWidth
-    @_arrow = $(@_arrow)
-    @_arrowWidth = @_arrow.width()
-    @_arrowHeight = @_arrow.height()
-    @MinX = @_barLeft
-    @MinY = @_barTop
-    @MaxX = @_barRight
-    @MinY = @_barBottom
+    $.ref_web.SlidersList.push this
 
-  setArrowPositionFromValues: (e) ->
-    @setPositioningVariables()
-    arrowOffsetX = 0
-    arrowOffsetY = 0
-    unless @settings.xMinValue is @settings.xMaxValue
-      if @xValue is @settings.xMinValue
-        arrowOffsetX = 0
-      else if @xValue is @settings.xMaxValue
-        arrowOffsetX = @_barWidth - 1
-      else
-        xMax = @settings.xMaxValue
-        xMax = xMax + Math.abs(@settings.xMinValue) + 1  if @settings.xMinValue < 1
-        xValue = @xValue
-        xValue = xValue + 1  if @xValue < 1
-        arrowOffsetX = xValue / xMax * @_barWidth
-        if parseInt(arrowOffsetX) is (xMax - 1)
-          arrowOffsetX = xMax
-        else
-          arrowOffsetX = parseInt(arrowOffsetX)
-        arrowOffsetX = arrowOffsetX - Math.abs(@settings.xMinValue) - 1  if @settings.xMinValue < 1
-    unless @settings.yMinValue is @settings.yMaxValue
-      if @yValue is @settings.yMinValue
-        arrowOffsetY = 0
-      else if @yValue is @settings.yMaxValue
-        arrowOffsetY = @_barHeight - 1
-      else
-        yMax = @settings.yMaxValue
-        yMax = yMax + Math.abs(@settings.yMinValue) + 1  if @settings.yMinValue < 1
-        yValue = @yValue
-        yValue = yValue + 1  if @yValue < 1
-        arrowOffsetY = yValue / yMax * @_barHeight
-        if parseInt(arrowOffsetY) is (yMax - 1)
-          arrowOffsetY = yMax
-        else
-          arrowOffsetY = parseInt(arrowOffsetY)
-        arrowOffsetY = arrowOffsetY - Math.abs(@settings.yMinValue) - 1  if @settings.yMinValue < 1
-    @_setArrowPosition arrowOffsetX, arrowOffsetY
 
-  _setArrowPosition: (offsetX, offsetY) ->
-    offsetX = 0  if offsetX < 0
-    offsetX = @_barWidth  if offsetX > @_barWidth
-    offsetY = 0  if offsetY < 0
-    offsetY = @_barHeight  if offsetY > @_barHeight
-    posX = @_barLeft + offsetX
-    posY = @_barTop + offsetY
-    if @_arrowWidth > @_barWidth
-      posX = posX - (@_arrowWidth / 2 - @_barWidth / 2)
-    else
-      posX = posX - parseInt(@_arrowWidth / 2)
-    if @_arrowHeight > @_barHeight
-      posY = posY - (@_arrowHeight / 2 - @_barHeight / 2)
-    else
-      posY = posY - parseInt(@_arrowHeight / 2)
-    @_arrow.css
-      left: posX + 'px'
-      top: posY + 'px'
 
-  _mouseDown: (e) ->
-    $.refresh.Web.ActiveSlider = this
-    @setValuesFromMousePosition e
-    document.mousemove @_event_docMouseMove
-    documentmouseup @_event_docMouseUp
-    Event.stop e
-
-  _bar_mouseDown: (e) ->
-    @_mouseDown e
-
-  _arrow_mouseDown: (e) ->
-    @_mouseDown e
-
-  _docMouseMove: (e) ->
-    @setValuesFromMousePosition e
-    Event.stop e
-
-  _docMouseUp: (e) ->
-    document.unbind 'mouseup', @_event_docMouseUp
-    document.unbind 'mousemove', @_event_docMouseMove
-    Event.stop e
-
-  setValuesFromMousePosition: (e) ->
-    mouse = Event.pointer(e)
-    relativeX = 0
-    relativeY = 0
-    if mouse.x < @_barLeft
-      relativeX = 0
-    else if mouse.x > @_barRight
-      relativeX = @_barWidth
-    else
-      relativeX = mouse.x - @_barLeft + 1
-    if mouse.y < @_barTop
-      relativeY = 0
-    else if mouse.y > @_barBottom
-      relativeY = @_barHeight
-    else
-      relativeY = mouse.y - @_barTop + 1
-    newXValue = parseInt(relativeX / @_barWidth * @settings.xMaxValue)
-    newYValue = parseInt(relativeY / @_barHeight * @settings.yMaxValue)
-    @xValue = newXValue
-    @yValue = newYValue
-    relativeX = 0  if @settings.xMaxValue is @settings.xMinValue
-    relativeY = 0  if @settings.yMaxValue is @settings.yMinValue
-    @_setArrowPosition relativeX, relativeY
-    @onValuesChanged this  if @onValuesChanged
-$.refresh.Web.Color = (init) ->
+$.ref_web.Color = (init) ->
   color =
     r: 0
     g: 0
@@ -691,29 +718,29 @@ $.refresh.Web.Color = (init) ->
       @r = r
       @g = g
       @b = b
-      newHsv = $.refresh.Web.ColorMethods.rgbToHsv(this)
+      newHsv = $.ref_web.ColorMethods.rgbToHsv(this)
       @h = newHsv.h
       @s = newHsv.s
       @v = newHsv.v
-      @hex = $.refresh.Web.ColorMethods.rgbToHex(this)
+      @hex = $.ref_web.ColorMethods.rgbToHex(this)
 
     setHsv: (h, s, v) ->
       @h = h
       @s = s
       @v = v
-      newRgb = $.refresh.Web.ColorMethods.hsvToRgb(this)
+      newRgb = $.ref_web.ColorMethods.hsvToRgb(this)
       @r = newRgb.r
       @g = newRgb.g
       @b = newRgb.b
-      @hex = $.refresh.Web.ColorMethods.rgbToHex(newRgb)
+      @hex = $.ref_web.ColorMethods.rgbToHex(newRgb)
 
     setHex: (hex) ->
       @hex = hex
-      newRgb = $.refresh.Web.ColorMethods.hexToRgb(@hex)
+      newRgb = $.ref_web.ColorMethods.hexToRgb(@hex)
       @r = newRgb.r
       @g = newRgb.g
       @b = newRgb.b
-      newHsv = $.refresh.Web.ColorMethods.rgbToHsv(newRgb)
+      newHsv = $.ref_web.ColorMethods.rgbToHsv(newRgb)
       @h = newHsv.h
       @s = newHsv.s
       @v = newHsv.v
@@ -726,7 +753,7 @@ $.refresh.Web.Color = (init) ->
     else color.setHsv init.h, init.s, init.v  if init.h
   color
 
-$.refresh.Web.ColorMethods =
+$.ref_web.ColorMethods =
   hexToRgb: (hex) ->
     hex = @validateHex(hex)
     r = "00"

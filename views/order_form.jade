@@ -82,67 +82,6 @@
                   .alignment.center(alignment='center')
                   .alignment.right(alignment='right')
                 .color_picker
-                  table
-                    tr
-                      td(valign='top')
-                        #cp1_ColorMap
-                      td(valign='top')
-                        #cp1_ColorBar
-                      td(valign='top')
-                        table
-                          tr
-                            td(colspan='3')
-                              #cp1_Preview(style='background-color: #fff; width: 60px; height: 60px; padding: 0; margin: 0; border: solid 1px #000;')
-                                br
-                          tr
-                            td
-                              input#cp1_HueRadio(type='radio', name='cp1_Mode', value='0')
-                            td
-                              label(for='cp1_HueRadio') H:
-                            td
-                              input#cp1_Hue(type='text', value='0', style='width: 40px;') &deg;
-                          tr
-                            td
-                              input#cp1_SaturationRadio(type='radio', name='cp1_Mode', value='1')
-                            td
-                              label(for='cp1_SaturationRadio') S:
-                            td
-                              input#cp1_Saturation(type='text', value='100', style='width: 40px;') %
-                          tr
-                            td
-                              input#cp1_BrightnessRadio(type='radio', name='cp1_Mode', value='2')
-                            td
-                              label(for='cp1_BrightnessRadio') B:
-                            td
-                              input#cp1_Brightness(type='text', value='100', style='width: 40px;') %
-                          tr
-                            td(colspan='3', height='5')
-                          tr
-                            td
-                              input#cp1_RedRadio(type='radio', name='cp1_Mode', value='r')
-                            td
-                              label(for='cp1_RedRadio') R:
-                            td
-                            td
-                              input#cp1_Red(type='text', value='255', style='width: 40px;')
-                          tr
-                            td
-                              input#cp1_GreenRadio(type='radio', name='cp1_Mode', value='g')
-                            td
-                              label(for='cp1_GreenRadio') G:
-                            td
-                              input#cp1_Green(type='text', value='0', style='width: 40px;')
-                          tr
-                            td
-                              input#cp1_BlueRadio(type='radio', name='cp1_Mode', value='b')
-                            td
-                              label(for='cp1_BlueRadio') B:
-                            td
-                              input#cp1_Blue(type='text', value='0', style='width: 40px;')
-                          tr
-                            td #:
-                            td(colspan='2')
-                              input#cp1_Hex(type='text', value='FF0000', style='width: 60px;')
               li Blegh
             ul.tab_button
               li.active Background
