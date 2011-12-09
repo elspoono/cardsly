@@ -4,6 +4,8 @@
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
+#= require 'libs/color_picker'
+#= require 'libs/underscore.js'
 
 
 
@@ -1881,6 +1883,9 @@ $ ->
       $width_increase = $ '<div class="width_increase">></div>'
       $card.append $width_increase
       #
+      $width_decrease = $ '<div class="width_decrease"><</div>'
+      $card.append $width_decrease
+      #
       $font_increase = $ '<div class="font_increase">+</div>'
       $card.append $font_increase
       #
@@ -1888,16 +1893,23 @@ $ ->
       position_these_buttons = ->
         #
         $font_decrease.css
+          top: $last.offset().top - card_o.top + $last.outerHeight()
+          left: $last.offset().left + $last.outerWidth() - 30 - card_o.left
+        $font_increase.css
           top: $first.offset().top - 20 - card_o.top
           left: $first.offset().left + $first.outerWidth() - 30 - card_o.left
+        #
+        #
         $width_increase.css
           top: $first.offset().top - card_o.top
           left: $first.offset().left + $first.outerWidth() - card_o.left
           height: $first.outerHeight()
           lineHeight: $first.outerHeight() + 'px'
-        $font_increase.css
-          top: $last.offset().top - card_o.top + $last.outerHeight()
-          left: $last.offset().left + $last.outerWidth() - 30 - card_o.left
+        $width_decrease.css
+          top: $first.offset().top - card_o.top
+          left: $first.offset().left - 30 - card_o.left
+          height: $first.outerHeight()
+          lineHeight: $first.outerHeight() + 'px'
       #
       #
       position_these_buttons()
@@ -1913,7 +1925,7 @@ $ ->
         $active_lines.each ->
           $a = $ this
           c_s = $a.height()
-          c_s = c_s-5
+          c_s = c_s-4
           $a.css
             'font-size': c_s+'px'
             'line-height': c_s+'px'
@@ -1925,7 +1937,7 @@ $ ->
         $active_lines.each ->
           $a = $ this
           c_s = $a.height()
-          c_s = c_s+5
+          c_s = c_s+4
           $a.css
             'font-size': c_s+'px'
             'line-height': c_s+'px'
@@ -1941,12 +1953,52 @@ $ ->
             'left': 10
         position_these_buttons()
         save_pos_and_size()
+      $width_decrease.click (e) ->
+        e.preventDefault()
+        $active_lines.each ->
+          $a = $ this
+          $a.css
+            'width': (card_w-20) / 2
+            'left': 10
+        position_these_buttons()
+        save_pos_and_size()
+      #
+      #
+      #
+      #
+      $active_lines = $lines.filter '.active'
+      #
+      #
+      #
+      # Set up Alignment Variables
+      $alignments = $advanced_options.find '.alignment'
+      $alignments.removeClass 'active'
+      #
+      # Select the active one
+      $alignments.each ->
+        $a = $ this
+        alignment = $a.attr('alignment')
+        if alignment is $active_lines.css('text-align')
+          $a.addClass 'active'
+      #
+      # Set up font variables
+      $font_families = $advanced_options.find '.font_family'
+      $font_families.removeClass 'active'
+      #
+      # Selec the currently active one on load
+      $font_families.each ->
+        $f = $ this
+        if $f.html() is $active_lines.css('font-family').replace(/'/g,'')
+          $f.addClass 'active'
+          $advanced_options.find('.font_families').scrollTo $f
+      #
   #
   #
   remove_buttons_from_active = ->
     $('.font_increase').remove()
     $('.font_decrease').remove()
     $('.width_increase').remove()
+    $('.width_decrease').remove()
   #
   #
   #
@@ -2048,7 +2100,7 @@ $ ->
         # Area Selecting Binding Event Nonsense
         $card.unbind().bind 'mousedown', (e) ->
           #
-          if e.target.className is 'font_decrease' or e.target.className is 'font_increase' or e.target.className is 'width_increase'
+          if e.target.className is 'font_decrease' or e.target.className is 'font_increase' or e.target.className is 'width_increase' or e.target.className is 'width_decrease'
             return false
           #
           #
@@ -2187,20 +2239,32 @@ $ ->
         add_buttons_to_active()
         #
         #
-        $active_lines = $lines.filter '.active'
+        #
+        # Set up Alignment Variables
+        $alignments = $advanced_options.find '.alignment'
+        #
+        # Font Changing Event
+        $alignments.click ->
+          $a = $ this
+          #
+          alignment = $a.attr 'alignment'
+          #
+          $alignments.removeClass 'active'
+          $a.addClass 'active'
+          #
+          $active_lines = $lines.filter '.active'
+          $active_lines.css 'text-align', alignment
+          $active_lines.each ->
+            $a = $ this
+            index = $a.prevAll().length
+            active_theme.theme_templates[active_view].lines[index].text_align = alignment
+            set_my_theme_save_timers()
         #
         #
+        # Set up font variables
         $font_families = $advanced_options.find '.font_family'
-        $font_families.removeClass 'active'
         #
-        # Selec the currently active one on load
-        $font_families.each ->
-          $f = $ this
-          if $f.html() is $active_lines.css('font-family').replace(/'/g,'')
-            $f.addClass 'active'
-            $advanced_options.find('.font_families').scrollTo $f
-        #
-        #
+        # Font Changing Event
         $font_families.click ->
           $f = $ this
           #

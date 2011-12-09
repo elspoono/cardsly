@@ -165,6 +165,13 @@ border_radius_right_only(n)
   border-top-right-radius n
   -moz-border-radius-topright n
   -webkit-border-top-right-radius n
+border_radius_left_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
 border_radius_top_only(n)
   border-top-left-radius n
   -moz-border-radius-topleft n
@@ -902,7 +909,7 @@ input.normal,input.gray
       position absolute
       border 1px solid $c_logo_alt
       z-index 1000
-    .font_increase,.font_decrease,.width_increase
+    .font_increase,.font_decrease,.width_increase,.width_decrease
       cursor pointer
       position absolute
       height 20px
@@ -914,11 +921,13 @@ input.normal,input.gray
       color $c_light
       z-index 1500
     .font_decrease
-      border_radius_top_only(10px)
-    .font_increase
       border_radius_bottom_only(10px)
+    .font_increase
+      border_radius_top_only(10px)
     .width_increase
       border_radius_right_only(10px)
+    .width_decrease
+      border_radius_left_only(10px)
     .active
       border 4px solid $c_logo_alt
       margin -3px
@@ -957,7 +966,27 @@ input.normal,input.gray
       .patterns
         width 320px
         float left
+      .alignments
+        float right
+        .left,.center,.right
+          width 25px
+          height 25px
+          margin 0 10px
+          float left
+          cursor pointer
+          background $c_bg_light url('/images/wysiwyg_spritesheet.png') no-repeat
+          border 2px solid $c_bg_dark
+        .center
+          background-position -25px 0
+        .right
+          background-position -50px 0
+        .active
+          border 4px solid $c_logo_alt
+          margin -2px 8px
+      .color_picker
+        float right
       .font_families
+        float left
         height 230px
         width 240px
         background $c_light
@@ -1798,6 +1827,9 @@ input value=["Send Feedback"]
     .visited
       padding 70px 0 0 20px
       margin-bottom -20px
+  .link_row.edit
+    background none
+    border none
   .visit_dialog
     cursor default
     font-size 10px

@@ -24,6 +24,17 @@ if req.url_groups.length
                   =''+url_group.at_defaults+' / '+url_group.urls.length+''
               .redirect_to
                 =url_group.redirect_to.replace('http://','')
+            - for url,i in url_group.urls
+              - if(url.visits != 0)
+                .link_row.visit(url_string=url.url_string,id=url._id)
+                  .visited
+                    =url.visits+' visit'+(url.visits==1?'':'s')
+                  .range
+                    ='#'+url.card_number
+                  .redirect_to
+                    =url.redirect_to.replace('http://','')
+                  .time
+                    ='updated '+url.last_updated.ago()
             - for url, i in url_group.ranged_urls
               .link_row(url_string=url.url_string,id=url._id)
                 .visited
@@ -36,15 +47,4 @@ if req.url_groups.length
             .link_row.edit
               .add
                 .button.small.gray Edit Card (s)
-            - for url,i in url_group.urls
-              - if(url.visits != 0)
-                .link_row.visit(url_string=url.url_string,id=url._id)
-                  .visited
-                    =url.visits+' visit'+(url.visits==1?'':'s')
-                  .range
-                    ='#'+url.card_number
-                  .redirect_to
-                    =url.redirect_to.replace('http://','')
-                  .time
-                    ='updated '+url.last_updated.ago()
             .clear
