@@ -886,7 +886,6 @@ input.normal,input.gray
     width 505px
     height 280px
     padding 10px
-    margin 0 auto
     position relative
     .qr
       position absolute
@@ -935,9 +934,9 @@ input.normal,input.gray
   .card_container
     padding 10px
     width 525px
-    margin 0 auto
+    float left
     alpha_bg($c_bg_dark,.3)
-    border_radius_top_only(10px)
+    border_radius_left_only(10px)
 .active_view,.active_theme_id
   display none
 //
@@ -945,19 +944,19 @@ input.normal,input.gray
 //
 //
 .advanced_options
-  display none
-  width 545px
-  margin 0 auto
+  width 390px
+  float left
   input
     border 0
     width auto
     padding 0
   .area
     li
-      height 260px
+      height 290px
       padding 15px
-      width 515px
+      width 360px
       alpha_bg($c_bg_dark,.3)
+      border_radius_right_only(10px)
       display none
       overflow hidden
       .upload
@@ -988,19 +987,19 @@ input.normal,input.gray
       .font_families
         float left
         height 230px
-        width 240px
+        width 140px
         background $c_light
         overflow-y scroll
         .font_family
-          margin 2px 4px
-          padding 4px 8px
+          padding 3px 10px
           cursor pointer
+          font-size 12px
         .active
-          padding 2px 4px
-          border 4px solid $c_logo_alt
+          background $c_logo_alt
+          color $c_light
       .thumbs
-        height 230px
-        width 340px
+        height 130px
+        width 190px
         overflow-y scroll
         .thumb
           cursor pointer
@@ -1008,8 +1007,8 @@ input.normal,input.gray
           margin 5px 5px 4px 4px
           border 1px solid $c_black
           background #FFF
-          height 100px
-          width 100px
+          height 50px
+          width 50px
         .active
           border 4px solid $c_logo_alt
           margin 2px 2px 1px 1px
@@ -1029,28 +1028,6 @@ input.normal,input.gray
 //
 //
 //
-.home_options
-  width 545px
-  margin 0 auto
-  overflow hidden
-  .views
-    float left
-    text-align center
-    alpha_bg($c_bg_dark,.3)
-    padding 10px
-    border_radius_bottom_only(10px)
-    overflow hidden
-    .toggle
-      width 100px
-      margin 0 auto
-  .subtitle
-    margin-bottom 3px
-    relative_size(.8)
-  .advanced
-    float right
-    alpha_bg($c_bg_dark,.1)
-    border_radius_bottom_only(10px)
-    padding 10px
 .designer
   margin-bottom 60px
   .card
@@ -1177,15 +1154,15 @@ input.normal,input.gray
   gradient($c_logo_alt,darken($c_logo_alt,20))
   margin 10px 0
   padding 3px
-  border_radius(12px)
+  border_radius(20px)
   .disabled
     overflow hidden
     gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
-    border_radius(12px)
+    border_radius(20px)
   .option
     width 50px
-    height 40px
-    line-height 40px
+    height 50px
+    line-height 50px
     text-align center
     cursor pointer
     float left

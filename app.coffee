@@ -2385,7 +2385,7 @@ app.get '/update-patterns', (req, res, next) ->
                   save_pattern_to = (width, height, dir) ->
                       #
                       #
-                      if width is 100
+                      if width is 50
                         new_w = Math.round img.width/4
                         new_h = Math.round img.height/4
                       else
@@ -2423,7 +2423,7 @@ app.get '/update-patterns', (req, res, next) ->
                         knoxReq.end canvas_buff
                   #
                   #
-                  save_pattern_to 100, 100, 'pattern-thumbs'
+                  save_pattern_to 50, 50, 'pattern-thumbs'
                   save_pattern_to 1680, 900, 'raw'
                   save_pattern_to 158, 90, '158x90'
                   save_pattern_to 525, 300, '525x300'
@@ -3195,6 +3195,7 @@ app.get '/js/libs/PIE', (req, res, next) ->
 #
 # Redirect everything to the home page automagically
 app.get '*', (req, res, next) ->
+  console.log req.url
   res.send '',
     Location:'/'
   , 301
