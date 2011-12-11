@@ -1393,7 +1393,6 @@ $ ->
   $lines = $card.find '.line'
   #
   #
-  $view_buttons = $ '.views .option'
   #
   #
   # The form stuff at the bottom
@@ -1481,12 +1480,22 @@ $ ->
         $categories.html ''
         #
         #
-        # Restore active view
-        $active_view = $ '.active_view'
-        if $active_view.html() and $active_view.html() isnt ''
-          active_view = $active_view.html()
-        $view_buttons.filter('.active').removeClass 'active'
-        $view_buttons.filter(':eq(' + active_view + ')').addClass 'active'
+        ###
+        
+        TODO
+
+
+        TODO
+
+
+        TODO
+
+
+        TODO
+
+        Pull lots of settings from server and re-click them
+
+        ###
         #
         #
         #
@@ -1991,6 +2000,45 @@ $ ->
           $f.addClass 'active'
           $advanced_options.find('.font_families').scrollTo $f
       #
+      #
+      #
+      #
+      $color_picker = $advanced_options.find('.area .active').find '.color_picker'
+      $color_input = $color_picker.find 'input'
+      #
+      $color_input.unbind()
+      #
+      $color_picker.find('.wheel').farbtastic $color_input
+      $color_input.val '336699'
+      #
+      #
+      rgbToHex = (R, G, B) ->
+        toHex(R) + toHex(G) + toHex(B)
+      #
+      #
+      toHex = (n) ->
+        n = parseInt(n, 10)
+        return "00"  if isNaN(n)
+        n = Math.max(0, Math.min(n, 255))
+        "0123456789ABCDEF".charAt((n - n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16)
+      #
+      #
+      rgb = $active_lines.css('color').replace /[^0-9,]/ig, ''
+      rgbs = rgb.split ','
+      #
+      $color_input.val rgbToHex rgbs[0], rgbs[1], rgbs[2]
+      $color_input.keyup()
+      #
+      $color_input.change ->
+        $active_lines.css 'color', this.value
+        $active_lines.each ->
+          $a = $ this
+          index = $a.prevAll().length
+          active_theme.theme_templates[active_view].lines[index].color = this.val
+          set_my_theme_save_timers()
+      #
+      #
+      #
   #
   #
   remove_buttons_from_active = ->
@@ -2094,10 +2142,6 @@ $ ->
         #
         #
         #
-        $color_picker = $a.find '.color_picker'
-        $color_input = $color_picker.find 'input'
-        $color_picker.find('.wheel').farbtastic $color_input
-        $color_input.val '336699'
         #
         #
         #
@@ -2497,19 +2541,23 @@ $ ->
   #
   #
   #
-  #
-  $view_buttons.click ->
-    $t = $ this
-    $view_buttons.filter('.active').removeClass 'active'
-    $t.addClass 'active'
+  $('.toggle .option').click ->
+    $o = $ this
+    $t = $o.closest '.toggle'
+    #
+    $t.find('.active').removeClass 'active'
+    #
+    $o.addClass 'active'
+    #
     #
     index = $t.prevAll().length
-    active_view = index
     #
     #
-    $('.category .cards').html ''
-    load_theme_thumbnails()
-    set_timers()
+    if $o.hasClass 'layout'
+      active_view = index
+      $('.category .cards').html ''
+      load_theme_thumbnails()
+      set_timers()
   ###
   Shopping Cart Stuff
   ###

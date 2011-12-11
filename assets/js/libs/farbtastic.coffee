@@ -49,7 +49,9 @@ jQuery._farbtastic = (container, callback) ->
     this
 
   fb.updateValue = (event) ->
-    fb.setColor @value  if @value and @value isnt fb.color
+    if not @value.match /^#/
+      @value = '#' + @value
+      fb.setColor @value  if @value and @value isnt fb.color
 
   fb.setColor = (color) ->
     unpack = fb.unpack(color)
@@ -114,20 +116,33 @@ jQuery._farbtastic = (container, callback) ->
       $(document).bind("mousemove", fb.mousemove).bind "mouseup", fb.mouseup
       document.dragging = true
     pos = fb.widgetCoords(event)
-    fb.circleDrag = Math.max(Math.abs(pos.x), Math.abs(pos.y)) * 2 > fb.square
+    #
+    #
+    $et = $ event.target
+    if $et.hasClass('wheel') or $et.hasClass('h-marker')
+      if Math.max(Math.abs(pos.x), Math.abs(pos.y)) * 2 > 100
+        fb.target = 'h'
+      else
+        fb.target = 'i'
+    else
+      fb.target = 'sl'
+    #
+    #
     fb.mousemove event
     false
 
   fb.mousemove = (event) ->
     pos = fb.widgetCoords(event)
-    if fb.circleDrag
+    if fb.target is 'h'
       hue = Math.atan2(pos.x, -pos.y) / 6.28
       hue += 1  if hue < 0
       fb.setHSL [ hue, fb.hsl[1], fb.hsl[2] ]
-    else
+    else if fb.target is 'sl'
       sat = Math.max(0, Math.min(1, -(pos.x / fb.square) + .5))
-      lum = Math.max(0, Math.min(1, -(pos.y / fb.square) + .5))
+      lum = Math.max(0, Math.min(1, -((pos.y+20) / fb.square) + .5))
       fb.setHSL [ fb.hsl[0], sat, lum ]
+    else
+      $(fb.callback).focus().select()
     false
 
   fb.mouseup = ->
@@ -143,7 +158,7 @@ jQuery._farbtastic = (container, callback) ->
 
     $(".sl-marker", e).css
       left: Math.round(fb.square * (.5 - fb.hsl[1]) + fb.width / 2) + "px"
-      top: Math.round(fb.square * (.5 - fb.hsl[2]) + fb.width / 2) + "px"
+      top: Math.round(fb.square * (.5 - fb.hsl[2]) + fb.width / 2 - 20) + "px"
 
     $(".color", e).css "backgroundColor", fb.pack(fb.HSLToRGB([ fb.hsl[0], 1, 0.5 ]))
     if typeof fb.callback is "object"
@@ -153,6 +168,7 @@ jQuery._farbtastic = (container, callback) ->
 
       $(fb.callback).each ->
         @value = fb.color  if @value and @value isnt fb.color
+      .change()
     else fb.callback.call fb, fb.color  if typeof fb.callback is "function"
 
   fb.absolutePosition = (el) ->
