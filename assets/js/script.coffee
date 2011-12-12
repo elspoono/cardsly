@@ -1785,6 +1785,13 @@ $ ->
           $new_input.keyup ->
             update_cards i, $new_input.val()
             set_timers()
+          #
+          #
+          $new_input.focus ->
+            $lines.filter(':eq('+i+')').addClass 'active'
+          #
+          $new_input.blur ->
+            $lines.filter(':eq('+i+')').removeClass 'active'
         #
         #
         if $visible_lines.length is 10
@@ -1834,9 +1841,28 @@ $ ->
   This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
   update_cards = (rowNumber, value) ->
-    $('.card').each -> 
+    $('.category .card').add('.my_card .card').each -> 
       $t = $ this
       $t.find('.line:eq('+rowNumber+')').html value
+    
+    $lines.filter(':eq('+rowNumber+')').each ->
+      $a = $ this
+      c_o = $a.position()
+      c_w = $a.width()
+      c_a = $a.css 'text-align'
+      c_h = $a.height()
+      $a.css
+        'width': 'auto'
+      $a.html value
+      n_w = $a.width()
+      n_l = c_o.left
+      if c_a is 'right'
+        n_l = n_l + c_w - n_w
+      if c_a is 'center'
+        n_l = n_l + (c_w - n_w)/2
+      $a.css
+        'left': n_l
+        'width': n_w
   #
   #
   ctrl_pressed = false
