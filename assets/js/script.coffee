@@ -768,9 +768,6 @@ $ ->
       document.location.href='/buy'
     false
 
-
-
-
   #################################################################
   #
   # LOGIN
@@ -1429,6 +1426,35 @@ $ ->
 
 
 
+  #
+  input_timer = 0
+  set_timers = ->
+    clearTimeout input_timer
+    input_timer = setTimeout ->
+      #
+      # Find the values of quantiy and speed
+      $q = $('.quantity input:checked')
+      $s = $('.shipping_method input:checked')
+      #
+      #
+      # Find the values for the card lines from the main designer
+      values = $.makeArray $lines.map -> 
+        $(this).html()
+      #
+      #
+      $.ajax
+        url: '/save-form'
+        data: JSON.stringify
+          values: values
+          active_view: active_view
+          active_theme_id: active_theme._id
+          quantity: $q.val()
+          shipping_method: $s.val()
+      false
+    ,1000
+
+
+
 
 
 
@@ -1497,7 +1523,9 @@ $ ->
             all_themes = all_data.themes
             $categories.html ''
             #
-            active_theme._id = $('.active_theme_id').html()
+            active_theme._id = ''
+            if session.saved_form and session.saved_form.active_theme_id
+              active_theme._id = session.active_theme_id
             #
             #
             load_theme_thumbnails()
@@ -1558,6 +1586,37 @@ $ ->
     #
     $lines.each (i) ->
       update_cards i, $(this).html()
+  #
+  #
+  #
+  #
+  #
+  maybe_add_new_theme = ->
+    #
+    if active_theme.category isnt 'My Own'
+      #
+      active_theme = $.extend true, {}, active_theme
+      #
+      active_theme.category = 'My Own'
+      active_theme._id = ''
+      delete active_theme._id
+      for theme_template, i in active_theme.theme_templates
+        delete active_theme.theme_templates[i]._id
+        for line, j in active_theme.theme_templates[i].lines
+          delete active_theme.theme_templates[i].lines[j]._id
+      #
+      #
+      $new_card = $.create_card_from_theme 
+        theme: active_theme
+        active_view: active_view
+      $.add_card_to_category $new_card, active_theme
+      $new_card.closest('.category').find('h4').click()
+      #
+      #
+      set_my_theme_save_timers()
+      #
+      #
+  #
   #
   #
   #
@@ -1804,7 +1863,7 @@ $ ->
           #
           $content_input.append $new_input
           #
-          $new_input.bind 'change, blur', ->
+          $new_input.bind 'keyup, blur', ->
             update_cards i, $new_input.val()
             set_timers()
           #
@@ -1823,39 +1882,22 @@ $ ->
         #
         #
         console.log 'Content'
-
+        #
+        #
+        #
+        # All others Will customize that bad boy!!
+      else
+        #
+        maybe_add_new_theme()
+    #
+    #
+    #
     $tabs.filter('.active').click()
     #
     #
   #
   #
   #
-  #
-  input_timer = 0
-  set_timers = ->
-    clearTimeout input_timer
-    input_timer = setTimeout ->
-      #
-      # Find the values of quantiy and speed
-      $q = $('.quantity input:checked')
-      $s = $('.shipping_method input:checked')
-      #
-      #
-      # Find the values for the card lines from the main designer
-      values = $.makeArray $lines.map -> 
-        $(this).html()
-      #
-      #
-      $.ajax
-        url: '/save-form'
-        data: JSON.stringify
-          values: values
-          active_view: active_view
-          active_theme_id: active_theme._id
-          quantity: $q.val()
-          shipping_method: $s.val()
-      false
-    ,1000
   #
   ###
   Update Cards
@@ -2331,31 +2373,6 @@ $ ->
   $advanced_options = $ '.advanced_options'
   $design_my_own = $home_options.find '.advanced'
   $number_of_fields = $home_options.find '.views'
-  $design_my_own.click ->
-    #
-    #
-    active_theme = $.extend true, {}, active_theme
-    #
-    active_theme.category = 'My Own'
-    active_theme._id = ''
-    delete active_theme._id
-    for theme_template, i in active_theme.theme_templates
-      delete active_theme.theme_templates[i]._id
-      for line, j in active_theme.theme_templates[i].lines
-        delete active_theme.theme_templates[i].lines[j]._id
-    #
-    #
-    $new_card = $.create_card_from_theme 
-      theme: active_theme
-      active_view: active_view
-    $.add_card_to_category $new_card, active_theme
-    $new_card.closest('.category').find('h4').click()
-    #
-    #
-    set_my_theme_save_timers()
-    #
-    #
-
   #
   #
   #
