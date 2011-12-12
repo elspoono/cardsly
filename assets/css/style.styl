@@ -1152,7 +1152,6 @@ input.normal,input.gray
 .toggle
   overflow hidden
   gradient($c_logo_alt,darken($c_logo_alt,20))
-  margin 10px 0
   padding 3px
   border_radius(20px)
   .disabled
@@ -1160,6 +1159,7 @@ input.normal,input.gray
     gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
     border_radius(20px)
   .option
+    padding 3px
     width 50px
     height 50px
     line-height 50px
@@ -1168,10 +1168,25 @@ input.normal,input.gray
     float left
     background none
     color $c_logo_alt
+    .icon
+      background url('/images/text-sprite.png')
+      height 50px
+      width 50px
+    .six
+      background-position -150px 0
+    .ten
+      background-position -200px 0
   .active
     color $c_light
     gradient($c_logo_alt,darken($c_logo_alt,20))
     font-size 22px
+    .six
+      background-position -150px 50px
+    .ten
+      background-position -200px 50px
+.toggle.layout
+  width 112px
+  float right
 //
 .web_bg,.web_fg,.web_fg2
   position absolute

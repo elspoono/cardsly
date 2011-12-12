@@ -2550,10 +2550,10 @@ $ ->
     $o.addClass 'active'
     #
     #
-    index = $t.prevAll().length
+    index = $o.prevAll().length
     #
     #
-    if $o.hasClass 'layout'
+    if $t.hasClass 'layout'
       active_view = index
       $('.category .cards').html ''
       load_theme_thumbnails()
