@@ -4,7 +4,6 @@
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
-#= require 'libs/farbtastic'
 
 
 
@@ -1888,12 +1887,6 @@ $ ->
       $font_decrease = $ '<div class="font_decrease">-</div>'
       $card.append $font_decrease
       #
-      $width_increase = $ '<div class="width_increase">></div>'
-      $card.append $width_increase
-      #
-      $width_decrease = $ '<div class="width_decrease"><</div>'
-      $card.append $width_decrease
-      #
       $font_increase = $ '<div class="font_increase">+</div>'
       $card.append $font_increase
       #
@@ -1907,17 +1900,6 @@ $ ->
           top: $first.offset().top - 20 - card_o.top
           left: $first.offset().left + $first.outerWidth() - 30 - card_o.left
         #
-        #
-        $width_increase.css
-          top: $first.offset().top - card_o.top
-          left: $first.offset().left + $first.outerWidth() - card_o.left
-          height: $first.outerHeight()
-          lineHeight: $first.outerHeight() + 'px'
-        $width_decrease.css
-          top: $first.offset().top - card_o.top
-          left: $first.offset().left - 30 - card_o.left
-          height: $first.outerHeight()
-          lineHeight: $first.outerHeight() + 'px'
       #
       #
       position_these_buttons()
@@ -1952,24 +1934,6 @@ $ ->
             'height': c_s
         position_these_buttons()
         save_pos_and_size()
-      $width_increase.click (e) ->
-        e.preventDefault()
-        $active_lines.each ->
-          $a = $ this
-          $a.css
-            'width': card_w-20
-            'left': 10
-        position_these_buttons()
-        save_pos_and_size()
-      $width_decrease.click (e) ->
-        e.preventDefault()
-        $active_lines.each ->
-          $a = $ this
-          $a.css
-            'width': (card_w-20) / 2
-            'left': 10
-        position_these_buttons()
-        save_pos_and_size()
       #
       #
       #
@@ -1979,15 +1943,9 @@ $ ->
       #
       #
       # Set up Alignment Variables
-      $alignments = $advanced_options.find '.alignment'
+      $alignments = $advanced_options.find '.alignment .option'
       $alignments.removeClass 'active'
       #
-      # Select the active one
-      $alignments.each ->
-        $a = $ this
-        alignment = $a.attr('alignment')
-        if alignment is $active_lines.css('text-align')
-          $a.addClass 'active'
       #
       # Set up font variables
       $font_families = $advanced_options.find '.font_family'
@@ -2003,49 +1961,12 @@ $ ->
       #
       #
       #
-      $color_picker = $advanced_options.find('.area .active').find '.color_picker'
-      $color_input = $color_picker.find 'input'
-      #
-      $color_input.unbind()
-      #
-      $color_picker.find('.wheel').farbtastic $color_input
-      $color_input.val '336699'
-      #
-      #
-      rgbToHex = (R, G, B) ->
-        toHex(R) + toHex(G) + toHex(B)
-      #
-      #
-      toHex = (n) ->
-        n = parseInt(n, 10)
-        return "00"  if isNaN(n)
-        n = Math.max(0, Math.min(n, 255))
-        "0123456789ABCDEF".charAt((n - n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16)
-      #
-      #
-      rgb = $active_lines.css('color').replace /[^0-9,]/ig, ''
-      rgbs = rgb.split ','
-      #
-      $color_input.val rgbToHex rgbs[0], rgbs[1], rgbs[2]
-      $color_input.keyup()
-      #
-      $color_input.change ->
-        $active_lines.css 'color', this.value
-        $active_lines.each ->
-          $a = $ this
-          index = $a.prevAll().length
-          active_theme.theme_templates[active_view].lines[index].color = this.val
-          set_my_theme_save_timers()
-      #
-      #
       #
   #
   #
   remove_buttons_from_active = ->
     $('.font_increase').remove()
     $('.font_decrease').remove()
-    $('.width_increase').remove()
-    $('.width_decrease').remove()
   #
   #
   #
@@ -2149,7 +2070,7 @@ $ ->
         # Area Selecting Binding Event Nonsense
         $card.unbind().bind 'mousedown', (e) ->
           #
-          if e.target.className is 'font_decrease' or e.target.className is 'font_increase' or e.target.className is 'width_increase' or e.target.className is 'width_decrease'
+          if e.target.className is 'font_decrease' or e.target.className is 'font_increase'
             return false
           #
           #
