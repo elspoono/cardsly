@@ -1629,10 +1629,154 @@ $ ->
     #
     #
     #
-    if theme.category is 'My Own'
-      show_advanced()
-    else
-      hide_advanced()
+    #
+    #
+    #
+    $tabs = $advanced_options.find '.tab_button li'
+    $areas = $advanced_options.find '.area li'
+    $tabs.unbind().click ->
+      $t = $ this
+      i = $t.prevAll().length
+      $a = $areas.filter(':eq('+i+')')
+      #
+      #
+      $areas.removeClass 'active'
+      $a.addClass 'active'
+      #
+      $tabs.removeClass 'active'
+      $t.addClass 'active'
+      #
+      #
+      #
+      remove_buttons_from_active()
+      #
+      # **********************************************************************
+      # 
+      #                          BACKGROUND TAB
+      #
+      # **********************************************************************
+      if $t.html() is 'Background'
+        #
+        $lines.removeClass 'active'
+        #
+        #
+        $patterns = $ '.patterns'
+        $thumbs = $patterns.find '.thumb'
+        #
+        #
+        #
+        #
+        #
+        $thumbs.unbind().click ->
+          $t = $ this
+          active_theme.s3_id = $t.attr 's3_id'
+          $thumbs.removeClass 'active'
+          $t.addClass 'active'
+          update_background_of_active()
+        #
+        $thumbs.removeClass 'active'
+        $thumbs.each ->
+          $t = $ this
+          if $t.attr('s3_id') is active_theme.s3_id
+            $t.addClass 'active'
+            $patterns.find('.thumbs').scrollTo $t
+      #
+      #
+      #
+      # **********************************************************************
+      #
+      #                            Style TAB
+      #
+      # **********************************************************************
+      if $t.html() is 'Style'
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        if $lines.filter('.active').length is 0
+          $lines.filter(':eq(0)').addClass 'active'
+          #
+        add_buttons_to_active()
+        #
+        #
+        #
+        # Set up font variables
+        $font_families = $advanced_options.find '.font_family'
+        #
+        # Font Changing Event
+        $font_families.click ->
+          $f = $ this
+          #
+          new_font_family = $f.html()
+          #
+          $font_families.removeClass 'active'
+          $f.addClass 'active'
+          #
+          $active_lines = $lines.filter '.active'
+          $active_lines.css 'font-family', new_font_family
+          $active_lines.each ->
+            $a = $ this
+            index = $a.prevAll().length
+            active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
+            set_my_theme_save_timers()
+      #
+      #
+      # **********************************************************************
+      #
+      #                              QR TAB
+      #
+      # **********************************************************************
+      if $t.html() is 'QR'
+        #
+        $lines.removeClass 'active'
+        #
+        #
+        #
+        #
+        console.log 'QR'
+      #
+      #
+      # **********************************************************************
+      #
+      #                              CONTENT TAB
+      #
+      # **********************************************************************
+      if $t.html() is 'Content'
+        #
+        $lines.removeClass 'active'
+        #
+        #
+        $content_input = $advanced_options.find '.content_input'
+        #
+        $content_input.children().remove()
+        #
+        $visible_lines = $lines.filter ':visible'
+        #
+        $visible_lines.each (i) ->
+          $v = $ this
+          $new_input = $ '<input />'
+          $new_input.val $v.html()
+          $content_input.append $new_input
+          #
+          $new_input.keyup ->
+            update_cards i, $new_input.val()
+            set_timers()
+        #
+        #
+        if $visible_lines.length is 10
+          $content_input.addClass 'ten'
+        else
+          $content_input.removeClass 'ten'
+        #
+        #
+        console.log 'Content'
+
+    $tabs.filter('.active').click()
     #
     #
   #
@@ -1671,11 +1815,13 @@ $ ->
   This is used each time we need to update all the cards on the home page with the new content that's typed in.
   ###
   update_cards = (rowNumber, value) ->
-    $('.categories .card').add('.order_total .card').each -> 
+    $('.card').each -> 
       $t = $ this
       $t.find('.line:eq('+rowNumber+')').html value
   #
   #
+  ctrl_pressed = false
+  shift_pressed = false
   # Prevent Backspace
   $('body').keydown (e) ->
     if e.keyCode is 8
@@ -1683,123 +1829,193 @@ $ ->
       if not $t.closest('input').andSelf().filter('input').length
         if not $t.closest('textarea').andSelf().filter('textarea').length
           e.preventDefault()
+    #
+    # Modify the amount we shift when the shift key is pressed
+    if e.keyCode is 16
+      shift_pressed = true
+    #
+    # Ctrl or Command Pressed Down
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = true
+    #
+    #
+    # Undo 
+    if ctrl_pressed and not shift_pressed and e.keyCode is 90
+      e.preventDefault()
+      console.log 'undo'
+    #
+    # Redo
+    if ctrl_pressed and shift_pressed and e.keyCode is 90
+      e.preventDefault()
+      console.log 'redo'
+    #
+  $body.keyup (e) ->
+    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+      ctrl_pressed = false
+    if e.keyCode is 16
+      shift_pressed = false
   #
-  # Form Fields
-  shift_pressed = false
-  $lines.each (i) ->
-    $t = $ this
-    $t.data 'timer', 0
-    
-    $t.click -> 
-      if $('.tab_button .active').html() is 'Text'
-        $t.addClass 'active'
-        add_buttons_to_active()
-      else if not $t.hasClass 'active'
-        style = $t.attr 'style'
-        $input = $ '<input class="line" />'
-        $delete_button = $ '<div class="button gray small">X</div>'
-        $delete_button.css
-          width: 20
-          height: $t.height()
-          lineHeight: $t.height()+'px'
-          position: 'absolute'
-          top: parseInt($t.css('top'))-5
-          left: parseInt($t.css('left'))+$t.width()+10
-        $input.attr 'style', style
-        $input.val $t.html().replace /&nbsp;/g, ' '
-        tt = Math.round $t.offset().top/3
-        tl = Math.round $t.offset().left/3
-        $t.after $input
-        $input.after $delete_button
-        $t.hide()
+  #
+  #
+  #
+  #
+  # Area Selecting Binding Event Nonsense
+  $card.unbind().bind 'mousedown', (e) ->
+    #
+    if e.target.className is 'font_decrease' or e.target.className is 'font_increase'
+      return false
+    #
+    #
+    #
+    e_t = e.pageY - card_o.top
+    e_l = e.pageX - card_o.left
+    #
+    e.preventDefault()
+    $visible_lines = $lines.filter ':visible'
+    #
+    #
+    #
+    $active_lines = $lines.filter '.active'
+    #
+    # ----------------------
+    # Determine where we touched down at
+    # ----------------------
+    active_hit = false
+    #
+    $active_lines.each ->
+      $l = $ this
+      l_o = $l.offset()
+      l_o_l = l_o.left - card_o.left
+      l_o_t = l_o.top - card_o.top
+      l_w = $l.width()
+      l_h = $l.height()
+      if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
+        active_hit = true
+    #
+    visible_hit = false
+    $visible_lines.each ->
+      $l = $ this
+      l_o = $l.offset()
+      l_o_l = l_o.left - card_o.left
+      l_o_t = l_o.top - card_o.top
+      l_w = $l.width()
+      l_h = $l.height()
+      if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
+        visible_hit = true
         #
-        #
-        $delete_button.click (e) ->
-          $input.val ''
-          update_value()
-          setTimeout ->
-            go_to_next()
-          , 0
-        #
-        #
-        #
-        update_value = ->
-          update_cards i, $input[0].value.replace /( )/g, '&nbsp;'
-          $t.html $input[0].value.replace /( )/g, '&nbsp;'
-          set_timers()
-        #
-        #
-        #
-        go_to_next = ->
-          $others = $t.siblings('div:visible:not(.button)')
+        if not active_hit
+          unless shift_pressed
+            $visible_lines.removeClass 'active'
+          $l.addClass 'active'
+          $active_lines = $lines.filter '.active'
+    #
+    #
+    #
+    remove_buttons_from_active()
+    #
+    #
+    if visible_hit
+      # ----------------------
+      # Move Stuff Around
+      # ----------------------
+      $active_lines.each ->
+        $a = $ this
+        $a.data 'o', $a.offset()
+        $a.data 'h', $a.height()
+        $a.data 'w', $a.width()
 
-          $next = false
-          $a = false
-          $b = false
-          $c = false
-          $others.each ->
-            $a = $ this
-            at = Math.round $a.offset().top/3
-            al = Math.round $a.offset().left/3
-
-            if shift_pressed
-              if (at is tt and al < tl) or at < tt
-                $b = $a if not $b
-                bt = Math.round $b.offset().top/3
-                bl = Math.round $b.offset().left/3
-                if (at is bt and al > bl) or at > bt
-                  $b = $a 
-              $c = $a if not $c
-              ct = Math.round $c.offset().top/3
-              cl = Math.round $c.offset().left/3
-              if (at is ct and al > cl) or at > ct
-                $c = $a
-            else
-              if (at is tt and al > tl) or at > tt
-                $b = $a if not $b
-                bt = Math.round $b.offset().top/3
-                bl = Math.round $b.offset().left/3
-                if (at is bt and al < bl) or at < bt
-                  $b = $a
-              $c = $a if not $c
-              ct = Math.round $c.offset().top/3
-              cl = Math.round $c.offset().left/3
-              if (at is ct and al < cl) or at < ct
-                $c = $a
-          if $b
-            $b.click()
+      $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+        e_2.preventDefault()
+        x = e.pageX - e_2.pageX
+        y = e.pageY - e_2.pageY
+        $active_lines.each ->
+          $a = $ this
+          o = $a.data 'o'
+          h = $a.data 'h'
+          w = $a.data 'w'
+          #
+          # Figure out our dimensions
+          new_t = o.top - card_o.top - y 
+          new_l = o.left - card_o.left - x
+          max_t = card_h - h - 10
+          max_l = card_w - w - 10
+          new_w = w
+          #
+          #
+          # Make it skinnier if need be
+          if new_l < -100
+            new_w = new_w+new_l+100
+          if new_l > max_l+100
+            new_w = new_w+(max_l+100-new_l)
+            max_l = card_w - new_w - 10
+          new_w = 50 if new_w < 50
+          #
+          # Boundary that shit
+          new_t = 10 if new_t < 10
+          new_l = 10 if new_l < 10
+          new_t = max_t if new_t > max_t
+          new_l = max_l if new_l > max_l
+          #
+          # Then set it
+          $a.css
+            top: new_t
+            left: new_l
+            width: new_w
+      $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+        e_3.preventDefault()
+        $body.unbind 'mousemove'
+        $body.unbind 'mouseup'
+        save_pos_and_size()
+        if $lines.filter('.active').length isnt 0
+          $('.tab_button li:eq(1)').click()
+    else
+      # ----------------------
+      # Area drag selector
+      # ----------------------
+      unless shift_pressed
+        $active_lines.removeClass 'active'
+      $card.find('.highlight_box').remove()
+      $highlight_box = $ '<div class="highlight_box" />'
+      $card.append $highlight_box
+      $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+        e_2.preventDefault()
+        t = e_t
+        l = e_l
+        w = Math.abs(e.pageX - e_2.pageX)
+        h = Math.abs(e.pageY - e_2.pageY)
+        if e_2.pageX < e.pageX
+          l = e_2.pageX - card_o.left
+        if e_2.pageY < e.pageY
+          t = e_2.pageY - card_o.top
+        within = (x1,y1,x2,y2) -> x1 < (l+w) and x2 > l and y1 < t+h and y2 > t
+        $highlight_box.css
+          top: t
+          left: l
+          width: w
+          height: h
+        $visible_lines.each ->
+          $l = $ this
+          l_o = $l.offset()
+          l_w = $l.width()
+          l_h = $l.height()
+          l_o_l = l_o.left - card_o.left
+          l_o_t = l_o.top - card_o.top
+          if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
+            $l.addClass 'active'
+            $l.addClass 'temp'
           else
-            $c.click()
-        #
-        #
-        #
-        $input.focus().select()
-        $input.keydown (e) ->
-          if not e
-            e = 
-              keyCode: 13
-          if e.keyCode is 16
-            shift_pressed = true
-          if e.keyCode is 13 or e.keyCode is 9
-            e.preventDefault()
-            #
-            #
-            go_to_next()
-        $input.keyup (e) ->
-          if e.keyCode is 16
-            shift_pressed = false
-          if e.keyCode is 13 or e.keyCode is 9
-            e.preventDefault()
-          update_value()
-
-        remove_input = (e) ->
-          $target = $ e.target
-          if $target[0] isnt $t[0] and $target[0] isnt $input[0] and $target[0] isnt $delete_button[0]
-            $body.unbind 'click', remove_input
-            $input.remove()
-            $delete_button.remove()
-            $t.show()
-        $body.bind 'click', remove_input
+            if $l.hasClass 'temp'
+              $l.removeClass 'active'
+      $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+        $lines.removeClass 'temp'
+        e_3.preventDefault()
+        $highlight_box.remove()
+        $body.unbind 'mousemove'
+        $body.unbind 'mouseup'
+        if $lines.filter('.active').length isnt 0
+          $('.tab_button li:eq(1)').click()
+        else
+          $('.tab_button li:eq(0)').click()
   #
   #
   #
@@ -1869,7 +2085,9 @@ $ ->
   card_h = $card.outerHeight()
   #
   #
-  add_buttons_to_active = ->
+  add_buttons_to_active = (options) ->
+    #
+    options = {} if not options
     #
     remove_buttons_from_active()
     #
@@ -1895,10 +2113,10 @@ $ ->
         #
         $font_decrease.css
           top: $last.offset().top - card_o.top + $last.outerHeight()
-          left: $last.offset().left + $last.outerWidth() - 30 - card_o.left
+          left: $last.offset().left + $last.outerWidth() - 50 - card_o.left
         $font_increase.css
           top: $first.offset().top - 20 - card_o.top
-          left: $first.offset().left + $first.outerWidth() - 30 - card_o.left
+          left: $first.offset().left + $first.outerWidth() - 50 - card_o.left
         #
       #
       #
@@ -1914,24 +2132,50 @@ $ ->
         e.preventDefault()
         $active_lines.each ->
           $a = $ this
-          c_s = $a.height()
-          c_s = c_s-4
+          c_o = $a.position()
+          c_w = $a.width()
+          c_a = $a.css 'text-align'
+          c_h = $a.height()
+          c_h = c_h-4
           $a.css
-            'font-size': c_s+'px'
-            'line-height': c_s+'px'
-            'height': c_s
+            'font-size': c_h+'px'
+            'line-height': c_h+'px'
+            'height': c_h
+            'width': 'auto'
+          n_w = $a.width()
+          n_l = c_o.left
+          if c_a is 'right'
+            n_l = n_l + c_w - n_w
+          if c_a is 'center'
+            n_l = n_l + (c_w - n_w)/2
+          $a.css
+            'left': n_l
+            'width': n_w
         position_these_buttons()
         save_pos_and_size()
       $font_increase.click (e) ->
         e.preventDefault()
         $active_lines.each ->
           $a = $ this
-          c_s = $a.height()
-          c_s = c_s+4
+          c_o = $a.position()
+          c_w = $a.width()
+          c_a = $a.css 'text-align'
+          c_h = $a.height()
+          c_h = c_h+4
           $a.css
-            'font-size': c_s+'px'
-            'line-height': c_s+'px'
-            'height': c_s
+            'font-size': c_h+'px'
+            'line-height': c_h+'px'
+            'height': c_h
+            'width': 'auto'
+          n_w = $a.width()
+          n_l = c_o.left
+          if c_a is 'right'
+            n_l = n_l + c_w - n_w
+          if c_a is 'center'
+            n_l = n_l + (c_w - n_w)/2
+          $a.css
+            'left': n_l
+            'width': n_w
         position_these_buttons()
         save_pos_and_size()
       #
@@ -1942,9 +2186,9 @@ $ ->
       #
       #
       #
-      # Set up Alignment Variables
       $alignments = $advanced_options.find '.alignment .option'
       $alignments.removeClass 'active'
+      $alignments.filter('[alignment='+$active_lines.css('text-align')+']').addClass 'active'
       #
       #
       # Set up font variables
@@ -1994,281 +2238,6 @@ $ ->
     else
       $.load_alert
         content: 'I had trouble saving that image, please try again later.'
-  #
-  show_advanced = ->
-    $home_options.hide()
-    $advanced_options.show()
-    #
-    #
-    #
-    #
-    $patterns = $ '.patterns'
-    $thumbs = $patterns.find '.thumb'
-    #
-    #
-    #
-    #
-    #
-    $thumbs.unbind().click ->
-      $t = $ this
-      active_theme.s3_id = $t.attr 's3_id'
-      $thumbs.removeClass 'active'
-      $t.addClass 'active'
-      update_background_of_active()
-    #
-    #
-    $tabs = $advanced_options.find '.tab_button li'
-    $areas = $advanced_options.find '.area li'
-    $tabs.unbind().click ->
-      $t = $ this
-      i = $t.prevAll().length
-      $a = $areas.filter(':eq('+i+')')
-      #
-      #
-      $areas.removeClass 'active'
-      $a.addClass 'active'
-      #
-      $tabs.removeClass 'active'
-      $t.addClass 'active'
-      #
-      #
-      #
-      remove_buttons_from_active()
-      $lines.removeClass 'active'
-      #
-      # **********************************************************************
-      # 
-      #                          BACKGROUND TAB
-      #
-      # **********************************************************************
-      if $t.html() is 'Background'
-        $thumbs.removeClass 'active'
-        $thumbs.each ->
-          $t = $ this
-          if $t.attr('s3_id') is active_theme.s3_id
-            $t.addClass 'active'
-            $patterns.find('.thumbs').scrollTo $t
-      #
-      #
-      #
-      # **********************************************************************
-      #
-      #                            TEXT TAB
-      #
-      # **********************************************************************
-      if $t.html() is 'Text'
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        # Area Selecting Binding Event Nonsense
-        $card.unbind().bind 'mousedown', (e) ->
-          #
-          if e.target.className is 'font_decrease' or e.target.className is 'font_increase'
-            return false
-          #
-          #
-          #
-          e_t = e.pageY - card_o.top
-          e_l = e.pageX - card_o.left
-          #
-          e.preventDefault()
-          $visible_lines = $lines.filter ':visible'
-          $active_lines = $lines.filter '.active'
-          #
-          #
-          #
-          #
-          #
-          remove_buttons_from_active()
-          #
-          # ----------------------
-          # Determine where we touched down at
-          # ----------------------
-          hit = false
-          #
-          $active_lines.each ->
-            $l = $ this
-            l_o = $l.offset()
-            l_o_l = l_o.left - card_o.left
-            l_o_t = l_o.top - card_o.top
-            l_w = $l.width()
-            l_h = $l.height()
-            if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
-              hit = true
-          #
-          #
-          if hit
-            # ----------------------
-            # Move Stuff Around
-            # ----------------------
-            $active_lines.each ->
-              $a = $ this
-              $a.data 'o', $a.offset()
-              $a.data 'h', $a.height()
-              $a.data 'w', $a.width()
-
-            $body.unbind('mousemove').bind 'mousemove', (e_2) ->
-              e_2.preventDefault()
-              x = e.pageX - e_2.pageX
-              y = e.pageY - e_2.pageY
-              $active_lines.each ->
-                $a = $ this
-                o = $a.data 'o'
-                h = $a.data 'h'
-                w = $a.data 'w'
-                #
-                # Figure out our dimensions
-                new_t = o.top - card_o.top - y 
-                new_l = o.left - card_o.left - x
-                max_t = card_h - h - 10
-                max_l = card_w - w - 10
-                new_w = w
-                #
-                #
-                # Make it skinnier if need be
-                if new_l < -100
-                  new_w = new_w+new_l+100
-                if new_l > max_l+100
-                  new_w = new_w+(max_l+100-new_l)
-                  max_l = card_w - new_w - 10
-                new_w = 50 if new_w < 50
-                #
-                # Boundary that shit
-                new_t = 10 if new_t < 10
-                new_l = 10 if new_l < 10
-                new_t = max_t if new_t > max_t
-                new_l = max_l if new_l > max_l
-                #
-                # Then set it
-                $a.css
-                  top: new_t
-                  left: new_l
-                  width: new_w
-            $body.bind 'mouseup', (e_3) ->
-              e_3.preventDefault()
-              $body.unbind 'mousemove'
-              $body.unbind 'mouseup'
-              save_pos_and_size()
-              add_buttons_to_active()
-
-          else
-            # ----------------------
-            # Area drag selector
-            # ----------------------
-            $active_lines.removeClass 'active'
-            $card.find('.highlight_box').remove()
-            $highlight_box = $ '<div class="highlight_box" />'
-            $card.append $highlight_box
-            $body.unbind('mousemove').bind 'mousemove', (e_2) ->
-              e_2.preventDefault()
-              t = e_t
-              l = e_l
-              w = Math.abs(e.pageX - e_2.pageX)
-              h = Math.abs(e.pageY - e_2.pageY)
-              if e_2.pageX < e.pageX
-                l = e_2.pageX - card_o.left
-              if e_2.pageY < e.pageY
-                t = e_2.pageY - card_o.top
-              within = (x1,y1,x2,y2) -> x1 < (l+w) and x2 > l and y1 < t+h and y2 > t
-              $highlight_box.css
-                top: t
-                left: l
-                width: w
-                height: h
-              $visible_lines.each ->
-                $l = $ this
-                l_o = $l.offset()
-                l_w = $l.width()
-                l_h = $l.height()
-                l_o_l = l_o.left - card_o.left
-                l_o_t = l_o.top - card_o.top
-                if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
-                  $l.addClass 'active' 
-                else
-                  $l.removeClass 'active'
-            $body.bind 'mouseup', (e_3) ->
-              e_3.preventDefault()
-              $highlight_box.remove()
-              $body.unbind 'mousemove'
-              $body.unbind 'mouseup'
-              add_buttons_to_active()
-
-        #
-        #
-        #
-        #
-        $lines.filter(':eq(0)').addClass 'active'
-        #
-        add_buttons_to_active()
-        #
-        #
-        #
-        # Set up Alignment Variables
-        $alignments = $advanced_options.find '.alignment'
-        #
-        # Font Changing Event
-        $alignments.click ->
-          $a = $ this
-          #
-          alignment = $a.attr 'alignment'
-          #
-          $alignments.removeClass 'active'
-          $a.addClass 'active'
-          #
-          $active_lines = $lines.filter '.active'
-          $active_lines.css 'text-align', alignment
-          $active_lines.each ->
-            $a = $ this
-            index = $a.prevAll().length
-            active_theme.theme_templates[active_view].lines[index].text_align = alignment
-            set_my_theme_save_timers()
-        #
-        #
-        # Set up font variables
-        $font_families = $advanced_options.find '.font_family'
-        #
-        # Font Changing Event
-        $font_families.click ->
-          $f = $ this
-          #
-          new_font_family = $f.html()
-          #
-          $font_families.removeClass 'active'
-          $f.addClass 'active'
-          #
-          $active_lines = $lines.filter '.active'
-          $active_lines.css 'font-family', new_font_family
-          $active_lines.each ->
-            $a = $ this
-            index = $a.prevAll().length
-            active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
-            set_my_theme_save_timers()
-      #
-      #
-      # **********************************************************************
-      #
-      #                              QR TAB
-      #
-      # **********************************************************************
-      if $t.html() is 'QR'
-        #
-        #
-        #
-        console.log 'QR'
-
-    $tabs.filter('.active').click()
-    #
-    #
-  hide_advanced = ->
-    $home_options.show()
-    $advanced_options.hide()
   #
   #
   #
@@ -2479,6 +2448,30 @@ $ ->
       $('.category .cards').html ''
       load_theme_thumbnails()
       set_timers()
+    if $t.hasClass 'alignment'
+      #
+      alignment = $o.attr 'alignment'
+      #
+      #
+      $active_lines = $lines.filter '.active'
+
+      $active_lines.each ->
+        $a = $ this
+        $a.css
+          width: 'auto'
+        new_width = $a.width()
+        new_left = 10 if alignment is 'left'
+        new_left = Math.round((card_w - 10 - new_width)/2) if alignment is 'center'
+        new_left = Math.round(card_w - 10 - new_width) if alignment is 'right'
+
+        $a.css
+          'left': new_left
+          'width': new_width
+          'text-align': alignment
+        index = $a.prevAll().length
+        active_theme.theme_templates[active_view].lines[index].text_align = alignment
+      save_pos_and_size()
+      add_buttons_to_active()
   ###
   Shopping Cart Stuff
   ###

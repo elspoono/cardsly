@@ -2632,8 +2632,7 @@ get_patterns = (req, res, next) ->
     if err
       log_err err
     else
-      req.patterns = _(patterns).sortBy (pattern) ->
-        Math.random()
+      req.patterns = patterns
     next()
 #
 #

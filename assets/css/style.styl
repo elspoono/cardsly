@@ -896,14 +896,13 @@ input.normal,input.gray
         position absolute
         z-index 350
     .line
-      border 1px solid transparent
-      border-bottom 1px solid $c_bg_light
       padding 0
       margin 0
       background none
       overflow visible
       white-space nowrap
       position absolute
+      cursor pointer
     .highlight_box
       position absolute
       border 1px solid $c_logo_alt
@@ -912,7 +911,7 @@ input.normal,input.gray
       cursor pointer
       position absolute
       height 20px
-      width 30px
+      width 50px
       background $c_logo_alt
       line-height 20px
       font-size 20px
@@ -925,7 +924,7 @@ input.normal,input.gray
       border_radius_top_only(10px)
     .active
       border 4px solid $c_logo_alt
-      margin -3px
+      margin -4px
       cursor move
   .card_container
     padding 10px
@@ -957,9 +956,9 @@ input.normal,input.gray
       overflow hidden
       .upload
         float right
-        width 180px
+        width 360px
       .patterns
-        width 320px
+        width 360px
         float left
       .color_picker
         float right
@@ -978,7 +977,7 @@ input.normal,input.gray
           color $c_light
       .thumbs
         height 130px
-        width 190px
+        width 360px
         overflow-y scroll
         .thumb
           cursor pointer
@@ -991,6 +990,37 @@ input.normal,input.gray
         .active
           border 4px solid $c_logo_alt
           margin 2px 2px 1px 1px
+      .content_input
+        input
+          margin 0 0 15px 0
+          height 30px
+          line-height 30px
+          width 150px
+        input:nth-child(odd)
+          margin-right 20px
+      .content_input.ten
+        input
+          height 20px
+          line-height 20px
+          margin-bottom 5px
+        overflow auto
+      .field_container
+        float left
+        margin 0 0 20px 0
+        .field
+          overflow hidden
+          border 1px solid $c_bg_dark
+          padding 15px 10px 10px 10px
+          margin -10px 0 0 0
+          border_radius(10px)
+        label
+          background $c_bg_dark
+          color $c_bg_light
+          font-size 12px
+          padding 1px 10px 1px 5px
+          border_radius_right_only(5px)
+      .field_container.right
+        float right
     .active
       display block
   .tab_button
@@ -2416,4 +2446,138 @@ input value=["Send Feedback"]
    */
   .ui-progressbar { height:2em; text-align: left; }
   .ui-progressbar .ui-progressbar-value {margin: -1px; height:100%; }
+
+
+
+  .ui-colorpicker {
+      display: inline-block;
+    width: auto;
+  }
+
+  .ui-colorpicker-inline {
+      position: static;
+  }
+
+  .ui-colorpicker .ui-colorpicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
+  .ui-colorpicker .ui-colorpicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
+  .ui-colorpicker .ui-colorpicker-buttonpane button.ui-colorpicker-current { float:left; }
+
+  .ui-colorpicker table {
+      font-size: 100%; /* Reset browser table font-size */
+    margin: 0;
+  }
+
+  .ui-colorpicker table td {
+    vertical-align: top;
+  }
+
+  .ui-colorpicker-padding-left {
+    padding-left: 10px;
+  }
+  .ui-colorpicker-padding-top {
+    padding-top: 10px;
+  }
+
+  .ui-colorpicker-border {
+    border: 1px inset;
+      display: inline-block;
+  }
+
+  /* Bar & map */
+  #ui-colorpicker-map > *,
+  #ui-colorpicker-bar > * {
+      position: absolute;
+    cursor: crosshair;
+  }
+
+  #ui-colorpicker-map-pointer,
+  #ui-colorpicker-bar-pointer {
+      position: absolute;
+  }
+  /* Map */
+  #ui-colorpicker-map,
+  #ui-colorpicker-map > * {
+      display: block;
+    width: 256px;
+    height: 256px;
+    overflow: hidden;
+  }
+
+  #ui-colorpicker-map-layer-1,
+  #ui-colorpicker-map-layer-2 { background: url(images/map.png) no-repeat; }
+  #ui-colorpicker-map-layer-alpha { background: url(images/map-opacity.png); }
+  #ui-colorpicker-map-pointer { display: inline-block; width: 15px; height: 15px; background: url(images/map-pointer.png) no-repeat; }
+
+
+  /* Bar */
+  #ui-colorpicker-bar,
+  #ui-colorpicker-bar > * {
+      display: block;
+      width: 20px;
+      height: 256px;
+    overflow: hidden;
+      background-repeat: repeat-x;
+  }
+
+  #ui-colorpicker-bar-layer-1,
+  #ui-colorpicker-bar-layer-2,
+  #ui-colorpicker-bar-layer-3,
+  #ui-colorpicker-bar-layer-4 { background: url(images/bar.png) repeat-x; }
+  #ui-colorpicker-bar-layer-alpha { background: url(images/bar-opacity.png); }
+  #ui-colorpicker-bar-layer-alphabar { background: url(images/bar-alpha.png); }
+  #ui-colorpicker-bar-pointer { display: inline-block; width: 20px; height: 7px; background: url(images/bar-pointer.png) no-repeat; }
+
+  /* Preview */
+  #ui-colorpicker-preview {
+    text-align: center;
+  }
+
+  #ui-colorpicker-preview-initial {
+      cursor: pointer;
+  }
+
+  #ui-colorpicker-preview-initial,
+  #ui-colorpicker-preview-current {
+      width: 50px;
+      height: 20px;
+      display: inline-block;
+  }
+
+  #ui-colorpicker-preview-initial-alpha,
+  #ui-colorpicker-preview-current-alpha {
+      width: 50px;
+      height: 20px;
+      display: inline-block;
+    background: url(images/preview-opacity.png) repeat;
+  }
+
+  /* Inputs */
+  #ui-colorpicker-inputs label {
+      width: 1.5em;
+      display: inline-block;
+  }
+
+  /* Hex */
+  #ui-colorpicker-hex {
+    text-align: center;
+  }
+
+  /* Swatches */
+  #ui-colorpicker-swatches {
+    width: 84px;
+    height: 256px;
+    overflow: auto;
+    background-color: #f8f8f8;
+  }
+
+  .ui-colorpicker-swatch {
+    cursor: pointer;
+    float: left;
+    width: 11px;
+    height: 11px;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+  }
+
+
 }

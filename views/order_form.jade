@@ -51,19 +51,27 @@ if req.session && req.session.help_hidden
           .advanced_options
             ul.area
               li.active
-                .toggle.layout
-                  .disabled
-                    .option.active
-                      .icon.six
-                    .option
-                      .icon.ten
+                .field_container
+                  label Type your information
+                  .field
+                    .content_input
+                .field_container.right
+                  label Number of fields
+                  .field
+                    .toggle.layout
+                      .disabled
+                        .option.active
+                          .icon.six
+                        .option
+                          .icon.ten
+              li
                 .toggle.alignment
                   .disabled
-                    .option.active
+                    .option(alignment='left')
                       .icon.left
-                    .option
+                    .option(alignment='center')
                       .icon.center
-                    .option
+                    .option(alignment='right')
                       .icon.right
                 
                 - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
@@ -71,22 +79,31 @@ if req.session && req.session.help_hidden
                   -for font_family in font_families
                     .font_family(style='font-family:'+font_family+';')=font_family
               li
+                .toggle.qr_style
+                  .disabled
+                    .option
+                      .icon.square
+                    .option
+                      .icon.round
+                    .option
+                      .icon.circle
+              li
+                .patterns
+                  .title Choose a pattern
+                  .thumbs
+                    -for pattern in req.patterns
+                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id,s3_id=pattern.s3_id)
                 .upload
                   .title Or upload (1050x600)
                   form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
                     input(type='file',name='image')
                   .img_loader
                     iframe(name='hiddenFrame')
-                .patterns
-                  .title Choose a pattern
-                  .thumbs
-                    -for pattern in req.patterns
-                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id,s3_id=pattern.s3_id)
-              li Blegh
             ul.tab_button
-              li.active Text
+              li.active Content
+              li Style
+              li QR
               li Background
-              li QR Code
           .clear
           .categories
     .clear
