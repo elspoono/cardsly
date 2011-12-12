@@ -1630,6 +1630,25 @@ $ ->
     #
     #
     #
+    $lines.filter(':visible').each ->
+      $a = $ this
+      c_o = $a.position()
+      c_w = $a.width()
+      c_a = $a.css 'text-align'
+      c_h = $a.height()
+      $a.css
+        'width': 'auto'
+      n_w = $a.width()
+      n_l = c_o.left
+      if c_a is 'right'
+        n_l = n_l + c_w - n_w
+      if c_a is 'center'
+        n_l = n_l + (c_w - n_w)/2
+      $a.css
+        'left': n_l
+        'width': n_w
+    #
+    #
     #
     #
     $tabs = $advanced_options.find '.tab_button li'
@@ -1908,6 +1927,8 @@ $ ->
             $visible_lines.removeClass 'active'
           $l.addClass 'active'
           $active_lines = $lines.filter '.active'
+        else if shift_pressed
+          $l.removeClass 'active'
     #
     #
     #
@@ -1939,16 +1960,8 @@ $ ->
           new_l = o.left - x
           max_t = card_h - h - 10
           max_l = card_w - w - 10
-          new_w = w
           #
           #
-          # Make it skinnier if need be
-          if new_l < -100
-            new_w = new_w+new_l+100
-          if new_l > max_l+100
-            new_w = new_w+(max_l+100-new_l)
-            max_l = card_w - new_w - 10
-          new_w = 50 if new_w < 50
           #
           # Boundary that shit
           new_t = 10 if new_t < 10
@@ -1960,7 +1973,6 @@ $ ->
           $a.css
             top: new_t
             left: new_l
-            width: new_w
       $body.unbind('mouseup').bind 'mouseup', (e_3) ->
         e_3.preventDefault()
         $body.unbind 'mousemove'
@@ -2001,11 +2013,13 @@ $ ->
           l_o_l = l_o.left
           l_o_t = l_o.top
           if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
-            $l.addClass 'active'
-            $l.addClass 'temp'
+            unless $l.hasClass 'active'
+              $l.addClass 'active'
+              $l.addClass 'temp'
           else
             if $l.hasClass 'temp'
               $l.removeClass 'active'
+              $l.removeClass 'temp'
       $body.unbind('mouseup').bind 'mouseup', (e_3) ->
         $lines.removeClass 'temp'
         e_3.preventDefault()
@@ -2112,15 +2126,14 @@ $ ->
       position_these_buttons = ->
         #
         $font_decrease.css
-          top: $last.position().top + $last.outerHeight()
-          left: $last.position().left + $last.outerWidth() - 50
+          top: $last.position().top + $last.height()
+          left: $last.position().left-4
+          width: $last.outerWidth()
         $font_increase.css
           top: $first.position().top - 20
-          left: $first.position().left + $first.outerWidth() - 50
+          left: $first.position().left-4
+          width: $first.outerWidth()
         #
-      #
-      #
-      position_these_buttons()
       #
       #
       #
@@ -2184,6 +2197,8 @@ $ ->
       #
       $active_lines = $lines.filter '.active'
       #
+      #
+      position_these_buttons()
       #
       #
       $alignments = $advanced_options.find '.alignment .option'
