@@ -1884,9 +1884,9 @@ $ ->
     #
     $active_lines.each ->
       $l = $ this
-      l_o = $l.offset()
-      l_o_l = l_o.left - card_o.left
-      l_o_t = l_o.top - card_o.top
+      l_o = $l.position()
+      l_o_l = l_o.left
+      l_o_t = l_o.top
       l_w = $l.width()
       l_h = $l.height()
       if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
@@ -1895,9 +1895,9 @@ $ ->
     visible_hit = false
     $visible_lines.each ->
       $l = $ this
-      l_o = $l.offset()
-      l_o_l = l_o.left - card_o.left
-      l_o_t = l_o.top - card_o.top
+      l_o = $l.position()
+      l_o_l = l_o.left
+      l_o_t = l_o.top
       l_w = $l.width()
       l_h = $l.height()
       if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
@@ -1920,7 +1920,7 @@ $ ->
       # ----------------------
       $active_lines.each ->
         $a = $ this
-        $a.data 'o', $a.offset()
+        $a.data 'o', $a.position()
         $a.data 'h', $a.height()
         $a.data 'w', $a.width()
 
@@ -1935,8 +1935,8 @@ $ ->
           w = $a.data 'w'
           #
           # Figure out our dimensions
-          new_t = o.top - card_o.top - y 
-          new_l = o.left - card_o.left - x
+          new_t = o.top - y 
+          new_l = o.left - x
           max_t = card_h - h - 10
           max_l = card_w - w - 10
           new_w = w
@@ -1995,11 +1995,11 @@ $ ->
           height: h
         $visible_lines.each ->
           $l = $ this
-          l_o = $l.offset()
+          l_o = $l.position()
           l_w = $l.width()
           l_h = $l.height()
-          l_o_l = l_o.left - card_o.left
-          l_o_t = l_o.top - card_o.top
+          l_o_l = l_o.left
+          l_o_t = l_o.top
           if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
             $l.addClass 'active'
             $l.addClass 'temp'
@@ -2112,11 +2112,11 @@ $ ->
       position_these_buttons = ->
         #
         $font_decrease.css
-          top: $last.offset().top - card_o.top + $last.outerHeight()
-          left: $last.offset().left + $last.outerWidth() - 50 - card_o.left
+          top: $last.position().top + $last.outerHeight()
+          left: $last.position().left + $last.outerWidth() - 50
         $font_increase.css
-          top: $first.offset().top - 20 - card_o.top
-          left: $first.offset().left + $first.outerWidth() - 50 - card_o.left
+          top: $first.position().top - 20
+          left: $first.position().left + $first.outerWidth() - 50
         #
       #
       #
