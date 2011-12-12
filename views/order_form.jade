@@ -31,23 +31,17 @@ if req.session && req.session.help_hidden
               .card
                 .qr
                   .background
-                if req.session && req.session.saved_form && req.session.saved_form.values && req.session.saved_form.values.length
-                  .content
-                    - for(var i=0; i<req.session.saved_form.values.length; i++)
-                      .line
-                        !{unescape(req.session.saved_form.values[i])}
-                else
-                  .content.defaults
-                    .line John Stamos
-                    .line Uncle Jesse
-                    .line 555.555.5555
-                    .line john@stamos.com
-                    .line
-                    .line
-                    .line
-                    .line
-                    .line
-                    .line
+                .content.defaults
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
+                  .line 
           .advanced_options
             ul.area
               li.active
@@ -73,7 +67,6 @@ if req.session && req.session.help_hidden
                       .icon.center
                     .option(alignment='right')
                       .icon.right
-                
                 - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
                 .font_families
                   -for font_family in font_families

@@ -46,16 +46,16 @@ else
 #
 #
 $.line_copy = [
-  'Jimbo jo Jiming'
-  'Banker Extraordinaire'
-  'Cool Cats Cucumbers'
-  '57 Bakers, Edwarstonville'
-  '555.555.5555'
-  'New York'
-  'Apt. #666'
-  'M thru F - 10 to 7'
-  'fb.com/my_facebook'
-  '@my_twitter'
+  '1) John Stamos'
+  '2) Uncle Jesse'
+  '3) The Monkey Puppets'
+  '4) San Francisco, CA'
+  '5) 000.000.0000'
+  '6) mywebsite.com'
+  ''
+  ''
+  ''
+  ''
 ]
 
 random_strings = 'taameer73,Heesoh750,hiyit510,tuhaat140,Caaran74,lehof520,caniih190,Hiideer380,Doret53,yyywuut30,Febaad8,tootool61,huudiiz15,posaay690,Saakec590,tiloop930,lunad43,saatiim880,rolat70,mawas41,hidum17,baget520,Neekiir460,losiin220,leeleh45,Harees970,Cafeer440,neepat54,sojag760,ciqueen360,niifaat170,quetuuf470,tiimet66,deeros280,geeceel12,Taasow82,Fadoof87,Dodet720,riiteg15,jiitaaf25,Fujah620,hudon52,Sonit76,ceefoon680,sooneet88,ceesiis61,Tewiit520,tiiteh120,Cetiis72,Rylah25,reehyb340,Yerex67,QUiiwit10,satar530,Metew2,Leseh72,Leeheeb130,Giiliiw880,weetoog11,Cisin530,Juutih360,feseen310,Toopar73,Catet160,neejes690,Tyfeed21,Tatiic420,Watook720,Haawyc11,Motuuqu490,haayaah29,duufeec880,lityl770,moocuun88,behed21,hateeh89,Gosas4,cenood510,teneeh880,Lyyfeen970,pucun630,Liitec880,Teetiiqu110,Tageed38,zagaah480,neeheer87,hisig33,lasas450,tequot80,Dahiin840,Pubuqu860,Totoot79,Soonoom41,Faawut860,Heemaaqu15,hirin330,Leteen40,Seemeer790,faaween0,Yeesas680'.split ','
@@ -979,7 +979,7 @@ $ ->
       console.log 'Do something for IE7 here'
     else
       $feedback.stop(true,false).animate
-        right: '-37px'
+        right: '-17px'
         ,250
   $feedback_a.mouseout () ->
     $feedback = $ '.feedback'
@@ -987,7 +987,7 @@ $ ->
       console.log 'Do something for IE7 here'
     else
       $feedback.stop(true,false).animate
-        right: '-45px'
+        right: '-25px'
         ,250
   #
   #
@@ -1437,6 +1437,10 @@ $ ->
   #
   # LOADING the themes
   #
+  #
+  #
+  session = {}
+  #
   if $categories.length
     all_themes = []
     load_theme_thumbnails = ->
@@ -1475,34 +1479,29 @@ $ ->
     $.ajax
       url: '/get-themes'
       success: (all_data) ->
-        all_themes = all_data.themes
-        $categories.html ''
         #
         #
-        ###
-        
-        TODO
-
-
-        TODO
-
-
-        TODO
-
-
-        TODO
-
-        Pull lots of settings from server and re-click them
-
-        ###
-        #
-        #
-        #
-        active_theme._id = $('.active_theme_id').html()
-        #
-        #
-        load_theme_thumbnails()
-        #
+        $.ajax
+          url: '/get-session'
+          success: (result) ->
+            if not result.err
+              session = result.session
+              if session.saved_form and session.saved_form.values
+                for value,i in session.saved_form.values
+                  $lines.filter(':eq('+i+')').html value
+              else
+                for value, i in $.line_copy
+                  $lines.filter(':eq('+i+')').html value
+            #
+            #
+            all_themes = all_data.themes
+            $categories.html ''
+            #
+            active_theme._id = $('.active_theme_id').html()
+            #
+            #
+            load_theme_thumbnails()
+            #
       #
       #
       error: ->
@@ -1797,10 +1796,15 @@ $ ->
         $visible_lines.each (i) ->
           $v = $ this
           $new_input = $ '<input />'
-          $new_input.val $v.html()
+          #
+          if $v.html() is $.line_copy[i]
+            $new_input.attr 'placeholder', $v.html()
+          else
+            $new_input.val $v.html()
+          #
           $content_input.append $new_input
           #
-          $new_input.keyup ->
+          $new_input.bind 'change, blur', ->
             update_cards i, $new_input.val()
             set_timers()
           #

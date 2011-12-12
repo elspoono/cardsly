@@ -1578,6 +1578,10 @@ hex_to_rgba = (h) ->
   else
     'rgba('+r+','+g+','+b+','+a+')'
 #
+# Get Session
+app.post '/get-session', (req, res, next) ->
+  res.send
+    session: req.session
 #
 # Get User
 app.post '/get-user', (req,res,next) ->
@@ -1588,6 +1592,7 @@ app.post '/get-user', (req,res,next) ->
     name: req.user.name
     email: req.user.email
     stripe: req.user.stripe
+    session: req.session
 
 #
 #
