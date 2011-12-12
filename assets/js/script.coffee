@@ -1737,12 +1737,29 @@ $ ->
           $f.addClass 'active'
           #
           $active_lines = $lines.filter '.active'
-          $active_lines.css 'font-family', new_font_family
+          #
           $active_lines.each ->
             $a = $ this
+            c_o = $a.position()
+            c_w = $a.width()
+            c_a = $a.css 'text-align'
+            c_h = $a.height()
+            $a.css
+              'width': 'auto'
+              'font-family': new_font_family
+            n_w = $a.width()
+            n_l = c_o.left
+            if c_a is 'right'
+              n_l = n_l + c_w - n_w
+            if c_a is 'center'
+              n_l = n_l + (c_w - n_w)/2
+            $a.css
+              'left': n_l
+              'width': n_w
             index = $a.prevAll().length
             active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
-            set_my_theme_save_timers()
+          set_my_theme_save_timers()
+          add_buttons_to_active()
       #
       #
       # **********************************************************************
