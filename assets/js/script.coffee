@@ -1759,7 +1759,8 @@ $ ->
             index = $a.prevAll().length
             active_theme.theme_templates[active_view].lines[index].font_family = new_font_family
           set_my_theme_save_timers()
-          add_buttons_to_active()
+          add_buttons_to_active
+            dont_change_font: true
       #
       #
       # **********************************************************************
@@ -2249,16 +2250,17 @@ $ ->
       $alignments.filter('[alignment='+$active_lines.css('text-align')+']').addClass 'active'
       #
       #
-      # Set up font variables
-      $font_families = $advanced_options.find '.font_family'
-      $font_families.removeClass 'active'
-      #
-      # Selec the currently active one on load
-      $font_families.each ->
-        $f = $ this
-        if $f.html() is $active_lines.css('font-family').replace(/'/g,'')
-          $f.addClass 'active'
-          $advanced_options.find('.font_families').scrollTo $f
+      unless options.dont_change_font
+        # Set up font variables
+        $font_families = $advanced_options.find '.font_family'
+        $font_families.removeClass 'active'
+        #
+        # Selec the currently active one on load
+        $font_families.each ->
+          $f = $ this
+          if $f.html() is $active_lines.css('font-family').replace(/'/g,'')
+            $f.addClass 'active'
+            $advanced_options.find('.font_families').scrollTo $f
       #
       #
       #
