@@ -986,21 +986,13 @@ $ ->
   #
   $feedback_a = $ '.feedback a'
   $feedback_a.mouseover () ->
-    $feedback = $ '.feedback'
-    if $.browser.msie and parseInt($.browser.version, 10)<9
-      console.log 'Do something for IE7 here'
-    else
-      $feedback.stop(true,false).animate
-        right: '-17px'
-        ,250
+    $feedback_a.stop(true,false).animate
+      marginBottom: -7
+    ,250
   $feedback_a.mouseout () ->
-    $feedback = $ '.feedback'
-    if $.browser.msie and parseInt($.browser.version, 10)<9
-      console.log 'Do something for IE7 here'
-    else
-      $feedback.stop(true,false).animate
-        right: '-25px'
-        ,250
+    $feedback_a.stop(true,false).animate
+      marginBottom: 0
+    ,250
   #
   #
   #
@@ -2482,6 +2474,19 @@ $ ->
       $color_picker.css
         background: $active_lines.css 'color'
       #
+      $color_picker.click ->
+        $color_window = $ '<div />'
+        cp_o = $color_picker.offset()
+        $color_window.css
+          position: 'absolute'
+          zIndex: 200
+          top: cp_o.top-150
+          left: cp_o.left-20
+        $color_window.colorpicker
+          alpha: true
+          showButtonPanel: true
+        #
+        $(document.body).append $color_window
       #
       unless options.dont_change_font
         # Set up font variables
