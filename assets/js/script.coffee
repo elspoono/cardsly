@@ -1490,8 +1490,9 @@ $ ->
           active_view: active_view
         #
         #
-        if active_theme._id and theme._id is active_theme._id
-          $active_theme = $my_card
+        if active_theme._id
+          if theme._id is active_theme._id
+            $active_theme = $my_card
         else if session.saved_form and session.saved_form.active_theme_id and session.saved_form.active_theme_id is theme._id
           $active_theme = $my_card
         #
@@ -1679,9 +1680,6 @@ $ ->
     $qr.show().css
       top: theme_template.qr.y/100 * card_height
       left: theme_template.qr.x/100 * card_width
-    $qr.find('canvas').css
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
     $qr_bg.css
       'border-radius': theme_template.qr.radius+'px'
       height: theme_template.qr.h/100 * card_height
@@ -1851,14 +1849,41 @@ $ ->
       #                              QR TAB
       #
       # **********************************************************************
+      $card_qr = $card.find '.qr'
       if $t.html() is 'QR'
         #
         $lines.removeClass 'active'
         #
         #
         #
+        current_style = active_theme.theme_templates[active_view].qr.style
+        if not current_style
+          current_style = 'round'
         #
-        console.log 'QR'
+        #
+        $qr_style = $ '.toggle.qr_style'
+        #
+        #
+        #
+        #
+        #
+        #
+        $qr_style.find('.option').removeClass 'active'
+        #
+        $qr_style.find('.option').each ->
+          $o = $ this
+          style = $o.attr 'style'
+          if style is current_style
+            $o.addClass 'active'
+        #
+        #
+        $card_qr = $card.find '.qr'
+        #
+        $card_qr.addClass 'active'
+        #
+        #
+      else
+        $card_qr.removeClass 'active'
       #
       #
       # **********************************************************************
@@ -2011,6 +2036,10 @@ $ ->
     # ----------------------
     # Determine where we touched down at
     # ----------------------
+    #
+    #
+    #
+    # Was it an active line?
     active_hit = false
     #
     $active_lines.each ->
@@ -2023,6 +2052,9 @@ $ ->
       if e_l < l_o_l+l_w and e_l > l_o_l and e_t < l_o_t+l_h and e_t > l_o_t
         active_hit = true
     #
+    #
+    #
+    # Was it any visible line?
     visible_hit = false
     $visible_lines.each ->
       $l = $ this
@@ -2041,6 +2073,11 @@ $ ->
           $active_lines = $lines.filter '.active'
         else if shift_pressed
           $l.removeClass 'active'
+    #
+    #
+    # ORRRR - was it the QR Code??
+
+    #
     #
     #
     #

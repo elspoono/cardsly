@@ -471,7 +471,7 @@ theme_template_schema = new schema
     color1: String
     color2: String
     color2_alpha: Number
-    radius: Number
+    style: String
     h: Number
     w: Number
     x: Number
