@@ -2481,10 +2481,8 @@ $ ->
         $color_picker.click (e) ->
           $color_window = $ '<div class="color-window-guy" />'
           $color_window.colorpicker
-            showButtonPanel: true
             color: $color_picker.css 'background-color'
             rgb: false
-            mode: 'h'
             onSelect: (new_color) ->
               $active_lines.each ->
                 $a = $ this
@@ -2526,8 +2524,6 @@ $ ->
           setTimeout ->
             $body.one 'click', body_click_event
             $modes = $color_window.find '.ui-colorpicker-mode'
-            $modes.eq(1).click()
-            $modes.eq(0).click()
           , 0
         #
         unless options.dont_change_font
