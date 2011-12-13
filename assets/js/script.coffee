@@ -1898,8 +1898,6 @@ $ ->
         #
         #
         #
-        #
-        #
         $qr_style.find('.option').removeClass 'active'
         #
         $qr_style.find('.option').each ->
@@ -2470,13 +2468,58 @@ $ ->
       #
       #
       #
+      if $active_lines.hasClass 'qr'
+        #
+        $advanced_options.find('.qr_color2_alpha').slider
+          min: 0
+          max: 100
+          value: Math.round active_theme.theme_templates[active_view].qr.color2_alpha*100
+          step: 1
+          slide: (e, ui) ->
+            #
+            active_theme.theme_templates[active_view].qr.color2_alpha = ui.value/100
+            #
+            #
+            theme_template = active_theme.theme_templates[active_view]
+            #
+            # Calculate the alpha
+            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+            #
+            # Default the style
+            if not theme_template.qr.style
+              theme_template.qr.style = 'round'
+            #
+            $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+            #
+            #
+            set_my_theme_save_timers()
+        #
+      #
+      #
+      #
+      #
       $color_pickers = $advanced_options.find 'li.active .color_picker'
       #
       $color_pickers.each ->
         $color_picker = $ this
         #
-        $color_picker.css
-          background: $active_lines.css 'color'
+        #
+        #
+        if $color_picker.hasClass 'font_color'
+          $color_picker.css
+            background: $active_lines.css 'color'
+        #
+        #
+        if $color_picker.hasClass 'color_1'
+          $color_picker.css
+            background: '#' + active_theme.theme_templates[active_view].qr.color1
+        #
+        if $color_picker.hasClass 'color_2'
+          $color_picker.css
+            background: '#' + active_theme.theme_templates[active_view].qr.color2
+        #
+        #
+        #
         #
         $color_picker.click (e) ->
           $color_window = $ '<div class="color-window-guy" />'
@@ -2484,12 +2527,39 @@ $ ->
             color: $color_picker.css 'background-color'
             rgb: false
             onSelect: (new_color) ->
-              $active_lines.each ->
-                $a = $ this
-                $a.css
-                  'color': new_color
-                index = $a.prevAll().length
-                active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
+              #
+              $color_picker.css
+                background: new_color
+              #
+              if $color_picker.hasClass('color_1') or $color_picker.hasClass('color_2')
+                #
+                new_color = new_color.replace /#/, ''
+                new_color = new_color.substr 0,6
+                #
+                if $color_picker.hasClass 'color_1' 
+                  active_theme.theme_templates[active_view].qr.color1 = new_color
+                if $color_picker.hasClass 'color_2' 
+                  active_theme.theme_templates[active_view].qr.color2 = new_color
+                #
+                theme_template = active_theme.theme_templates[active_view]
+                #
+                # Calculate the alpha
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                # Default the style
+                if not theme_template.qr.style
+                  theme_template.qr.style = 'round'
+                #
+                $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+                #
+                #
+              #
+              if $color_picker.hasClass 'font_color'
+                $active_lines.each ->
+                  $a = $ this
+                  $a.css
+                    'color': new_color
+                  index = $a.prevAll().length
+                  active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
               set_my_theme_save_timers()
           #
           $(document.body).append $color_window
@@ -2773,8 +2843,6 @@ $ ->
       #
       # Calculate the alpha
       alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-      #
-      #
       $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
       #
       #
