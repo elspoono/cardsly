@@ -730,6 +730,7 @@ everyauth.facebook.appId '292309860797409'
 everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
 everyauth.facebook.findOrCreateUser handleGoodResponse
 everyauth.facebook.redirectPath '/success'
+everyauth.facebook.scope 'email'
 #
 # LinkedIn API Key / Config
 everyauth.linkedin.consumerKey 'fuj9rhx302d7'
