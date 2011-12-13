@@ -1613,7 +1613,6 @@ $ ->
       $new_card.closest('.category').find('h4').click()
       #
       #
-      set_my_theme_save_timers()
       #
       #
   #
@@ -1863,9 +1862,10 @@ $ ->
           #
           $content_input.append $new_input
           #
-          $new_input.bind 'keyup, blur', ->
+          $new_input.bind 'keyup blur', ->
             update_cards i, $new_input.val()
             set_timers()
+            save_pos_and_size()
           #
           #
           $new_input.focus ->
@@ -1885,10 +1885,6 @@ $ ->
         #
         #
         #
-        # All others Will customize that bad boy!!
-      else
-        #
-        maybe_add_new_theme()
     #
     #
     #
@@ -2034,7 +2030,7 @@ $ ->
         $a.data 'o', $a.position()
         $a.data 'h', $a.height()
         $a.data 'w', $a.width()
-
+      did_move_this_guy = false
       $body.unbind('mousemove').bind 'mousemove', (e_2) ->
         e_2.preventDefault()
         x = e.pageX - e_2.pageX
@@ -2063,11 +2059,14 @@ $ ->
           $a.css
             top: new_t
             left: new_l
+          #
+          #
+          did_move_this_guy = true
       $body.unbind('mouseup').bind 'mouseup', (e_3) ->
         e_3.preventDefault()
         $body.unbind 'mousemove'
         $body.unbind 'mouseup'
-        save_pos_and_size()
+        save_pos_and_size() if did_move_this_guy
         if $lines.filter('.active').length isnt 0
           $('.tab_button li:eq(1)').click()
     else
@@ -2349,9 +2348,10 @@ $ ->
   #
   my_theme_save_timer = 0
   set_my_theme_save_timers = ->
-    if active_theme.category is 'My Own'
-      clearTimeout my_theme_save_timer
-      my_theme_save_timer = setTimeout ->
+    clearTimeout my_theme_save_timer
+    my_theme_save_timer = setTimeout ->
+      maybe_add_new_theme()
+      if active_theme.category is 'My Own'
         $active_thumb = $ '.category .card.active'
         $active_thumb.data 'theme', active_theme
         update_preview_card_at_bottom()
@@ -2365,7 +2365,7 @@ $ ->
               console.log 'Error'
           error: ->
             console.log 'Error'
-      , 1000
+    , 1000
   #
   #
   #
