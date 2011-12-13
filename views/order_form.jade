@@ -55,43 +55,68 @@ if req.session && req.session.help_hidden
                         .option
                           .icon.ten
               li
-                .toggle.alignment
-                  .disabled
-                    .option(alignment='left')
-                      .icon.left
-                    .option(alignment='center')
-                      .icon.center
-                    .option(alignment='right')
-                      .icon.right
+                .field_container.left
+                  label Text alignment
+                  .field
+                    .toggle.alignment
+                      .disabled
+                        .option(alignment='left')
+                          .icon.left
+                        .option(alignment='center')
+                          .icon.center
+                        .option(alignment='right')
+                          .icon.right
                 - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-                .font_families
-                  -for font_family in font_families
-                    .font_family(style='font-family:'+font_family+';')=font_family
-                .color_picker.font_color
-                  .overlay
-                  .arrow_container
-                    .arrow
+
+                .field_container.right
+                  label Font
+                  .field
+                    .font_families
+                      -for font_family in font_families
+                        .font_family(style='font-family:'+font_family+';')=font_family
+                .field_container.left
+                  label Color
+                  .field
+                    .color_picker.font_color
+                      .overlay
+                      .arrow_container
+                        .arrow
               li
-                .toggle.qr_style
-                  .disabled
-                    .option(style='square')
-                      .icon.square
-                    .option(style='round')
-                      .icon.round
-                    .option(style='circle')
-                      .icon.circle
+                .field_container.full
+                  label QR color and style
+                  .field
+                    .color_picker.color_1
+                      .overlay
+                      .arrow_container
+                        .arrow
+                    .toggle.qr_style
+                      .disabled
+                        .option(style='square')
+                          .icon.square
+                        .option(style='round')
+                          .icon.round
+                        .option(style='circle')
+                          .icon.circle
+                .field_container.full
+                  label Background color and opacity
+                  .field
+                    .color_picker.color_2
+                      .overlay
+                      .arrow_container
+                        .arrow
               li
-                .patterns
-                  .title Choose a pattern
-                  .thumbs
-                    -for pattern in req.patterns
-                      img.thumb(src='//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id,s3_id=pattern.s3_id)
-                .upload
-                  .title Or upload (1050x600)
-                  form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
-                    input(type='file',name='image')
-                  .img_loader
-                    iframe(name='hiddenFrame')
+                .field_container.full
+                  label Select a pattern
+                  .field
+                    .patterns
+                      .thumbs
+                .field_container.full
+                  label Or upload an image, we recommend 1050px by 600px
+                  .field
+                    form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
+                      input(type='file',name='image')
+                    .img_loader
+                      iframe(name='hiddenFrame')
             ul.tab_button
               li.active Content
               li Style

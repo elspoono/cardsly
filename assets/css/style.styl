@@ -957,11 +957,10 @@ input.normal,input.gray
         float right
         width 360px
       .patterns
-        width 360px
+        width 320px
         float left
       .color_picker
         float left
-        margin 30px 0 0 0
         width 50px
         height 50px
         position relative
@@ -990,9 +989,10 @@ input.normal,input.gray
             height 0
       .font_families
         float right
-        height 290px
-        width 140px
+        height 250px
+        width 120px
         background $c_light
+        border 4px solid $c_bg_dark
         overflow-y scroll
         .font_family
           padding 2px 10px
@@ -1047,6 +1047,9 @@ input.normal,input.gray
           border_radius_right_only(5px)
       .field_container.right
         float right
+      .field_container.full
+        display block
+        width 100%
     .active
       display block
   .tab_button

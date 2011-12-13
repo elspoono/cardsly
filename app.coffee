@@ -1578,10 +1578,31 @@ hex_to_rgba = (h) ->
   else
     'rgba('+r+','+g+','+b+','+a+')'
 #
+#
+#
+get_patterns = (req, res, next) ->
+  mongo_pattern.find
+    active: true
+  , (err, patterns) ->
+    if check_no_err_ajax err, res
+      req.patterns = patterns
+      next()
+#
+#
+#
+app.post '/get-patterns', get_patterns, (req, res, next) ->
+  res.send
+    patterns: req.patterns
+#
+#
+#
+#
 # Get Session
 app.post '/get-session', (req, res, next) ->
   res.send
     session: req.session
+#
+#
 #
 # Get User
 app.post '/get-user', (req,res,next) ->
@@ -2630,18 +2651,6 @@ get_order_info = (req, res, next) ->
 #
 #
 #
-get_patterns = (req, res, next) ->
-  mongo_pattern.find
-    active: true
-  , (err, patterns) ->
-    if err
-      log_err err
-    else
-      req.patterns = patterns
-    next()
-#
-#
-#
 get_url_groups = (req, res, next) ->
   if req.user
     mongo_url_group.find
@@ -2736,13 +2745,13 @@ get_url_groups = (req, res, next) ->
     next()
 #
 # cards Page Mockup
-app.get '/cards', securedPage, get_patterns, get_url_groups, (req, res) ->
+app.get '/cards', securedPage, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: false
 #
 # cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_patterns, get_url_groups, (req, res) ->
+app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
   res.render 'cards'
     req: req
     thankyou: true
@@ -2852,7 +2861,7 @@ app.get '/cute-animal', (req, res) ->
 #
 #
 #
-app.get '/buy', get_patterns, get_url_groups, (req, res, next) ->
+app.get '/buy', get_url_groups, (req, res, next) ->
   session = req.session
   if req.user
     if (session and session.saved_form and session.saved_form.values and session.saved_form.values.length > 0 and session.saved_form.values[0] is "John Stamos") or !session or !session.saved_form or !session.saved_form.values or !session.saved_form.values.length
@@ -2898,7 +2907,7 @@ app.get '/buy', get_patterns, get_url_groups, (req, res, next) ->
 #
 #
 #
-app.get '/phx', get_patterns, (req, res) ->
+app.get '/phx', (req, res) ->
   res.render 'phx'
     req: req
     #
@@ -2917,7 +2926,7 @@ app.get '/phx', get_patterns, (req, res) ->
 #
 #
 #
-app.get '/sample-landing-page', get_patterns, (req, res) ->
+app.get '/sample-landing-page', (req, res) ->
   res.render 'sample_landing_page'
     req: req
     #
@@ -2936,7 +2945,7 @@ app.get '/sample-landing-page', get_patterns, (req, res) ->
 # AB Test Pages
 
 # Page 1 Purchase
-app.get '/home1', get_patterns, get_url_groups, (req, res) ->
+app.get '/home1', get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 1
@@ -2947,7 +2956,7 @@ app.get '/home1', get_patterns, get_url_groups, (req, res) ->
 
 
 # Page 2 Checkout
-app.get '/home2', get_patterns, get_url_groups, (req, res) ->
+app.get '/home2', get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 2
@@ -2957,7 +2966,7 @@ app.get '/home2', get_patterns, get_url_groups, (req, res) ->
     ]
 
 # Page 3 Buy
-app.get '/home3',get_patterns, get_url_groups, (req, res) ->
+app.get '/home3', get_url_groups, (req, res) ->
   res.render 'home'
     req: req
     abtest: 3
@@ -2970,7 +2979,7 @@ app.get '/home3',get_patterns, get_url_groups, (req, res) ->
 #
 #
 # Real Index Page
-app.get '/', get_patterns, get_url_groups, (req, res) -> 
+app.get '/', get_url_groups, (req, res) -> 
   #
   #
   if req.user

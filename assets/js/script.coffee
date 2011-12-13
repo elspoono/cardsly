@@ -1,10 +1,10 @@
 #= require 'libs/jquery-1.6.2.js'
-#= require 'libs/jquery-ui-1.8.16.min.js'
 #= require 'date'
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
-
+#= require 'libs/jquery-ui-1.8.16.min.js'
+#= require 'libs/jquery.colorpicker.js'
 
 
 ##################################################################
@@ -43,6 +43,8 @@ if $.browser.msie and parseInt($.browser.version, 10)<9
   $.fx.speeds._default = 0
 else
   $.fx.speeds._default = 300
+#
+#
 #
 #
 $.line_copy = [
@@ -668,8 +670,8 @@ $ ->
   Profile MENU in the TOP RIGHT
   Thing that shows a drop down
   ###
-  $a = $ '.account_link'
-  $am = $a.find '.account_menu'
+  $account = $ '.account_link'
+  $accountm = $account.find '.account_menu'
   $body = $(document)
   $('.small_nav li').live 'mouseenter', ->
     $(this).addClass 'hover'
@@ -678,20 +680,20 @@ $ ->
   close_menu = (e) ->
     $t = $ e.target
     if $t.closest('.account_link').length
-      $a = $t.closest('li').find 'a'
-      document.location.href = $a.attr 'href'
+      $account = $t.closest('li').find 'a'
+      document.location.href = $account.attr 'href'
     else
-      $a.removeClass 'click'
-      $am.slideUp(150)
-      $a.one 'click', expand_menu
+      $account.removeClass 'click'
+      $accountm.slideUp(150)
+      $account.one 'click', expand_menu
       $body.unbind 'click', close_menu
     false
   expand_menu = ->
-    $am.slideDown(150)
-    $a.addClass 'click'
+    $accountm.slideDown(150)
+    $account.addClass 'click'
     $body.bind 'click', close_menu
     false
-  $a.one 'click', expand_menu
+  $account.one 'click', expand_menu
   #
   #
   # END MENU
@@ -1555,6 +1557,17 @@ $ ->
                 active_view = session.saved_form.active_view
                 $('.toggle.layout .option').removeClass 'active'
                 $('.toggle.layout .option:eq('+active_view+')').addClass 'active'
+              #
+              #
+              #
+              # MEH - this seems like a good spot - llolololol
+              $.ajax
+                url: '/get-patterns'
+                success: (result) ->
+                  if not result.err
+                    $thumbs = $advanced_options.find '.patterns .thumbs'
+                    for pattern in result.patterns
+                      $thumbs.append '<img class="thumb" src="//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id+'" s3_id="'+pattern.s3_id+'" />'
             #
             #
             all_themes = all_data.themes
@@ -1818,6 +1831,7 @@ $ ->
         #
         #
         #
+        $qr.removeClass 'active'
         #
         #
         #

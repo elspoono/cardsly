@@ -766,18 +766,21 @@ draw_qr = (o) ->
   quarter = o.square_size/2
   #
   #
-  size = count * o.square_size + border_size * 2
+  height = count * o.square_size + border_size * 3
   #
+  width = count * o.square_size + border_size * 2
+  #
+  size = height
   #
   #
   #
   if o.node_canvas
-    canvas = new o.node_canvas(size,size)
+    canvas = new o.node_canvas(width,height)
   if o.$canvas
     canvas = o.$canvas[0]
     o.$canvas.attr
-      height: size
-      width: size
+      height: height
+      width: width
   #
   #
   ctx = canvas.getContext '2d'
@@ -789,16 +792,16 @@ draw_qr = (o) ->
     ctx.fillStyle = hex_to_rgba o.hex_2
     
     if o.style is 'square'
-      ctx.fillRect 0, 0, size, size
+      ctx.fillRect 0, 0, width, height
     else
       ctx.beginPath()
       ctx.moveTo border_size, 0
-      ctx.lineTo size-border_size, 0
-      ctx.quadraticCurveTo size, 0, size, border_size
-      ctx.lineTo size, size-border_size
-      ctx.quadraticCurveTo size, size, size-border_size, size
-      ctx.lineTo border_size, size
-      ctx.quadraticCurveTo 0, size, 0, size-border_size
+      ctx.lineTo width-border_size, 0
+      ctx.quadraticCurveTo width, 0, width, border_size
+      ctx.lineTo width, height-border_size
+      ctx.quadraticCurveTo width, height, width-border_size, height
+      ctx.lineTo border_size, height
+      ctx.quadraticCurveTo 0, height, 0, height-border_size
       ctx.lineTo 0, border_size
       ctx.quadraticCurveTo 0, 0, border_size, 0
       ctx.fill()
@@ -902,16 +905,16 @@ draw_qr = (o) ->
   ctx.fillStyle = hex_to_rgba o.hex
   #
   #
-  font_size = border_size*1
+  font_size = border_size*1.5
   ctx.font = font_size+'px Lato'
   parsed_url = o.url.replace('http:\/\/','')
   measure = ctx.measureText parsed_url, 0, 0
-  ctx.fillText parsed_url, size-measure.width-border_size, size-font_size/5
+  ctx.fillText parsed_url, width-measure.width-border_size, height-font_size/5
   #
   #
   # Draw the Card Number
   if o.card_number
-    ctx.fillText '#'+o.card_number, border_size, size-font_size/5 
+    ctx.fillText '#'+o.card_number, border_size, height-font_size/5
   #
   #
   # Return the canvas
