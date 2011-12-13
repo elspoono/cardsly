@@ -1081,6 +1081,17 @@ $ ->
       $c.find('.cards').slideDown 400, ->
         $gs.show()
         $c.find('.card:first').click()
+        $these_cards = $c.find('.card')
+        if $these_cards.length > 12
+          $the_rest = $these_cards.filter ':gt(11)'
+          $the_rest.hide()
+          $show_more = $('<br style="clear:both;"><div style="text-align:center;"><a href="#">Show All Cards</a></div>')
+          $show_more.click ->
+            $show_more.remove()
+            $the_rest.fadeIn()
+            $show_more.remove()
+            false
+          $c.append $show_more
       $c.addClass('active')
   #
   #
@@ -1481,6 +1492,10 @@ $ ->
         #
         if active_theme._id and theme._id is active_theme._id
           $active_theme = $my_card
+        else if session.saved_form and session.saved_form.active_theme_id and session.saved_form.active_theme_id is theme._id
+          $active_theme = $my_card
+        #
+        #
         #
         # Push the whole thing to categories
         $.add_card_to_category $my_card, theme
@@ -1518,14 +1533,19 @@ $ ->
               else
                 for value, i in $.line_copy
                   $lines.filter(':eq('+i+')').html value
+              #
+              #
+              #
+
+              if session.saved_form and session.saved_form.active_view
+                active_view = session.saved_form.active_view
+                $('.toggle.layout .option').removeClass 'active'
+                $('.toggle.layout .option:eq('+active_view+')').addClass 'active'
             #
             #
             all_themes = all_data.themes
             $categories.html ''
             #
-            active_theme._id = ''
-            if session.saved_form and session.saved_form.active_theme_id
-              active_theme._id = session.active_theme_id
             #
             #
             load_theme_thumbnails()
@@ -1591,9 +1611,11 @@ $ ->
   #
   #
   #
-  maybe_add_new_theme = ->
+  need_to_add_new_theme = ->
     #
     if active_theme.category isnt 'My Own'
+      #
+      #
       #
       active_theme = $.extend true, {}, active_theme
       #
@@ -1611,10 +1633,14 @@ $ ->
         active_view: active_view
       $.add_card_to_category $new_card, active_theme
       $new_card.closest('.category').find('h4').click()
+      set_my_theme_save_timers()
       #
       #
       #
       #
+      return true
+    else
+      return false
   #
   #
   #
@@ -2350,21 +2376,24 @@ $ ->
   set_my_theme_save_timers = ->
     clearTimeout my_theme_save_timer
     my_theme_save_timer = setTimeout ->
-      maybe_add_new_theme()
-      if active_theme.category is 'My Own'
-        $active_thumb = $ '.category .card.active'
-        $active_thumb.data 'theme', active_theme
-        update_preview_card_at_bottom()
-        $.ajax
-          url: '/save-theme'
-          data: JSON.stringify
-            theme: active_theme
-            do_save: true
-          success: (result) ->
-            if not result.success
+      unless need_to_add_new_theme()
+        if active_theme.category is 'My Own'
+          $active_thumb = $ '.category .card.active'
+          $active_thumb.data 'theme', active_theme
+          update_preview_card_at_bottom()
+          $.ajax
+            url: '/save-theme'
+            data: JSON.stringify
+              theme: active_theme
+              do_save: true
+            success: (result) ->
+              if not result.success
+                console.log 'Error'
+              else
+                active_theme = result.theme
+                $active_thumb.data 'theme', active_theme
+            error: ->
               console.log 'Error'
-          error: ->
-            console.log 'Error'
     , 1000
   #
   #
