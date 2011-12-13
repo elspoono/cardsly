@@ -1327,8 +1327,6 @@ app.post '/save-theme', (req, res) ->
   # Put it into a nice pretty JSON object 
   params = req.body
   #
-  # Save it in the session always.
-  req.session.theme = params.theme
   #
   #
   # If we hit the save button
