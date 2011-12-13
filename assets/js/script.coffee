@@ -166,7 +166,7 @@ $.create_card_from_theme = (options) ->
   alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
   #
   #
-  $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+  $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
   #
   $my_qr.css
     height: theme_template.qr.h/100 * settings.height
@@ -1620,17 +1620,18 @@ $ ->
     #
     #
     #
-    $lines.each (i) ->
-      update_cards i, $(this).html()
-    #
-    #
-    #
     unless options.ignore_thumbnail
       $new_card = $.create_card_from_theme 
         theme: active_theme
+        active_view: active_view
       $new_card.addClass 'active'
       $new_card.data 'theme', active_theme
       $('.category .card.active').replaceWith $new_card
+    #
+    #
+    #
+    $lines.each (i) ->
+      update_cards i, $(this).html()
   #
   #
   #
