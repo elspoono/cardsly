@@ -2474,19 +2474,57 @@ $ ->
       $color_picker.css
         background: $active_lines.css 'color'
       #
-      $color_picker.click ->
-        $color_window = $ '<div />'
-        cp_o = $color_picker.offset()
+      $color_picker.click (e) ->
+        $color_window = $ '<div class="color-window-guy" />'
+        $color_window.colorpicker
+          showButtonPanel: true
+          color: $active_lines.css 'color'
+          rgb: false
+          mode: 'h'
+          onSelect: (new_color) ->
+            $active_lines.each ->
+              $a = $ this
+              $a.css
+                'color': new_color
+              index = $a.prevAll().length
+              active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
+            set_my_theme_save_timers()
+        #
+        $(document.body).append $color_window
+        #
         $color_window.css
           position: 'absolute'
           zIndex: 200
-          top: cp_o.top-150
-          left: cp_o.left-20
-        $color_window.colorpicker
-          alpha: true
-          showButtonPanel: true
         #
-        $(document.body).append $color_window
+        #
+        cp_o = $color_picker.offset()
+        n_t = cp_o.top - $color_window.outerHeight() + $color_picker.outerHeight() + 4
+        n_l = cp_o.left - 4
+        n_r = null
+        if (n_l*1+$color_window.outerWidth()*1) > $(window).width()
+          n_l = null
+          n_r = 0
+        $color_window.css
+          top: n_t
+          left: n_l
+          right: n_r
+        #
+        #
+        #
+        body_click_event = (e) ->
+          $t = $ e.target
+          $to_check = $t.closest('.color-window-guy').add $t
+          unless $to_check[0] is $color_window[0]
+            $color_window.remove()
+          else
+            $body.one 'click', body_click_event
+        e.preventDefault()
+        setTimeout ->
+          $body.one 'click', body_click_event
+          $modes = $color_window.find '.ui-colorpicker-mode'
+          $modes.eq(1).click()
+          $modes.eq(0).click()
+        , 0
       #
       unless options.dont_change_font
         # Set up font variables
