@@ -67,6 +67,10 @@ if req.session && req.session.help_hidden
                 .font_families
                   -for font_family in font_families
                     .font_family(style='font-family:'+font_family+';')=font_family
+                .color_picker.font_color
+                  .overlay
+                  .arrow_container
+                    .arrow
               li
                 .toggle.qr_style
                   .disabled

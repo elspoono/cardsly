@@ -659,6 +659,11 @@ $ ->
   # MENU
   #
   #
+  #
+  # TODO  - FIX BUG BECAUSE THIS USES $a !!!!!!
+  #
+  #
+  #
   ###
   Profile MENU in the TOP RIGHT
   Thing that shows a drop down
@@ -2455,6 +2460,12 @@ $ ->
       $alignments = $advanced_options.find '.alignment .option'
       $alignments.removeClass 'active'
       $alignments.filter('[alignment='+$active_lines.css('text-align')+']').addClass 'active'
+      #
+      #
+      #
+      $color_picker = $advanced_options.find 'li.active .color_picker'
+      $color_picker.css
+        background: $active_lines.css 'color'
       #
       #
       unless options.dont_change_font

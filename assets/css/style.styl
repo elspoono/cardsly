@@ -960,7 +960,34 @@ input.normal,input.gray
         width 360px
         float left
       .color_picker
-        float right
+        float left
+        margin 30px 0 0 0
+        width 50px
+        height 50px
+        position relative
+        border 4px solid $c_bg_dark
+        cursor pointer
+        .overlay
+          width 50px
+          alpha_bg($c_black,.1)
+          height 5px
+          position absolute
+          bottom 0
+          left 0
+        .arrow_container
+          position absolute
+          background $c_bg_dark
+          height 11px
+          width 16px
+          bottom 0
+          right 0
+          .arrow
+            margin 5px 0 0 5px
+            border-color $c_bg_light transparent transparent transparent
+            border-style solid
+            border-width 5px
+            width 0
+            height 0
       .font_families
         float right
         height 290px
