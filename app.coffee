@@ -1419,6 +1419,8 @@ app.post '/find-address', (req, res, next) ->
       details: details
     res.send
       full_address: full_address
+      latitude: latitude
+      longitude: longitude
 #
 #
 #
@@ -3097,7 +3099,13 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
       params.hex_2 = req.params.color_2
     else
       params.style = req.params.color_2
-
+  #
+  #
+  if req.params.style
+    params.style = req.params.style
+  #
+  #
+  #
   canvas = qr_code.draw_qr
     node_canvas: node_canvas
     style: params.style

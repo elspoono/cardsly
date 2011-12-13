@@ -317,12 +317,13 @@ blockquote
     margin -320px 180px 0 0
     float right
   .enter_card .help_img
-    margin 155px 0 0 40px
+    margin 155px 140px 0 0
+    float right
   .click_more_card .help_img
     margin 70px 60px 0 0
     float right
   .chose_card_design .help_img
-    margin -160px 0 0 40px
+    margin 100px 0 0 40px
   .enter_price .help_img
     margin -355px 120px 0 0
     float right
@@ -860,7 +861,11 @@ input.normal,input.gray
   font-size 34px
   line-height 50px
   height 40px
-  width 180px
+  width 220px
+  img
+    margin 5px 10px 0 10px
+    float left
+    width 23px
 .checkout.button.hover
   gradient(lighten($c_go,10),darken($c_go,10))
 .checkout.button.click
@@ -889,12 +894,6 @@ input.normal,input.gray
     position relative
     .qr
       position absolute
-      canvas
-        position absolute
-        z-index 351
-      .background
-        position absolute
-        z-index 350
     .line
       padding 0
       margin 0
@@ -1382,18 +1381,17 @@ label
     width 215px
   .right,.righter
     margin-left 100px
+//
 .address_container
   margin 20px 0
-  border 1px solid $c_bg_dark
-  width 170px
-  padding 10px
-  h5
-    font-weight bold
-    margin -20px -5px 5px -5px
-    padding-left 5px
-    background $c_bg_light
-    border 1px solid $c_bg_dark
+  width 190px
   relative_size(.6)
+  img
+    margin 5px 0 0 0
+    padding 5px 0 0 0
+    border-top 1px solid $c_bg_dark
+//
+//
 // RADIO TEXT STUFF FOR QUANTITY
 .radio_text_fields
   relative_size(1)

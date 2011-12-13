@@ -156,13 +156,21 @@ $.create_card_from_theme = (options) ->
   #
   #
   # Prep the Card
-  $my_card = $ '<div class="card"><div class="qr"><div class="background" /></div></div>'
+  $my_card = $ '<div class="card"><img class="qr" /></div>'
   #
   $my_card.data 'theme', settings.theme
   #
   $my_qr = $my_card.find('.qr')
   #
-  $my_qr.html '<img src="/qr/' + theme_template.qr.color1 + '/?cards.ly" height=' + theme_template.qr.h/100 * settings.height + ' width=' + theme_template.qr.w/100 * settings.width + ' \/><div class="background" \/> '
+  # Calculate the alpha
+  alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+  #
+  #
+  $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+  #
+  $my_qr.css
+    height: theme_template.qr.h/100 * settings.height
+    width: theme_template.qr.w/100 * settings.width
   #
   $my_qr_bg = $my_qr.find '.background'
   #
@@ -1589,7 +1597,9 @@ $ ->
   # - timer events save form fields periodically to server
   #
   #
-  update_preview_card_at_bottom = ->
+  update_preview_card_at_bottom = (options) ->
+    #
+    options = {} unless options
     #
     # For the home page, show the selected card at the bottom
     $active_card = $.create_card_from_theme
@@ -1607,6 +1617,15 @@ $ ->
     #
     $lines.each (i) ->
       update_cards i, $(this).html()
+    #
+    #
+    #
+    unless options.ignore_thumbnail
+      $new_card = $.create_card_from_theme 
+        theme: active_theme
+      $new_card.addClass 'active'
+      $new_card.data 'theme', active_theme
+      $('.category .card.active').replaceWith $new_card
   #
   #
   #
@@ -1671,25 +1690,25 @@ $ ->
       update_card_size()
     #
     #
-    $qr.hide()
     $lines.hide()
     #
     #
     #
     # Show the qr code and set it to the right place
-    $qr.show().css
+    $qr.css
       top: theme_template.qr.y/100 * card_height
       left: theme_template.qr.x/100 * card_width
-    $qr_bg.css
-      'border-radius': theme_template.qr.radius+'px'
       height: theme_template.qr.h/100 * card_height
       width: theme_template.qr.w/100 * card_width
-      background: '#'+theme_template.qr.color2
-    $qr_bg.fadeTo 0, theme_template.qr.color2_alpha
-    $qr.qr
-      color: theme_template.qr.color1
-      height: theme_template.qr.h/100 * card_height
-      width: theme_template.qr.h/100 * card_height
+    #
+    # Calculate the alpha
+    alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+    #
+    # Default the style
+    if not theme_template.qr.style
+      theme_template.qr.style = 'round'
+    #
+    $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
     #
     #
     # Move all the lines and their shit
@@ -1706,7 +1725,8 @@ $ ->
         textAlign: pos.text_align
         color: '#'+pos.color
     #
-    update_preview_card_at_bottom()
+    update_preview_card_at_bottom
+      ignore_thumbnail: true
     #
     #
     #
@@ -1881,6 +1901,8 @@ $ ->
         #
         $card_qr.addClass 'active'
         #
+        add_buttons_to_active
+          dont_change_font: true
         #
       else
         $card_qr.removeClass 'active'
@@ -1932,7 +1954,6 @@ $ ->
           $content_input.removeClass 'ten'
         #
         #
-        console.log 'Content'
         #
         #
         #
@@ -2018,6 +2039,8 @@ $ ->
   # Area Selecting Binding Event Nonsense
   $card.unbind().bind 'mousedown', (e) ->
     #
+    card_o = $card.offset()
+    #
     if e.target.className is 'font_decrease' or e.target.className is 'font_increase'
       return false
     #
@@ -2076,112 +2099,155 @@ $ ->
     #
     #
     # ORRRR - was it the QR Code??
-
-    #
-    #
-    #
-    #
-    remove_buttons_from_active()
-    #
-    #
-    if visible_hit
-      # ----------------------
-      # Move Stuff Around
-      # ----------------------
-      $active_lines.each ->
-        $a = $ this
-        $a.data 'o', $a.position()
-        $a.data 'h', $a.height()
-        $a.data 'w', $a.width()
+    qr_o = $qr.position()
+    qr_o_l = qr_o.left
+    qr_o_t = qr_o.top
+    qr_w = $qr.width()
+    qr_h = $qr.height()
+    if e_l < qr_o_l+qr_w and e_l > qr_o_l and e_t < qr_o_t+qr_h and e_t > qr_o_t
+      $('.tab_button li:eq(2)').click()
+      #
+      remove_buttons_from_active()
+      #
+      #
       did_move_this_guy = false
       $body.unbind('mousemove').bind 'mousemove', (e_2) ->
         e_2.preventDefault()
         x = e.pageX - e_2.pageX
         y = e.pageY - e_2.pageY
-        $active_lines.each ->
-          $a = $ this
-          o = $a.data 'o'
-          h = $a.data 'h'
-          w = $a.data 'w'
-          #
-          # Figure out our dimensions
-          new_t = o.top - y 
-          new_l = o.left - x
-          max_t = card_h - h - 10
-          max_l = card_w - w - 10
-          #
-          #
-          #
-          # Boundary that shit
-          new_t = 10 if new_t < 10
-          new_l = 10 if new_l < 10
-          new_t = max_t if new_t > max_t
-          new_l = max_l if new_l > max_l
-          #
-          # Then set it
-          $a.css
-            top: new_t
-            left: new_l
-          #
-          #
-          did_move_this_guy = true
+        #
+        # Figure out our dimensions
+        new_t = qr_o.top - y 
+        new_l = qr_o.left - x
+        max_t = card_h - qr_h - 10
+        max_l = card_w - qr_w - 10
+        #
+        #
+        #
+        # Boundary that shit
+        new_t = 10 if new_t < 10
+        new_l = 10 if new_l < 10
+        new_t = max_t if new_t > max_t
+        new_l = max_l if new_l > max_l
+        #
+        # Then set it
+        $qr.css
+          top: new_t
+          left: new_l
+        #
+        #
+        did_move_this_guy = true
       $body.unbind('mouseup').bind 'mouseup', (e_3) ->
         e_3.preventDefault()
         $body.unbind 'mousemove'
         $body.unbind 'mouseup'
         save_pos_and_size() if did_move_this_guy
-        if $lines.filter('.active').length isnt 0
-          $('.tab_button li:eq(1)').click()
+        $('.tab_button li:eq(2)').click()
+      #
+      #
+      #
     else
-      # ----------------------
-      # Area drag selector
-      # ----------------------
-      unless shift_pressed
-        $active_lines.removeClass 'active'
-      $card.find('.highlight_box').remove()
-      $highlight_box = $ '<div class="highlight_box" />'
-      $card.append $highlight_box
-      $body.unbind('mousemove').bind 'mousemove', (e_2) ->
-        e_2.preventDefault()
-        t = e_t
-        l = e_l
-        w = Math.abs(e.pageX - e_2.pageX)
-        h = Math.abs(e.pageY - e_2.pageY)
-        if e_2.pageX < e.pageX
-          l = e_2.pageX - card_o.left
-        if e_2.pageY < e.pageY
-          t = e_2.pageY - card_o.top
-        within = (x1,y1,x2,y2) -> x1 < (l+w) and x2 > l and y1 < t+h and y2 > t
-        $highlight_box.css
-          top: t
-          left: l
-          width: w
-          height: h
-        $visible_lines.each ->
-          $l = $ this
-          l_o = $l.position()
-          l_w = $l.width()
-          l_h = $l.height()
-          l_o_l = l_o.left
-          l_o_t = l_o.top
-          if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
-            unless $l.hasClass 'active'
-              $l.addClass 'active'
-              $l.addClass 'temp'
+      #
+      remove_buttons_from_active()
+      #
+      if visible_hit
+        # ----------------------
+        # Move Stuff Around
+        # ----------------------
+        $active_lines.each ->
+          $a = $ this
+          $a.data 'o', $a.position()
+          $a.data 'h', $a.height()
+          $a.data 'w', $a.width()
+        did_move_this_guy = false
+        $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+          e_2.preventDefault()
+          x = e.pageX - e_2.pageX
+          y = e.pageY - e_2.pageY
+          $active_lines.each ->
+            $a = $ this
+            o = $a.data 'o'
+            h = $a.data 'h'
+            w = $a.data 'w'
+            #
+            # Figure out our dimensions
+            new_t = o.top - y 
+            new_l = o.left - x
+            max_t = card_h - h - 10
+            max_l = card_w - w - 10
+            #
+            #
+            #
+            # Boundary that shit
+            new_t = 10 if new_t < 10
+            new_l = 10 if new_l < 10
+            new_t = max_t if new_t > max_t
+            new_l = max_l if new_l > max_l
+            #
+            # Then set it
+            $a.css
+              top: new_t
+              left: new_l
+            #
+            #
+            did_move_this_guy = true
+        $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+          e_3.preventDefault()
+          $body.unbind 'mousemove'
+          $body.unbind 'mouseup'
+          save_pos_and_size() if did_move_this_guy
+          if $lines.filter('.active').length isnt 0
+            $('.tab_button li:eq(1)').click()
+      else
+        # ----------------------
+        # Area drag selector
+        # ----------------------
+        unless shift_pressed
+          $active_lines.removeClass 'active'
+        $card.find('.highlight_box').remove()
+        $highlight_box = $ '<div class="highlight_box" />'
+        $card.append $highlight_box
+        $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+          e_2.preventDefault()
+          t = e_t
+          l = e_l
+          w = Math.abs(e.pageX - e_2.pageX)
+          h = Math.abs(e.pageY - e_2.pageY)
+          if e_2.pageX < e.pageX
+            l = e_2.pageX - card_o.left
+          if e_2.pageY < e.pageY
+            t = e_2.pageY - card_o.top
+          within = (x1,y1,x2,y2) -> x1 < (l+w) and x2 > l and y1 < t+h and y2 > t
+          $highlight_box.css
+            top: t
+            left: l
+            width: w
+            height: h
+          $visible_lines.each ->
+            $l = $ this
+            l_o = $l.position()
+            l_w = $l.width()
+            l_h = $l.height()
+            l_o_l = l_o.left
+            l_o_t = l_o.top
+            if within l_o_l, l_o_t, l_o_l+l_w, l_o_t+l_h
+              unless $l.hasClass 'active'
+                $l.addClass 'active'
+                $l.addClass 'temp'
+            else
+              if $l.hasClass 'temp'
+                $l.removeClass 'active'
+                $l.removeClass 'temp'
+        $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+          $lines.removeClass 'temp'
+          e_3.preventDefault()
+          $highlight_box.remove()
+          $body.unbind 'mousemove'
+          $body.unbind 'mouseup'
+          if $lines.filter('.active').length isnt 0
+            $('.tab_button li:eq(1)').click()
           else
-            if $l.hasClass 'temp'
-              $l.removeClass 'active'
-              $l.removeClass 'temp'
-      $body.unbind('mouseup').bind 'mouseup', (e_3) ->
-        $lines.removeClass 'temp'
-        e_3.preventDefault()
-        $highlight_box.remove()
-        $body.unbind 'mousemove'
-        $body.unbind 'mouseup'
-        if $lines.filter('.active').length isnt 0
-          $('.tab_button li:eq(1)').click()
-        else
-          $('.tab_button li:eq(0)').click()
+            $('.tab_button li:eq(0)').click()
   #
   #
   #
@@ -2233,6 +2299,17 @@ $ ->
   #
   #
   save_pos_and_size = ->
+    #
+    #
+    # Get the QR
+    pos = get_position $qr
+    active_theme.theme_templates[active_view].qr.h = pos.h
+    active_theme.theme_templates[active_view].qr.w = pos.w
+    active_theme.theme_templates[active_view].qr.x = pos.x
+    active_theme.theme_templates[active_view].qr.y = pos.y
+    #
+    #
+    # And the lines
     $visible_lines = $lines.filter ':visible'
     $visible_lines.each ->
       $v = $ this
@@ -2242,6 +2319,8 @@ $ ->
       active_theme.theme_templates[active_view].lines[index].w = pos.w
       active_theme.theme_templates[active_view].lines[index].x = pos.x
       active_theme.theme_templates[active_view].lines[index].y = pos.y
+    #
+    #
     set_my_theme_save_timers()
   #
   #
@@ -2257,7 +2336,7 @@ $ ->
     #
     remove_buttons_from_active()
     #
-    $active_lines = $lines.filter '.active'
+    $active_lines = $lines.add($qr).filter '.active'
     #
     if $active_lines.length
       #
@@ -2290,7 +2369,7 @@ $ ->
       #
       #
       #
-      $active_lines = $lines.filter '.active'
+      $active_lines = $lines.add($qr).filter '.active'
       #
       # And finally, the events for that shit
       $font_decrease.click (e) ->
@@ -2327,18 +2406,38 @@ $ ->
           c_a = $a.css 'text-align'
           c_h = $a.height()
           c_h = c_h+4
+          #
+          #
+          #
           $a.css
             'font-size': c_h+'px'
             'line-height': c_h+'px'
             'height': c_h
             'width': 'auto'
           n_w = $a.width()
+          n_h = $a.height()
+          n_t = c_o.top
           n_l = c_o.left
           if c_a is 'right'
             n_l = n_l + c_w - n_w
           if c_a is 'center'
             n_l = n_l + (c_w - n_w)/2
+          #
+          # Let's some limits on the shit!!!
+          max_t = card_h - n_h - 10
+          max_l = card_w - n_w - 10
+          #
+          #
+          # Boundary that shit
+          n_t = 10 if n_t < 10
+          n_l = 10 if n_l < 10
+          n_t = max_t if n_t > max_t
+          n_l = max_l if n_l > max_l
+          #
+          #
+          #
           $a.css
+            'top': n_t
             'left': n_l
             'width': n_w
         position_these_buttons()
@@ -2347,7 +2446,7 @@ $ ->
       #
       #
       #
-      $active_lines = $lines.filter '.active'
+      $active_lines = $lines.add($qr).filter '.active'
       #
       #
       position_these_buttons()
@@ -2417,7 +2516,6 @@ $ ->
         if active_theme.category is 'My Own'
           $active_thumb = $ '.category .card.active'
           $active_thumb.data 'theme', active_theme
-          update_preview_card_at_bottom()
           $.ajax
             url: '/save-theme'
             data: JSON.stringify
@@ -2428,7 +2526,7 @@ $ ->
                 console.log 'Error'
               else
                 active_theme = result.theme
-                $active_thumb.data 'theme', active_theme
+                update_preview_card_at_bottom()
             error: ->
               console.log 'Error'
     , 1000
@@ -2503,10 +2601,12 @@ $ ->
   #
   amount = 10
   #
-  $('.quantity li').click ->
+  $('.quantity li,.shipping_method li').click (e) ->
     $t = $ this
-    $t.closest('li').andSelf().find('input').attr('checked',true).trigger 'change'
-    false
+    $i =$t.closest('li').andSelf().find('input')
+    unless e.target is $i[0]
+      $i.attr('checked',true).trigger 'change'
+      return false
   #
   # Radio Select
   $('.quantity input,.shipping_method input').bind 'change', () ->
@@ -2558,6 +2658,9 @@ $ ->
           success: (result) ->
             if result.full_address
               $address_result.html result.full_address
+              coordinates = result.latitude+','+result.longitude
+              $new_img = $ '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false">'
+              $address_result.append $new_img
             else
               $address_result.html 'Not found - try again?'
           error: ->
@@ -2590,11 +2693,42 @@ $ ->
     index = $o.prevAll().length
     #
     #
+    # ----------------------------
+    #     QR Style Switcher
+    # ----------------------------
+    if $t.hasClass 'qr_style'
+      #
+      theme_template = active_theme.theme_templates[active_view]
+      #
+      active_theme.theme_templates[active_view].qr.style = $o.attr 'style'
+      #
+      # Calculate the alpha
+      alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+      #
+      #
+      $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+      #
+      #
+      set_my_theme_save_timers()
+    #
+    #
+    #
+    #
+    # ----------------------------
+    #     6 / 10 Switcher
+    # ----------------------------
     if $t.hasClass 'layout'
       active_view = index
       $('.category .cards').html ''
       load_theme_thumbnails()
       set_timers()
+    #
+    #
+    #
+    #
+    # ----------------------------
+    #     Alignment
+    # ----------------------------
     if $t.hasClass 'alignment'
       #
       alignment = $o.attr 'alignment'

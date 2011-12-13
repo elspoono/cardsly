@@ -14,9 +14,6 @@ if req.session && req.session.help_hidden
     .help_img_container.enter_card
       .help_img.right
         .text Enter your card info
-    .help_img_container.click_more_card
-      .help_img.right
-        .text Click to see more cards
       .clear
     .help_img_container.chose_card_design
       .help_img.left
@@ -29,8 +26,7 @@ if req.session && req.session.help_hidden
           .home_designer
             .card_container
               .card
-                .qr
-                  .background
+                img.qr
                 .content.defaults
                   .line 
                   .line 
@@ -126,6 +122,7 @@ if req.session && req.session.help_hidden
               img.promo_img(src='/images/promo.png')
               input(
                 type='radio'
+                name='quantity'
                 value='10'
                 checked= (quantity==10 ? 'checked' : false)
                 id='quantity_1'
@@ -156,8 +153,8 @@ if req.session && req.session.help_hidden
             input(
               type='radio'
               name='quantity'
-              value='70'
-              checked= (quantity==70 ? 'checked' : false)
+              value='75'
+              checked= (quantity==75 ? 'checked' : false)
               id='quantity_4'
             )
             label(for='quantity_4') 1500 cards for $75
@@ -201,10 +198,11 @@ if req.session && req.session.help_hidden
             )
           li
             .address_container
-              h5 Shipping Address
               .address_result
                 if req.session && req.session.saved_address
                   !=req.session.saved_address.full_address
+                  - coordinates = req.session.saved_address.latitude+','+req.session.saved_address.longitude
+                  img(src='http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
         .clear
 .help_container
   .help_trigger.button.gray Show Help
@@ -294,10 +292,11 @@ if req.session && req.session.help_hidden
         .card_side
           .my_card
           .address_container
-            h5 Shipping Address
             .address_result
               if req.session && req.session.saved_address
                 !=req.session.saved_address.full_address
+                - coordinates = req.session.saved_address.latitude+','+req.session.saved_address.longitude
+                img(src='http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
         .details
           .total Total Price: &nbsp;
             .price $10
@@ -353,13 +352,21 @@ if req.session && req.session.help_hidden
           if error_message
             .error=error_message
           if abtest == 1
-            .button.normal.checkout Purchase
+            .button.normal.checkout 
+              img(src='/images/lock_icon.png')
+              | Purchase
           else if abtest == 2
-            .button.normal.checkout Checkout
+            .button.normal.checkout
+              img(src='/images/lock_icon.png')
+              | Checkout
           else if abtest == 3
-            .button.normal.checkout Buy
+            .button.normal.checkout(style='width:125px')
+              img(src='/images/lock_icon.png')
+              | Buy
           else
-            .button.normal.checkout Purchase
+            .button.normal.checkout
+              img(src='/images/lock_icon.png')
+              | Purchase
         .clear
 //
 //
