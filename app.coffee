@@ -2808,10 +2808,12 @@ app.get '/about', (req, res) ->
     req: req
 #
 # How it Works Page
-app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', (req, res) ->
+app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', get_url_groups, (req, res) ->
   res.render 'how_it_works'
     req: req
     whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
+    url_groups: req.url_groups
+    
 #
 # Settings Page
 app.get '/settings', get_order_info, securedPage, (req, res) ->
