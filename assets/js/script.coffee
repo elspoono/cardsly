@@ -2495,28 +2495,43 @@ $ ->
         #
         $color_picker.click (e) ->
           $color_window = $ '<div class="color-window-guy" />'
+          $color_button = $ '<div class="button normal small">Save</div>'
           $color_window.colorpicker
             color: $color_picker.css 'background-color'
             rgb: false
             onSelect: (new_color) ->
               #
+              #
+              #
               $color_picker.css
                 background: new_color
               #
+              #
+              #
               if $color_picker.hasClass('color_1') or $color_picker.hasClass('color_2')
+                #
+                #
                 #
                 new_color = new_color.replace /#/, ''
                 new_color = new_color.substr 0,6
+                #
+                #
                 #
                 if $color_picker.hasClass 'color_1' 
                   active_theme.theme_templates[active_view].qr.color1 = new_color
                 if $color_picker.hasClass 'color_2' 
                   active_theme.theme_templates[active_view].qr.color2 = new_color
                 #
+                #
+                #
                 theme_template = active_theme.theme_templates[active_view]
+                #
+                #
                 #
                 # Calculate the alpha
                 alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                #
+                #
                 # Default the style
                 if not theme_template.qr.style
                   theme_template.qr.style = 'round'
@@ -2536,6 +2551,10 @@ $ ->
           #
           $(document.body).append $color_window
           #
+          $color_window.append $color_button
+          #
+          #
+          #
           $color_window.css
             position: 'absolute'
             zIndex: 200
@@ -2554,13 +2573,18 @@ $ ->
             top: n_t
             left: n_l
             right: n_r
+          $color_button.css
+            position: 'absolute'
+            width: 80
+            bottom: 34
+            right: 14
           #
           #
           #
           body_click_event = (e) ->
             $t = $ e.target
             $to_check = $t.closest('.color-window-guy').add $t
-            unless $to_check[0] is $color_window[0]
+            unless $to_check[0] is $color_window[0] and $t[0] isnt $color_button[0]
               $color_window.remove()
             else
               $body.one 'click', body_click_event

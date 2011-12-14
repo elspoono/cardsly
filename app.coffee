@@ -184,11 +184,13 @@ ua_match =  (ua) ->
 
 
 
-
-
-
-
-
+ordinal = (in_number) ->
+  decimal = in_number %10
+  suffix = 'th'
+  suffix = 'st' if decimal is 1
+  suffix = 'nd' if decimal is 2
+  suffix = 'rd' if decimal is 3
+  in_number+suffix
 
 
 
@@ -1375,6 +1377,10 @@ app.post '/save-theme', (req, res) ->
       new_theme.theme_templates = params.theme.theme_templates
       #
       #
+      #
+      #
+      #
+      #
       new_theme.save (err,theme_saved) ->
         if check_no_err_ajax err, res
           res.send
@@ -2340,22 +2346,21 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
               console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
             else
               url_group = url_groups[0]
-              card_number = 0
+              found_url = null
               for url in url_group.urls
                 if url.url_string is search_string
                   if not url.visits
                     url.visits = 0
                   url.visits++
                   url.last_updated = new Date()
-                  card_number = url.card_number
+                  found_url = url
               url_group.save (err, saved_url_group) ->
                 log_err err if err
               #
               #
               #
-              console.log card_number
               #
-              if card_number
+              if found_url
                 #
                 console.log url_group.user_id
                 #
@@ -2375,14 +2380,14 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
                       date_added: visit.date_added
                     #
-                    console.log '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                    console.log '<p>Someone just scanned card #'+found_url.card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     #
                     # Send it!
                     nodemailer.send_mail
-                      sender: 'help@cards.ly'
+                      sender: '"Cards.ly" <help@cards.ly>'
                       to: found_user.email
-                      subject: 'Card #'+card_number+' was just scanned!'
-                      html: '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      subject: 'Card #'+found_url.card_number+' was just scanned!'
+                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time from a'+(if visit_details.browser.match(/(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     , (err, data) ->
                       if err
                         log_err err
@@ -3037,66 +3042,35 @@ app.get '/', get_url_groups, (req, res) ->
   else
     #
     #
-    ua_string = req.header('USER-AGENT')
-    ua = ua_match ua_string
-
-    if (ua.browser is 'msie' and parseInt(ua.version, 10) < 9) or ua_string.match /mobile/i
-      res.render 'simple_home'
-        req: req
-        #
-        # Cut off at 60 characters 
-        #
-        title: 'Cardsly | Create and buy QR code business cards you control'
-        # Cut off at 140 to 150 characters
-        #
-        description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
-        #
-        # Uncomment the following line to add a custom h1 tag!
-        #h1: 'some other h1 tag'
-        #
-        # (Uncomment means remove the single # character at the start of it :)
-        #
-        url_groups: req.url_groups
-    else
-      res.render 'home'
-        req: req
-        abtest: 4
-        #
-        # Cut off at 60 characters 
-        #
-        title: 'Cardsly | Create and buy QR code business cards you control'
-        # Cut off at 140 to 150 characters
-        #
-        description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
-        #
-        # Uncomment the following line to add a custom h1 tag!
-        #h1: 'some other h1 tag'
-        #
-        # (Uncomment means remove the single # character at the start of it :)
-        #
-        url_groups: req.url_groups
-        #
-        #
-        scripts:[
-          'home'
-        ]
+    res.render 'home'
+      req: req
+      abtest: 4
+      #
+      # Cut off at 60 characters 
+      #
+      title: 'Cardsly | Create and buy QR code business cards you control'
+      # Cut off at 140 to 150 characters
+      #
+      description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
+      #
+      # Uncomment the following line to add a custom h1 tag!
+      #h1: 'some other h1 tag'
+      #
+      # (Uncomment means remove the single # character at the start of it :)
+      #
+      url_groups: req.url_groups
+      #
+      #
+      scripts:[
+        'home'
+      ]
 #
 #
 #
 #
 # The testing route I printed on my cards - DB
 app.get '/beepBoop10', (req, res) ->
-  urls = [
-    'http://facebook.com/elforko'
-    'http://twitter.com/elspoono'
-    'http://blog.cards.ly'
-    'http://elspoono.wordpress.com'
-    'http://www.meetup.com/webdesignersdevelopers/members/8256239/'
-    'http://www.slideshare.net/elspoono'
-    'https://plus.google.com/100278450741153543517/posts'
-    'http://github.com/elspoono'
-  ]
-
+  urls = ['http://facebook.com/elforko','http://twitter.com/elspoono','http://blog.cards.ly','http://elspoono.wordpress.com','http://www.meetup.com/webdesignersdevelopers/members/8256239/','http://www.slideshare.net/elspoono','https://plus.google.com/100278450741153543517/posts','http://github.com/elspoono']
   url = urls[Math.round(mrg.generate_real()*(urls.length-1))]
   res.send '',
     Location: url

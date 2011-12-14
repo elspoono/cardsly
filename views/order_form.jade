@@ -249,25 +249,16 @@ if req.session && req.session.help_hidden
       h3 Step 3: Account
       .signins
         if req.user
-          .check
-            ul
-              li.do_send_confirm
-                input(type='checkbox',id='do_send_confirm',checked='checked')
-                label(
-                  for='do_send_confirm'
-                ) Send a confirmation email and
-              li.do_send_shipping
-                input(type='checkbox',id='do_send_shipping',checked='checked')
-                label(
-                  for='do_send_shipping'
-                ) Send a shipping receipt to
-              li.email_to_send
-                input(
-                  name='email_to_send'
-                  id='email_to_send'
-                  value=req.user.email
-                  placeholder='my@email.com'
-                )
+          p 
+            | Hello 
+            =(req.user.name || req.user.email)
+            | , welcome to Cards.ly. We will send notifications to:
+          input(
+            name='email_to_send'
+            id='email_to_send'
+            value=req.user.email
+            placeholder='my@email.com'
+          )
 
         else
           .img_loader
