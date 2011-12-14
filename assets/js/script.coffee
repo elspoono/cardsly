@@ -1088,17 +1088,6 @@ $ ->
       $c.find('.cards').slideDown 400, ->
         $gs.show()
         $c.find('.card:first').click()
-        $these_cards = $c.find('.card')
-        if $these_cards.length > 12
-          $the_rest = $these_cards.filter ':gt(11)'
-          $the_rest.hide()
-          $show_more = $('<br style="clear:both;"><div style="text-align:center;"><a href="#">Show All Cards</a></div>')
-          $show_more.click ->
-            $show_more.remove()
-            $the_rest.fadeIn()
-            $show_more.remove()
-            false
-          $c.append $show_more
       $c.addClass('active')
   #
   #

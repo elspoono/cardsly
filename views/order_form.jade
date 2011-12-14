@@ -114,10 +114,11 @@ if req.session && req.session.help_hidden
                 .field_container.full
                   label Or upload an image, we recommend 1050px by 600px
                   .field
-                    form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
-                      input(type='file',name='image')
-                    .img_loader
-                      iframe(name='hiddenFrame')
+                    .upload
+                      form(target='hiddenFrame',action='/up',method='POST',enctype='multipart/form-data')
+                        input(type='file',name='image')
+                      .img_loader
+                        iframe(name='hiddenFrame')
             ul.tab_button
               li.active Content
               li Style
