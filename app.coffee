@@ -49,7 +49,6 @@ process.on 'uncaughtException', log_err
 # early in this file
 express = require 'express'
 http = require 'http'
-form = require 'connect-form'
 knox = require 'knox'
 util = require 'util'
 fs = require 'fs'
@@ -730,6 +729,7 @@ everyauth.facebook.appId '292309860797409'
 everyauth.facebook.appSecret '70bcb1477ede9a706e285f7faafa8e32'
 everyauth.facebook.findOrCreateUser handleGoodResponse
 everyauth.facebook.redirectPath '/success'
+everyauth.facebook.scope 'email'
 #
 # LinkedIn API Key / Config
 everyauth.linkedin.consumerKey 'fuj9rhx302d7'
@@ -871,8 +871,6 @@ app.configure ->
     h1: '<span>QR code business cards done easi<span class="alt">ly</span></span>'
     #
     #
-  app.use form
-    keepExtensions: true
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
@@ -1236,6 +1234,8 @@ app.post '/update-order-status', (req, res) ->
 # Form request for multipart form uploading image
 app.post '/up', (req, res) ->
   #
+  #
+  #
   # Set up our failure function
   s3_fail = (err) ->
     log_err err
@@ -1257,8 +1257,7 @@ app.post '/up', (req, res) ->
   # Resize it with ImageMagick
   im.convert [
     path
-    '-filter','Quadratic'
-    '-resize','1680x900'
+    '-resize','1050x600'
     'png:-'
   ], (err, rawImg, stderr) ->
     if err
@@ -1998,8 +1997,18 @@ app.post '/confirm-purchase', (req, res, next) ->
   order.full_address = req.session.saved_address.full_address
   order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
   order.email = req.body.email
-  order.shipping_email = req.body.shipping_email
-  order.confirm_email = req.body.confirm_email
+  #
+  #
+  #
+  # Save email if passed in.
+  if req.body.email
+    req.user.email = req.body.email
+    req.user.save (err, user_saved) ->
+      if err
+        log_err err
+    #
+  #
+  #
   order.save (err, new_order) ->
     if check_no_err_ajax err, res
       req.order = new_order
@@ -2121,7 +2130,7 @@ app.post '/confirm-purchase', (req, res, next) ->
           message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
           #
           # Send the user an email
-          if new_order.confirm_email and new_order.email
+          if new_order.email
             nodemailer.send_mail
               sender: 'help@cards.ly'
               to: new_order.email
@@ -2158,7 +2167,7 @@ app.post '/validate-purchase', (req, res, next) ->
   else if not req.session.saved_address.full_address
     res.send
       error: 'Please check the address'
-  else if req.session.saved_form.values[0] is "John Stamos"
+  else if req.session.saved_form.values[0] is "1) John Stamos"
     res.send
       error: 'Hey Uncle Jesse, is that you?'
   else
@@ -2263,48 +2272,14 @@ check_no_err = (err, res) ->
 #
 #
 #
-log_visit = (req, res, next) ->
-  #
-  #
-  #
-  ip = req.socket.remoteAddress
-  if req.headers['x-real-ip']
-    ip = req.headers['x-real-ip']
-  if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
-    ip = '72.222.222.120'
-
-  
-  http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
-    if err or res.statusCode isnt 200
-      log_err err
-    else
-      result = body.split /\|/
-      #
-      #
-      visit = new mongo_visit
-      visit.url_string = req.url.replace /[^a-z0-9]/ig, ''
-      visit.ip_address = ip
-      visit.user_agent = req.headers['user-agent']
-      visit.details =
-        city: result[0]
-        state: result[1]
-        country: result[2]
-        provider: result[3]
-        lat: result[4]
-        long: result[5]
-        iso: result[6]
-      visit.save (err, saved_visit) ->
-        log_err err if err
-  #
-  # Continue Immediatelly, but save this info
-  next()
 #
 #
-#
-app.get '/[A-Za-z0-9]{5,}/?$', log_visit, (req, res, next) ->
+app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   # Prep the string to search for
   search_string = req.url.replace /[^a-z0-9]/ig, ''
+  #
+  #
   #
   #
   mongo_url_redirect.find
@@ -2323,25 +2298,95 @@ app.get '/[A-Za-z0-9]{5,}/?$', log_visit, (req, res, next) ->
       , 302
       #
       #
-      # And in the mean time ...
-      # Let's log a hit
-      mongo_url_group.find
-        'urls.url_string': search_string
-      , (err, url_groups) ->
-        if err
+      #
+      #
+      ip = req.socket.remoteAddress
+      if req.headers['x-real-ip']
+        ip = req.headers['x-real-ip']
+      if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
+        ip = '72.222.222.120'
+
+      
+      http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, response, body) ->
+        if err or response.statusCode isnt 200
           log_err err
-        else if not url_groups.length
-          console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
         else
-          url_group = url_groups[0]
-          for url in url_group.urls
-            if url.url_string is search_string
-              if not url.visits
-                url.visits = 0
-              url.visits++
-              url.last_updated = new Date()
-          url_group.save (err, saved_url_group) ->
+          result = body.split /\|/
+          #
+          #
+          visit = new mongo_visit
+          visit.url_string = search_string
+          visit.ip_address = ip
+          visit.user_agent = req.headers['user-agent']
+          visit.details =
+            city: result[0]
+            state: result[1]
+            country: result[2]
+            provider: result[3]
+            lat: result[4]
+            long: result[5]
+            iso: result[6]
+          visit.save (err, saved_visit) ->
             log_err err if err
+          #
+          # And in the mean time ...
+          # Let's log a hit
+          mongo_url_group.find
+            'urls.url_string': search_string
+          , (err, url_groups) ->
+            if err
+              log_err err
+            else if not url_groups.length
+              console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
+            else
+              url_group = url_groups[0]
+              card_number = 0
+              for url in url_group.urls
+                if url.url_string is search_string
+                  if not url.visits
+                    url.visits = 0
+                  url.visits++
+                  url.last_updated = new Date()
+                  card_number = url.card_number
+              url_group.save (err, saved_url_group) ->
+                log_err err if err
+              #
+              #
+              #
+              console.log card_number
+              #
+              if card_number
+                #
+                console.log url_group.user_id
+                #
+                # Find the user to send them an email
+                mongo_user.findById url_group.user_id, (err, found_user) ->
+                  #
+                  console.log found_user.email
+                  #
+                  if found_user.email
+                    #
+                    #
+
+                    ua =  ua_match visit.user_agent
+                    has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+                    visit_details =
+                      browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+                      location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+                      date_added: visit.date_added
+                    #
+                    console.log '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                    #
+                    # Send it!
+                    nodemailer.send_mail
+                      sender: 'help@cards.ly'
+                      to: found_user.email
+                      subject: 'Card #'+card_number+' was just scanned!'
+                      html: '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                    , (err, data) ->
+                      if err
+                        log_err err
+    #
 
                 
 #
@@ -2450,7 +2495,7 @@ app.get '/update-patterns', (req, res, next) ->
                   #
                   #
                   save_pattern_to 50, 50, 'pattern-thumbs'
-                  save_pattern_to 1680, 900, 'raw'
+                  save_pattern_to 1050, 600, 'raw'
                   save_pattern_to 158, 90, '158x90'
                   save_pattern_to 525, 300, '525x300'
                   #
@@ -2532,6 +2577,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   width = req.params.w*1
   widthheight = width+'x'+height
   widthheight = 'raw' if width is 1680
+  widthheight = 'raw' if width is 1050
   widthheight = '158x90' if width is 79
   #
   #

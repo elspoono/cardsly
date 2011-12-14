@@ -50,7 +50,7 @@ else
 $.line_copy = [
   '1) John Stamos'
   '2) Uncle Jesse'
-  '3) TheMonkeyPuppets.com'
+  '3) Monkey.com'
   '4) 123-456-7890'
   ''
   ''
@@ -173,25 +173,11 @@ $.create_card_from_theme = (options) ->
   $my_qr.css
     height: theme_template.qr.h/100 * settings.height
     width: theme_template.qr.w/100 * settings.width
-  #
-  $my_qr_bg = $my_qr.find '.background'
-  #
-  $my_qr.css
     position: 'absolute'
     top: theme_template.qr.y/100 * settings.height
     left: theme_template.qr.x/100 * settings.width
     zIndex: 200
-  $my_qr.find('img').css
-    position: 'absolute'
-    zIndex: 150
-  $my_qr_bg.css
-    zIndex: 140
-    position: 'absolute'
-    'border-radius': theme_template.qr.radius+'px'
-    height: theme_template.qr.h/100 * settings.height
-    width: theme_template.qr.w/100 * settings.width
-    background: '#' + theme_template.qr.color2
-  $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
+  #
   #
   #
   for pos,i in theme_template.lines
@@ -210,7 +196,7 @@ $.create_card_from_theme = (options) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
+    background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
@@ -802,7 +788,7 @@ $ ->
                 content: user.err
             else
               $s = $ '.signins' 
-              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><ul><li class="do_send_confirm"><input type="checkbox" id="do_send_confirm" checked="checked"><label for="do_send_confirm">Send a confirmation email</label></li><li class="do_send_shipping"><input type="checkbox" id="do_send_shipping" checked="checked"><label for="do_send_shipping">Send a shipping receipt</label></li><li class="email_to_send"><label for="email_to_send">To:</label><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '"></li></ul></div>'
+              $s.html '<p>Hello ' + (user.name or user.email) + ', we will send your notification emails to:</p><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '">'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
             #
             #
@@ -1088,17 +1074,6 @@ $ ->
       $c.find('.cards').slideDown 400, ->
         $gs.show()
         $c.find('.card:first').click()
-        $these_cards = $c.find('.card')
-        if $these_cards.length > 12
-          $the_rest = $these_cards.filter ':gt(11)'
-          $the_rest.hide()
-          $show_more = $('<br style="clear:both;"><div style="text-align:center;"><a href="#">Show All Cards</a></div>')
-          $show_more.click ->
-            $show_more.remove()
-            $the_rest.fadeIn()
-            $show_more.remove()
-            false
-          $c.append $show_more
       $c.addClass('active')
   #
   #
@@ -1619,9 +1594,6 @@ $ ->
       active_view: active_view
     $('.my_card').children().remove()
     $('.my_card').append $active_card
-    $active_card.find('.qr canvas').css
-      left: 0
-      margin: 0
     #
     #
     #
@@ -1894,8 +1866,6 @@ $ ->
         #
         #
         $qr_style = $ '.toggle.qr_style'
-        #
-        #
         #
         #
         #
@@ -2470,28 +2440,98 @@ $ ->
       #
       #
       #
+      if $active_lines.hasClass 'qr'
+        #
+        $advanced_options.find('.qr_color2_alpha').slider('destroy').slider
+          min: 0
+          max: 100
+          value: Math.round active_theme.theme_templates[active_view].qr.color2_alpha*100
+          step: 1
+          slide: (e, ui) ->
+            #
+            active_theme.theme_templates[active_view].qr.color2_alpha = ui.value/100
+            #
+            #
+            theme_template = active_theme.theme_templates[active_view]
+            #
+            # Calculate the alpha
+            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+            #
+            # Default the style
+            if not theme_template.qr.style
+              theme_template.qr.style = 'round'
+            #
+            $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+            #
+            #
+            set_my_theme_save_timers()
+        #
+      #
+      #
+      #
+      #
       $color_pickers = $advanced_options.find 'li.active .color_picker'
       #
       $color_pickers.each ->
         $color_picker = $ this
         #
-        $color_picker.css
-          background: $active_lines.css 'color'
+        #
+        #
+        if $color_picker.hasClass 'font_color'
+          $color_picker.css
+            background: $active_lines.css 'color'
+        #
+        #
+        if $color_picker.hasClass 'color_1'
+          $color_picker.css
+            background: '#' + active_theme.theme_templates[active_view].qr.color1
+        #
+        if $color_picker.hasClass 'color_2'
+          $color_picker.css
+            background: '#' + active_theme.theme_templates[active_view].qr.color2
+        #
+        #
+        #
         #
         $color_picker.click (e) ->
           $color_window = $ '<div class="color-window-guy" />'
           $color_window.colorpicker
-            showButtonPanel: true
             color: $color_picker.css 'background-color'
             rgb: false
-            mode: 'h'
             onSelect: (new_color) ->
-              $active_lines.each ->
-                $a = $ this
-                $a.css
-                  'color': new_color
-                index = $a.prevAll().length
-                active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
+              #
+              $color_picker.css
+                background: new_color
+              #
+              if $color_picker.hasClass('color_1') or $color_picker.hasClass('color_2')
+                #
+                new_color = new_color.replace /#/, ''
+                new_color = new_color.substr 0,6
+                #
+                if $color_picker.hasClass 'color_1' 
+                  active_theme.theme_templates[active_view].qr.color1 = new_color
+                if $color_picker.hasClass 'color_2' 
+                  active_theme.theme_templates[active_view].qr.color2 = new_color
+                #
+                theme_template = active_theme.theme_templates[active_view]
+                #
+                # Calculate the alpha
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                # Default the style
+                if not theme_template.qr.style
+                  theme_template.qr.style = 'round'
+                #
+                $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+                #
+                #
+              #
+              if $color_picker.hasClass 'font_color'
+                $active_lines.each ->
+                  $a = $ this
+                  $a.css
+                    'color': new_color
+                  index = $a.prevAll().length
+                  active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
               set_my_theme_save_timers()
           #
           $(document.body).append $color_window
@@ -2505,9 +2545,11 @@ $ ->
           n_t = cp_o.top - $color_window.outerHeight() + $color_picker.outerHeight() + 4
           n_l = cp_o.left - 4
           n_r = null
-          if (n_l*1+$color_window.outerWidth()*1) > $(window).width()
+          if n_l+$color_window.outerWidth() > $(window).width()
             n_l = null
             n_r = 0
+          if n_t < $body.scrollTop()
+            n_t = $body.scrollTop()
           $color_window.css
             top: n_t
             left: n_l
@@ -2526,8 +2568,6 @@ $ ->
           setTimeout ->
             $body.one 'click', body_click_event
             $modes = $color_window.find '.ui-colorpicker-mode'
-            $modes.eq(1).click()
-            $modes.eq(0).click()
           , 0
         #
         unless options.dont_change_font
@@ -2732,7 +2772,7 @@ $ ->
             if result.full_address
               $address_result.html result.full_address
               coordinates = result.latitude+','+result.longitude
-              $new_img = $ '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false">'
+              $new_img = $ '<img src="//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false">'
               $address_result.append $new_img
             else
               $address_result.html 'Not found - try again?'
@@ -2777,8 +2817,6 @@ $ ->
       #
       # Calculate the alpha
       alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-      #
-      #
       $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
       #
       #
@@ -2884,8 +2922,6 @@ $ ->
                   url: '/confirm-purchase'
                   data: JSON.stringify
                     token: token
-                    confirm_email: $('.do_send_confirm input').is(':checked')
-                    shipping_email: $('.do_send_shipping input').is(':checked')
                     email: $('.email_to_send input').val()
                   success: (result) ->
                     console.log result
