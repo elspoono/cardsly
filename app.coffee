@@ -2380,8 +2380,6 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
                       date_added: visit.date_added
                     #
-                    console.log '<p>Someone just scanned card #'+found_url.card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
-                    #
                     # Send it!
                     nodemailer.send_mail
                       sender: '"Cards.ly" <help@cards.ly>'
