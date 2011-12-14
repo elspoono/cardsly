@@ -2355,10 +2355,17 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
               #
               #
               #
+              console.log card_number
               #
               if card_number
+                #
+                console.log url_group.user_id
+                #
                 # Find the user to send them an email
                 mongo_user.findById url_group.user_id, (err, found_user) ->
+                  #
+                  console.log found_user.email
+                  #
                   if found_user.email
                     #
                     #
@@ -2370,6 +2377,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
                       date_added: visit.date_added
                     #
+                    console.log '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     #
                     # Send it!
                     nodemailer.send_mail
