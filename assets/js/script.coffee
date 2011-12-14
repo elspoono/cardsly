@@ -2445,7 +2445,7 @@ $ ->
       #
       if $active_lines.hasClass 'qr'
         #
-        $advanced_options.find('.qr_color2_alpha').slider
+        $advanced_options.find('.qr_color2_alpha').slider('destroy').slider
           min: 0
           max: 100
           value: Math.round active_theme.theme_templates[active_view].qr.color2_alpha*100
