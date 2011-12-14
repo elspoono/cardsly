@@ -802,7 +802,7 @@ $ ->
                 content: user.err
             else
               $s = $ '.signins' 
-              $s.html '<p>Congratulations ' + (user.name or user.email) + ', you are now connected to cards.ly</p><div class="check"><ul><li class="do_send_confirm"><input type="checkbox" id="do_send_confirm" checked="checked"><label for="do_send_confirm">Send a confirmation email</label></li><li class="do_send_shipping"><input type="checkbox" id="do_send_shipping" checked="checked"><label for="do_send_shipping">Send a shipping receipt</label></li><li class="email_to_send"><label for="email_to_send">To:</label><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '"></li></ul></div>'
+              $s.html '<p>Hello ' + (user.name or user.email) + ', we will send your notification emails to:</p><input name="email_to_send" id="email_to_send" placeholder="my@email.com" value="' + (user.email or '') + '">'
               $('.small_nav .login').replaceWith '<li class="account_link"><a href="/settings">' + (user.name or user.email) + '<div class="gear"><img src="/images/buttons/gear.png"></div></a><ul class="account_menu"><li><a href="/settings">Settings</a></li><li><a href="/logout">Logout</a></li></ul></li>'
             #
             #
@@ -2948,8 +2948,6 @@ $ ->
                   url: '/confirm-purchase'
                   data: JSON.stringify
                     token: token
-                    confirm_email: $('.do_send_confirm input').is(':checked')
-                    shipping_email: $('.do_send_shipping input').is(':checked')
                     email: $('.email_to_send input').val()
                   success: (result) ->
                     console.log result
