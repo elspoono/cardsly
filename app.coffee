@@ -2284,54 +2284,52 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   #
   #
-    #
-  #
-  ip = req.socket.remoteAddress
-  if req.headers['x-real-ip']
-    ip = req.headers['x-real-ip']
-  if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
-    ip = '72.222.222.120'
-
-  
-  http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, res, body) ->
-    if err or res.statusCode isnt 200
+  mongo_url_redirect.find
+    url_string: search_string
+  , (err, url_redirects) ->
+    if err
       log_err err
+      next()
+    else if not url_redirects.length
+      next()
     else
-      result = body.split /\|/
       #
-      #
-      visit = new mongo_visit
-      visit.url_string = req.url.replace /[^a-z0-9]/ig, ''
-      visit.ip_address = ip
-      visit.user_agent = req.headers['user-agent']
-      visit.details =
-        city: result[0]
-        state: result[1]
-        country: result[2]
-        provider: result[3]
-        lat: result[4]
-        long: result[5]
-        iso: result[6]
-      visit.save (err, saved_visit) ->
-        log_err err if err
+      # Go ahead and redirect them now
+      res.send '',
+        'Location' : url_redirects[0].redirect_to
+      , 302
       #
       #
       #
-      mongo_url_redirect.find
-        url_string: search_string
-      , (err, url_redirects) ->
-        if err
+      #
+      ip = req.socket.remoteAddress
+      if req.headers['x-real-ip']
+        ip = req.headers['x-real-ip']
+      if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
+        ip = '72.222.222.120'
+
+      
+      http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, response, body) ->
+        if err or response.statusCode isnt 200
           log_err err
-          next()
-        else if not url_redirects.length
-          next()
         else
+          result = body.split /\|/
           #
-          # Go ahead and redirect them now
-          res.send '',
-            'Location' : url_redirects[0].redirect_to
-          , 302
           #
+          visit = new mongo_visit
+          visit.url_string = search_string
+          visit.ip_address = ip
+          visit.user_agent = req.headers['user-agent']
+          visit.details =
+            city: result[0]
+            state: result[1]
+            country: result[2]
+            provider: result[3]
+            lat: result[4]
+            long: result[5]
+            iso: result[6]
+          visit.save (err, saved_visit) ->
+            log_err err if err
           #
           # And in the mean time ...
           # Let's log a hit
