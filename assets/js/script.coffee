@@ -173,25 +173,11 @@ $.create_card_from_theme = (options) ->
   $my_qr.css
     height: theme_template.qr.h/100 * settings.height
     width: theme_template.qr.w/100 * settings.width
-  #
-  $my_qr_bg = $my_qr.find '.background'
-  #
-  $my_qr.css
     position: 'absolute'
     top: theme_template.qr.y/100 * settings.height
     left: theme_template.qr.x/100 * settings.width
     zIndex: 200
-  $my_qr.find('img').css
-    position: 'absolute'
-    zIndex: 150
-  $my_qr_bg.css
-    zIndex: 140
-    position: 'absolute'
-    'border-radius': theme_template.qr.radius+'px'
-    height: theme_template.qr.h/100 * settings.height
-    width: theme_template.qr.w/100 * settings.width
-    background: '#' + theme_template.qr.color2
-  $my_qr_bg.fadeTo 0, theme_template.qr.color2_alpha
+  #
   #
   #
   for pos,i in theme_template.lines
@@ -210,7 +196,7 @@ $.create_card_from_theme = (options) ->
   #
   # Set the card background
   $my_card.css
-    background: 'url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
+    background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
 #
 #
 # another helper function to add it to a category
