@@ -2274,9 +2274,17 @@ check_no_err = (err, res) ->
 #
 #
 #
-log_visit = (req, res, next) ->
+#
+#
+app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
+  #
+  # Prep the string to search for
+  search_string = req.url.replace /[^a-z0-9]/ig, ''
   #
   #
+  #
+  #
+    #
   #
   ip = req.socket.remoteAddress
   if req.headers['x-real-ip']
@@ -2306,53 +2314,75 @@ log_visit = (req, res, next) ->
         iso: result[6]
       visit.save (err, saved_visit) ->
         log_err err if err
-  #
-  # Continue Immediatelly, but save this info
-  next()
-#
-#
-#
-app.get '/[A-Za-z0-9]{5,}/?$', log_visit, (req, res, next) ->
-  #
-  # Prep the string to search for
-  search_string = req.url.replace /[^a-z0-9]/ig, ''
-  #
-  #
-  mongo_url_redirect.find
-    url_string: search_string
-  , (err, url_redirects) ->
-    if err
-      log_err err
-      next()
-    else if not url_redirects.length
-      next()
-    else
-      #
-      # Go ahead and redirect them now
-      res.send '',
-        'Location' : url_redirects[0].redirect_to
-      , 302
       #
       #
-      # And in the mean time ...
-      # Let's log a hit
-      mongo_url_group.find
-        'urls.url_string': search_string
-      , (err, url_groups) ->
+      #
+      mongo_url_redirect.find
+        url_string: search_string
+      , (err, url_redirects) ->
         if err
           log_err err
-        else if not url_groups.length
-          console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
+          next()
+        else if not url_redirects.length
+          next()
         else
-          url_group = url_groups[0]
-          for url in url_group.urls
-            if url.url_string is search_string
-              if not url.visits
-                url.visits = 0
-              url.visits++
-              url.last_updated = new Date()
-          url_group.save (err, saved_url_group) ->
-            log_err err if err
+          #
+          # Go ahead and redirect them now
+          res.send '',
+            'Location' : url_redirects[0].redirect_to
+          , 302
+          #
+          #
+          # And in the mean time ...
+          # Let's log a hit
+          mongo_url_group.find
+            'urls.url_string': search_string
+          , (err, url_groups) ->
+            if err
+              log_err err
+            else if not url_groups.length
+              console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
+            else
+              url_group = url_groups[0]
+              card_number = 0
+              for url in url_group.urls
+                if url.url_string is search_string
+                  if not url.visits
+                    url.visits = 0
+                  url.visits++
+                  url.last_updated = new Date()
+                  card_number = url.card_number
+              url_group.save (err, saved_url_group) ->
+                log_err err if err
+              #
+              #
+              #
+              #
+              if card_number
+                # Find the user to send them an email
+                mongo_user.findById url_group.user_id, (err, found_user) ->
+                  if found_user.email
+                    #
+                    #
+
+                    ua =  ua_match visit.user_agent
+                    has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+                    visit_details =
+                      browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+                      location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+                      date_added: visit.date_added
+                    #
+                    #
+                    # Send it!
+                    nodemailer.send_mail
+                      sender: 'help@cards.ly'
+                      to: found_user.email
+                      subject: 'Card #'+card_number+' was just scanned!'
+                      html: '<p>Someone just scanned card #'+card_number+' from their '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                    , (err, data) ->
+                      if err
+                        log_err err
+    #
 
                 
 #
