@@ -49,7 +49,6 @@ process.on 'uncaughtException', log_err
 # early in this file
 express = require 'express'
 http = require 'http'
-form = require 'connect-form'
 knox = require 'knox'
 util = require 'util'
 fs = require 'fs'
@@ -872,8 +871,6 @@ app.configure ->
     h1: '<span>QR code business cards done easi<span class="alt">ly</span></span>'
     #
     #
-  app.use form
-    keepExtensions: true
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
@@ -1237,6 +1234,8 @@ app.post '/update-order-status', (req, res) ->
 # Form request for multipart form uploading image
 app.post '/up', (req, res) ->
   #
+  #
+  #
   # Set up our failure function
   s3_fail = (err) ->
     log_err err
@@ -1258,8 +1257,7 @@ app.post '/up', (req, res) ->
   # Resize it with ImageMagick
   im.convert [
     path
-    '-filter','Quadratic'
-    '-resize','1680x900'
+    '-resize','1050x600'
     'png:-'
   ], (err, rawImg, stderr) ->
     if err
@@ -2497,7 +2495,7 @@ app.get '/update-patterns', (req, res, next) ->
                   #
                   #
                   save_pattern_to 50, 50, 'pattern-thumbs'
-                  save_pattern_to 1680, 900, 'raw'
+                  save_pattern_to 1050, 600, 'raw'
                   save_pattern_to 158, 90, '158x90'
                   save_pattern_to 525, 300, '525x300'
                   #
@@ -2579,6 +2577,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   width = req.params.w*1
   widthheight = width+'x'+height
   widthheight = 'raw' if width is 1680
+  widthheight = 'raw' if width is 1050
   widthheight = '158x90' if width is 79
   #
   #
