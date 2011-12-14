@@ -233,7 +233,7 @@ if req.session && req.session.help_hidden
                 if req.session && req.session.saved_address
                   !=req.session.saved_address.full_address
                   - coordinates = req.session.saved_address.latitude+','+req.session.saved_address.longitude
-                  img(src='http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
+                  img(src='//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
         .clear
 .help_container
   .help_trigger.button.gray Show Help
@@ -327,7 +327,7 @@ if req.session && req.session.help_hidden
               if req.session && req.session.saved_address
                 !=req.session.saved_address.full_address
                 - coordinates = req.session.saved_address.latitude+','+req.session.saved_address.longitude
-                img(src='http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
+                img(src='//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false')
         .details
           .total Total Price: &nbsp;
             .price $10

@@ -1594,9 +1594,6 @@ $ ->
       active_view: active_view
     $('.my_card').children().remove()
     $('.my_card').append $active_card
-    $active_card.find('.qr canvas').css
-      left: 0
-      margin: 0
     #
     #
     #
@@ -2548,9 +2545,11 @@ $ ->
           n_t = cp_o.top - $color_window.outerHeight() + $color_picker.outerHeight() + 4
           n_l = cp_o.left - 4
           n_r = null
-          if (n_l*1+$color_window.outerWidth()*1) > $(window).width()
+          if n_l+$color_window.outerWidth() > $(window).width()
             n_l = null
             n_r = 0
+          if n_t < $body.scrollTop()
+            n_t = $body.scrollTop()
           $color_window.css
             top: n_t
             left: n_l
@@ -2773,7 +2772,7 @@ $ ->
             if result.full_address
               $address_result.html result.full_address
               coordinates = result.latitude+','+result.longitude
-              $new_img = $ '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false">'
+              $new_img = $ '<img src="//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=190x100&sensor=false">'
               $address_result.append $new_img
             else
               $address_result.html 'Not found - try again?'
