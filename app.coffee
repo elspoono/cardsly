@@ -2387,7 +2387,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       sender: '"Cards.ly" <help@cards.ly>'
                       to: found_user.email
                       subject: 'Card #'+found_url.card_number+' was just scanned!'
-                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time from a(n) '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time from a'+(if visit_details.browser.match(/(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     , (err, data) ->
                       if err
                         log_err err
