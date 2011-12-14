@@ -132,10 +132,10 @@ alpha_bg(color,n)
   background rgba(color,n);
 
 // Shadow
-box_shadow(n = gap(.25), color = $c_dark_warm, b = n)
-  -moz-box-shadow n n b color
-  -webkit-box-shadow n n b color
-  box-shadow n n b color
+box_shadow(n = gap(.25), color = $c_dark_warm, b = n, do_inset=)
+  -moz-box-shadow do_inset n n b color
+  -webkit-box-shadow do_inset n n b color
+  box-shadow do_inset n n b color
   behavior: url('/js/libs/PIE')
 text_shadow(n = gap(.1), color = $c_dark_warm, b = n)
   text-shadow n n b color
@@ -1184,15 +1184,17 @@ input.normal,input.gray
     overflow hidden
 .toggle
   overflow hidden
-  gradient($c_logo_alt,darken($c_logo_alt,20))
+  //gradient($c_logo_alt,darken($c_logo_alt,20))
+  background $c_bg_dark
   padding 3px
   border_radius(20px)
   .disabled
     overflow hidden
-    gradient(darken($c_logo_alt,20),darken($c_logo_alt,40))
+    gradient(darken($c_logo_alt,30),darken($c_logo_alt,0))
     border_radius(20px)
+    box_shadow(0, $c_black, 8px, inset)
   .option
-    padding 3px
+    padding 4px
     width 50px
     height 50px
     line-height 50px
@@ -1201,6 +1203,7 @@ input.normal,input.gray
     float left
     background none
     color $c_logo_alt
+    border 1px solid transparent
     .icon
       background url('/images/text-sprite.png')
       height 50px
@@ -1223,7 +1226,10 @@ input.normal,input.gray
       background-position -350px 0
   .active
     color $c_light
-    gradient($c_logo_alt,darken($c_logo_alt,20))
+    gradient(darken($c_logo_alt,0),darken($c_logo_alt,30))
+    box_shadow(0, $c_black, 8px)
+    border 1px solid $c_bg_dark
+    border_radius(20px)
     font-size 22px
     .six
       background-position -150px 50px
@@ -1242,13 +1248,13 @@ input.normal,input.gray
     .circle
       background-position -350px 50px
 .toggle.layout
-  width 112px
+  width 120px
   float right
 .toggle.alignment
-  width 168px
+  width 180px
   float left
 .toggle.qr_style
-  width 168px
+  width 180px
   float right
 //
 .web_bg,.web_fg,.web_fg2
