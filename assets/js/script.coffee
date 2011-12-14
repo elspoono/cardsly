@@ -50,7 +50,7 @@ else
 $.line_copy = [
   '1) John Stamos'
   '2) Uncle Jesse'
-  '3) TheMonkeyPuppets.com'
+  '3) Monkey.com'
   '4) 123-456-7890'
   ''
   ''

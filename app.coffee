@@ -2167,7 +2167,7 @@ app.post '/validate-purchase', (req, res, next) ->
   else if not req.session.saved_address.full_address
     res.send
       error: 'Please check the address'
-  else if req.session.saved_form.values[0] is "John Stamos"
+  else if req.session.saved_form.values[0] is "1) John Stamos"
     res.send
       error: 'Hey Uncle Jesse, is that you?'
   else
