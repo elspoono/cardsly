@@ -1917,20 +1917,26 @@ render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
 process_pdf = (order_id) ->
   #
   #
+  console.log 'ORDERID:', order_id
   #
   # Find the Order that's passed in
   mongo_order.findById order_id, (err, order) ->
     #
     #
+    console.log 'ORDER FOUND:', order._id
+    #
+    #
     # Find the theme for that order
     mongo_theme.findById order.theme_id, (err, theme) ->
       #
+      console.log 'THEME FOUND:', theme._id
       #
       # Find the urls we're going to use
       mongo_url_group.findOne
         order_id: order._id
       , (err, url_group) ->
         #
+        console.log 'GROUP FOUND:', url_group._id
         #
         if err
           log_err err
@@ -1963,7 +1969,10 @@ process_pdf = (order_id) ->
                   log_err err if err
                 #
             knoxReq.end knox_buff
+            console.log 'ALL DONE'
           #
+          #
+          #console.log
 #
 #
 #
@@ -2508,6 +2517,7 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
   # This is where we kick off the processing of the pdf
   process_pdf req.params.order_id
   #
+  console.log 'REPROCESS HIT FOR ', req.params.order_id
   # Find the Order that's passed in
   mongo_order.findById req.params.order_id, (err, order) ->
     if check_no_err err
@@ -2909,7 +2919,7 @@ app.get '/moo', (req, res, next) ->
   #
   #
   #
-  oa = new OAuth 'https://secure.moo.com/oauth/request_token.php', 'https://secure.moo.com/oauth/access_token.php', moo_auth.key, moo_auth.secret, '1.0', 'https://secure.moo.com/oauth/authorize.php', 'HMAC-SHA1'
+  oa = new OAuth 'https://secure.moo.com/oauth/request_token.php', 'https://secure.moo.com/oauth/access_token.php', moo_auth.key, moo_auth.secret, '1.0', 'http://0.0.0.0:4000/cardsly-with-moo', 'HMAC-SHA1'
   #
   #
   oa.getOAuthRequestToken (err, token, secret, results) ->
@@ -2919,7 +2929,7 @@ app.get '/moo', (req, res, next) ->
       req.session.oa_token = token
       req.session.oa_secret = secret
       res.send '',
-        Location: '/cardsly-with-moo'
+        Location: 'https://secure.moo.com/oauth/authorize.php?oauth_token='+token
       , 302
 #
 #
