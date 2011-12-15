@@ -1406,6 +1406,7 @@ app.post '/save-form', (req, res) ->
   ###
   # Put it into a nice pretty JSON object 
   req.session.saved_form = req.body
+  console.log req.session.saved_form
   res.send
     success: true
 #
