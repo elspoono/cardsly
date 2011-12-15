@@ -2663,7 +2663,7 @@ $ ->
                 console.log 'Error'
               else
                 active_theme = result.theme
-                update_preview_card_at_bottom()
+                #update_preview_card_at_bottom()
             error: ->
               console.log 'Error'
     , 1000
