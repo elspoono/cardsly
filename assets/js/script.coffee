@@ -2036,7 +2036,9 @@ $ ->
       #
       #
       did_move_this_guy = false
-      $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+      #
+      #
+      body_mouse_move = (e_2) ->
         e_2.preventDefault()
         x = e.pageX - e_2.pageX
         y = e.pageY - e_2.pageY
@@ -2062,12 +2064,23 @@ $ ->
         #
         #
         did_move_this_guy = true
-      $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+      #
+      #
+      body_mouse_up = (e_3) ->
+        #
+        #
         e_3.preventDefault()
-        $body.unbind 'mousemove'
-        $body.unbind 'mouseup'
+        #
+        $body.unbind 'mousemove', body_mouse_move
+        #
         save_pos_and_size() if did_move_this_guy
         $('.tab_button li:eq(2)').click()
+        #
+        #
+      #
+      #
+      $body.bind 'mousemove', body_mouse_move
+      $body.one 'mouseup', body_mouse_up
       #
       #
       #
@@ -2076,6 +2089,8 @@ $ ->
       remove_buttons_from_active()
       #
       if visible_hit
+        #
+        #
         # ----------------------
         # Move Stuff Around
         # ----------------------
@@ -2085,7 +2100,9 @@ $ ->
           $a.data 'h', $a.height()
           $a.data 'w', $a.width()
         did_move_this_guy = false
-        $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+        #
+        #
+        body_mouse_move = (e_2) ->
           e_2.preventDefault()
           x = e.pageX - e_2.pageX
           y = e.pageY - e_2.pageY
@@ -2116,13 +2133,21 @@ $ ->
             #
             #
             did_move_this_guy = true
-        $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+        #
+        body_mouse_up = (e_3) ->
           e_3.preventDefault()
-          $body.unbind 'mousemove'
-          $body.unbind 'mouseup'
+          #
+          $body.unbind 'mousemove', body_mouse_move
+          #
           save_pos_and_size() if did_move_this_guy
           if $lines.filter('.active').length isnt 0
             $('.tab_button li:eq(1)').click()
+        #
+        #
+        $body.bind 'mousemove', body_mouse_move
+        $body.one 'mouseup', body_mouse_up
+        #
+        #
       else
         # ----------------------
         # Area drag selector
@@ -2132,7 +2157,9 @@ $ ->
         $card.find('.highlight_box').remove()
         $highlight_box = $ '<div class="highlight_box" />'
         $card.append $highlight_box
-        $body.unbind('mousemove').bind 'mousemove', (e_2) ->
+        #
+        #
+        body_mouse_move = (e_2) ->
           e_2.preventDefault()
           t = e_t
           l = e_l
@@ -2163,16 +2190,25 @@ $ ->
               if $l.hasClass 'temp'
                 $l.removeClass 'active'
                 $l.removeClass 'temp'
-        $body.unbind('mouseup').bind 'mouseup', (e_3) ->
+        #
+        body_mouse_up = (e_3) ->
           $lines.removeClass 'temp'
           e_3.preventDefault()
           $highlight_box.remove()
-          $body.unbind 'mousemove'
-          $body.unbind 'mouseup'
+          #
+          $body.unbind 'mousemove', body_mouse_move
+          #
+          #
           if $lines.filter('.active').length isnt 0
             $('.tab_button li:eq(1)').click()
           else
             $('.tab_button li:eq(0)').click()
+        #
+        #
+        $body.bind 'mousemove', body_mouse_move
+        $body.one 'mouseup', body_mouse_up
+        #
+        #
   #
   #
   #
@@ -2625,7 +2661,6 @@ $ ->
               else
                 active_theme = result.theme
                 update_preview_card_at_bottom()
-                save_form()
             error: ->
               console.log 'Error'
     , 1000
