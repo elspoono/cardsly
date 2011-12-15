@@ -2851,6 +2851,7 @@ $ ->
       active_view = index
       $('.category .cards').html ''
       load_theme_thumbnails()
+      set_my_theme_save_timers()
     #
     #
     #
