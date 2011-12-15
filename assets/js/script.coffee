@@ -1419,36 +1419,6 @@ $ ->
 
 
 
-  #
-  input_timer = 0
-  set_timers = ->
-    clearTimeout input_timer
-    input_timer = setTimeout ->
-      #
-      # Find the values of quantiy and speed
-      $q = $('.quantity input:checked')
-      $s = $('.shipping_method input:checked')
-      #
-      #
-      # Find the values for the card lines from the main designer
-      values = $.makeArray $lines.map -> 
-        $(this).html()
-      #
-      #
-      $.ajax
-        url: '/save-form'
-        data: JSON.stringify
-          values: values
-          active_view: active_view
-          active_theme_id: active_theme._id
-          quantity: $q.val()
-          shipping_method: $s.val()
-      false
-    ,1000
-
-
-
-
 
 
 
@@ -1555,7 +1525,6 @@ $ ->
       if theme
         load_theme theme
         history = [theme]
-        set_timers()
   #
   #
   #
@@ -1921,7 +1890,7 @@ $ ->
           #
           $new_input.bind 'keyup blur', ->
             update_cards i, $new_input.val()
-            set_timers()
+            set_my_theme_save_timers()
             save_pos_and_size()
           #
           #
@@ -2652,20 +2621,39 @@ $ ->
     clearTimeout my_theme_save_timer
     my_theme_save_timer = setTimeout ->
       unless need_to_add_new_theme()
+        #
+        #
         if active_theme.category is 'My Own'
           $active_thumb = $ '.category .card.active'
           $active_thumb.data 'theme', active_theme
+          #
+          # Find the values of quantiy and speed
+          $q = $('.quantity input:checked')
+          $s = $('.shipping_method input:checked')
+          #
+          #
+          # Find the values for the card lines from the main designer
+          values = $.makeArray $lines.map -> 
+            $(this).html()
+          #
           $.ajax
             url: '/save-theme'
             data: JSON.stringify
               theme: active_theme
               do_save: true
+              saved_form: 
+                values: values
+                active_view: active_view
+                active_theme_id: active_theme._id
+                quantity: $q.val()
+                shipping_method: $s.val()
             success: (result) ->
               if not result.success
                 console.log 'Error'
               else
                 active_theme = result.theme
                 update_preview_card_at_bottom()
+                save_form()
             error: ->
               console.log 'Error'
     , 1000
@@ -2747,8 +2735,7 @@ $ ->
       $i.attr('checked',true).trigger 'change'
       return false
   #
-  # Radio Select
-  $('.quantity input,.shipping_method input').bind 'change', () ->
+  update_radio_highlights = ->
     $q = $('.quantity input:checked')
     $s = $('.shipping_method input:checked')
     #
@@ -2766,9 +2753,15 @@ $ ->
     $('.order_total .price').html '$' + amount
     #
     #
+  # Radio Select
+  $('.quantity input,.shipping_method input').bind 'change', () ->
     #
-    set_timers()
-  $('.quantity input,.shipping_method input').trigger 'change'
+    #
+    update_radio_highlights()
+    #
+    set_my_theme_save_timers()
+  #
+  update_radio_highlights()
   #
   #
   address_timer = 0
@@ -2858,7 +2851,6 @@ $ ->
       active_view = index
       $('.category .cards').html ''
       load_theme_thumbnails()
-      set_timers()
     #
     #
     #
