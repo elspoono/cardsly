@@ -25,6 +25,7 @@
     , "request": ">=0.0.1"
     , "pdfkit": ">=0.0.1"
     , "xml2json": ">=0.0.1"
+    , "oauth": ">=0.0.1"
     , "canvas": "https://github.com/elspoono/node-canvas-heroku/tarball/master"
   },
   "devDependencies": {

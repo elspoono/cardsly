@@ -156,10 +156,11 @@ knoxClient = knox.createClient
 #
 #
 # MOO API Key
-# 4739b76c5a56a3c0f03bfcefd3248ed804ed95ae2
-# 
-# MOO Secret
-# bec6f97d58f1121cd90e16502e6c8e4e
+moo_auth =
+  key: '4739b76c5a56a3c0f03bfcefd3248ed804ed95ae2'
+  # 
+  # MOO Secret
+  secret: 'bec6f97d58f1121cd90e16502e6c8e4e'
 #
 #
 # END LIBRARY LOADING
@@ -2278,9 +2279,6 @@ check_no_err = (err, res) ->
 #
 #
 #
-#
-#
-#
 app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   # Prep the string to search for
@@ -2909,7 +2907,57 @@ app.get '/cute-animal', (req, res) ->
     layout: 'layout_min'
 #
 #
+OAuth = require('oauth').OAuth
 #
+#
+app.get '/moo', (req, res, next) ->
+  #
+  #
+  #
+  #
+  #
+  oa = new OAuth 'https://secure.moo.com/oauth/request_token.php', 'https://secure.moo.com/oauth/access_token.php', moo_auth.key, moo_auth.secret, '1.0', 'https://secure.moo.com/oauth/authorize.php', 'HMAC-SHA1'
+  #
+  #
+  oa.getOAuthRequestToken (err, token, secret, results) ->
+    if err
+      log_err
+    else
+      req.session.oa_token = token
+      req.session.oa_secret = secret
+      res.send '',
+        Location: '/cardsly-with-moo'
+      , 302
+#
+#
+#
+#
+app.get '/cardsly-with-moo', (req, res, next) ->
+  #
+  #
+  #
+  #
+  req.moo = true
+  #
+  res.render 'moo'
+    req: req
+    abtest: 4
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | With printing by moo'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Get notified from Cards.ly - with prints by moo. QR Code business cards from Cardsly'
+    #
+    # Uncomment the following line to add a custom h1 tag!
+    #h1: 'some other h1 tag'
+    #
+    # (Uncomment means remove the single # character at the start of it :)
+    #
+    url_groups: req.url_groups
+    #
+    #
 #
 #
 #
@@ -3029,7 +3077,6 @@ app.get '/home3', get_url_groups, (req, res) ->
 
 #
 #
-#
 # Real Index Page
 app.get '/', get_url_groups, (req, res) -> 
   #
@@ -3059,10 +3106,6 @@ app.get '/', get_url_groups, (req, res) ->
       #
       url_groups: req.url_groups
       #
-      #
-      scripts:[
-        'home'
-      ]
 #
 #
 #
