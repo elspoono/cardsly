@@ -3282,6 +3282,14 @@ app.get '*', (req, res, next) ->
     Location:'/'
   , 301
 #
+# Redirect for Kickstarter campagin
+app.get '/fundourprinter', (req, res, next) ->
+  console.log req.url
+  res.send '',
+    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
+  , 301
+
+
 # ### Start server
 app.listen process.env.PORT || process.env.C9_PORT || 4000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
