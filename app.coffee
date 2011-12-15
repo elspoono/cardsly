@@ -2451,12 +2451,8 @@ app.get '/update-patterns', (req, res, next) ->
                   save_pattern_to = (width, height, dir) ->
                       #
                       #
-                      if width is 50
-                        new_w = Math.round img.width/4
-                        new_h = Math.round img.height/4
-                      else
-                        new_w = img.width
-                        new_h = img.height
+                      new_w = img.width
+                      new_h = img.height
                       #
                       #
                       canvas = new node_canvas(width,height)

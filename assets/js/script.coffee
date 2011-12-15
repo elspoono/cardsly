@@ -1497,14 +1497,6 @@ $ ->
               #
               #
               #
-              # MEH - this seems like a good spot - llolololol
-              $.ajax
-                url: '/get-patterns'
-                success: (result) ->
-                  if not result.err
-                    $thumbs = $advanced_options.find '.patterns .thumbs'
-                    for pattern in result.patterns
-                      $thumbs.append '<img class="thumb" src="//d3eo3eito2cquu.cloudfront.net/pattern-thumbs/'+pattern.s3_id+'" s3_id="'+pattern.s3_id+'" />'
             #
             #
             all_themes = all_data.themes
@@ -1734,26 +1726,6 @@ $ ->
         $lines.removeClass 'active'
         #
         #
-        $patterns = $ '.patterns'
-        $thumbs = $patterns.find '.thumb'
-        #
-        #
-        #
-        #
-        #
-        $thumbs.unbind().click ->
-          $t = $ this
-          active_theme.s3_id = $t.attr 's3_id'
-          $thumbs.removeClass 'active'
-          $t.addClass 'active'
-          update_background_of_active()
-        #
-        $thumbs.removeClass 'active'
-        $thumbs.each ->
-          $t = $ this
-          if $t.attr('s3_id') is active_theme.s3_id
-            $t.addClass 'active'
-            $patterns.find('.thumbs').scrollTo $t
       #
       #
       #
