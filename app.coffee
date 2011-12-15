@@ -2855,6 +2855,15 @@ app.get '/about', (req, res) ->
   res.render 'about'
     req: req
 #
+# How it Works Redirect
+app.get '/how-it-works/:whateverComesAfterHowItWorks?', get_url_groups, (req, res) ->
+  res.render 'how_it_works'
+    req: req
+    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
+    url_groups: req.url_groups
+
+
+
 # How it Works Page
 app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', get_url_groups, (req, res) ->
   res.render 'how_it_works'
