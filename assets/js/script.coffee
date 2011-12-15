@@ -1595,6 +1595,9 @@ $ ->
     $('.my_card').children().remove()
     $('.my_card').append $active_card
     #
+    $lines.each (i) ->
+      $active_card.find('.line').eq(i).html $(this).html()
+    #
     #
     #
     unless options.ignore_thumbnail
@@ -1604,11 +1607,10 @@ $ ->
       $new_card.addClass 'active'
       $new_card.data 'theme', active_theme
       $('.category .card.active').replaceWith $new_card
+      #
+      $lines.each (i) ->
+        $new_card.find('.line').eq(i).html $(this).html()
     #
-    #
-    #
-    $lines.each (i) ->
-      update_cards i, $(this).html()
   #
   #
   #
@@ -2663,7 +2665,7 @@ $ ->
                 console.log 'Error'
               else
                 active_theme = result.theme
-                #update_preview_card_at_bottom()
+                update_preview_card_at_bottom()
             error: ->
               console.log 'Error'
     , 1000

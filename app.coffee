@@ -870,7 +870,7 @@ app.configure ->
     # Cut off at 140 to 150 characters
     description: 'Design and create your own QR code business cards. See analytics and manage QR code links anytime in the Cardsly dashboard.'
     # H1 tag - allows html to be passed in, using brackets and all, e.g.: 
-    h1: '<span>QR code business cards done easi<span class="alt">ly</span></span>'
+    h1: '<span>Get notified! with QR code business cards</span>'
     #
     #
   app.use express.bodyParser()
