@@ -1329,6 +1329,8 @@ app.post '/save-theme', (req, res) ->
   # Put it into a nice pretty JSON object 
   params = req.body
   #
+  if params.saved_form
+    req.session.saved_form = params.saved_form
   #
   #
   # If we hit the save button
@@ -1392,24 +1394,6 @@ app.post '/save-theme', (req, res) ->
 #
 #
 #
-#
-#
-#
-app.post '/save-form', (req, res) ->
-  ###
-  TODO
-  
-  We're going to have to save these form inputs in a cookie that expires faster.
-  Like on browser close.
-  It will be bad if someone else on the same computer comes to the page 2 weeks later and the first persons data is still showing there.
-  Someone might be bothered by the privacy implications, even though it's data they put on their business cards which is fairly public.
-
-  ###
-  # Put it into a nice pretty JSON object 
-  req.session.saved_form = req.body
-  console.log req.session.saved_form
-  res.send
-    success: true
 #
 #
 #

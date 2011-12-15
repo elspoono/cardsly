@@ -273,8 +273,9 @@ if req.session && req.session.help_hidden
             .new.hover
             .new.click
           p
-            .moo_link
-              a(href='/moo') Login to Moo
+            if req.moo
+              .moo_link
+                a(href='/moo') Login to Moo
             .socials
               p
                 | Sign in with a method below:
