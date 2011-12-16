@@ -15,6 +15,11 @@ html
     link(rel='apple-startup-image', href='/images/logo-512x512.png')
     link(rel='shortcut icon', href='/favicon.ico')
     link(rel='apple-touch-icon', href='/images/logo-512x512.png')
+    //
+    // Put only the fonts you NEED to display the page here
+    //
+    // These will slow the page down
+    //
     //link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Maven+Pro:400,500|Amatic+SC:700|Luckiest+Guy')
     != css('style')
     script
@@ -31,7 +36,9 @@ html
       =env
     | </script>
   body
-    != body
+    
+    include container
+    
     != js('script')
     //if lt IE 7
       != js('libs/json2.js')
