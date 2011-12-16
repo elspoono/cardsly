@@ -1,5 +1,5 @@
 #= require 'libs/jquery-1.7.1.js'
-#= require 'date'
+#= require 'libs/date'
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'

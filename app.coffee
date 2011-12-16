@@ -131,7 +131,7 @@ everyauth = require 'everyauth'
 Promise = everyauth.Promise
 #
 #
-require './assets/js/date'
+require './assets/js/libs/date'
 #
 #
 ###
