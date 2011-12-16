@@ -522,6 +522,12 @@ $ ->
 $ ->
   #
   #
+  $window = $window
+  $document = $ document
+  set_doc_height = ->
+    $('.overlay').height $document.height()
+  set_doc_height()
+  $window.resize set_doc_height
   #
   # Watch the popup windows every 200ms for when they set a cookie
   monitor_for_complete = (opened_window) ->
@@ -562,7 +568,9 @@ $ ->
   ctrl_pressed = false
   shift_pressed = false
   # Prevent Backspace
-  $('body').keydown (e) ->
+
+  $body = $ document
+  $body.keydown (e) ->
     if e.keyCode is 8
       $t = $ e.target
       if not $t.closest('input').andSelf().filter('input').length

@@ -1,0 +1,112 @@
+color_one = #963
+color_one = darken(color_one,10)
+
+color_one = #eeffcc
+
+color_two = #000
+color_two_alt = #FFF
+color_three = #FFF
+color_four = #963
+color_four = #000
+
+huge_text = FFFTusjBold
+accent_text = EdoRegular
+
+body
+  background url('/images/patterns/ricepaper2.png')
+
+.overlay
+  position absolute
+  width 100%
+  height 100%
+  z-index -1
+  alpha_bg(color_four,.3)
+  box_shadow(0,color_four,300px,inset)
+
+.logo
+  display none
+  height 56px
+  width 160px
+  background url('/images/logo-160x56.png')
+  margin -60px auto 0 auto
+
+.center_column
+  width 1024px
+  margin 0 auto
+
+.navigation
+  background color_two
+  height 64px
+  line-height 64px
+  .left
+    float left
+  .right
+    float right
+  a
+    font-size 24px
+    color color_two_alt
+    text-decoration none
+    font-family accent_text
+  li
+    float left
+    margin 0 10px
+
+
+h1
+  color color_three
+  font-family accent_text
+
+.hero
+  margin 40px 0 0 0
+  img
+    margin 10px 0 60px 0
+  .top
+    overflow visible
+  .left
+    margin 40px 0 0 0
+    float left
+    text-align center
+  .right
+    width 812px
+    float right
+    text-align right
+
+h1.one
+  color color_one
+  font-size 160px
+  line-height 200px
+  font-family huge_text
+
+
+
+  text_shadow(10px, color_two, 0px)
+
+
+
+h1.two
+  font-size 28px
+  text_shadow(4px, color_two, 0)
+
+.socials
+  float right
+  margin 50px 0
+  overflow hidden
+  li
+    cursor pointer
+    float left
+    background color_one
+    color color_two
+    border_radius(20px)
+    height 40px
+    width 40px
+    font-family JustVector
+    font-size 20px
+    line-height 40px
+    text-align center
+    margin 20px
+
+    box_shadow(10px,color_two,0)
+  .shift
+    line-height 46px
+  .shift_2
+    line-height 43px

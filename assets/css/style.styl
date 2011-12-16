@@ -70,14 +70,6 @@
  *
  ********************************/
 
-// CHAM builtin style functions
-relative_size($size_multiplier, $set_line_height=true)
-  $font_px = unit($base_font_px * $size_multiplier, 'px')
-  font-size $font_px
-  if $set_line_height
-    line-height unit($base_line_height / $font_px, 'em')
-gap($multiplier)
-  return $base_gap * $multiplier
 
 // Alpha Background
 alpha_bg(color,n)
@@ -85,17 +77,17 @@ alpha_bg(color,n)
   background rgba(color,n);
 
 // Shadow
-box_shadow(n = gap(.25), color = $c_dark_warm, b = n, do_inset=)
+box_shadow(n = 12px, color = $c_dark_warm, b = n, do_inset=)
   -moz-box-shadow do_inset n n b color
   -webkit-box-shadow do_inset n n b color
   box-shadow do_inset n n b color
   behavior: url('/js/libs/PIE')
-text_shadow(n = gap(.1), color = $c_dark_warm, b = n)
+text_shadow(n = 4px, color = $c_dark_warm, b = n)
   text-shadow n n b color
   behavior: url('/js/libs/PIE')
 
 // Rounded Corners
-border_radius(n = gap(.5))
+border_radius(n = 10px)
   -webkit-border-radius n
   -moz-border-radius n
   border-radius n
@@ -196,6 +188,13 @@ gradient(color1=$c_background,color2=$c_background,alpha=1)
 
 
 
+// Colors
+
+$c_main = #000
+
+// Fonts
+
+$f_main = Arial
 
 
 
@@ -210,23 +209,49 @@ gradient(color1=$c_background,color2=$c_background,alpha=1)
 
 
 
-// --------------------------------------------------------------------------------------------------------------
-// --------------------------------------------------------------------------------------------------------------
-// --------------------------------------------------------------------------------------------------------------
-// --------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
 // Everything below here is Old School CSS only used for libraries
-
+// --------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
 // Feel free to never scroll lower than this
-
-
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
-
-
 @css{
   /*
    * jQuery UI CSS Framework 1.8.16
