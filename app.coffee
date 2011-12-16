@@ -162,33 +162,6 @@ moo_auth =
 ###########################################################
 
 
-ua_match =  (ua) ->
-  ua = ua.toLowerCase()
-
-  rwebkit = /(webkit)[ \/]([\w.]+)/
-  ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/
-  rmsie = /(msie) ([\w.]+)/
-  rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/
-
-  match = rwebkit.exec( ua ) or ropera.exec( ua ) or rmsie.exec( ua ) or ua.indexOf('compatible') < 0 and rmozilla.exec( ua ) or []
-
-  result =
-    browser: match[1] or ''
-    version: match[2] or '0'
-
-
-
-ordinal = (in_number) ->
-  decimal = in_number %10
-  suffix = 'th'
-  suffix = 'st' if decimal is 1
-  suffix = 'nd' if decimal is 2
-  suffix = 'rd' if decimal is 3
-  in_number+suffix
-
-
-
-
 
 
 ###########################################################
@@ -1826,8 +1799,14 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                   if found_user.email
                     #
                     #
-
-                    ua =  ua_match visit.user_agent
+                    ordinal = (in_number) ->
+                      decimal = in_number %10
+                      suffix = 'th'
+                      suffix = 'st' if decimal is 1
+                      suffix = 'nd' if decimal is 2
+                      suffix = 'rd' if decimal is 3
+                      in_number+suffix
+                    #
                     has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
                     visit_details =
                       browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
@@ -1843,7 +1822,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                     , (err, data) ->
                       if err
                         log_err err
-    #
+#
 #
 #
 #
