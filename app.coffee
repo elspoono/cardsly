@@ -57,14 +57,7 @@ app = module.exports = express.createServer()
 # Image Magick for graphic editing
 im = require 'imagemagick'
 #
-#
 xml2json = require 'xml2json'
-#
-samurai = require 'samurai'
-samurai.setup
-  merchant_key: '89b14db44561382d457b5160'
-  merchant_password: '6a5a0bf8906a6b8b1e577d72'
-  processor_token: '5c44e876a2d1125015a872c3'  
 #
 geo = require('geo')
 #
@@ -803,25 +796,6 @@ campfire_check = (req, res, next) ->
 
 
 
-
-
-
-
-
-###
-TODO
-
-- Pass the entire "req" object to jade files -- automatigically??
-
-###
-
-
-
-
-
-
-
-
 ###########################################################
 #
 #
@@ -1131,108 +1105,9 @@ create_urls = (options, next) ->
 #
 #
 #
-app.post '/save-main-redirect', (req, res) ->
-  #
-  # Set up the redirect
-  if not req.body.redirect_to.match /http:\/\//i
-    req.body.redirect_to = 'http://'+req.body.redirect_to
-  #
-  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
-    if check_no_err_ajax err, res
-      if url_group.user_id+'' isnt req.user._id+''
-        res.send
-          err: 'No Permission'
-      else
-        for url in url_group.urls
-          if url.redirect_to is url_group.redirect_to and url.visits*1 is 0
-            url.redirect_to = req.body.redirect_to
-            url.last_updated = new Date()
-
-            mongo_url_redirect.findOne
-              url_string: url.url_string
-            , (err, url_redirect) ->
-              if not err
-                url_redirect.redirect_to = req.body.redirect_to
-                url_redirect.save()
-        url_group.redirect_to = req.body.redirect_to
-        url_group.save (err, saved_url_group) ->
-          if check_no_err_ajax err, res
-            res.send
-              success: true
-#
-#
-app.post '/save-redirect', (req, res) ->
-  #
-  # Set up the redirect
-  if not req.body.redirect_to.match /http:\/\//i
-    req.body.redirect_to = 'http://'+req.body.redirect_to
-  #
-  # Set up the Card Numbers from the range given
-  card_numbers = []
-  parts = req.body.range.split ','
-  for part in parts
-    range = part.split '-'
-    spaced = part.split ' '
-    if range.length > 1
-      card_numbers.push(i) for i in [range[0]..range[1]]
-    else if spaced.length > 1
-      card_numbers.push(i) for i in spaced
-    else
-      card_numbers.push part
-  for card_number,i in card_numbers
-    card_numbers[i] = card_number*1
-  #
-  #
-  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
-    if check_no_err_ajax err, res
-      if url_group.user_id+'' isnt req.user._id+''
-        res.send
-          err: 'No Permission'
-      else
-        for url in url_group.urls
-          if _(card_numbers).contains url.card_number*1
-            url.redirect_to = req.body.redirect_to
-            url.last_updated = new Date()
-            mongo_url_redirect.findOne
-              url_string: url.url_string
-            , (err, url_redirect) ->
-              if not err
-                url_redirect.redirect_to = req.body.redirect_to
-                url_redirect.save()
-        url_group.save (err, saved_url_group) ->
-          if check_no_err_ajax err, res
-            res.send
-              success: true
 #
 #
 #
-app.post  '/get-visits', (req, res) ->
-  mongo_visit.find
-    url_string: req.body.url_string
-    , (err, visits) ->
-      if check_no_err_ajax err, res
-        sorted_visits = _(visits).sortBy (visit) -> visit.date_added
-        sorted_visits.reverse()
-        sent_visits = []
-        for visit in sorted_visits
-          ua =  ua_match visit.user_agent
-          has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
-          sent_visits.push
-            browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
-            location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
-            date_added: visit.date_added
-        res.send
-          visits: sent_visits  
-#
-#
-app.post '/update-order-status', (req, res) ->
-  mongo_order.findById req.body.order_id, (err, order) ->
-    if check_no_err_ajax err, res
-      order.status = req.body.status
-      order.save (err, saved_order) ->
-        if check_no_err_ajax err, res
-          res.send
-            success: true
 #
 # Form request for multipart form uploading image
 app.post '/up', (req, res) ->
@@ -1323,79 +1198,6 @@ check_no_err_ajax = (err, res) ->
 #
 #
 #
-# AJAX request for saving theme
-app.post '/save-theme', (req, res) ->
-  #
-  # Put it into a nice pretty JSON object 
-  params = req.body
-  #
-  if params.saved_form
-    req.session.saved_form = params.saved_form
-  #
-  #
-  # If we hit the save button
-  if params.do_save
-    #
-    # If we're updating do this
-    if params.theme._id
-      mongo_theme.findById params.theme._id, (err, found_theme) ->
-        if check_no_err_ajax err, res
-          found_theme.date_updated = new Date()
-          if typeof(params.theme.active) is 'boolean'
-            found_theme.active = params.theme.active
-          found_theme.category = params.theme.category
-          found_theme.s3_id = params.theme.s3_id
-          if params.theme.category is 'My Own'
-            if req.user and req.user._id
-              found_theme.user_id = req.user._id
-            else
-              found_theme.user_id = req.sessionID
-          #
-          # Push the new template in
-          found_theme.theme_templates = params.theme.theme_templates
-          #
-          #
-          found_theme.save (err,theme_saved) ->
-            if check_no_err_ajax err, res
-              res.send
-                success: true
-                theme: theme_saved
-    #
-    #
-    #
-    # This indicates we are creating a new one, nothing to update
-    else
-      new_theme = new mongo_theme
-      if typeof(params.theme.active) is 'boolean'
-        new_theme.active = params.theme.active
-      new_theme.category = params.theme.category
-      new_theme.s3_id = params.theme.s3_id
-      if params.theme.category is 'My Own'
-        if req.user and req.user._id
-          new_theme.user_id = req.user._id
-        else
-          new_theme.user_id = req.sessionID
-      #
-      # Push the new template in
-      new_theme.theme_templates = params.theme.theme_templates
-      #
-      #
-      #
-      #
-      #
-      #
-      new_theme.save (err,theme_saved) ->
-        if check_no_err_ajax err, res
-          res.send
-            success: true
-            theme: theme_saved
-#
-#
-#
-#
-#
-#
-#
 #
 app.post '/find-address', (req, res, next) ->
   geo.geocoder geo.google, req.body.address+' '+req.body.city, false, (full_address, latitude, longitude, details) ->
@@ -1417,141 +1219,6 @@ app.post '/find-address', (req, res, next) ->
 #
 #
 #
-# Make Sure an email isn't taken
-app.post '/check-email', (req, res, next) ->
-  params = req.body || {}
-  req.email = params.email || ''
-  req.email = req.email.toLowerCase()
-  handleReturn = (err, count) ->
-    req.err = err
-    req.count = count
-    next()
-  if params.id
-    mongo_user.count
-      email:req.email
-      active:true
-    , handleReturn
-  else
-    mongo_user.count
-      email: req.email
-      active:true
-    , handleReturn
-,(req, res, next) ->
-  res.send
-    err: req.err
-    count: req.count
-    email: req.email
-#
-#
-#
-#
-# Normal Login
-app.post '/login', (req, res, next) ->
-  mongo_user.authenticate req.body.email, req.body.password, (err, user) ->
-    if err || !user
-      res.send
-        err: err
-    else
-      req.session.auth = 
-        userId: user._id
-      res.send
-        success: true
-
-      #
-      if req.sessionID
-        #
-        #
-        mongo_theme.find
-          active: true
-          user_id: req.sessionID
-        , (err, themes) ->
-          if not err
-            for theme in themes
-              theme.user_id = user._id
-              console.log theme
-              theme.save()
-#
-#
-#
-#
-# Sends feedback to us
-app.post '/send-feedback', (req,res,next) ->
-  res.send
-      succesfulFeedback:'This worked!'
-  nodemailer.send_mail
-    sender: req.body.email or 'help@cards.ly'
-    to: 'support@cards.ly'
-    cc: 'help@cards.ly'
-    subject:'Feedback email from:' + req.body.email
-    html: '<p>This is some feedback</p><p>' + req.body.content + '</p>'
-  , (err, data) ->
-    if err
-      log_err err
-#
-#
-#
-#
-# Create the new sign up
-app.post '/create-user', (req,res,next) ->
-  mongo_user.count
-    email:req.body.email
-    active:true
-  ,(err,already) ->
-    if already>0
-      res.send
-        err: 'It looks like that email address is already registered with an account. It might be a social network account.<p>Try signing with a social network, such as facebook, linkedin, google+ or twitter.'
-    else
-      next()
-,(req,res,next) ->
-  user = new mongo_user()
-  user.email = req.body.email;
-  user.password_encrypted = encrypted(req.body.password);
-  user.save (err,data) ->
-    req.session.auth = 
-      userId: user._id
-    res.send
-      success: 'True'
-#
-#
-#
-#
-# Change Password
-app.post '/change-password', (req,res,next) ->
-  #
-  #
-  if !req.user.email or !req.body.current_password
-    res.send
-      err: 'Invalid Parameters'
-  else
-    mongo_user.authenticate req.user.email, req.body.current_password, (err, user) ->
-      if err or !user
-        res.send
-          err: err or 'User not found'
-      else
-        req.user.password_encrypted = encrypted req.body.new_password
-        req.user.save (err, user_saved) ->
-          if check_no_err_ajax err, res
-            res.send
-              success: true
-#
-#
-#
-
-#Password Reset and Sending Email
-app.post '/send-password-reset', (req,res,next) ->
-  res.send
-    succesfulFeedback:'This worked!'
-  nodemailer.send_mail
-    sender: 'supportcards.ly'
-    to: req.body.email_password
-    subject:'Password Reset from Cardsly'
-    html: '<p>Please click the following link to change the password of your Cardsly account</p>'
-  , (err, data) ->
-    if err
-      log_err err
-
-
-
 #
 hex_to_rgba = (h) ->
   cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
@@ -1569,21 +1236,6 @@ hex_to_rgba = (h) ->
   else
     'rgba('+r+','+g+','+b+','+a+')'
 #
-#
-#
-get_patterns = (req, res, next) ->
-  mongo_pattern.find
-    active: true
-  , (err, patterns) ->
-    if check_no_err_ajax err, res
-      req.patterns = patterns
-      next()
-#
-#
-#
-app.post '/get-patterns', get_patterns, (req, res, next) ->
-  res.send
-    patterns: req.patterns
 #
 #
 #
@@ -1610,39 +1262,6 @@ app.post '/get-user', (req,res,next) ->
 #
 #
 #
-#
-#
-#
-#
-# Get Themes (post route for get themes :)
-app.post '/get-themes', (req,res,next) ->
-  #
-  #
-  #
-  user_to_find = null
-  #
-  #
-  #
-  if req.user and req.user._id
-    user_to_find = 
-      $in: [null,req.user._id]
-  #
-  else if req.sessionID
-    user_to_find = 
-      $in: [null,req.sessionID]
-  #
-  #
-  #
-  mongo_theme.find
-    active: true
-    user_id: user_to_find
-  , (err, themes) ->
-    if check_no_err_ajax err, res
-      themes = _(themes).sortBy (theme) ->
-        if theme.user_id then '0' else theme.category + theme.date_added
-      themes.reverse()
-      res.send
-        themes: themes
 #
 #
 add_urls_to_order = (order, user, res) ->
@@ -1703,20 +1322,6 @@ add_urls_to_order = (order, user, res) ->
   #
   #
 #
-#
-#
-image_err = (res) ->
-  height = 100
-  width = 300
-  canvas = new node_canvas(width,height)
-  ctx = canvas.getContext '2d'
-  ctx.font = Math.round(40/100*height) + 'px Arial'
-  ctx.fillText 'whoops', width/2-40/100*width, height/2
-  #
-  canvas.toBuffer (err, buff) ->
-    res.send buff,
-      'Content-Type': 'image/png'
-    , 200
 #
 #
 render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
@@ -1984,78 +1589,49 @@ else
   stripe = require('./assets/js/libs/stripe.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 #
-app.post '/confirm-purchase', (req, res, next) ->
-  order = new mongo_order
-  order.user_id = req.user._id
-  order.theme_id = req.session.saved_form.active_theme_id
-  order.active_view = req.session.saved_form.active_view
-  order.status = 'Pending'
-  order.quantity = req.session.saved_form.quantity
-  order.shipping_method = req.session.saved_form.shipping_method
-  order.values = req.session.saved_form.values
-  order.address = req.session.saved_address.address
-  order.city = req.session.saved_address.city
-  order.full_address = req.session.saved_address.full_address
-  order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
-  order.email = req.body.email
+check_for_stripe_token = (req, res, next) ->
   #
-  #
-  #
-  # Save email if passed in.
-  if req.body.email
-    req.user.email = req.body.email
-    req.user.save (err, user_saved) ->
+  # If they passed in a token, create a customer
+  if req.body.token
+    stripe.customers.create
+      card: req.body.token
+      email: req.user.email or null
+      description: req.user.name or req.user.email or req.user.id
+    , (err, customer) ->
       if err
         log_err err
-    #
-  #
-  #
-  order.save (err, new_order) ->
-    if check_no_err_ajax err, res
-      req.order = new_order
-      #
-      #
-      # If they passed in a token, create a customer
-      if req.body.token
-        stripe.customers.create
-          card: req.body.token
-          email: req.user.email or null
-          description: req.user.name or req.user.email or req.user.id
-        , (err, customer) ->
+        res.send
+          err: customer.error.message
+      else
+        #
+        #console.log 'CUSTOMER: ', customer
+        #
+        # Save the payment token to the user
+        req.user.stripe = customer
+        req.user.stripe.active_card.card_type = customer.active_card.type
+        #console.log req.user.stripe
+        req.user.save (err, user_saved) ->
           if err
             log_err err
-            res.send
-              err: customer.error.message
-          else
-            #
-            #console.log 'CUSTOMER: ', customer
-            #
-            # Save the payment token to the user
-            req.user.stripe = customer
-            req.user.stripe.active_card.card_type = customer.active_card.type
-            #console.log req.user.stripe
-            req.user.save (err, user_saved) ->
-              if err
-                log_err err
-            #
-            #
-            next()
-      #
-      #
-      #
-      # Otherwise, make sure they have an existing stripe
-      else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
+        #
+        #
         next()
-      #
-      #
-      #
-      # Otherwise, we got problems
-      else
-        res.send
-          err: 'No Payment Data Received'
-      #
-      #
-, (req, res, next) ->
+  #
+  #
+  #
+  # Otherwise, make sure they have an existing stripe
+  else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
+    next()
+  #
+  #
+  #
+  # Otherwise, we got problems
+  else
+    res.send
+      err: 'No Payment Data Received'
+#
+#
+charge_stripe_token = (req, res, next) ->
   #
   new_order = req.order
   #
@@ -2073,123 +1649,9 @@ app.post '/confirm-purchase', (req, res, next) ->
     #
     #
     #
-    # Save the order's url
-    #
-    #  - This is used to show the "contact page" for an order
-    #
-    create_url 'http://cards.ly/order/'+new_order._id, (err, order_url) ->
-      if check_no_err_ajax err, res
-        #
-        #
-        # Save that url to the order
-        new_order.order_number = order_url.url_string
-        #
-        #
-        # Save the charge result to the order
-        new_order.charge = charge
-        #
-        #
-        new_order.save (err, final_order) ->
-          if err
-            log_err err
-        #
-        #
-        #
-        if err
-          log_err err
-          res.send
-            err: charge.error.message
-        else if not charge.paid
-          console.log 'ERR: stripe charge resulted in not paid for some reason.'
-          res.send
-            err: 'Charge resulted in not paid for some reason.'
-        else
-          res.send
-            order_id: new_order._id
-            charge: charge
-          #
-          #
-          ################################
-          # Do Cleanup and send emails etc
-          ################################
-          #
-          #
-          # Generate the Urls
-          volume = add_urls_to_order new_order, req.user
-          #
-          #
-          #
-          #
-          ############
-          # Send Email
-          ############
-          #
-          # Send Confirmation Email
-          #####
-          # Prep the Email Message
-          total_paid = new_order.amount/100
-          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
-          #
-          # Send the user an email
-          if new_order.email
-            nodemailer.send_mail
-              sender: 'help@cards.ly'
-              to: new_order.email
-              subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
-              html: message
-            , (err, data) ->
-              if err
-                log_err err
-          #
-          # Send us an email
-          nodemailer.send_mail
-            sender: 'support@cards.ly'
-            to: 'help@cards.ly'
-            subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
-            html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
-          , (err, data) ->
-            if err
-              log_err err
 #
 #
 #
-#
-#
-app.post '/validate-purchase', (req, res, next) ->
-  #
-  #
-  #
-  if not req.user
-    res.send
-      error: 'Please sign in'
-  else if not req.session.saved_address
-    res.send
-      error: 'Please enter shipping info'
-  else if not req.session.saved_address.full_address
-    res.send
-      error: 'Please check the address'
-  else if req.session.saved_form.values[0] is "1) John Stamos"
-    res.send
-      error: 'Hey Uncle Jesse, is that you?'
-  else
-    #
-    #
-    #
-    ###
-    TODO
-    
-    - SAVE THEIR INFO HERE
-
-    ###
-    #
-    #
-    #
-    res.send
-      success: true
-    ###
-    res.send
-      error: 'Im sorry this page isnt active yet'
-    ###
 #
 #
 #
@@ -2248,14 +1710,14 @@ app.get '/path-you-want', (req, res, next) ->
 #
 #
 # Get page helper functions
-securedAdminPage = (req, res, next) ->
+secured_page_admin = (req, res, next) ->
   if req.user && req.user.role == 'admin'
     next()
   else
     res.send '',
       Location: '/cards'
     ,302
-securedPage = (req, res, next) ->
+secured_page = (req, res, next) ->
   if req.user
     next()
   else
@@ -2382,12 +1844,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       if err
                         log_err err
     #
-
-                
 #
 #
 #
 #
+#
+#
+# SSL Redirect
 if app.settings.env is 'production'
   app.get '*', (req,res,next) ->
     headers = req.headers
@@ -2401,166 +1864,6 @@ if app.settings.env is 'production'
 #
 #
 #
-app.get '/update-patterns', (req, res, next) ->
-  mongo_pattern.find
-    active: true
-  , (err, patterns) ->
-    for pattern in patterns
-      pattern.active = false
-      pattern.save()
-  http_request 'http://feeds.feedburner.com/SubtlePatterns', (err, response, body) ->
-    parsed = xml2json.toJson body,
-      object: true
-    for pattern,i in parsed.rss.channel.item
-      png_links = pattern['content:encoded'].match /[^"^\(]*\.png/ig
-      do (png_links) ->
-        if png_links and png_links.length
-          #
-          #
-          #
-          imagedata = ''
-          #
-          #
-          #
-          request = http.get
-            host: 'subtlepatterns.com'
-            port: 80
-            path: '/'+png_links[0]
-          , (response) ->
-              #
-              #
-              #
-              response.setEncoding 'binary'
-              #
-              #
-              #
-              response.on 'data', (chunk) ->
-                imagedata += chunk
-              response.on 'end', ->
-                if response.statusCode is 200
-                  #
-                  #
-                  buff = new Buffer imagedata, 'binary'
-                  #
-                  img = new node_canvas.Image
-                  img.src = buff
-                  #
-                  #
-                  my_new_id = random_url()+random_url()+random_url()+'.png'
-                  #
-                  save_pattern_to = (width, height, dir) ->
-                      #
-                      #
-                      new_w = img.width
-                      new_h = img.height
-                      #
-                      #
-                      canvas = new node_canvas(width,height)
-                      ctx = canvas.getContext '2d'
-                      #
-                      #
-                      t = 0
-                      l = 0
-                      add_row = ->
-                        l = 0
-                        ctx.drawImage img, l, t, new_w, new_h
-                        l += new_w
-                        add_col = ->
-                          ctx.drawImage img, l, t, new_w, new_h
-                          l += new_w
-                        add_col() while l < width
-                        t += new_h
-                      add_row() while t < height
-                      #
-                      canvas.toBuffer (err, canvas_buff) ->
-                        log_err err if err
-                        #
-                        # Send that new file to Amazon to be saved!
-                        knoxReq = knoxClient.put '/'+dir+'/'+my_new_id,
-                          'Content-Length': canvas_buff.length
-                          'Content-Type' : 'image/png'
-                        knoxReq.on 'response', (awsRes) ->
-                          if awsRes.statusCode != 200
-                            console.log 'ERR', awsRes
-                        knoxReq.end canvas_buff
-                  #
-                  #
-                  save_pattern_to 50, 50, 'pattern-thumbs'
-                  save_pattern_to 1050, 600, 'raw'
-                  save_pattern_to 158, 90, '158x90'
-                  save_pattern_to 525, 300, '525x300'
-                  #
-                  pattern = new mongo_pattern
-                  pattern.s3_id = my_new_id
-                  pattern.title = png_links[1]
-                  pattern.save()
-                  #
-    #
-    #
-    #
-    res.send
-      blegh: true
-#
-#
-#
-#
-#
-#
-#
-app.get '/re-process-pdf/:order_id', (req, res, next) ->
-  #
-  #
-  # This is where we kick off the processing of the pdf
-  process_pdf req.params.order_id
-  #
-  console.log 'REPROCESS HIT FOR ', req.params.order_id
-  # Find the Order that's passed in
-  mongo_order.findById req.params.order_id, (err, order) ->
-    if check_no_err err
-      order.date_added = new Date()
-      order.save (err, saved_order) ->
-        if check_no_err err
-          #
-          res.send '',
-            Location: '/orders'
-          , 302
-#
-#
-app.get '/test/:theme_id', (req, res, next) ->
-  #
-  #
-  # Find the theme for that order
-  mongo_theme.findById req.params.theme_id, (err, theme) ->
-    #
-    # The theme_template used based on the view from the order
-    theme_template = theme.theme_templates[0]
-    #
-    urls =
-      (
-        url_string: 'test'
-        card_number: i
-      ) for i in [1..10]
-    #
-    render_urls_to_doc urls, theme_template, [
-      'Jimbo jo Jiming'
-      'Banker Extraordinaire'
-      'Cool Cats Cucumbers'
-      '57 Bakers, Edwarstonville'
-      '555.555.5555'
-      'New York'
-      'Apt. #666'
-      'M thru F - 10 to 7'
-      'fb.com/my_facebook'
-      '@my_twitter'
-    ], theme.s3_id, (doc) ->
-      #
-      # FINALLY - Send it to the browser
-      #
-      res.send new Buffer(doc.output(), 'binary'),
-        'Content-Type' : 'application/pdf'
-      , 200
-    #
-    #
 #
 #
 app.get '/render/:w/:h/:order_id', (req, res, next) ->
@@ -2586,241 +1889,82 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
     #
     mongo_theme.findById order.theme_id, (err, theme) ->
       theme_template = theme.theme_templates[order.active_view]
-      if not order.active_view
-        image_err res
-      else
-        #
-        imagedata = ''
-        #
-        request = http.get
-          host: 'd3eo3eito2cquu.cloudfront.net'
-          port: 80
-          path: '/'+widthheight+'/'+theme.s3_id
-        , (response) ->
-            #
-            response.setEncoding 'binary'
-            #
-            response.on 'data', (chunk) ->
-              imagedata += chunk
-            response.on 'end', ->
-
-              if response.statusCode is 200
-                buff = new Buffer imagedata, 'binary'
+      #z
+      imagedata = ''
+      #
+      request = http.get
+        host: 'd3eo3eito2cquu.cloudfront.net'
+        port: 80
+        path: '/'+widthheight+'/'+theme.s3_id
+      , (response) ->
+          #
+          response.setEncoding 'binary'
+          #
+          response.on 'data', (chunk) ->
+            imagedata += chunk
+          response.on 'end', ->
+            if response.statusCode is 200
+              buff = new Buffer imagedata, 'binary'
 
 
-                canvas = new node_canvas(width,height)
-                ctx = canvas.getContext '2d'
+              canvas = new node_canvas(width,height)
+              ctx = canvas.getContext '2d'
 
-                img = new node_canvas.Image
-                img.src = buff
-                ctx.drawImage img, 0, 0, width, height
-                
+              img = new node_canvas.Image
+              img.src = buff
+              ctx.drawImage img, 0, 0, width, height
+              
 
 
-                for line,i in theme_template.lines
-                  h = Math.round(line.h/100*height)
-                  x = line.x/100*width
-                  y = line.y/100*height
-                  w = line.w/100*width
-                  ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px "' + line.font_family + '"'
-                  if line.text_align is 'left'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                  else
-                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                    if line.text_align is 'right'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                    if line.text_align is 'center'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+              for line,i in theme_template.lines
+                h = Math.round(line.h/100*height)
+                x = line.x/100*width
+                y = line.y/100*height
+                w = line.w/100*width
+                ctx.fillStyle = hex_to_rgba line.color
+                ctx.font = h + 'px "' + line.font_family + '"'
+                if line.text_align is 'left'
+                  ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                else
+                  measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                  if line.text_align is 'right'
+                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                  if line.text_align is 'center'
+                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
 
 
 
-                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                #
-                qr_canvas = qr_code.draw_qr
-                  node_canvas: node_canvas
-                  style: 'round'
-                  url: url
-                  hex: theme_template.qr.color1
-                  hex_2: theme_template.qr.color2+alpha
-                #
-                #
-                #
-                qr_canvas.toBuffer (err, qr_buff) ->
-                  qr_img = new node_canvas.Image
-                  qr_img.src = qr_buff
-
-
-                  ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
-                  
-                  
-                  canvas.toBuffer (err, buff) ->
-                    res.send buff,
-                      'Content-Type': 'image/png'
-                    , 200
-              else
-                image_err res
-#
-#
-#
-#
-#
-#
-#
-# Success Page
-#
-# Where they land after authenticating
-# This should close automatically or redirect to the home page if no caller
-app.get '/success', (req, res) ->
-  res.cookie 'success_login', true
-  res.send '<script>window.onload = function(){window.close();}',
-    'Content-Type': 'text/html'
-  , 200
-#
-# Get the order information
-get_order_info = (req, res, next) ->
-  mongo_order.find
-    user_id: req.user._id
-    'charge.paid': true
-  , (err, orders) ->
-    if check_no_err err, res
-      req.orders = orders
-      next()
-#
-#
-#
-get_url_groups = (req, res, next) ->
-  if req.user
-    mongo_url_group.find
-      user_id: req.user._id
-    , (err, url_groups) ->
-      if check_no_err err
-        #
-        #
-        for url_group in url_groups
-          #
-          #
-          #
-          #
-          #
-          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
-          #
-          #
-          # Sort by last updated within the url groups
-          url_group.urls = _(url_group.urls).sortBy (url) ->
-            url.last_updated
-          url_group.urls.reverse()
-          #
-          #
-          #
-          #
-          # -
-          # ------
-          # ---------------
-          # --------------------------------------------------
-          # Try to group the ranges of numbers, BLEGH! :O
-          #
-          #
-          url_group.ranged_urls = []
-          #
-          # Get the groups
-          # Filter out the visited
-          not_visited = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
-          #
-          #
-
-          at_defaults = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
-          #
-          url_group.at_defaults = at_defaults.length
-          #
-          #
-          grouped = _(not_visited).groupBy (url) ->
-            url.redirect_to
-          for redirect_to,group of grouped
-            #
-            #
-            group = _(group).sortBy (url) ->
-              url.card_number
-            #
-            #
-            final = group[0]
-            #
-            prev_card_number = final.card_number-1
-            length = 0
-            for url in group
-              if url.card_number*1 isnt prev_card_number*1+1
-                if length > 1
-                  final.card_number = final.card_number + '-' + prev_card_number
-                final.card_number = final.card_number + ', ' + url.card_number
-                length = 0
-              length++
-              prev_card_number = url.card_number
+              alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
               #
-            #
-            if length > 1
-              final.card_number = final.card_number + '-' + prev_card_number
-            #
-            #
-            url_group.ranged_urls.push final
-          #
-          #
-          #
-          # --------------------------------------------------
-          # ---------------
-          # ------
-          # -
-          #
-          #
-        #
-        #
-        #
-        req.url_groups = url_groups
-        #
-        next()
-  else
-    next()
+              qr_canvas = qr_code.draw_qr
+                node_canvas: node_canvas
+                style: 'round'
+                url: url
+                hex: theme_template.qr.color1
+                hex_2: theme_template.qr.color2+alpha
+              #
+              #
+              #
+              qr_canvas.toBuffer (err, qr_buff) ->
+                qr_img = new node_canvas.Image
+                qr_img.src = qr_buff
+
+
+                ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
+                
+                
+                canvas.toBuffer (err, buff) ->
+                  res.send buff,
+                    'Content-Type': 'image/png'
+                  , 200
 #
-# cards Page Mockup
-app.get '/cards', securedPage, get_url_groups, (req, res) ->
-  res.render 'cards'
-    req: req
-    thankyou: false
 #
-# cards Page Mockup
-app.get '/cards/thank-you', securedPage, get_url_groups, (req, res) ->
-  res.render 'cards'
-    req: req
-    thankyou: true
-    abtest: 14
 #
-# Orders Page
-app.get '/orders', securedAdminPage, (req, res, next) ->
-  mongo_order.find
-    'charge.paid': true
-    'status':
-      '$ne': 'Shipped'
-  , (err, orders) ->
-    req.orders = orders
-    if check_no_err err, res
-      res.render 'orders'
-        req: req
-        scripts:[
-          'orders'
-        ]
 #
-# Admin Page Mockup
-app.get '/admin', securedAdminPage, (req, res, next) ->
-  res.render 'admin'
-    req: req
-    scripts:[
-      'libs/colorpicker.js'
-      'admin'
-    ]
+#
 #
 # Make me an admin
-app.get '/make-me-admin', securedPage, (req, res) ->
+app.get '/make-me-admin', secured_page, (req, res) ->
   req.user.role = 'admin'
   req.user.save (err) ->
     log_err err if err
@@ -2829,300 +1973,14 @@ app.get '/make-me-admin', securedPage, (req, res) ->
     , 302
 #
 #
-# login page
-app.get '/login', (req, res) ->
-  #
-  if req.user
-    res.send '',
-      Location: '/cards'
-    , 302
-  else
-    res.render 'login'
-      req: req
-#
-# About Page
-app.get '/about', (req, res) ->
-  res.render 'about'
-    req: req
-#
-# How it Works Redirect
-app.get '/how-it-works/:whateverComesAfterHowItWorks?', get_url_groups, (req, res) ->
-  res.render 'how_it_works'
-    req: req
-    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
-    url_groups: req.url_groups
-
-
-
-# How it Works Page
-app.get '/how-QR-code-business-cards-work/:whateverComesAfterHowItWorks?', get_url_groups, (req, res) ->
-  res.render 'how_it_works'
-    req: req
-    whateverComesAfterHowItWorks: req.params.whateverComesAfterHowItWorks 
-    url_groups: req.url_groups
-    
-#
-# Settings Page
-app.get '/settings', get_order_info, securedPage, (req, res) ->
-  res.render 'settings'
-    req: req
-    scripts:[
-      'settings'
-    ]
-#
-
-# Forgot Password
-app.get '/forgot-password', (req, res) ->
-  res.render 'forgot_password'
-    req: req
-    scripts:[
-      'forgot'
-    ]
-    
-# Password Reset
-app.get '/reset-password/:password_reset_id', (req, res) ->
-  res.render 'reset_password'
-    req: req
-    scripts:[
-      'reset_password'
-    ]
-
-# Splash Page
-app.get '/old-browser', (req, res) -> 
-  res.render 'old_browser'
-    req: req
-    layout: 'layout_min'
-#
-# Error Page
-app.get '/error', (req, res) -> 
-  res.render 'error'
-    req: req
-    layout: 'layout_min'
-
-# Cute Animal PAges
-app.get '/cute-animal', (req, res) -> 
-  res.render 'cute_animal'
-    req: req
-    layout: 'layout_min'
-#
-#
-OAuth = require('oauth').OAuth
-#
-#
-app.get '/moo', (req, res, next) ->
-  #
-  #
-  #
-  #
-  #
-  oa = new OAuth 'https://secure.moo.com/oauth/request_token.php', 'https://secure.moo.com/oauth/access_token.php', moo_auth.key, moo_auth.secret, '1.0', 'http://0.0.0.0:4000/cardsly-with-moo', 'HMAC-SHA1'
-  #
-  #
-  oa.getOAuthRequestToken (err, token, secret, results) ->
-    if err
-      log_err
-    else
-      req.session.oa_token = token
-      req.session.oa_secret = secret
-      res.send '',
-        Location: 'https://secure.moo.com/oauth/authorize.php?oauth_token='+token
-      , 302
-#
-#
-#
-#
-app.get '/cardsly-with-moo', (req, res, next) ->
-  #
-  #
-  #
-  #
-  req.moo = true
-  #
-  res.render 'moo'
-    req: req
-    abtest: 4
-    #
-    # Cut off at 60 characters 
-    #
-    title: 'Cardsly | With printing by moo'
-    # Cut off at 140 to 150 characters
-    #
-    description: 'Get notified from Cards.ly - with prints by moo. QR Code business cards from Cardsly'
-    #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
-    #
-    # (Uncomment means remove the single # character at the start of it :)
-    #
-    url_groups: req.url_groups
-    #
-    #
-#
-#
-#
-app.get '/buy', get_url_groups, (req, res, next) ->
-  session = req.session
-  if req.user
-    if (session and session.saved_form and session.saved_form.values and session.saved_form.values.length > 0 and session.saved_form.values[0] is "John Stamos") or !session or !session.saved_form or !session.saved_form.values or !session.saved_form.values.length
-      mongo_order.find
-        user_id: req.user._id
-      ,[],
-        limit: 1
-        sort:
-          date_added: -1
-      , (err, found_order) ->
-        if err
-          log_err err
-        else
-          if found_order.length and found_order[0].values and found_order[0].address and found_order[0].city and found_order[0].full_address
-            req.session.saved_form.values = found_order[0].values
-            req.session.saved_address =
-              address: found_order[0].address
-              city: found_order[0].city
-              full_address: found_order[0].full_address
-        next()
-    else
-      next()
-  else
-    next()
-, (req, res, next) ->
-  res.render 'order_form'
-    req: req
-    #
-    # Cut off at 60 characters 
-    #
-    title: 'Cardsly | Create and buy QR code business cards you control'
-    # Cut off at 140 to 150 characters
-    #
-    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
-    #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
-    #
-    # (Uncomment means remove the single # character at the start of it :)
-    #
-    url_groups: req.url_groups
-#
-#
-#
-#
-app.get '/phx', (req, res) ->
-  res.render 'phx'
-    req: req
-    #
-    # Cut off at 60 characters 
-    #
-    title: 'Cardsly | Welcome Phoenix Networkers!'
-    # Cut off at 140 to 150 characters
-    #
-    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
-    #
-    # Uncomment the following line to add a custom h1 tag!
-    h1: '<span>QR code business cards for Phoenix</span>'
-    #
-    # (Uncomment means remove the single # character at the start of it :)\
-#
-#
-#
-#
-app.get '/sample-landing-page', (req, res) ->
-  res.render 'sample_landing_page'
-    req: req
-    #
-    # Cut off at 60 characters 
-    #
-    title: 'Cardsly | Create and buy QR code business cards you control'
-    # Cut off at 140 to 150 characters
-    #
-    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
-    #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
-    #
-    # (Uncomment means remove the single # character at the start of it :)
-#
-# AB Test Pages
-
-# Page 1 Purchase
-app.get '/home1', get_url_groups, (req, res) ->
-  res.render 'home'
-    req: req
-    abtest: 1
-    url_groups: req.url_groups
-    scripts:[
-      'home'
-    ]
-
-
-# Page 2 Checkout
-app.get '/home2', get_url_groups, (req, res) ->
-  res.render 'home'
-    req: req
-    abtest: 2
-    url_groups: req.url_groups
-    scripts:[
-      'home'
-    ]
-
-# Page 3 Buy
-app.get '/home3', get_url_groups, (req, res) ->
-  res.render 'home'
-    req: req
-    abtest: 3
-    url_groups: req.url_groups
-    scripts:[
-      'home'
-    ]
-
-#
 #
 # Real Index Page
-app.get '/', get_url_groups, (req, res) -> 
+app.get '/', (req, res) -> 
   #
   #
-  if req.user
-    res.send '',
-      Location: '/cards'
-    , 302
-  else
-    #
-    #
-    res.render 'home'
-      req: req
-      abtest: 4
-      #
-      # Cut off at 60 characters 
-      #
-      title: 'Cardsly | Create and buy QR code business cards you control'
-      # Cut off at 140 to 150 characters
-      #
-      description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
-      #
-      # Uncomment the following line to add a custom h1 tag!
-      #h1: 'some other h1 tag'
-      #
-      # (Uncomment means remove the single # character at the start of it :)
-      #
-      url_groups: req.url_groups
-      #
-#
-#
-#
-#
-# The testing route I printed on my cards - DB
-app.get '/beepBoop10', (req, res) ->
-  urls = ['http://facebook.com/elforko','http://twitter.com/elspoono','http://blog.cards.ly','http://elspoono.wordpress.com','http://www.meetup.com/webdesignersdevelopers/members/8256239/','http://www.slideshare.net/elspoono','https://plus.google.com/100278450741153543517/posts','http://github.com/elspoono']
-  url = urls[Math.round(mrg.generate_real()*(urls.length-1))]
-  res.send '',
-    Location: url
-  , 302
-#
-#
-#
-#
-app.get '/make', (req, res, next) ->
-  res.render 'make'
+  res.render 'home'
     req: req
+    abtest: 4
     #
     # Cut off at 60 characters 
     #
@@ -3135,6 +1993,8 @@ app.get '/make', (req, res, next) ->
     #h1: 'some other h1 tag'
     #
     # (Uncomment means remove the single # character at the start of it :)
+    #
+    url_groups: req.url_groups
     #
 #
 #
@@ -3282,16 +2142,8 @@ app.get '*', (req, res, next) ->
     Location:'/'
   , 301
 #
-# Redirect for Kickstarter campagin
-app.get '/fundourprinter', (req, res, next) ->
-  console.log req.url
-  res.send '',
-    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
-  , 301
-
-
 # ### Start server
-app.listen process.env.PORT || process.env.C9_PORT || 4000
+app.listen process.env.PORT or 4000
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 #
 #
