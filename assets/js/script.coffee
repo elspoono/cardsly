@@ -1,9 +1,9 @@
-#= require 'libs/jquery-1.6.2.js'
+#= require 'libs/jquery-1.7.1.js'
 #= require 'date'
 #= require 'libs/qrcode'
 #= require 'libs/scrollTo.js'
 #= require 'libs/underscore.js'
-#= require 'libs/jquery-ui-1.8.16.min.js'
+#= require 'libs/jquery-ui-1.8.16.js'
 #= require 'libs/jquery.colorpicker.js'
 
 

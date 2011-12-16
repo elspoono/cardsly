@@ -32,6 +32,7 @@ html
     | </script>
   body
     != body
+    != js('script')
     //if lt IE 7
       != js('libs/json2.js')
     script(src='https://js.stripe.com/v1/')
