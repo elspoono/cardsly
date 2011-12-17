@@ -1,13 +1,11 @@
 color_one = #963
 color_one = darken(color_one,10)
 
-color_one = #eeffcc
 
 color_two = #000
 color_two_alt = #FFF
-color_three = #FFF
-color_four = #963
-color_four = #000
+color_three = #333
+color_four = lighten(color_one,30)
 
 huge_text = FFFTusjBold
 accent_text = EdoRegular
@@ -79,13 +77,10 @@ h1.one
 
 
 
-  text_shadow(10px, color_two, 0px)
-
 
 
 h1.two
   font-size 28px
-  text_shadow(4px, color_two, 0)
 
 .socials
   float right
@@ -94,8 +89,8 @@ h1.two
   li
     cursor pointer
     float left
-    background color_one
-    color color_two
+    background color_three
+    color color_two_alt
     border_radius(20px)
     height 40px
     width 40px
@@ -104,8 +99,8 @@ h1.two
     line-height 40px
     text-align center
     margin 20px
+    box_shadow(0,color_three,10px)
 
-    box_shadow(10px,color_two,0)
   .shift
     line-height 46px
   .shift_2
