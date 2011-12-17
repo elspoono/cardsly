@@ -608,6 +608,55 @@ $ ->
   #
   #
   #
+  $pull_down = $ '.pull_down img'
+  #
+  #
+
+  #
+  #
+  detect_pull_start = (e) ->
+    unless $pull_down.data 'active'
+      o = [e.offsetX,e.offsetY]
+      if o[1] < 480 or (o[0] > 90 and o[0] < 132)
+        $pull_down.unbind 'mousemove', detect_pull_start
+        $pull_down.stop(true,false).animate
+          marginTop: 10
+        , 200
+        $pull_down.one 'mouseout', ->
+          unless $pull_down.data 'active'
+            $pull_down.stop(true,false).animate
+              marginTop: 0
+            , 200
+  #
+  #
+  $pull_down.bind 'mouseover', (e) ->
+    $pull_down.bind 'mousemove', detect_pull_start
+    detect_pull_start e
+  $pull_down.bind 'mouseout', (e) ->
+    $pull_down.unbind 'mousemove', detect_pull_start
+  #
+  #
+  $pull_down.bind 'click', (e) ->
+    unless $pull_down.data 'active'
+      o = [e.offsetX,e.offsetY]
+      if o[1] > 480 and o[1] < 524
+        if o[0]<90
+          document.location.href = $('.navigation a:eq(0)').attr 'href'
+        else
+          document.location.href = $('.navigation a:eq(1)').attr 'href'
+      else
+        $pull_down.stop(true,false).animate
+          marginTop: 440
+        , 400
+        $pull_down.data 'active', true
+        setTimeout ->
+          $body.one 'click', ->
+            $pull_down.stop(true,false).animate
+              marginTop: 0
+            , 200
+            $pull_down.data 'active', false
+        , 0
+      
   #
   #
   #

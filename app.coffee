@@ -633,49 +633,90 @@ EVERYAUTH CONFIG
 # 
 # This should create the user or grab it based on the auth info
 #
-handleGoodResponse = (session, accessToken, accessTokenSecret, userMeta) ->
+handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
   #
-  #console.log 'userMeta', userMeta
   #
   promise = new Promise()
   #
-  #console.log userMeta
   #
-  userSearch = {}
-  if userMeta.publicProfileUrl
-    userSearch.name = userMeta.firstName+' '+userMeta.lastName
-    userSearch.linkedin_url = userMeta.publicProfileUrl
-  if userMeta.link
-    userSearch.name = userMeta.name
-    userSearch.facebook_url = userMeta.link
-  if userMeta.screen_name
-    userSearch.name = userMeta.name
-    userSearch.twitter_url = 'http://twitter.com/#!'+userMeta.screen_name
-  if userMeta.email
-    userSearch.email = userMeta.email
+  console.log 'USER META: ', user_meta
   #
-  mongo_user.findOne userSearch, (err,existinguser) ->
-    if err
-      log_err err
-      promise.fail err
-    else if existinguser
-      #console.log 'user exists: ', existinguser
-      promise.fulfill existinguser
-    else
-      user = new mongo_user
-      user.name = userSearch.name
-      user.linkedin_url = userSearch.linkedin_url
-      user.facebook_url = userSearch.facebook_url
-      user.twitter_url = userSearch.twitter_url
-      user.email = userSearch.email
-      user.save (err, createduser) -> 
-        if err
-          log_err err
-          promise.fail err
-        else
-          #console.log 'user created: ', createduser
-          promise.fulfill createduser
-  promise
+  #
+  add_user_meta_to_user = (user) ->
+    #
+    #
+    #
+    #
+    # Linked In
+    if user_meta.publicProfileUrl
+      user.name = user_meta.firstName+' '+user_meta.lastName
+      user.linkedin_url = user_meta.publicProfileUrl
+      #
+    #
+    # Facebook
+    if user_meta.link
+      user.name = user_meta.name
+      user.facebook_url = user_meta.link
+      #
+    #
+    # Twitter
+    if user_meta.screen_name
+      user.name = user_meta.name
+      user.twitter_url = 'http://twitter.com/#!'+user_meta.screen_name
+    #
+    #
+    #
+    # All
+    if user_meta.email
+      user.email = user_meta.email
+    #
+    #
+    user.save (err, saved_user) -> 
+      if err
+        log_err err
+        promise.fail err
+      else
+        #console.log 'user created: ', createduser
+        promise.fulfill saved_user
+
+  #
+  #
+  #
+  #
+  if session and session.auth and session.auth.userId
+    mongo_user.findById session.auth.userId, (err, existinguser) ->
+      if err
+        log_err err
+        promise.fail err
+      else
+        add_user_meta_to_user existinguser
+    #
+    #
+  else
+    #
+    #
+    #
+    #
+    userSearch = {}
+    #
+    if user_meta.publicProfileUrl
+      userSearch.linkedin_url = user_meta.publicProfileUrl
+    if user_meta.link
+      userSearch.facebook_url = user_meta.link
+    if user_meta.screen_name
+      userSearch.twitter_url = 'http://twitter.com/#!'+user_meta.screen_name
+    if user_meta.email
+      userSearch.email = user_meta.email
+    #
+    mongo_user.findOne userSearch, (err,existinguser) ->
+      if err
+        log_err err
+        promise.fail err
+      else if existinguser
+        add_user_meta_to_user existinguser
+      else
+        add_user_meta_to_user new mongo_user
+    promise
 #
 #
 ###
@@ -1852,6 +1893,26 @@ if app.settings.env is 'production'
       , 302
     else
       next()
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# Success Page
+#
+# Where they land after authenticating
+# This should close automatically or redirect to the home page if no caller
+app.get '/success', (req, res) ->
+  res.cookie 'success_login', true
+  res.send '<script>window.onload = function(){window.close();}',
+    'Content-Type': 'text/html'
+  , 200
+#
+#
 #
 #
 #
