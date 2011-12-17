@@ -913,8 +913,9 @@ draw_qr = (o) ->
   #
   #
   # Draw the Card Number
-  if o.card_number
-    ctx.fillText '#'+o.card_number, border_size, height-font_size/5
+  if not o.card_number
+    o.card_number = 1
+  ctx.fillText '#'+o.card_number, border_size, height-font_size/5
   #
   #
   # Return the canvas

@@ -1,8 +1,8 @@
 
 // Palette One
-color_two = #46433A
+color_two = #000
 color_two_alt = #FFF
-color_three = #46433A
+color_three = #000
 color_four = #DED4B9
 color_five = #64B6B1
 color_six = #CE534D
@@ -13,6 +13,7 @@ size_one = 32px
 
 huge_text = FFFTusjBold
 accent_text = EdoRegular
+normal_text = Trebuchet MS
 
 body
   background color_four
@@ -69,13 +70,15 @@ h1
     float right
     text-align right
   .bottom
-    margin 80px 0 20px 0
+    margin -200px 0 -100px 0
+    width 350px
+    text-align center
     overflow hidden
 
 h1.one
   font-family huge_text
   .one
-    color color_six
+    color color_three
     font-size 60px
     text-align left
   .two
@@ -90,8 +93,7 @@ h1.one
   clear both
 
 h1.two
-  float left
-  width 500px
+  text-align left
   .one
     font-size 60px
   .two
@@ -115,6 +117,16 @@ h1.two
   .four
     text-align center
     font-size 48px
+
+  p.one,p.two,ul.includes
+    font-size 18px
+    line-height 32px
+    width 300px
+    margin 15px 0
+    font-family normal_text
+    font-style italic
+    list-style-type disc
+
 .socials
   float right
   overflow hidden
