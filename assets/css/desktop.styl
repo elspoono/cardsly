@@ -1,16 +1,17 @@
-color_one = #963
-color_one = darken(color_one,10)
-
+color_one = #E03
 
 color_two = #000
 color_two_alt = #FFF
 color_three = #333
-color_four = lighten(color_one,30)
+color_four = #FFFFFF
+
+size_one = 32px
 
 huge_text = FFFTusjBold
 accent_text = EdoRegular
 
 body
+  background color_four
   background url('/images/patterns/ricepaper2.png')
 
 .overlay
@@ -18,8 +19,7 @@ body
   width 100%
   height 100%
   z-index -1
-  alpha_bg(color_four,.3)
-  box_shadow(0,color_four,300px,inset)
+  alpha_bg(color_three,.1)
 
 .logo
   display none
@@ -33,7 +33,7 @@ body
   margin 0 auto
 
 .navigation
-  background color_two
+  background color_three
   height 64px
   line-height 64px
   .left
@@ -41,7 +41,7 @@ body
   .right
     float right
   a
-    font-size 24px
+    font-size size_one
     color color_two_alt
     text-decoration none
     font-family accent_text
@@ -51,7 +51,6 @@ body
 
 
 h1
-  color color_three
   font-family accent_text
 
 .hero
@@ -61,11 +60,12 @@ h1
   .top
     overflow visible
   .left
+    display none
     margin 40px 0 0 0
     float left
-    text-align center
+    text-align left
   .right
-    width 812px
+    width 750px
     float right
     text-align right
 
@@ -78,9 +78,10 @@ h1.one
 
 
 
-
 h1.two
-  font-size 28px
+  font-size size_one
+  line-height size_one
+  color color_three
 
 .socials
   float right
@@ -98,8 +99,8 @@ h1.two
     font-size 20px
     line-height 40px
     text-align center
-    margin 20px
-    box_shadow(0,color_three,10px)
+    margin 15px
+    box_shadow(0,color_three,5px)
 
   .shift
     line-height 46px
