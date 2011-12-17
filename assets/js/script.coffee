@@ -626,10 +626,33 @@ $ ->
   #
   #
   #
+  $areas = $ '.area'
   #
   #
+  $titles = $ '.title'
+  $titles.each (title_index) ->
+    $title = $ this
+    $title.click ->
+      #
+      #
+      $titles.removeClass 'active'
+      $areas.removeClass 'active'
+      #
+      #
+      $area = $areas.eq title_index
+      #
+      $area.addClass 'active'
+      $title.addClass 'active'
+      #
+      $area.html ''
+      #
+      #
+      if $title.html() is 'Text'
+        for i in [1..6]
+          $area.append '<input />'
   #
   #
+  $titles.eq(0).click()
   #
   #
   #

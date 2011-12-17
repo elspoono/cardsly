@@ -1,12 +1,11 @@
 
 // Palette One
-color_one = #8f002e
-color_two = #000
+color_two = #46433A
 color_two_alt = #FFF
-color_three = #72818b
-color_four = #bee2e7
-color_five = #454857
-color_six = #4f57aa
+color_three = #46433A
+color_four = #DED4B9
+color_five = #64B6B1
+color_six = #CE534D
 
 
 
@@ -24,7 +23,7 @@ body
   width 100%
   height 100%
   z-index -1
-  alpha_bg(color_four,1)
+  alpha_bg(color_four,.4)
 
 .logo
   display none
@@ -38,10 +37,10 @@ body
   margin 0 auto
 
 .navigation
-  alpha_bg(color_two,.1)
+  alpha_bg(color_two,1)
   height 64px
   line-height 64px
-  margin 0 -10px
+  margin 0 -20px
   .left
     float left
   .right
@@ -53,10 +52,11 @@ body
     font-family accent_text
   li
     float left
-    margin 0 10px
+    margin 0 20px
 
 
 h1
+  color color_three
   font-family accent_text
 
 .hero
@@ -64,47 +64,72 @@ h1
   img
     margin 10px 0 60px 0
   .top
-    overflow visible
-  .left
-    display none
-    margin 40px 0 0 0
-    float left
-    text-align left
+    overflow hidden
   .right
-    width 814px
     float right
     text-align right
+  .bottom
+    margin 80px 0 20px 0
+    overflow hidden
 
 h1.one
-  color color_one
-  line-height 160px
   font-family huge_text
   .one
-    color color_five
-    font-size 180px
-  .two
-    font-size 100px
-    text-align left
-  .three
     color color_six
+    font-size 60px
+    text-align left
+  .two
+    font-size 140px
+    color color_three
+  .three
+    color color_five
     font-size 260px
+    text-align left
 
-
-
+.clear
+  clear both
 
 h1.two
-  font-size size_one
-  line-height size_one
-  color color_three
+  float left
+  width 500px
+  .one
+    font-size 60px
+  .two
+    font-size 20px
 
+.qr_action
+  float right
+  width 200px
+  font-size 48px
+  line-height 24px
+  text-align center
+  margin -140px 0 0 0
+  text-decoration none
+  img
+    border 0
+
+.call_to_action
+  margin 0 0 120px 0
+  overflow hidden
+  clear both
+  .four
+    text-align center
+    font-size 48px
 .socials
   float right
-  margin 50px 0
   overflow hidden
+  .social_bg
+    z-index: -1
+    position absolute
+    font-family huge_text
+    font-size 800px
+    line-height 40px
+    margin -360px 0 0 40px
+    color color_six
   li
     cursor pointer
     float left
-    background color_five
+    background color_three
     color color_four
     border_radius(20px)
     height 40px
@@ -114,9 +139,65 @@ h1.two
     line-height 40px
     text-align center
     margin 15px
-    box_shadow(0,color_five,5px)
+    box_shadow(0,color_three,5px)
 
   .shift
     line-height 46px
   .shift_2
     line-height 43px
+
+
+input
+  padding 0 10px
+  line-height 32px
+  font-size 18px
+  border 0
+
+
+.home_designer
+  overflow hidden
+  .card
+    width 525px
+    height 300px
+    background #FFF url('/images/patterns/retrotartan_aaskie (9).png')
+    float left
+  .phone
+    width 320px
+    height 480px
+    background #FFF url('/images/patterns/retrotartan_aaskie (9).png')
+    float right
+  .controls
+    float left
+    margin 40px 0 0 0
+    width 525px
+
+    .area
+      width 600px
+      height 300px
+      background color_five
+      display none
+      padding 20px
+      input
+        width 140px
+        margin 10px 20px
+    .area.active
+      display block
+  
+    .titles
+      overflow hidden
+    .title
+      background color_five
+      color color_three
+      font-family accent_text
+      font-size 18px
+      float left
+      padding 0 20px
+      margin 15px 1px 0 0
+      height 32px
+      line-height 32px
+      cursor pointer
+    .title.active
+      margin 0 1px 0 0
+      font-size 32px
+      height 48px
+      line-height 48px
