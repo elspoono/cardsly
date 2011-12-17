@@ -524,10 +524,8 @@ $ ->
   #
   $window = $window
   $document = $ document
-  set_doc_height = ->
-    $('.overlay').height $document.height()
-  set_doc_height()
-  $window.resize set_doc_height
+  #
+  #
   #
   # Watch the popup windows every 200ms for when they set a cookie
   monitor_for_complete = (opened_window) ->
@@ -622,44 +620,87 @@ $ ->
   #
   #
   #
+  $home_designer = $ '.home_designer'
   #
-  #
-  #
-  #
-  $areas = $ '.area'
-  #
-  #
-  $titles = $ '.title'
-  $titles.each (title_index) ->
-    $title = $ this
-    $title.click ->
+  if $home_designer.length
+    #
+    #
+    #
+    #
+    $areas = $home_designer.find '.area'
+    #
+    #
+    $titles = $home_designer.find '.title'
+    $titles.each (title_index) ->
+      $title = $ this
+      $title.click ->
+        #
+        #
+        $titles.removeClass 'active'
+        $areas.removeClass 'active'
+        #
+        #
+        $area = $areas.eq title_index
+        #
+        $area.addClass 'active'
+        $title.addClass 'active'
+        #
+        $area.html ''
+        #
+        #
+        if $title.html() is 'Text'
+          for i in [1..6]
+            $area.append '<input />'
+    #
+    #
+    $titles.eq(0).click()
+    #
+    #
+    #
+    #
+    #
+    $themes = $home_designer.find '.themes'
+    $thumbs = undefined
+    #
+    #
+    $.ajax
+      url: '/get-themes'
+      success: (all_data) ->
+        #
+        #
+        for theme,i in all_data.themes
+          #
+          $new_image = $ '<img />'
+          $new_image.attr
+            src: '/thumb/'+theme._id
+            id: theme._id
+          #
+          #
+          $themes.append $new_image
+          #
+        #
+        $thumbs = $themes.find 'img'
+        #
+        $thumbs.click ->
+          #
+          $thumb = $ this
+          id = $thumb.attr 'id'
+          #
+          $thumbs.removeClass 'active'
+          $thumb.addClass 'active'
+          #
+          #
+          console.log id
+        #
+        #
+        $thumbs.eq(0).click()
       #
       #
-      $titles.removeClass 'active'
-      $areas.removeClass 'active'
-      #
-      #
-      $area = $areas.eq title_index
-      #
-      $area.addClass 'active'
-      $title.addClass 'active'
-      #
-      $area.html ''
-      #
-      #
-      if $title.html() is 'Text'
-        for i in [1..6]
-          $area.append '<input />'
-  #
-  #
-  $titles.eq(0).click()
-  #
-  #
-  #
-  #
-  #
-  #
-  #
+      error: ->
+        $.load_alert
+          content: 'Error loading themes. Please try again later.'
+    #
+    #
   #
   #
   #

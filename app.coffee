@@ -1825,6 +1825,19 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
 #
 #
 #
+default_line_copy = [
+  '1) John Stamos'
+  '2) Uncle Jesse'
+  '3) Monkey.com'
+  '4) 123-456-7890'
+  ''
+  ''
+  ''
+  ''
+  ''
+  ''
+]
+#
 #
 #
 #
@@ -1842,6 +1855,99 @@ if app.settings.env is 'production'
 #
 #
 #
+#
+render_image = (o) ->
+
+  #
+  mongo_theme.findById o.theme_id, (err, theme) ->
+    theme_template = theme.theme_templates[o.active_view]
+    #z
+    imagedata = ''
+    #
+    request = http.get
+      host: 'd3eo3eito2cquu.cloudfront.net'
+      port: 80
+      path: '/'+o.widthheight+'/'+theme.s3_id
+    , (response) ->
+        #
+        response.setEncoding 'binary'
+        #
+        response.on 'data', (chunk) ->
+          imagedata += chunk
+        response.on 'end', ->
+          if response.statusCode is 200
+            buff = new Buffer imagedata, 'binary'
+
+
+            canvas = new node_canvas(o.width,o.height)
+            ctx = canvas.getContext '2d'
+
+            img = new node_canvas.Image
+            img.src = buff
+            ctx.drawImage img, 0, 0, o.width, o.height
+            
+
+
+            for line,i in theme_template.lines
+              h = Math.round(line.h/100*o.height)
+              x = line.x/100*o.width
+              y = line.y/100*o.height
+              w = line.w/100*o.width
+              ctx.fillStyle = hex_to_rgba line.color
+              ctx.font = h + 'px "' + line.font_family + '"'
+              if line.text_align is 'left'
+                ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+              else
+                measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                if line.text_align is 'right'
+                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                if line.text_align is 'center'
+                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+
+
+
+            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+            #
+            qr_canvas = qr_code.draw_qr
+              node_canvas: node_canvas
+              style: 'round'
+              url: o.url
+              hex: theme_template.qr.color1
+              hex_2: theme_template.qr.color2+alpha
+            #
+            #
+            #
+            qr_canvas.toBuffer (err, qr_buff) ->
+              qr_img = new node_canvas.Image
+              qr_img.src = qr_buff
+
+
+              ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
+              
+              
+              canvas.toBuffer (err, buff) ->
+                o.res.send buff,
+                  'Content-Type': 'image/png'
+                , 200
+#
+#
+app.get '/thumb/:theme_id', (req, res, next) ->
+  #
+  #
+  url = 'cards.ly'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  render_image
+    res: res
+    widthheight: '158x90'
+    width: 158
+    height: 90
+    values: default_line_copy
+    active_view: 0
+    theme_id: req.params.theme_id
+    url: url
 #
 #
 #
@@ -1865,78 +1971,49 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
     #
     #
     #
-    #
-    mongo_theme.findById order.theme_id, (err, theme) ->
-      theme_template = theme.theme_templates[order.active_view]
-      #z
-      imagedata = ''
-      #
-      request = http.get
-        host: 'd3eo3eito2cquu.cloudfront.net'
-        port: 80
-        path: '/'+widthheight+'/'+theme.s3_id
-      , (response) ->
-          #
-          response.setEncoding 'binary'
-          #
-          response.on 'data', (chunk) ->
-            imagedata += chunk
-          response.on 'end', ->
-            if response.statusCode is 200
-              buff = new Buffer imagedata, 'binary'
-
-
-              canvas = new node_canvas(width,height)
-              ctx = canvas.getContext '2d'
-
-              img = new node_canvas.Image
-              img.src = buff
-              ctx.drawImage img, 0, 0, width, height
-              
-
-
-              for line,i in theme_template.lines
-                h = Math.round(line.h/100*height)
-                x = line.x/100*width
-                y = line.y/100*height
-                w = line.w/100*width
-                ctx.fillStyle = hex_to_rgba line.color
-                ctx.font = h + 'px "' + line.font_family + '"'
-                if line.text_align is 'left'
-                  ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                else
-                  measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                  if line.text_align is 'right'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                  if line.text_align is 'center'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-
-
-
-              alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-              #
-              qr_canvas = qr_code.draw_qr
-                node_canvas: node_canvas
-                style: 'round'
-                url: url
-                hex: theme_template.qr.color1
-                hex_2: theme_template.qr.color2+alpha
-              #
-              #
-              #
-              qr_canvas.toBuffer (err, qr_buff) ->
-                qr_img = new node_canvas.Image
-                qr_img.src = qr_buff
-
-
-                ctx.drawImage qr_img, theme_template.qr.x/100*width,theme_template.qr.y/100*height, theme_template.qr.w/100*width, theme_template.qr.h/100*height
-                
-                
-                canvas.toBuffer (err, buff) ->
-                  res.send buff,
-                    'Content-Type': 'image/png'
-                  , 200
+    render_image
+      res: res
+      widthheight: widthheight
+      width: width
+      height: height
+      theme_id: order.theme_id
+      values: order.values
+      active_view: order.active_view
+      url: url
 #
+#
+#
+#
+#
+# Get Themes (post route for get themes :)
+app.post '/get-themes', (req,res,next) ->
+  #
+  #
+  #
+  user_to_find = null
+  #
+  #
+  #
+  if req.user and req.user._id
+    user_to_find = 
+      $in: [null,req.user._id]
+  #
+  else if req.sessionID
+    user_to_find = 
+      $in: [null,req.sessionID]
+  #
+  #
+  #
+  mongo_theme.find
+    active: true
+    user_id: user_to_find
+  , (err, themes) ->
+    if check_no_err_ajax err, res
+      themes = _(themes).sortBy (theme) ->
+        if theme.user_id then '0' else theme.category + theme.date_added
+      themes.reverse()
+      res.send
+        themes: themes
 #
 #
 #
