@@ -1,9 +1,14 @@
-color_one = #E03
 
+// Palette One
+color_one = #8f002e
 color_two = #000
 color_two_alt = #FFF
-color_three = #333
-color_four = #FFFFFF
+color_three = #72818b
+color_four = #bee2e7
+color_five = #454857
+color_six = #4f57aa
+
+
 
 size_one = 32px
 
@@ -19,7 +24,7 @@ body
   width 100%
   height 100%
   z-index -1
-  alpha_bg(color_three,.1)
+  alpha_bg(color_four,1)
 
 .logo
   display none
@@ -33,16 +38,17 @@ body
   margin 0 auto
 
 .navigation
-  background color_three
+  alpha_bg(color_two,.1)
   height 64px
   line-height 64px
+  margin 0 -10px
   .left
     float left
   .right
     float right
   a
     font-size size_one
-    color color_two_alt
+    color color_five
     text-decoration none
     font-family accent_text
   li
@@ -65,15 +71,23 @@ h1
     float left
     text-align left
   .right
-    width 750px
+    width 814px
     float right
     text-align right
 
 h1.one
   color color_one
-  font-size 160px
-  line-height 200px
+  line-height 160px
   font-family huge_text
+  .one
+    color color_five
+    font-size 180px
+  .two
+    font-size 100px
+    text-align left
+  .three
+    color color_six
+    font-size 260px
 
 
 
@@ -90,8 +104,8 @@ h1.two
   li
     cursor pointer
     float left
-    background color_three
-    color color_two_alt
+    background color_five
+    color color_four
     border_radius(20px)
     height 40px
     width 40px
@@ -100,7 +114,7 @@ h1.two
     line-height 40px
     text-align center
     margin 15px
-    box_shadow(0,color_three,5px)
+    box_shadow(0,color_five,5px)
 
   .shift
     line-height 46px
