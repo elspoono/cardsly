@@ -11,47 +11,79 @@
 
     .bottom
       .left
+        .home_designer
+          .card
+          .controls
+            .titles
+              .title.active Text
+              .title QR
+              .title Background
+            .areas
+              .area.active
+              .area
+              .area
+          .clear
+          .themes
+      .right
         h1.two 
           .one Get Notified!
           .two Email and text alerts on every scan
         img(src='/images/get_guy.png')
-      .right
-        a(href='/h').qr_action
-          h1.three Try Me
-          img(src='/qr/ce6d4e/?cards.ly/h', width=200)
-
-
-.center_column
-  .call_to_action  
-    h1.four get connected
-    ul.socials
-      .social_bg _
-      li.facebook F
-      li.shift.twitter t
-      li.linkedin l
-      li.google g
-      li.shift.yahoo Y 
-      li.shift_2.vimeo v
-      li.github G
-      li.tumblr T
-      li.shift_2.foursquare j
-
-
-.center_column
-  .home_designer
-    .card
-    .phone
-      .profile_image
-        img(src='/images/whodat.png')
-        p Connect a Social Account to Update
-    .controls
-      .titles
-        .title.active Text
-        .title QR
-        .title Background
-      .areas
-        .area.active
-        .area
-        .area
-    .clear
-    .themes
+        .notify_form
+          h2 Settings
+          .field.email
+            input(placeholder='my@email.com')
+            .toggle
+              .option.active on
+              .option off
+          .field.text
+            input(placeholder='555.555.5555')
+            .toggle
+              .option on
+              .option.active off
+          h2 Shipping
+          p Free USPS priority mail to
+          .field.street
+            input(placeholder='123 Main St.')
+            img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=110x110&sensor=false')
+            input.zip_code(placeholder='85022')
+          h2 Checkout
+          label
+          .quantity
+            - quantity = 10
+            .field
+              input(
+                type='radio'
+                name='quantity'
+                value='10'
+                checked= (quantity==10 ? 'checked' : false)
+                id='quantity_1'
+              )
+              label(for='quantity_1') 100 cards for $10
+            .field
+              input(
+                type='radio'
+                name='quantity'
+                value='25'
+                checked= (quantity==25 ? 'checked' : false)
+                id='quantity_2'
+              )
+              label(for='quantity_2') 250 cards for $25
+            .field
+              input(
+                type='radio'
+                name='quantity'
+                value='35'
+                checked= (quantity==35 ? 'checked' : false)
+                id='quantity_3'
+              )
+              label(for='quantity_3') 500 cards for $35
+            .field
+              input(
+                type='radio'
+                name='quantity'
+                value='75'
+                checked= (quantity==75 ? 'checked' : false)
+                id='quantity_4'
+              )
+              label(for='quantity_4') 1500 cards for $75

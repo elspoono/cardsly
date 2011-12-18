@@ -677,24 +677,17 @@ $ ->
   #
   $pull_down.bind 'click', (e) ->
     unless $pull_down.data 'active'
-      o = [e.offsetX,e.offsetY]
-      if o[1] > 480 and o[1] < 524
-        if o[0]<90
-          document.location.href = $('.navigation a:eq(0)').attr 'href'
-        else
-          document.location.href = $('.navigation a:eq(1)').attr 'href'
-      else
-        $pull_down.stop(true,false).animate
-          marginTop: 440
-        , 400
-        $pull_down.data 'active', true
-        setTimeout ->
-          $body.one 'click', ->
-            $pull_down.stop(true,false).animate
-              marginTop: 0
-            , 200
-            $pull_down.data 'active', false
-        , 0
+      $pull_down.stop(true,false).animate
+        marginTop: 440
+      , 400
+      $pull_down.data 'active', true
+      setTimeout ->
+        $body.one 'click', ->
+          $pull_down.stop(true,false).animate
+            marginTop: 0
+          , 200
+          $pull_down.data 'active', false
+      , 0
       
   #
   #
