@@ -12,7 +12,9 @@
     .bottom
       .left
         .home_designer
-          .card
+          h1.two
+            .one Design Cards
+            .two Add your personal touch and flare
           .controls
             .titles
               .title.active Text
@@ -22,6 +24,7 @@
               .area.active
               .area
               .area
+          .card
           .clear
           .themes
       .right
@@ -30,22 +33,33 @@
           .two Email and text alerts on every scan
         img(src='/images/get_guy.png')
         .notify_form
-          h2 Settings
+          h2 Set Alerts
           .field.email
             input(placeholder='my@email.com')
             .toggle
-              .option.active on
-              .option off
+              .bg
+                .option.active on
+                .option off
           .field.text
             input(placeholder='555.555.5555')
             .toggle
-              .option on
-              .option.active off
+              .bg
+                .option on
+                .option.active off
+          h2 Add Links
+          ul.socials
+            li F
+            li.shift t
+            li l
+            li g
+          .links
+            .field
+              input(placeholder='mysite.com')
           h2 Shipping
-          p Free USPS priority mail to
+          p Free USPS priority mail
           .field.street
             input(placeholder='123 Main St.')
-            img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=110x110&sensor=false')
+            img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
             input.zip_code(placeholder='85022')
           h2 Checkout
           label
@@ -59,7 +73,9 @@
                 checked= (quantity==10 ? 'checked' : false)
                 id='quantity_1'
               )
-              label(for='quantity_1') 100 cards for $10
+              label(for='quantity_1') 100 cards for 
+                span.dollar $
+                | 10
             .field
               input(
                 type='radio'
@@ -68,7 +84,9 @@
                 checked= (quantity==25 ? 'checked' : false)
                 id='quantity_2'
               )
-              label(for='quantity_2') 250 cards for $25
+              label(for='quantity_2') 250 cards for 
+                span.dollar $
+                | 25
             .field
               input(
                 type='radio'
@@ -77,7 +95,9 @@
                 checked= (quantity==35 ? 'checked' : false)
                 id='quantity_3'
               )
-              label(for='quantity_3') 500 cards for $35
+              label(for='quantity_3') 500 cards for 
+                span.dollar $
+                | 35
             .field
               input(
                 type='radio'
@@ -86,4 +106,28 @@
                 checked= (quantity==75 ? 'checked' : false)
                 id='quantity_4'
               )
-              label(for='quantity_4') 1500 cards for $75
+              label(for='quantity_4') 1500 cards for 
+                span.dollar $
+                | 75
+          .billing
+            .credit-card
+              .field
+                label cc #
+                input(placeholder='4111111111111111')
+            .cvc
+              .field
+                label cvc
+                input(placeholder='1234')
+            .expiration
+              .field
+                label Exp.
+                select.card_expiry_month(name='credit_card[expiry_month]')
+                  - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+                  - for (var i in months)
+                    option(value=(i*1)+1)=months[i]
+                select.card_expiry_year(name='credit_card[expiry_year]')
+                  - for (var year = 2011; year<2032; year++)
+                    option(value=year)=year
+        .button.normal.checkout
+          img(src='/images/lock_icon.png')
+          | Purchase

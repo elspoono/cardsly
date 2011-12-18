@@ -18,14 +18,10 @@ normal_text = Trebuchet MS
 body
   background color_four
   background url('/images/body_bg.png')
+  font-family accent_text
 
-.pull_down
-  cursor pointer
-  position absolute
-  left 50%
-  top -460px
-  img
-    margin 0 0 0 -75px
+input,h1,h2,textarea,select
+  font-family accent_text
 
 .logo
   display none
@@ -39,9 +35,14 @@ body
   margin 0 auto
 
 .navigation
-  alpha_bg(color_two,1)
+  background color_two
+  position absolute
+  top 0
+  left 0
+  width 100%
   height 64px
   line-height 64px
+  z-index 200
   ul
     margin 0 -20px
   .left
@@ -52,25 +53,35 @@ body
     font-size size_one
     color color_five
     text-decoration none
-    font-family accent_text
   li
     float left
     margin 0 20px
   .hover
     a
       color color_four
+.pull_down
+  cursor pointer
+  position absolute
+  left 50%
+  top -400px
+  z-index 150
+  img
+    margin 0 0 0 -450px
+
 
 
 h1
   color color_three
-  font-family accent_text
 
 .hero
-  margin 40px 0 0 0
+  margin 120px 0 0 0
   .top
-    overflow visible
+    overflow hidden
+    margin 40px 0 100px 0
   .left
     float left
+    img
+      margin-top 200px
   .right
     float right
     text-align right
@@ -84,7 +95,7 @@ h1
 h1.one
   font-family huge_text
   .one
-    color color_three
+    color color_six
     font-size 60px
     text-align left
   .two
@@ -92,7 +103,7 @@ h1.one
     color color_three
   .three
     color color_five
-    font-size 260px
+    font-size 290px
     text-align left
 
 
@@ -116,7 +127,7 @@ h1.two
   img
     border 0
 
-input
+input,textarea,select
   padding 0 10px
   line-height 32px
   font-size 18px
@@ -125,16 +136,14 @@ input
 .notify_form
   width 280px
   background color_six
-  margin-top -160px
+  margin-top -180px
   position relative
   h2
-    font-family accent_text
     font-size 32px
     margin 30px 0 0 0
     padding 30px 0 0 0
-    border-top 1px solid color_two
+    border-top 1px solid color_four
   p
-    font-family normal_text
     margin 20px
   .field
     overflow hidden
@@ -145,43 +154,106 @@ input
       float right
       margin 15px
   .quantity
+    margin 15px 0
     input
       width auto
-    label
       float right
-      margin 15px
-      font-family normal_text
+      line-height 30px
+      height 30px
+      margin 0 15px
+    label
+      cursor pointer
+      float right
+      margin 0 15px
+      line-height 30px
+      height 30px
+      .dollar
+        font-family Comic Sans MS
     overflow hidden
-  input
-    font-family accent_text
+  .socials
+    margin 7px
+    overflow hidden
+    li
+      font-family JustVector
+      font-size 32px
+      line-height 40px
+      height 40px
+      width 40px
+      color color_two_alt
+      gradient(color_five,darken(color_five,20))
+      border_radius(10px)
+      box_shadow(0,color_two,5px)
+      float left
+      margin 8px
+    .shift
+      line-height 50px
+  .links
+    input
+      width 230px
+      text-align right
+  .card_expiry_year
+    width 50px
+  .billing
+    label
+      width 30px
+    select
+      width auto
+      font-size 16px
+    .cvc
+      input
+        width 40px
+  input,select
     height 40px
     line-height 40px
     float left
     width 120px
+    margin 15px 0 15px 15px
+  label
+    float left
+    line-height 40px
+    height 40px
     margin 15px
   .toggle
     float right
     margin 15px
-    overflow hidden
-    gradient(darken(color_five,20),color_five)
     border_radius(10px)
-    box_shadow(0,color_two,5px,inset)
+    box_shadow(0,color_two,5px)
+    .bg
+      border_radius(10px)
+      overflow hidden
+      gradient(darken(color_five,20),color_five)
+      box_shadow(0,color_two,5px,inset)
     .option
+      color color_four
       border_radius(10px)
       height 40px
       line-height 40px
-      padding 0 5px
+      padding 0 10px
       float left
-      color color_two_alt
-      font-family accent_text
+      cursor pointer
     .active
+      color color_two_alt
       gradient(color_five,darken(color_five,20))
       box_shadow(0,color_two,5px)
+.checkout
+  margin 30px 0 0 0
+  color color_two_alt
+  gradient(lighten(color_five,0),darken(color_five,20))
+  border_radius(15px)
+  height 70px
+  line-height 70px
+  font-size 42px
+  box_shadow(0,color_two,10px)
+  img
+    float left
+    display block
+    margin 10px 0 0 20px
+  cursor pointer
 
 .home_designer
   overflow visible
   .themes
-    margin 40px 0
+    margin 70px 0
     img
       margin 0
       cursor pointer
@@ -205,15 +277,16 @@ input
     height 300px
     background #FFF
     box_shadow(0,darken(color_four,10),20px)
-    float left
+    z-index 100
+    position relative
   .controls
-    float left
-    margin 40px 0 0 0
+    margin 30px 0 0 0
     width 525px
-
+    z-index 150
+    position relative
     .area
-      width 600px
-      height 300px
+      width 485px
+      height 200px
       background color_five
       display none
       padding 20px
@@ -228,7 +301,6 @@ input
     .title
       background color_five
       color color_three
-      font-family accent_text
       font-size 18px
       float left
       padding 0 20px

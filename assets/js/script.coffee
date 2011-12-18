@@ -701,6 +701,19 @@ $ ->
   #
   #
   #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
   $home_designer = $ '.home_designer'
   #
   if $home_designer.length
