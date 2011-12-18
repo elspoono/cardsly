@@ -323,6 +323,9 @@ user_schema = new schema
   twitter_url: String
   facebook_url: String
   linkedin_url: String
+  profile_urls: [String]
+  profile_image_urls: [String]
+  profile_image_url: String
   stripe:
     id: String
     active_card:
@@ -371,36 +374,6 @@ mongo_user = mongoose.model 'users', user_schema
 #
 #
 #
-# cards
-card_schema = new schema
-  user_id: String
-  print_id: Number
-  path: String
-  theme_id: String
-  active_view: Number
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-mongo_card = mongoose.model 'cards', card_schema
-#
-#
-#
-#
-# Messages
-message_schema = new schema
-  include_contact: Boolean
-  content: String
-  s3_id: String
-  date_added:
-    type: Date
-    default: Date.now
-  active:
-    type: Boolean
-    default: true
-mongo_message = mongoose.model 'messages', message_schema
 #
 #
 #
@@ -645,6 +618,18 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
   add_user_meta_to_user = (user) ->
     #
     #
+    user.profile_image_urls = [] if not user.profile_image_urls
+    #
+    #
+    add_profile_image_url = (url) ->
+      user.profile_image_urls.push url
+      user.profile_image_urls = _(user.profile_image_urls).uniq()
+      user.profile_image_url = url if not user.profile_image_url
+    #
+    #
+    add_url = (url) ->
+      user.profile_urls.push url
+      user.profile_urls = _(user.profile_urls).uniq()
     #
     #
     # Linked In
@@ -652,17 +637,28 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
       user.name = user_meta.firstName+' '+user_meta.lastName
       user.linkedin_url = user_meta.publicProfileUrl
       #
+      add_url user.linkedin_url
+      #
+      add_profile_image_url user_meta.pictureUrl
+      #
     #
     # Facebook
     if user_meta.link
       user.name = user_meta.name
       user.facebook_url = user_meta.link
       #
+      add_url user.facebook_url
+      #
     #
     # Twitter
     if user_meta.screen_name
       user.name = user_meta.name
       user.twitter_url = 'http://twitter.com/#!'+user_meta.screen_name
+      #
+      add_url user.twitter_url
+      add_url user_meta.url if user_meta.url
+      #
+      add_profile_image_url user_meta.profile_image_url_https.replace /_normal/, ''
     #
     #
     #
@@ -1264,13 +1260,15 @@ app.post '/get-session', (req, res, next) ->
 # Get User
 app.post '/get-user', (req,res,next) ->
   #console.log 'USER: ', req.user
-  if req.user.stripe
-    req.user.stripe.id = null
-  res.send
-    name: req.user.name
-    email: req.user.email
-    stripe: req.user.stripe
-    session: req.session
+  if req.user
+    if req.user.stripe
+      req.user.stripe.id = undefined
+    req.user.encrypted_password = undefined
+    res.send
+      user: req.user
+  else
+    res.send
+      err: 'Not Logged In'
 
 #
 #
@@ -1908,7 +1906,7 @@ if app.settings.env is 'production'
 # This should close automatically or redirect to the home page if no caller
 app.get '/success', (req, res) ->
   res.cookie 'success_login', true
-  res.send '<script>window.onload = function(){window.close();}',
+  res.send '<script>window.onload = function(){window.close();}</script>',
     'Content-Type': 'text/html'
   , 200
 #

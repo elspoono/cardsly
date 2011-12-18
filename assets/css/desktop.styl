@@ -5,7 +5,7 @@ color_two_alt = #FFF
 color_three = #000
 color_four = #DED4B9
 color_five = #64B6B1
-color_six = #e38902
+color_six = #ce6d4e
 
 
 
@@ -20,12 +20,13 @@ body
   background url('/images/body_bg.png')
 
 .pull_down
+  display none
   cursor pointer
   position absolute
   left 50%
-  top -465px
+  top -460px
   img
-    margin 0 0 0 -520px
+    margin 0 0 0 -315px
 
 .logo
   display none
@@ -56,6 +57,9 @@ body
   li
     float left
     margin 0 20px
+  .hover
+    a
+      color color_four
 
 
 h1
@@ -68,11 +72,13 @@ h1
     margin 10px 0 90px 0
   .top
     overflow hidden
+  .left
+    float left
   .right
     float right
     text-align right
   .bottom
-    margin -290px 0 -250px 0
+    margin -290px 0 -50px 0
     width 350px
     text-align center
     overflow hidden
@@ -90,6 +96,7 @@ h1.one
     color color_five
     font-size 260px
     text-align left
+
 
 .clear
   clear both
@@ -113,6 +120,7 @@ h1.two
     border 0
 
 .call_to_action
+  overflow visible
   padding 50px 0
   overflow hidden
   clear both
@@ -154,6 +162,8 @@ h1.two
     text-align center
     margin 15px
     box_shadow(0,color_three,5px)
+  .hover
+    color color_five
 
   .shift
     line-height 46px
@@ -183,21 +193,35 @@ input
     .active
       margin -13px -20px
       border 4px solid color_three
-      opacity(1.0)
+      opacity(1)
       width 158px
       height 90px
       z-index 150
       box_shadow(0,color_three,10px)
+    .hover
+      opacity(.8)
   .card
     width 525px
     height 300px
-    background #FFF url('/images/patterns/retrotartan_aaskie (9).png')
+    background #FFF
+    box_shadow(0,darken(color_four,10),20px)
     float left
   .phone
     width 320px
     height 480px
-    background #FFF url('/images/patterns/retrotartan_aaskie (9).png')
+    background #FFF
+    box_shadow(0,darken(color_four,10),20px)
     float right
+    .profile_image
+      width 179px
+      margin 10px
+      padding 5px
+      img
+        opacity(.5)
+      p
+        text-align center
+        font-family accent_text
+        font-size 12px
   .controls
     float left
     margin 40px 0 0 0
@@ -228,6 +252,8 @@ input
       height 32px
       line-height 32px
       cursor pointer
+    .title.hover
+      color color_four
     .title.active
       margin 0 1px 0 0
       font-size 32px
