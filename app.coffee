@@ -60,12 +60,6 @@ im = require 'imagemagick'
 #
 xml2json = require 'xml2json'
 #
-samurai = require 'samurai'
-samurai.setup
-  merchant_key: '89b14db44561382d457b5160'
-  merchant_password: '6a5a0bf8906a6b8b1e577d72'
-  processor_token: '5c44e876a2d1125015a872c3'  
-#
 geo = require('geo')
 #
 #
