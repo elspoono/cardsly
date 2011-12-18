@@ -2881,6 +2881,14 @@ app.get '/reset-password/:password_reset_id', (req, res) ->
       'reset_password'
     ]
 
+
+# Redirect for Kickstarter campagin
+app.get '/fundourprinter', (req, res, next) ->
+  console.log req.url
+  res.send '',
+    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
+  , 301
+  
 # Splash Page
 app.get '/old-browser', (req, res) -> 
   res.render 'old_browser'
@@ -3276,12 +3284,6 @@ app.get '*', (req, res, next) ->
     Location:'/'
   , 301
 #
-# Redirect for Kickstarter campagin
-app.get '/fundourprinter', (req, res, next) ->
-  console.log req.url
-  res.send '',
-    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
-  , 301
 
 
 # ### Start server
