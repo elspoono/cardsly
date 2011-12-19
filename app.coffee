@@ -1865,10 +1865,10 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
 #
 #
 default_line_copy = [
-  '1) John Stamos'
-  '2) Uncle Jesse'
-  '3) Monkey.com'
-  '4) 123-456-7890'
+  'John Stamos'
+  'Uncle Jesse'
+  'Monkey.com'
+  '123-456-7890'
   ''
   ''
   ''

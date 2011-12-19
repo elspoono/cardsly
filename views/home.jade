@@ -20,6 +20,7 @@
               .title.active Text
               .title QR
               .title Background
+              .clear
             .areas
               .area.active
               .area
@@ -46,7 +47,8 @@
               .bg
                 .option on
                 .option.active off
-          h2 Add Links
+          h2 Set Links
+          p Where your QR links to
           ul.socials
             li F
             li.shift t
@@ -55,13 +57,17 @@
           .links
             .field
               input(placeholder='mysite.com')
+        h1.two.checkout_header
+          .one Checkout
+          .two The last bit of info we need
+        .shipping_form
           h2 Shipping
           p Free USPS priority mail
           .field.street
             input(placeholder='123 Main St.')
             img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
             input.zip_code(placeholder='85022')
-          h2 Checkout
+          h2 Quantity
           label
           .quantity
             - quantity = 10
@@ -109,6 +115,7 @@
               label(for='quantity_4') 1500 cards for 
                 span.dollar $
                 | 75
+          h2 Credit Card
           .billing
             .credit-card
               .field

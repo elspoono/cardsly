@@ -133,20 +133,80 @@ input,textarea,select
   font-size 18px
   border 0
 
-.notify_form
+.notify_form,.shipping_form
+  box_shadow(0,color_two,15px)
   width 280px
   background color_six
-  margin-top -180px
   position relative
   h2
     font-size 32px
     margin 30px 0 0 0
     padding 30px 0 0 0
-    border-top 1px solid color_four
   p
     margin 20px
   .field
     overflow hidden
+  input,select
+    height 40px
+    line-height 40px
+    float left
+    width 120px
+    margin 15px 0 15px 15px
+  label
+    float left
+    line-height 40px
+    height 40px
+    margin 15px
+.notify_form
+  margin-top -180px
+  padding 0 0 30px 0
+  .socials
+    margin 7px
+    overflow hidden
+    li
+      font-family JustVector
+      font-size 32px
+      line-height 40px
+      height 40px
+      width 40px
+      color color_two_alt
+      gradient(color_five,darken(color_five,20))
+      border_radius(10px)
+      box_shadow(0,color_two,5px)
+      float left
+      margin 8px
+    .shift
+      line-height 50px
+  .links
+    input
+      width 230px
+      text-align right
+  .toggle
+    float right
+    margin 15px
+    border_radius(10px)
+    box_shadow(0,color_two,5px)
+    .bg
+      border_radius(10px)
+      overflow hidden
+      gradient(darken(color_five,20),color_five)
+      box_shadow(0,color_two,5px,inset)
+    .option
+      color color_four
+      border_radius(10px)
+      height 40px
+      line-height 40px
+      padding 0 10px
+      float left
+      cursor pointer
+    .active
+      color color_two_alt
+      gradient(color_five,darken(color_five,20))
+      box_shadow(0,color_two,5px)
+.checkout_header
+  margin 100px 0 20px 0
+.shipping_form
+  background color_five
   .street,.zip_code
     input
       width 90px
@@ -170,27 +230,6 @@ input,textarea,select
       .dollar
         font-family Comic Sans MS
     overflow hidden
-  .socials
-    margin 7px
-    overflow hidden
-    li
-      font-family JustVector
-      font-size 32px
-      line-height 40px
-      height 40px
-      width 40px
-      color color_two_alt
-      gradient(color_five,darken(color_five,20))
-      border_radius(10px)
-      box_shadow(0,color_two,5px)
-      float left
-      margin 8px
-    .shift
-      line-height 50px
-  .links
-    input
-      width 230px
-      text-align right
   .card_expiry_year
     width 50px
   .billing
@@ -202,43 +241,10 @@ input,textarea,select
     .cvc
       input
         width 40px
-  input,select
-    height 40px
-    line-height 40px
-    float left
-    width 120px
-    margin 15px 0 15px 15px
-  label
-    float left
-    line-height 40px
-    height 40px
-    margin 15px
-  .toggle
-    float right
-    margin 15px
-    border_radius(10px)
-    box_shadow(0,color_two,5px)
-    .bg
-      border_radius(10px)
-      overflow hidden
-      gradient(darken(color_five,20),color_five)
-      box_shadow(0,color_two,5px,inset)
-    .option
-      color color_four
-      border_radius(10px)
-      height 40px
-      line-height 40px
-      padding 0 10px
-      float left
-      cursor pointer
-    .active
-      color color_two_alt
-      gradient(color_five,darken(color_five,20))
-      box_shadow(0,color_two,5px)
 .checkout
-  margin 30px 0 0 0
+  margin 30px 0 120px 0
   color color_two_alt
-  gradient(lighten(color_five,0),darken(color_five,20))
+  gradient(lighten(color_six,0),darken(color_six,20))
   border_radius(15px)
   height 70px
   line-height 70px
@@ -276,15 +282,16 @@ input,textarea,select
     width 525px
     height 300px
     background #FFF
-    box_shadow(0,darken(color_four,10),20px)
-    z-index 100
+    box_shadow(0,color_two,15px)
+    z-index 200
     position relative
   .controls
     margin 30px 0 0 0
     width 525px
-    z-index 150
-    position relative
     .area
+      box_shadow(0,color_two,15px)
+      position relative
+      z-index 160
       width 485px
       height 200px
       background color_five
@@ -297,8 +304,11 @@ input,textarea,select
       display block
   
     .titles
-      overflow hidden
+      overflow visible
     .title
+      box_shadow(0,color_two,15px)
+      position relative
+      z-index 150
       background color_five
       color color_three
       font-size 18px
@@ -311,6 +321,7 @@ input,textarea,select
     .title.hover
       color color_four
     .title.active
+      z-index 155
       margin 0 1px 0 0
       font-size 32px
       height 48px
