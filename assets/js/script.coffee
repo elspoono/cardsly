@@ -721,6 +721,32 @@ $ ->
     #
     #
     #
+    #
+    #
+    # Scroll the card preview
+    #
+    $card = $home_designer.find '.card'
+    c_o = $card.offset()
+    $window.scroll ->
+      b_t = $body.scrollTop()
+      if c_o.top < b_t
+        $card.stop(true,false).animate
+          'top' : b_t
+        ,300
+      else
+        $card.stop(true,false).animate
+          'top' : c_o.top
+        ,300
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
     $areas = $home_designer.find '.area'
     #
     #

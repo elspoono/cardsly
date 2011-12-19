@@ -63,7 +63,7 @@ input,h1,h2,textarea,select
   cursor pointer
   position absolute
   left 50%
-  top -400px
+  top -780px
   z-index 150
   img
     margin 0 0 0 -450px
@@ -161,9 +161,13 @@ input,textarea,select
 .notify_form
   margin-top -180px
   padding 0 0 30px 0
-  .socials
-    margin 7px
+  .link_editor
     overflow hidden
+  .socials
+    float left
+    width 115px
+    overflow hidden
+    padding 0 0 15px 0
     li
       font-family JustVector
       font-size 32px
@@ -175,13 +179,18 @@ input,textarea,select
       border_radius(10px)
       box_shadow(0,color_two,5px)
       float left
-      margin 8px
+      margin 15px 0 0 15px
     .shift
       line-height 50px
   .links
+    float right
+    margin 0 15px 0 0
     input
-      width 230px
+      width 75px
       text-align right
+      float right
+    .button
+      float right
   .toggle
     float right
     margin 15px
@@ -270,7 +279,7 @@ input,textarea,select
 .home_designer
   overflow visible
   .themes
-    margin 70px 0
+    margin 370px 0
     img
       margin 0
       cursor pointer
@@ -290,12 +299,12 @@ input,textarea,select
     .hover
       opacity(.8)
   .card
+    position absolute
     width 525px
     height 300px
     background #FFF
     box_shadow(0,color_two,15px)
     z-index 200
-    position relative
   .controls
     margin 30px 0 0 0
     width 525px
