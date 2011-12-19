@@ -74,6 +74,7 @@ h1
   color color_three
 
 .hero
+  overflow visible
   margin 120px 0 0 0
   .top
     overflow hidden
@@ -184,16 +185,16 @@ input,textarea,select
   .toggle
     float right
     margin 15px
-    border_radius(10px)
+    border_radius(20px)
     box_shadow(0,color_two,5px)
     .bg
-      border_radius(10px)
+      border_radius(20px)
       overflow hidden
       gradient(darken(color_five,20),color_five)
       box_shadow(0,color_two,5px,inset)
     .option
-      color color_four
-      border_radius(10px)
+      color lighten(color_five,10)
+      border_radius(20px)
       height 40px
       line-height 40px
       padding 0 10px
@@ -336,3 +337,40 @@ input,textarea,select
       font-size 32px
       height 48px
       line-height 48px
+
+
+
+.footer
+  width 100%
+  background color_two
+  height 56px
+  line-height 56px
+  color color_five
+  font-size 14px
+  .g,.t,.f
+    a
+      font-size 22px
+      line-height 30px
+      display block
+      margin-top 15px
+      font-family JustVector
+  .t
+    a
+      margin-top 18px
+  .f
+    a
+      margin-top 14px
+  a
+    font-size 14px
+    color color_five
+    text-decoration none
+    padding 0
+    margin 0
+  .at
+    font-family huge_text
+  li
+    float left
+    padding 0 20px 0 0
+  .items
+    width 1024px
+    margin 0 auto
