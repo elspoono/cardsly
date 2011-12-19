@@ -727,16 +727,19 @@ $ ->
     #
     $card = $home_designer.find '.card'
     c_o = $card.offset()
+    $card.css
+      'position' : 'absolute'
+      'top' : c_o.top
     $window.scroll ->
       b_t = $body.scrollTop()
       if c_o.top < b_t
-        $card.stop(true,false).animate
-          'top' : b_t
-        ,300
+        $card.css
+          'position' : 'fixed'
+          'top' : 0
       else
-        $card.stop(true,false).animate
+        $card.css
+          'position' : 'absolute'
           'top' : c_o.top
-        ,300
     #
     #
     #
