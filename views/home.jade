@@ -68,53 +68,31 @@
             img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
             input.zip_code(placeholder='85022')
           h2 Quantity
-          label
           .quantity
-            - quantity = 10
-            .field
-              input(
-                type='radio'
-                name='quantity'
-                value='10'
-                checked= (quantity==10 ? 'checked' : false)
-                id='quantity_1'
-              )
-              label(for='quantity_1') 100 cards for 
+            .option.active
+              .label 100 cards
+              img(src='/images/100.png')
+              .value 
                 span.dollar $
-                | 10
-            .field
-              input(
-                type='radio'
-                name='quantity'
-                value='25'
-                checked= (quantity==25 ? 'checked' : false)
-                id='quantity_2'
-              )
-              label(for='quantity_2') 250 cards for 
+                span 10
+            .option
+              .label 250 cards
+              img(src='/images/250.png')
+              .value 
                 span.dollar $
-                | 25
-            .field
-              input(
-                type='radio'
-                name='quantity'
-                value='35'
-                checked= (quantity==35 ? 'checked' : false)
-                id='quantity_3'
-              )
-              label(for='quantity_3') 500 cards for 
+                span 25
+            .option
+              .label 500 cards
+              img(src='/images/500.png')
+              .value 
                 span.dollar $
-                | 35
-            .field
-              input(
-                type='radio'
-                name='quantity'
-                value='75'
-                checked= (quantity==75 ? 'checked' : false)
-                id='quantity_4'
-              )
-              label(for='quantity_4') 1500 cards for 
+                span 35
+            .option
+              .label 1500 cards
+              img(src='/images/1500.png')
+              .value 
                 span.dollar $
-                | 75
+                span 75
           h2 Credit Card
           .billing
             .credit-card
