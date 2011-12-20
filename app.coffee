@@ -908,7 +908,7 @@ app.configure "production", ->
 
 
 io = require('socket.io').listen app
-
+###
 maybe_log_err = (err) ->
   log_err err if err
 
@@ -931,15 +931,15 @@ redis_sub.on 'error', log_err
 
 
 RedisStore = require('socket.io/lib/stores/redis')
-
 io_store = new RedisStore
   redisPub: redis_pub
   redisSub: redis_sub
   redisClient: redis_sto
 
+###
 io.configure () ->
   io.set 'transports', ['xhr-polling']
-  io.set 'store', io_store
+  #io.set 'store', io_store
   io.set 'authorization', (data, next) ->
     cookies = data.headers.cookie.split /; */
     sid = false

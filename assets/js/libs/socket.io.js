@@ -1562,7 +1562,7 @@
 
   Socket.prototype.publish = function () {
     this.emit.apply(this, arguments);
-
+    console.log(arguments);
     var nsp;
 
     for (var i in this.namespaces) {
