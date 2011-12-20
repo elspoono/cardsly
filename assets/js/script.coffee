@@ -818,7 +818,7 @@ $ ->
   #
   #
   #
-  socket = io.connect()
+  socket = io.connect('/session')
   socket.on 'connect', () ->
     socket.on 'load-session', (session) ->
       console.log session

@@ -908,7 +908,7 @@ app.configure "production", ->
 
 
 io = require('socket.io').listen app
-###
+
 maybe_log_err = (err) ->
   log_err err if err
 
@@ -930,6 +930,8 @@ if redis_options.auth
 redis_sub.on 'error', log_err
 
 
+
+###
 RedisStore = require('socket.io/lib/stores/redis')
 io_store = new RedisStore
   redisPub: redis_pub
@@ -937,6 +939,9 @@ io_store = new RedisStore
   redisClient: redis_sto
 
 ###
+
+
+
 io.configure () ->
   io.set 'transports', ['xhr-polling']
   #io.set 'store', io_store
@@ -954,10 +959,23 @@ io.configure () ->
       else
         next null, false
 
-io.sockets.on 'connection', (socket) ->
+io_session = io.of('/session').on 'connection', (socket) ->
   hs = socket.handshake
   if hs.session
     socket.emit 'load-session', hs.session
+#
+#
+#
+redis_sub.subscribe '/visits'
+#
+#
+io_visits = io.of('/visits').on 'connection', (socket) ->
+  hs = socket.handshake
+  if hs.session
+    redis_sub.on 'log', (pattern, key) ->
+      console.log key
+      redis_sto.hgetall key, (e, obj) ->
+        console.log obj
 
 
 
