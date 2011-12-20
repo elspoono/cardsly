@@ -938,14 +938,11 @@ redis_sub.on 'error', log_err
 
 
 
-###
 RedisStore = require('socket.io/lib/stores/redis')
 io_store = new RedisStore
   redisPub: redis_pub
   redisSub: redis_sub
   redisClient: redis_sto
-
-###
 
 
 
