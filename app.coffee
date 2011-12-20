@@ -902,13 +902,13 @@ app.configure "production", ->
 ###########################################################
 
 
-from_an_in = (visit) ->
+by_an_in = (visit) ->
   has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
   visit_details =
     browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
     location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
     date_added: visit.date_added
-  'from a'+(if visit_details.browser.match(/^(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+''
+  'by'+(if visit_details.browser.match(/^(a|e|i|o|u)/) then ' an' else '')+' '+visit_details.browser+' in '+visit_details.location+''
 
 
 
@@ -920,12 +920,12 @@ maybe_log_err = (err) ->
   log_err err if err
 
 redis = require 'redis'
-
+###
 redis_sto = redis.createClient redis_options.port, redis_options.host
 if redis_options.pass
   redis_sto.auth redis_options.pass, maybe_log_err
 redis_sto.on 'error', log_err
-
+###
 redis_pub = redis.createClient redis_options.port, redis_options.host
 if redis_options.pass
   redis_pub.auth redis_options.pass, maybe_log_err
@@ -937,13 +937,13 @@ if redis_options.pass
 redis_sub.on 'error', log_err
 
 
-
+###
 RedisStore = require('socket.io/lib/stores/redis')
 io_store = new RedisStore
   redisPub: redis_pub
   redisSub: redis_sub
   redisClient: redis_sto
-
+###
 
 
 io.configure () ->
@@ -977,16 +977,40 @@ io_visits = io.of('/visits').on 'connection', (socket) ->
   hs = socket.handshake
   if hs.session
     socket.on 'subscribe_to', (params) ->
+      #
+      console.log 'SUBSCRIBED: ', params.search_string
+      # The function used either way
+      show_visits = (err, visits) ->
+        #
+        parsed_visits = _(visits).map (visit) ->
+          by_an_in: by_an_in visit
+          date_added: visit.date_added
+        #
+        #
+        socket.emit 'load_visits', parsed_visits.reverse()
+
+      #
+      #
+      # On each update find 1
       redis_sub.on 'message', (pattern, key) ->
-        console.log 'KEY: ', key
-        console.log 'SEARCH: ', params.search_string
         if params.search_string is key
           console.log 'FOUND: ', params.search_string
-          mongo_visit.findOne
+          mongo_visit.find
             url_string: params.search_string
-          , (err, visit) ->
-            socket.emit 'load_visit', from_an_in visit
-            console.log from_an_in visit
+          ,[],
+            limit: 1
+            sort:
+              date_added: -1
+          , show_visits
+      #
+      # And always on load find 3
+      mongo_visit.find
+        url_string: params.search_string
+      ,[],
+        limit: 3
+        sort:
+          date_added: -1
+      , show_visits
 
 
 
@@ -996,7 +1020,7 @@ mongo_url_redirect.findOne
 , (err, url_redirect) ->
   if not url_redirect
     url_redirect = new mongo_url_redirect
-  url_redirect.redirect_to = '/'
+  url_redirect.redirect_to = '/just-pulldown'
   url_redirect.url_string = 'loghome'
   url_redirect.save (err) ->
     log_err err if err
@@ -1911,7 +1935,6 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
           #
           #
           redis_pub.publish 'visits', search_string
-          console.log 'PUB: ', search_string
           #
           #
           #
@@ -1966,7 +1989,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       sender: '"Cards.ly" <help@cards.ly>'
                       to: found_user.email
                       subject: 'Card #'+found_url.card_number+' was just scanned!'
-                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+from_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+by_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     , (err, data) ->
                       if err
                         log_err err
@@ -2199,12 +2222,11 @@ app.get '/make-me-admin', secured_page, (req, res) ->
 #
 #
 # Real Index Page
-app.get '/', (req, res) -> 
+app.get '/just-pulldown', (req, res) -> 
   #
   #
-  res.render 'home'
+  res.render 'pull_down'
     req: req
-    abtest: 4
     #
     # Cut off at 60 characters 
     #
@@ -2213,12 +2235,34 @@ app.get '/', (req, res) ->
     #
     description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
     #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
     #
     # (Uncomment means remove the single # character at the start of it :)
     #
-    url_groups: req.url_groups
+    #
+#
+#
+#
+#
+#
+#
+#
+#
+# Real Index Page
+app.get '/', (req, res) -> 
+  #
+  #
+  res.render 'home'
+    req: req
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Create and buy QR code business cards you control'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    #
+    # (Uncomment means remove the single # character at the start of it :)
     #
 #
 #

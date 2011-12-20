@@ -624,46 +624,81 @@ $ ->
   $pull_down = $ '.pull_down'
   #
   #
-
-  #
-  #
-  detect_pull_start = (e) ->
-    unless $pull_down.data 'active'
-      o = [e.offsetX,e.offsetY]
-      if o[1] < 480 or (o[0] > 90 and o[0] < 132)
-        $pull_down.unbind 'mousemove', detect_pull_start
-        $pull_down.stop(true,false).animate
-          marginTop: 10
-        , 200
-        $pull_down.one 'mouseout', ->
-          unless $pull_down.data 'active'
-            $pull_down.stop(true,false).animate
-              marginTop: 0
-            , 200
-  #
-  #
-  $pull_down.bind 'mouseover', (e) ->
-    $pull_down.bind 'mousemove', detect_pull_start
-    detect_pull_start e
-  $pull_down.bind 'mouseout', (e) ->
-    $pull_down.unbind 'mousemove', detect_pull_start
-  #
-  #
-  $pull_down.bind 'click', (e) ->
-    unless $pull_down.data 'active'
-      $pull_down.stop(true,false).animate
-        marginTop: 590
-      , 400
-      $pull_down.data 'active', true
-      setTimeout ->
-        $body.one 'click', ->
+  if $pull_down.length
+    #
+    #
+    detect_pull_start = (e) ->
+      unless $pull_down.data 'active'
+        o = [e.offsetX,e.offsetY]
+        if o[1] < 480 or (o[0] > 90 and o[0] < 132)
+          $pull_down.unbind 'mousemove', detect_pull_start
           $pull_down.stop(true,false).animate
-            marginTop: 0
+            marginTop: 10
           , 200
-          $pull_down.data 'active', false
-      , 0
-      
-  #
+          $pull_down.one 'mouseout', ->
+            unless $pull_down.data 'active'
+              $pull_down.stop(true,false).animate
+                marginTop: 0
+              , 200
+    #
+    #
+    $pull_down.bind 'mouseover', (e) ->
+      $pull_down.bind 'mousemove', detect_pull_start
+      detect_pull_start e
+    $pull_down.bind 'mouseout', (e) ->
+      $pull_down.unbind 'mousemove', detect_pull_start
+    #
+    $pull_down.find('a').click ->
+      window.open '/loghome', 'loghome', 'height=350,width=600'
+      false
+    #
+    $pull_down.bind 'click', (e) ->
+      unless $pull_down.data 'active'
+        $pull_down.stop(true,false).animate
+          marginTop: 690
+        , 400
+        $pull_down.data 'active', true
+        setTimeout ->
+          body_click = (e) ->
+            $e = $ e.target
+            $e = $e.closest('.pull_down').andSelf()
+            unless $e[0] is $pull_down[0]
+              $pull_down.stop(true,false).animate
+                marginTop: 0
+              , 200
+              $pull_down.data 'active', false
+              $body.unbind 'click', body_click
+          $body.bind 'click', body_click
+        , 0
+        
+    #
+    $pull_list = $pull_down.find '.contents .list'
+    #
+    #
+    #
+    if $('.hero').length is 0
+      $pull_down.click()
+    #
+    #
+    #
+    io_visit = io.connect('/visits')
+    io_visit.on 'connect', () ->
+      io_visit.on 'load_visits', (visits) ->
+        for visit in visits
+          #
+          $new_item = $ '<div class="item" />'
+          $new_item.html 'Scanned '+visit.by_an_in
+          #
+          $new_date = $ '<div class="date" />'
+          $new_date.html new Date(visit.date_added).ago()
+          #
+          $new_item.append $new_date
+          $pull_list.prepend $new_item
+          $new_item.hide().slideDown()
+        #
+        #
+      io_visit.emit 'subscribe_to',
+        search_string: 'loghome'
   #
   #
   #
@@ -822,14 +857,6 @@ $ ->
   socket.on 'connect', () ->
     socket.on 'load-session', (session) ->
       console.log session
-  #
-  #
-  socket = io.connect('/visits')
-  socket.on 'connect', () ->
-    socket.emit 'subscribe_to',
-      search_string: 'loghome'
-    socket.on 'load_visit', (visit) ->
-      console.log visit
   #
   #
   #
