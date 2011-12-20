@@ -5,7 +5,7 @@
 #= require 'libs/underscore.js'
 #= require 'libs/jquery-ui-1.8.16.js'
 #= require 'libs/jquery.colorpicker.js'
-#= require 'libs/dnode.js'
+#= require 'libs/socket.io.js'
 
 
 ##################################################################
@@ -845,17 +845,21 @@ $ ->
   #
   #
   #
+  socket = io.connect()
+  socket.on 'connect', () ->
+    socket.on 'load-session', (session) ->
+      console.log session
   #
   #
   #
   #
   #
   #
-  #
+  ###
   DNode.connect (remote) ->
     remote.get_history 'log_home', (result) ->
       console.log result
-  #
+  ###
   #
   #
   #

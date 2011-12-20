@@ -823,13 +823,15 @@ EXPRESS APPLICATION CONFIG
 connect = require 'connect'
 redis_store = require('connect-redis') connect
 
-options = {}
+redis_options =
+  host: 'localhost'
+  port: 6379
 if process.env.REDISTOGO_URL
-  options = 
+  redis_options = 
     host: process.env.REDISTOGO_URL.replace /.*@([^:]*).*/ig, '$1'
     port: process.env.REDISTOGO_URL.replace /.*@.*:([^\/]*).*/ig, '$1'
     pass: process.env.REDISTOGO_URL.replace /.*:.*:(.*)@.*/ig, '$1'
-session_store = new redis_store options
+session_store = new redis_store redis_options
 #
 # ## App configurations
 # ### Global app settings
@@ -905,14 +907,49 @@ app.configure "production", ->
 
 
 
+io = require('socket.io').listen app
+
+
+redis = require 'redis'
+redis_sto = redis.createClient redis_options.port, redis_options.host
+redis_sto.auth redis_options.auth
+redis_pub = redis.createClient redis_options.port, redis_options.host
+redis_pub.auth redis_options.auth
+redis_sub = redis.createClient redis_options.port, redis_options.host
+redis_sub.auth redis_options.auth
+
+RedisStore = require('socket.io/lib/stores/redis')
+
+io_store = new RedisStore
+  redisPub: redis_pub
+  redisSub: redis_sub
+  redisClient: redis_sto
+
+io.configure () ->
+  io.set 'transports', ['xhr-polling']
+  io.set 'store', io_store
+  io.set 'authorization', (data, next) ->
+    cookies = data.headers.cookie.split /; */
+    sid = false
+    for cookie in cookies
+      crumbles = cookie.split /\=/
+      if crumbles[0] is 'connect.sid'
+        sid = crumbles[1]
+    session_store.get unescape(sid), (err, session) ->
+      if session
+        data.session = session
+        next null, true
+      else
+        next null, false
+
+io.sockets.on 'connection', (socket) ->
+  hs = socket.handshake
+  if hs.session
+    socket.emit 'load-session', hs.session
 
 
 
-
-
-
-
-
+###
 
 dnode = require 'dnode'
 
@@ -924,7 +961,7 @@ server = dnode
 
 
 
-
+###
 
 
 
@@ -2277,12 +2314,12 @@ app.get '*', (req, res, next) ->
 # ### Start server
 app.listen process.env.PORT or 4000
 #
-#
+###
 server.listen
   server: app
   io:
     transports: ['xhr-polling']
-#
+###
 #
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 #
