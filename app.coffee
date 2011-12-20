@@ -909,17 +909,23 @@ app.configure "production", ->
 
 io = require('socket.io').listen app
 
+maybe_log_err = (err) ->
+  log_err err if err
 
 redis = require 'redis'
+
 redis_sto = redis.createClient redis_options.port, redis_options.host
-redis_sto.auth redis_options.auth, (err) ->
-  log_err err if err
+redis_sto.auth maybe_log_err
+redis_sto.on 'error', maybe_log_err
+
 redis_pub = redis.createClient redis_options.port, redis_options.host
-redis_pub.auth redis_options.auth, (err) ->
-  log_err err if err
+redis_pub.auth maybe_log_err
+redis_pub.on 'error', maybe_log_err
+
 redis_sub = redis.createClient redis_options.port, redis_options.host
-redis_sub.auth redis_options.auth, (err) ->
-  log_err err if err
+redis_sub.auth maybe_log_err
+redis_sub.on 'error', maybe_log_err
+
 
 RedisStore = require('socket.io/lib/stores/redis')
 
