@@ -29,114 +29,113 @@ include pull_down
           p Business Cards
         .three
           p That Give You Control
-
-    .bottom
-      .left
-        .home_designer
-          h1.two
-            .one Design Cards
-            .two Add your personal touch and flare
-          .controls
-            .titles
-              .title.active Text
-              .title QR
-              .title Background
-              .clear
-            .areas
-              .area.active
-              .area
-              .area
-          .card
-          .clear
-          .themes
-      .right
-        h1.two 
-          .one Get Notified!
-          .two Email or text alerts when they scan
-        img(src='/images/get_guy.png')
-        .notify_form
-          h2 Set Alerts
-          p Learn who's interested in you
-          .field.email
-            input(placeholder='my@email.com')
-            .toggle
-              .bg
-                .option.active on
-                .option off
-          .field.text
-            input(placeholder='555.555.5555')
-            .toggle
-              .bg
-                .option on
-                .option.active off
-          h2 Set Links
-          p Where they go, when they scan
-          .link_editor
-            ul.socials
-              li F
-              li.shift t
-              li l
-              li g
-            .links
-              .field
-                .button +
-                input(placeholder='mysite.com')
-        h1.two.checkout_header
-          .one Checkout
-          .two The last bit of info we need
-        .shipping_form
-          h2 Shipping
-          p Free via USPS priority mail
-          .field.street
-            input(placeholder='123 Main St.')
-            img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
-            input.zip_code(placeholder='85022')
-          h2 Quantity
-          .quantity
-            .option.active
-              .label 100 cards
-              img(src='/images/100.png')
-              .value 
-                span.dollar $
-                span 10
-            .option
-              .label 250 cards
-              img(src='/images/250.png')
-              .value 
-                span.dollar $
-                span 25
-            .option
-              .label 500 cards
-              img(src='/images/500.png')
-              .value 
-                span.dollar $
-                span 35
-            .option
-              .label 1500 cards
-              img(src='/images/1500.png')
-              .value 
-                span.dollar $
-                span 75
-          h2 Credit Card
-          .billing
-            .credit-card
-              .field
-                label cc #
-                input(placeholder='4111111111111111')
-            .cvc
-              .field
-                label cvc
-                input(placeholder='1234')
-            .expiration
-              .field
-                label Exp.
-                select.card_expiry_month(name='credit_card[expiry_month]')
-                  - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-                  - for (var i in months)
-                    option(value=(i*1)+1)=months[i]
-                select.card_expiry_year(name='credit_card[expiry_year]')
-                  - for (var year = 2011; year<2032; year++)
-                    option(value=year)=year
-        .button.normal.checkout
-          img(src='/images/lock_icon.png')
-          | Purchase
+  .bottom
+    .left
+      .home_designer
+        h1.two
+          .one Design Cards
+          .two Add your personal touch and flare
+        .controls
+          .titles
+            .title.active Text
+            .title QR
+            .title Background
+            .clear
+          .areas
+            .area.active
+            .area
+            .area
+        .card
+        .clear
+        .themes
+    .right
+      h1.two 
+        .one Get Notified!
+        .two Email or text alerts when they scan
+      img(src='/images/get_guy.png')
+      .notify_form
+        h2 Set Alerts
+        p Learn who's interested in you
+        .field.email
+          input(placeholder='my@email.com')
+          .toggle
+            .bg
+              .option.active on
+              .option off
+        .field.text
+          input(placeholder='555.555.5555')
+          .toggle
+            .bg
+              .option on
+              .option.active off
+        h2 Set Links
+        p Where they go, when they scan
+        .link_editor
+          ul.socials
+            li F
+            li.shift t
+            li l
+            li g
+          .links
+            .field
+              .button +
+              input(placeholder='mysite.com')
+      h1.two.checkout_header
+        .one Checkout
+        .two The last bit of info we need
+      .shipping_form
+        h2 Shipping
+        p Free via USPS priority mail
+        .field.street
+          input(placeholder='123 Main St.')
+          img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
+          input.zip_code(placeholder='85022')
+        h2 Quantity
+        .quantity
+          .option.active
+            .label 100 cards
+            img(src='/images/100.png')
+            .value 
+              span.dollar $
+              span 10
+          .option
+            .label 250 cards
+            img(src='/images/250.png')
+            .value 
+              span.dollar $
+              span 25
+          .option
+            .label 500 cards
+            img(src='/images/500.png')
+            .value 
+              span.dollar $
+              span 35
+          .option
+            .label 1500 cards
+            img(src='/images/1500.png')
+            .value 
+              span.dollar $
+              span 75
+        h2 Credit Card
+        .billing
+          .credit-card
+            .field
+              label cc #
+              input(placeholder='4111111111111111')
+          .cvc
+            .field
+              label cvc
+              input(placeholder='1234')
+          .expiration
+            .field
+              label Exp.
+              select.card_expiry_month(name='credit_card[expiry_month]')
+                - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+                - for (var i in months)
+                  option(value=(i*1)+1)=months[i]
+              select.card_expiry_year(name='credit_card[expiry_year]')
+                - for (var year = 2011; year<2032; year++)
+                  option(value=year)=year
+      .button.normal.checkout
+        img(src='/images/lock_icon.png')
+        | Purchase
