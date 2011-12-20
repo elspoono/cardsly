@@ -9,6 +9,7 @@
     "coffee-script": ">= 1.1.2"
     , "connect": ">= 0.0.1"
     , "connect-redis": ">= 0.0.1"
+    , "redis": ">= 0.0.1"
     , "mongoose": ">= 0.0.1"
     , "bcrypt": ">=0.0.1"
     , "geo": ">=0.0.1"
@@ -23,6 +24,8 @@
     , "request": ">=0.0.1"
     , "xml2json": ">=0.0.1"
     , "oauth": ">=0.0.1"
+    , "dnode": ">=0.0.1"
+    , "socket.io": ">=0.0.1"
     , "canvas": "https://github.com/elspoono/node-canvas-heroku/tarball/master"
   },
   "devDependencies": {

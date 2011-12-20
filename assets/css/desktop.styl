@@ -7,6 +7,8 @@ color_four = #DED4B9
 color_five = #64B6B1
 color_six = #ce6d4e
 
+color_seven = #3e434b
+
 
 
 size_one = 32px
@@ -60,14 +62,51 @@ input,h1,h2,textarea,select
     a
       color color_four
 .pull_down
-  cursor pointer
   position absolute
   left 50%
   top -780px
   z-index 150
-  img
+  .bg,.contents
+    position absolute
+  .bg
     margin 0 0 0 -450px
-
+  a
+    color color_seven
+    text-decoration none
+  .contents
+    color color_seven
+    margin 160px 0 0 -430px
+    width 190px
+    text-align center
+    h2
+      font-size 42px
+      margin 0 0 5px 0
+    p
+      margin 10px 0 0 0
+      font-size 12px
+    img
+      width 100px
+      margin 0 auto
+      display block
+  h3
+    font-size 26px
+    margin 40px 0 5px 0
+    color color_six
+  .list
+    color color_six
+    font-family normal_text
+    height 300px
+    overflow auto
+    font-size 14px
+    line-height 18px
+    border-top 3px dashed color_seven
+    .item
+      padding 10px 5px
+      border-bottom 3px dashed color_seven
+    .date
+      font-size 10px
+      font-style italic
+      text-align right
 
 
 h1
@@ -208,11 +247,21 @@ input,textarea,select
     float right
     margin 0 15px 0 0
     input
-      width 85px
+      width 95px
       text-align right
       float right
+      margin 15px 0 0 0
     .button
+      cursor pointer
+      margin 15px 0 0 0
       float right
+      gradient(color_five,darken(color_five,20))
+      border_radius_right_only(10px)
+      color color_two_alt
+      font-family huge_text
+      line-height 40px
+      height 40px
+      width 25px
   .toggle
     float right
     margin 15px
@@ -372,28 +421,33 @@ input,textarea,select
 
 
 .footer
+  position fixed
+  z-index 250
+  bottom 0
+  left 0
   width 100%
   background color_two
-  height 56px
-  line-height 56px
-  color color_five
-  font-size 14px
+  height 32px
+  line-height 32px
+  color color_four
+  font-size 12px
+  text-align center
   .g,.t,.f
     a
-      font-size 22px
-      line-height 30px
+      font-size 18px
+      line-height 22px
       display block
-      margin-top 15px
+      margin-top 6px
       font-family JustVector
   .t
     a
-      margin-top 18px
+      margin-top 7px
   .f
     a
-      margin-top 14px
+      margin-top 4px
   a
-    font-size 14px
-    color color_five
+    font-size 12px
+    color color_four
     text-decoration none
     padding 0
     margin 0
@@ -403,5 +457,7 @@ input,textarea,select
     float left
     padding 0 20px 0 0
   .items
-    width 1024px
+    width auto
+    overflow hidden
+    display inline-block
     margin 0 auto

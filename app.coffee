@@ -146,6 +146,9 @@ knoxClient = knox.createClient
 #
 #
 #
+short_domain = 'http://cards.ly/'
+if process.env and process.env.SHORT_URL
+  short_domain = 'http://'+process.env.SHORT_URL+'/'
 #
 #
 # MOO API Key
@@ -805,7 +808,6 @@ campfire_check = (req, res, next) ->
 
 
 
-
 ###########################################################
 #
 #
@@ -824,13 +826,15 @@ EXPRESS APPLICATION CONFIG
 connect = require 'connect'
 redis_store = require('connect-redis') connect
 
-options = {}
+redis_options =
+  host: 'localhost'
+  port: 6379
 if process.env.REDISTOGO_URL
-  options = 
+  redis_options = 
     host: process.env.REDISTOGO_URL.replace /.*@([^:]*).*/ig, '$1'
     port: process.env.REDISTOGO_URL.replace /.*@.*:([^\/]*).*/ig, '$1'
     pass: process.env.REDISTOGO_URL.replace /.*:.*:(.*)@.*/ig, '$1'
-session_store = new redis_store options
+session_store = new redis_store redis_options
 #
 # ## App configurations
 # ### Global app settings
@@ -844,6 +848,7 @@ app.configure ->
   app.set 'view options',
     scripts: []
     env: app.settings.env
+    short_domain: short_domain
     user: false
     session: false
     error_message: false
@@ -901,13 +906,143 @@ app.configure "production", ->
 ###########################################################
 
 
+by_an_in = (visit) ->
+  has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+  visit_details =
+    browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+    location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+    date_added: visit.date_added
+  'by'+(if visit_details.browser.match(/^(a|e|i|o|u)/) then ' an' else '')+' '+visit_details.browser+' in '+visit_details.location+''
 
 
 
 
 
+io = require('socket.io').listen app
+
+maybe_log_err = (err) ->
+  log_err err if err
+
+redis = require 'redis'
+###
+redis_sto = redis.createClient redis_options.port, redis_options.host
+if redis_options.pass
+  redis_sto.auth redis_options.pass, maybe_log_err
+redis_sto.on 'error', log_err
+###
+redis_pub = redis.createClient redis_options.port, redis_options.host
+if redis_options.pass
+  redis_pub.auth redis_options.pass, maybe_log_err
+redis_pub.on 'error', log_err
+
+redis_sub = redis.createClient redis_options.port, redis_options.host
+if redis_options.pass
+  redis_sub.auth redis_options.pass, maybe_log_err
+redis_sub.on 'error', log_err
 
 
+###
+RedisStore = require('socket.io/lib/stores/redis')
+io_store = new RedisStore
+  redisPub: redis_pub
+  redisSub: redis_sub
+  redisClient: redis_sto
+###
+
+
+io.configure () ->
+  io.set 'transports', ['xhr-polling']
+  #io.set 'store', io_store
+  io.set 'authorization', (data, next) ->
+    cookies = data.headers.cookie.split /; */
+    sid = false
+    for cookie in cookies
+      crumbles = cookie.split /\=/
+      if crumbles[0] is 'connect.sid'
+        sid = crumbles[1]
+    session_store.get unescape(sid), (err, session) ->
+      if session
+        data.session = session
+        next null, true
+      else
+        next null, false
+
+io_session = io.of('/session').on 'connection', (socket) ->
+  hs = socket.handshake
+  #if hs.session
+  #  socket.emit 'load-session', hs.session
+#
+#
+#
+redis_sub.subscribe 'visits'
+#
+#
+io_visits = io.of('/visits').on 'connection', (socket) ->
+  hs = socket.handshake
+  if hs.session
+    socket.on 'subscribe_to', (params) ->
+      #
+      console.log 'SUBSCRIBED: ', params.search_string
+      # The function used either way
+      show_visits = (err, visits) ->
+        #
+        parsed_visits = _(visits).map (visit) ->
+          by_an_in: by_an_in visit
+          date_added: visit.date_added
+        #
+        #
+        socket.emit 'load_visits', parsed_visits.reverse()
+
+      #
+      #
+      # On each update find 1
+      redis_sub.on 'message', (pattern, key) ->
+        if params.search_string is key
+          console.log 'FOUND: ', params.search_string
+          mongo_visit.find
+            url_string: params.search_string
+          ,[],
+            limit: 1
+            sort:
+              date_added: -1
+          , show_visits
+      #
+      # And always on load find 3
+      mongo_visit.find
+        url_string: params.search_string
+      ,[],
+        limit: 3
+        sort:
+          date_added: -1
+      , show_visits
+
+
+
+
+mongo_url_redirect.findOne
+  url_string: 'loghome'
+, (err, url_redirect) ->
+  if not url_redirect
+    url_redirect = new mongo_url_redirect
+  url_redirect.redirect_to = '/just-pulldown'
+  url_redirect.url_string = 'loghome'
+  url_redirect.save (err) ->
+    log_err err if err
+
+
+###
+
+dnode = require 'dnode'
+
+server = dnode
+  get_history : (url, next) ->
+    console.log this
+    next url
+
+
+
+
+###
 
 
 
@@ -1428,9 +1563,6 @@ render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
             qr_height = theme_template.qr.h/100*pdf_dpi*2
             # 
             #
-            short_domain = 'http://cards.ly/'
-            if process.env and process.env.SHORT_URL
-              short_domain = 'http://'+process.env.SHORT_URL+'/'
             #
             #
             #
@@ -1753,7 +1885,6 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   #
   #
-  #
   mongo_url_redirect.find
     url_string: search_string
   , (err, url_redirects) ->
@@ -1801,6 +1932,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
           visit.save (err, saved_visit) ->
             log_err err if err
           #
+          #
+          #
+          #
+          redis_pub.publish 'visits', search_string
+          #
+          #
+          #
           # And in the mean time ...
           # Let's log a hit
           mongo_url_group.find
@@ -1846,18 +1984,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       suffix = 'rd' if decimal is 3
                       in_number+suffix
                     #
-                    has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
-                    visit_details =
-                      browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
-                      location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
-                      date_added: visit.date_added
                     #
                     # Send it!
                     nodemailer.send_mail
                       sender: '"Cards.ly" <help@cards.ly>'
                       to: found_user.email
                       subject: 'Card #'+found_url.card_number+' was just scanned!'
-                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time from a'+(if visit_details.browser.match(/(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+by_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     , (err, data) ->
                       if err
                         log_err err
@@ -2090,12 +2223,11 @@ app.get '/make-me-admin', secured_page, (req, res) ->
 #
 #
 # Real Index Page
-app.get '/', (req, res) -> 
+app.get '/just-pulldown', (req, res) -> 
   #
   #
-  res.render 'home'
+  res.render 'pull_down'
     req: req
-    abtest: 4
     #
     # Cut off at 60 characters 
     #
@@ -2104,12 +2236,34 @@ app.get '/', (req, res) ->
     #
     description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
     #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
     #
     # (Uncomment means remove the single # character at the start of it :)
     #
-    url_groups: req.url_groups
+    #
+#
+#
+#
+#
+#
+#
+#
+#
+# Real Index Page
+app.get '/', (req, res) -> 
+  #
+  #
+  res.render 'home'
+    req: req
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Create and buy QR code business cards you control'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    #
+    # (Uncomment means remove the single # character at the start of it :)
     #
 #
 #
@@ -2259,6 +2413,14 @@ app.get '*', (req, res, next) ->
 #
 # ### Start server
 app.listen process.env.PORT or 4000
+#
+###
+server.listen
+  server: app
+  io:
+    transports: ['xhr-polling']
+###
+#
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 #
 #
