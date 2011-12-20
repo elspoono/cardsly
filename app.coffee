@@ -146,6 +146,9 @@ knoxClient = knox.createClient
 #
 #
 #
+short_domain = 'http://cards.ly/'
+if process.env and process.env.SHORT_URL
+  short_domain = 'http://'+process.env.SHORT_URL+'/'
 #
 #
 # MOO API Key
@@ -845,6 +848,7 @@ app.configure ->
   app.set 'view options',
     scripts: []
     env: app.settings.env
+    short_domain: short_domain
     user: false
     session: false
     error_message: false
@@ -1559,9 +1563,6 @@ render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
             qr_height = theme_template.qr.h/100*pdf_dpi*2
             # 
             #
-            short_domain = 'http://cards.ly/'
-            if process.env and process.env.SHORT_URL
-              short_domain = 'http://'+process.env.SHORT_URL+'/'
             #
             #
             #
