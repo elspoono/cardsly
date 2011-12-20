@@ -986,6 +986,7 @@ io_visits = io.of('/visits').on 'connection', (socket) ->
           mongo_visit.findOne
             url_string: params.search_string
           , (err, visit) ->
+            socket.emit 'load_visit', from_an_in visit
             console.log from_an_in visit
 
 
