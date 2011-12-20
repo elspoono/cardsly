@@ -905,7 +905,7 @@ draw_qr = (o) ->
   ctx.fillStyle = hex_to_rgba o.hex
   #
   #
-  font_size = border_size*1.5
+  font_size = border_size*1.3
   ctx.font = font_size+'px Lato'
   parsed_url = o.url.replace('http:\/\/','')
   measure = ctx.measureText parsed_url, 0, 0
