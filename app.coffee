@@ -981,6 +981,8 @@ io_visits = io.of('/visits').on 'connection', (socket) ->
   if hs.session
     socket.on 'subscribe_to', (params) ->
       redis_sub.on 'message', (pattern, key) ->
+        console.log 'KEY: ', key
+        console.log 'SEARCH: ', params.search_string
         if params.search_string is key
           console.log 'FOUND: ', params.search_string
           mongo_visit.findOne
@@ -1912,6 +1914,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
           #
           #
           redis_pub.publish 'visits', search_string
+          console.log 'PUB: ', search_string
           #
           #
           #
