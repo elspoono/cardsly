@@ -805,7 +805,6 @@ campfire_check = (req, res, next) ->
 
 
 
-
 ###########################################################
 #
 #
@@ -903,6 +902,24 @@ app.configure "production", ->
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+dnode = require 'dnode'
+
+server = dnode
+  get_history : (url, next) ->
+    console.log this
+    next url
 
 
 
@@ -2259,6 +2276,14 @@ app.get '*', (req, res, next) ->
 #
 # ### Start server
 app.listen process.env.PORT or 4000
+#
+#
+server.listen
+  server: app
+  io:
+    transports: ['xhr-polling']
+#
+#
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 #
 #

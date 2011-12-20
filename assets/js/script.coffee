@@ -5,6 +5,7 @@
 #= require 'libs/underscore.js'
 #= require 'libs/jquery-ui-1.8.16.js'
 #= require 'libs/jquery.colorpicker.js'
+#= require 'libs/dnode.js'
 
 
 ##################################################################
@@ -647,7 +648,7 @@ $ ->
   #
   #
   #
-  $pull_down = $ '.pull_down img'
+  $pull_down = $ '.pull_down'
   #
   #
 
@@ -678,7 +679,7 @@ $ ->
   $pull_down.bind 'click', (e) ->
     unless $pull_down.data 'active'
       $pull_down.stop(true,false).animate
-        marginTop: 440
+        marginTop: 590
       , 400
       $pull_down.data 'active', true
       setTimeout ->
@@ -853,6 +854,9 @@ $ ->
   #
   #
   #
+  DNode.connect (remote) ->
+    remote.get_history 'log_home', (result) ->
+      console.log result
   #
   #
   #

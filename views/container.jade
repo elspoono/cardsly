@@ -14,7 +14,12 @@
         a(href='/login') Login
 .logo
 .pull_down
-  img(src='/images/pulldown.png')
+  img.bg(src='/images/pulldown.png')
+  .contents
+    h2 Scan Me
+    img(src='qr/3e434b/?http://192.168.1.102:4000/log_home')
+    p Simulate scan by clicking
+    .list
 != body
 
 
