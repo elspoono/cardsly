@@ -852,8 +852,6 @@ $ ->
   #
   #
   #
-  #
-  #
   DNode.connect (remote) ->
     remote.get_history 'log_home', (result) ->
       console.log result
