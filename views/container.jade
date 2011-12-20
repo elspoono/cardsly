@@ -16,9 +16,10 @@
 .pull_down
   img.bg(src='/images/pulldown.png')
   .contents
-    h2 Scan Me
-    img(src='qr/3e434b/?http://192.168.1.102:4000/log_home')
-    p Simulate scan by clicking
+    a(href='/loghome')
+      h2 Scan Me
+      img(src='qr/3e434b/?http://192.168.1.102:4000/loghome')
+      p Simulate scan by clicking
     .list
 != body
 

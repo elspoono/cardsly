@@ -824,6 +824,14 @@ $ ->
       console.log session
   #
   #
+  socket = io.connect('/visits')
+  socket.on 'connect', () ->
+    socket.emit 'subscribe_to',
+      search_string: 'loghome'
+    socket.on 'load_visit', (visit) ->
+      console.log visit
+  #
+  #
   #
   #
   #

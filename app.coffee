@@ -902,6 +902,13 @@ app.configure "production", ->
 ###########################################################
 
 
+from_an_in = (visit) ->
+  has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+  visit_details =
+    browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+    location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+    date_added: visit.date_added
+  'from a'+(if visit_details.browser.match(/^(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+''
 
 
 
@@ -961,22 +968,38 @@ io.configure () ->
 
 io_session = io.of('/session').on 'connection', (socket) ->
   hs = socket.handshake
-  if hs.session
-    socket.emit 'load-session', hs.session
+  #if hs.session
+  #  socket.emit 'load-session', hs.session
 #
 #
 #
-redis_sub.subscribe '/visits'
+redis_sub.subscribe 'visits'
 #
 #
 io_visits = io.of('/visits').on 'connection', (socket) ->
   hs = socket.handshake
   if hs.session
-    redis_sub.on 'log', (pattern, key) ->
-      console.log key
-      redis_sto.hgetall key, (e, obj) ->
-        console.log obj
+    socket.on 'subscribe_to', (params) ->
+      redis_sub.on 'message', (pattern, key) ->
+        if params.search_string is key
+          console.log 'FOUND: ', params.search_string
+          mongo_visit.findOne
+            url_string: params.search_string
+          , (err, visit) ->
+            console.log from_an_in visit
 
+
+
+
+mongo_url_redirect.findOne
+  url_string: 'loghome'
+, (err, url_redirect) ->
+  if not url_redirect
+    url_redirect = new mongo_url_redirect
+  url_redirect.redirect_to = '/'
+  url_redirect.url_string = 'loghome'
+  url_redirect.save (err) ->
+    log_err err if err
 
 
 ###
@@ -1837,7 +1860,6 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   #
   #
-  #
   mongo_url_redirect.find
     url_string: search_string
   , (err, url_redirects) ->
@@ -1885,6 +1907,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
           visit.save (err, saved_visit) ->
             log_err err if err
           #
+          #
+          #
+          #
+          redis_pub.publish 'visits', search_string
+          #
+          #
+          #
           # And in the mean time ...
           # Let's log a hit
           mongo_url_group.find
@@ -1930,18 +1959,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                       suffix = 'rd' if decimal is 3
                       in_number+suffix
                     #
-                    has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
-                    visit_details =
-                      browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
-                      location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
-                      date_added: visit.date_added
                     #
                     # Send it!
                     nodemailer.send_mail
                       sender: '"Cards.ly" <help@cards.ly>'
                       to: found_user.email
                       subject: 'Card #'+found_url.card_number+' was just scanned!'
-                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time from a'+(if visit_details.browser.match(/(a|e|i|o|u)/) then 'n' else '')+' '+visit_details.browser+' in '+visit_details.location+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+from_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
                     , (err, data) ->
                       if err
                         log_err err
