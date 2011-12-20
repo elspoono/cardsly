@@ -534,34 +534,7 @@ $ ->
   #
   #
   logged_in = ->
-    $.ajax
-      url: '/get-user'
-      success: (result) ->
-        if not result.err
-          console.log result
-          user = result.user
-
-          if $home_designer.length
-            $phone = $home_designer.find '.phone'
-            $profile_image = $phone.find '.profile_image'
-            if user.profile_image_url
-              #
-              #
-              profile_image_index = _(user.profile_image_urls).indexOf user.profile_image_url
-              #
-              $new_image = $ '<img class="profile_image" />'
-              $new_image.attr 'src', user.profile_image_url
-              $new_image.click ->
-                #
-                profile_image_index++
-                profile_image_index = 0 if profile_image_index >= user.profile_image_urls.length
-                #
-                $new_image.attr 'src', user.profile_image_urls[profile_image_index]
-                #
-              #
-              $profile_image.replaceWith $new_image
-
-  #
+    console.log 'in'
   #
   logged_in()
   #

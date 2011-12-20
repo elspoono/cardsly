@@ -912,11 +912,14 @@ io = require('socket.io').listen app
 
 redis = require 'redis'
 redis_sto = redis.createClient redis_options.port, redis_options.host
-redis_sto.auth redis_options.auth
+redis_sto.auth redis_options.auth, (err) ->
+  log_err err if err
 redis_pub = redis.createClient redis_options.port, redis_options.host
-redis_pub.auth redis_options.auth
+redis_pub.auth redis_options.auth, (err) ->
+  log_err err if err
 redis_sub = redis.createClient redis_options.port, redis_options.host
-redis_sub.auth redis_options.auth
+redis_sub.auth redis_options.auth, (err) ->
+  log_err err if err
 
 RedisStore = require('socket.io/lib/stores/redis')
 
