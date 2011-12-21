@@ -623,12 +623,23 @@ $ ->
   #
   #
   #
+  if typeof(window.orientation) isnt undefined and window.screen and window.screen.width and window.screen.width is 320
+    do_orient = () ->
+      if window.orientation is 0 or window.orientation is 180
+        $('meta[name=viewport]').attr 'content', 'width=320, initial-scale=1.0, user-scalable=no'
+      else
+        $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale=.3125, user-scalable=yes'
+    window.onorientationchange = do_orient
+    do_orient()
+
   #
   #
   $pull_down = $ '.pull_down'
   #
   #
   if $pull_down.length
+    #
+    #
     #
     #
     detect_pull_start = (e) ->
@@ -653,7 +664,7 @@ $ ->
       $pull_down.unbind 'mousemove', detect_pull_start
     #
     $pull_down.find('a').click ->
-      window.open '/loghome', 'loghome', 'height=500,width=320'
+      window.open '/loghome', 'loghome', 'height=575,width=320'
       false
     #
     $pull_down.bind 'click', (e) ->
