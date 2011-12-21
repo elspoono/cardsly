@@ -664,7 +664,7 @@ $ ->
       $pull_down.unbind 'mousemove', detect_pull_start
     #
     $pull_down.find('a').click ->
-      window.open '/loghome', 'loghome', 'height=550,width=320'
+      window.open '/loghome', 'loghome', 'height=575,width=320'
       false
     #
     $pull_down.bind 'click', (e) ->
