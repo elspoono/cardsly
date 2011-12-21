@@ -988,11 +988,39 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
       if not hs.session.order_form
         hs.session.order_form = {}
       #
-      _.extend(hs.session.order_form,new_values)
+      _.extend hs.session.order_form, new_values
       #
       save_session hs
       #
       #
+    #
+    #
+    #
+    #
+    socket.on 'search_address', (new_values) ->
+      #
+      #
+      #
+      #
+      geo.geocoder geo.google, new_values.street+' '+new_values.zip_code, false, (full_address, latitude, longitude, details) ->
+        #
+        #
+        _.extend new_values, 
+          full_address: full_address
+          latitude: latitude
+          longitude: longitude
+        #
+        socket.emit 'load_map', new_values
+        # 
+        #
+        _.extend hs.session.order_form, new_values
+        #
+        save_session hs
+        #
+      #
+      #
+    #
+    #
     #
     #
     #
@@ -1400,23 +1428,6 @@ check_no_err_ajax = (err, res) ->
 #
 #
 #
-#
-#
-app.post '/find-address', (req, res, next) ->
-  geo.geocoder geo.google, req.body.address+' '+req.body.city, false, (full_address, latitude, longitude, details) ->
-    #console.log full_address, latitude, longitude, details
-    full_address = full_address.replace /,/, '<br>'
-    req.session.saved_address =
-      address: req.body.address
-      city: req.body.city
-      full_address: full_address
-      latitude: latitude
-      longitude: longitude
-      details: details
-    res.send
-      full_address: full_address
-      latitude: latitude
-      longitude: longitude
 #
 #
 #
