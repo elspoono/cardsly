@@ -69,13 +69,13 @@ input,h1,h2,textarea,select
   .bg,.contents
     position absolute
   .bg
-    margin 0 0 0 -450px
+    margin 0 0 0 -370px
   a
     color color_seven
     text-decoration none
   .contents
     color color_seven
-    margin 160px 0 0 -430px
+    margin 160px 0 0 -350px
     width 190px
     text-align center
     h2
@@ -85,23 +85,23 @@ input,h1,h2,textarea,select
       margin 10px 0 0 0
       font-size 12px
     img
-      width 100px
+      width 140px
       margin 0 auto
       display block
   h3
     font-size 26px
-    margin 40px 0 5px 0
+    margin 50px 0 5px 0
     color color_six
   .list
     color color_six
     font-family normal_text
-    height 300px
+    height 250px
     overflow auto
     font-size 14px
     line-height 18px
     border-top 3px dashed color_seven
     .item
-      padding 10px 5px
+      padding 10px 5px 5px 5px
       border-bottom 3px dashed color_seven
     .date
       font-size 10px
@@ -117,7 +117,6 @@ h1
 
           
 .derek_hero
-  display none
   overflow visible
   margin 120px 0 0 0
   .top
@@ -126,13 +125,29 @@ h1
   .left
     float left
     img
-      margin-top 200px
+      position absolute
+      z-index -1
+      margin-top 0
   .right
     float right
     text-align right
+  h1.one
+    font-family huge_text
+    .one
+      color color_six
+      font-size 140px
+      text-align right
+    .two
+      font-size 80px
+      color color_seven
+    .three
+      color color_five
+      font-size 340px
+      text-align left
 
 
 .steve_hero
+  display none
   overflow visible
   margin 120px 0 0 0
   background #ded8c8
@@ -176,27 +191,11 @@ h1
 .bottom
   .left
     width 525px
-  .right
-    text-align center
-    width 280px
-  .left
     float left
   .right
+    width 280px
     float right
-    text-align right
-h1.one
-  font-family huge_text
-  .one
-    color color_six
-    font-size 60px
-    text-align left
-  .two
-    font-size 140px
-    color color_three
-  .three
-    color color_five
-    font-size 290px
-    text-align left
+    text-align center
 
 
 .clear
@@ -250,7 +249,6 @@ input,textarea,select
     height 40px
     margin 15px
 .notify_form
-  margin-top -180px
   padding 0 0 30px 0
   .link_editor
     overflow hidden
@@ -327,6 +325,7 @@ input,textarea,select
   .quantity
     margin 15px 0
     .option
+      cursor pointer
       text-align center
       float left
       width 115px
@@ -377,6 +376,12 @@ input,textarea,select
     margin 10px 0 0 20px
   cursor pointer
 
+.scanhands
+  position absolute
+  margin -60px 0 0 340px
+.get_guy
+  margin 10px 0 -190px 0
+
 .home_designer
   overflow visible
   .themes
@@ -398,7 +403,7 @@ input,textarea,select
       z-index 150
       box_shadow(0,color_three,10px)
     .hover
-      opacity(.8)
+      opacity(1)
   .card
     position absolute
     width 525px
@@ -407,7 +412,7 @@ input,textarea,select
     box_shadow(0,color_two,15px)
     z-index 200
   .controls
-    margin 30px 0 0 0
+    margin 60px 0 0 0
     width 525px
     .area
       box_shadow(0,color_two,15px)

@@ -435,6 +435,7 @@ theme_schema = new schema
   color1: String
   color2: String
   s3_id: String
+  thumb_cache: Boolean
   date_updated:
     type: Date
     default: Date.now
@@ -953,6 +954,7 @@ io_store = new RedisStore
 io.configure () ->
   io.set 'transports', ['xhr-polling']
   #io.set 'store', io_store
+  io.set 'log level', '2'
   io.set 'authorization', (data, next) ->
     cookies = data.headers.cookie.split /; */
     sid = false
@@ -969,8 +971,35 @@ io.configure () ->
 
 io_session = io.of('/session').on 'connection', (socket) ->
   hs = socket.handshake
-  #if hs.session
-  #  socket.emit 'load-session', hs.session
+  if hs.session
+    socket.emit 'load_session', hs.session
+    socket.on 'get_themes', ->
+      #
+      user_to_find = null
+      #
+      #
+      ###
+      if req.user and req.user._id
+        user_to_find = 
+          $in: [null,req.user._id]
+      #
+      else if req.sessionID
+        user_to_find = 
+          $in: [null,req.sessionID]
+      ###
+      #
+      #
+      mongo_theme.find
+        active: true
+        user_id: user_to_find
+      , (err, themes) ->
+        if err
+          log_err err
+        else
+          themes = _(themes).sortBy (theme) ->
+            if theme.user_id then '0' else theme.category + theme.date_added
+          themes.reverse()
+          socket.emit 'load_themes', themes
 #
 #
 #
@@ -2056,77 +2085,102 @@ render_image = (o) ->
     #z
     imagedata = ''
     #
-    request = http.get
-      host: 'd3eo3eito2cquu.cloudfront.net'
-      port: 80
-      path: '/'+o.widthheight+'/'+theme.s3_id
-    , (response) ->
-        #
-        response.setEncoding 'binary'
-        #
-        response.on 'data', (chunk) ->
-          imagedata += chunk
-        response.on 'end', ->
-          if response.statusCode is 200
-            buff = new Buffer imagedata, 'binary'
+    if o.thumb_cache and theme.thumb_cache
+      #
+      #
+      o.res.send '',
+        Location: '//d3eo3eito2cquu.cloudfront.net/thumb_cache/'+theme._id
+      , 302
+      #
+      #
+    else
+      #
+      request = http.get
+        host: 'd3eo3eito2cquu.cloudfront.net'
+        port: 80
+        path: '/'+o.widthheight+'/'+theme.s3_id
+      , (response) ->
+          #
+          response.setEncoding 'binary'
+          #
+          response.on 'data', (chunk) ->
+            imagedata += chunk
+          response.on 'end', ->
+            if response.statusCode is 200
+              buff = new Buffer imagedata, 'binary'
 
 
-            canvas = new node_canvas(o.width,o.height)
-            ctx = canvas.getContext '2d'
+              canvas = new node_canvas(o.width,o.height)
+              ctx = canvas.getContext '2d'
 
-            img = new node_canvas.Image
-            img.src = buff
-            ctx.drawImage img, 0, 0, o.width, o.height
-            
-
-
-            for line,i in theme_template.lines
-              h = Math.round(line.h/100*o.height)
-              x = line.x/100*o.width
-              y = line.y/100*o.height
-              w = line.w/100*o.width
-              ctx.fillStyle = hex_to_rgba line.color
-              ctx.font = h + 'px "' + line.font_family + '"'
-              if line.text_align is 'left'
-                ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-              else
-                measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                if line.text_align is 'right'
-                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                if line.text_align is 'center'
-                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-
-
-
-            alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-            #
-            qr_canvas = qr_code.draw_qr
-              node_canvas: node_canvas
-              style: 'round'
-              url: o.url
-              hex: theme_template.qr.color1
-              hex_2: theme_template.qr.color2+alpha
-            #
-            #
-            #
-            qr_canvas.toBuffer (err, qr_buff) ->
-              qr_img = new node_canvas.Image
-              qr_img.src = qr_buff
-
-
-              ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
+              img = new node_canvas.Image
+              img.src = buff
+              ctx.drawImage img, 0, 0, o.width, o.height
               
-              
-              canvas.toBuffer (err, buff) ->
-                o.res.send buff,
-                  'Content-Type': 'image/png'
-                , 200
-#
+
+
+              for line,i in theme_template.lines
+                h = Math.round(line.h/100*o.height)
+                x = line.x/100*o.width
+                y = line.y/100*o.height
+                w = line.w/100*o.width
+                ctx.fillStyle = hex_to_rgba line.color
+                ctx.font = h + 'px "' + line.font_family + '"'
+                if line.text_align is 'left'
+                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                else
+                  measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                  if line.text_align is 'right'
+                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                  if line.text_align is 'center'
+                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+
+
+
+              alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+              #
+              qr_canvas = qr_code.draw_qr
+                node_canvas: node_canvas
+                style: 'round'
+                url: o.url
+                hex: theme_template.qr.color1
+                hex_2: theme_template.qr.color2+alpha
+              #
+              #
+              #
+              qr_canvas.toBuffer (err, qr_buff) ->
+                qr_img = new node_canvas.Image
+                qr_img.src = qr_buff
+                #
+                #
+                ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
+                #
+                #
+                canvas.toBuffer (err, buff) ->
+                  o.res.send buff,
+                    'Content-Type': 'image/png'
+                  , 200
+                  #
+                  #
+                  #
+                  if o.thumb_cache and not theme.thumb_cache
+                    # Send that new file to Amazon to be saved!
+                    knoxReq = knoxClient.put '/thumb_cache/'+theme._id,
+                      'Content-Length': buff.length
+                      'Content-Type' : 'image/png'
+                    knoxReq.on 'response', (awsRes) ->
+                      if awsRes.statusCode != 200
+                        console.log 'ERR', awsRes
+                      else
+                        theme.thumb_cache = true
+                        theme.save maybe_log_err
+                    knoxReq.end buff
+  #
 #
 app.get '/thumb/:theme_id', (req, res, next) ->
   #
   #
-  url = 'cards.ly'
+  url = '1'
   parts = req.url.split '?'
   if parts.length > 1
     url = unescape req.url.replace /^[^\?]*\?/i, ''
@@ -2134,6 +2188,7 @@ app.get '/thumb/:theme_id', (req, res, next) ->
   render_image
     res: res
     widthheight: '158x90'
+    thumb_cache: true
     width: 158
     height: 90
     values: default_line_copy
@@ -2174,38 +2229,6 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
       url: url
 #
 #
-#
-#
-#
-# Get Themes (post route for get themes :)
-app.post '/get-themes', (req,res,next) ->
-  #
-  #
-  #
-  user_to_find = null
-  #
-  #
-  #
-  if req.user and req.user._id
-    user_to_find = 
-      $in: [null,req.user._id]
-  #
-  else if req.sessionID
-    user_to_find = 
-      $in: [null,req.sessionID]
-  #
-  #
-  #
-  mongo_theme.find
-    active: true
-    user_id: user_to_find
-  , (err, themes) ->
-    if check_no_err_ajax err, res
-      themes = _(themes).sortBy (theme) ->
-        if theme.user_id then '0' else theme.category + theme.date_added
-      themes.reverse()
-      res.send
-        themes: themes
 #
 #
 #
