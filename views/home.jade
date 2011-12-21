@@ -87,31 +87,32 @@ include pull_down
       .shipping_form
         h2 Shipping
         p Free via USPS priority mail
-        .field.street
-          input(placeholder='123 Main St.')
-          img(src='//maps.googleapis.com/maps/api/staticmap?center=33.603001,-112.048265&markers=color:red%7Clabel:V%7C33.603001,-112.048265&zoom=13&size=125x110&sensor=false')
+        .field
+          input.street(placeholder='123 Main St.')
+          img.map(src='')
+          .full_address
           input.zip_code(placeholder='85022')
         h2 Quantity
         .quantity
-          .option.active
+          .option(cards=100,cost=10)
             .label 100 cards
             img(src='/images/100.png')
             .value 
               span.dollar $
               span 10
-          .option
+          .option(cards=250,cost=25)
             .label 250 cards
             img(src='/images/250.png')
             .value 
               span.dollar $
               span 25
-          .option
+          .option(cards=500,cost=35)
             .label 500 cards
             img(src='/images/500.png')
             .value 
               span.dollar $
               span 35
-          .option
+          .option(cards=1500,cost=75)
             .label 1500 cards
             img(src='/images/1500.png')
             .value 

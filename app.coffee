@@ -950,6 +950,11 @@ io_store = new RedisStore
   redisClient: redis_sto
 ###
 
+save_session = (o) ->
+  session_store.get unescape(o.sid), (err, saved_session) ->
+    saved_session.order_form = o.session.order_form
+    session_store.set unescape(o.sid), saved_session, maybe_log_err
+
 
 io.configure () ->
   io.set 'transports', ['xhr-polling']
@@ -965,14 +970,63 @@ io.configure () ->
     session_store.get unescape(sid), (err, session) ->
       if session
         data.session = session
+        data.sid = sid
         next null, true
       else
         next null, false
 
-io_session = io.of('/session').on 'connection', (socket) ->
+io_session = io.of('/order_form').on 'connection', (socket) ->
   hs = socket.handshake
-  if hs.session
-    socket.emit 'load_session', hs.session
+  if hs.session and hs.sid
+    socket.emit 'load_order_form', hs.session.order_form
+    #
+    #
+    #
+    #
+    socket.on 'save_order_form', (new_values) ->
+      #
+      if not hs.session.order_form
+        hs.session.order_form = {}
+      #
+      _.extend hs.session.order_form, new_values
+      #
+      save_session hs
+      #
+      #
+    #
+    #
+    #
+    #
+    socket.on 'search_address', (new_values) ->
+      #
+      #
+      #
+      #
+      geo.geocoder geo.google, new_values.street+' '+new_values.zip_code, false, (full_address, latitude, longitude, details) ->
+        #
+        #
+        _.extend new_values, 
+          full_address: full_address
+          latitude: latitude
+          longitude: longitude
+        #
+        socket.emit 'load_map', new_values
+        # 
+        #
+        _.extend hs.session.order_form, new_values
+        #
+        save_session hs
+        #
+      #
+      #
+    #
+    #
+    #
+    #
+    #
+    # ----------
+    # Themes
+    # -----------------------------------
     socket.on 'get_themes', ->
       #
       user_to_find = null
@@ -1000,6 +1054,9 @@ io_session = io.of('/session').on 'connection', (socket) ->
             if theme.user_id then '0' else theme.category + theme.date_added
           themes.reverse()
           socket.emit 'load_themes', themes
+    # -----------------------------------
+    # END Themes
+    # ----------
 #
 #
 #
@@ -1371,23 +1428,6 @@ check_no_err_ajax = (err, res) ->
 #
 #
 #
-#
-#
-app.post '/find-address', (req, res, next) ->
-  geo.geocoder geo.google, req.body.address+' '+req.body.city, false, (full_address, latitude, longitude, details) ->
-    #console.log full_address, latitude, longitude, details
-    full_address = full_address.replace /,/, '<br>'
-    req.session.saved_address =
-      address: req.body.address
-      city: req.body.city
-      full_address: full_address
-      latitude: latitude
-      longitude: longitude
-      details: details
-    res.send
-      full_address: full_address
-      latitude: latitude
-      longitude: longitude
 #
 #
 #

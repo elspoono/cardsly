@@ -83,7 +83,7 @@ input,h1,h2,textarea,select
       margin 0 0 5px 0
     p
       margin 10px 0 0 0
-      font-size 12px
+      font-size 14px
     img
       width 140px
       margin 0 auto
@@ -317,11 +317,18 @@ input,textarea,select
 .shipping_form
   background color_five
   .street,.zip_code
-    input
-      width 90px
-    img
-      float right
-      margin 15px
+    width 90px
+  .map
+    float right
+    margin 15px
+  .full_address
+    position absolute
+    z-index 150
+    width 125px
+    text-align right
+    font-size 14px
+    alpha_bg(color_two_alt,.7)
+    margin 95px 0 0 140px
   .quantity
     margin 15px 0
     .option
@@ -335,7 +342,7 @@ input,textarea,select
     .active
       background color_two_alt
       border 4px solid color_two
-      margin 11px -14px 26px 11px
+      margin 11px -4px 26px 11px
     img
       margin 5px auto 0 auto
 
