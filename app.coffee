@@ -2126,7 +2126,7 @@ render_image = (o) ->
 app.get '/thumb/:theme_id', (req, res, next) ->
   #
   #
-  url = 'cards.ly'
+  url = '1'
   parts = req.url.split '?'
   if parts.length > 1
     url = unescape req.url.replace /^[^\?]*\?/i, ''
