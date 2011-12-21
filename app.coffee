@@ -2292,7 +2292,10 @@ app.get '/', (req, res) ->
 #
 #
 #
-#
+# About Page
+app.get '/', (req, res) ->
+  res.render 'about'
+    req:req
 #
 #
 #
