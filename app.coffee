@@ -2292,11 +2292,25 @@ app.get '/', (req, res) ->
 #
 #
 #
+
 # About Page
-app.get '/', (req, res) ->
+app.get '/about', (req, res) ->
   res.render 'about'
-    req:req
+    req: req
 #
+
+# About Page
+app.get '/alerts', (req, res) ->
+  res.render 'alerts'
+    req: req
+#
+
+# Redirect for Kickstarter campagin
+app.get '/fundourprinter', (req, res, next) ->
+  console.log req.url
+  res.send '',
+    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
+  , 301
 #
 #
 app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
