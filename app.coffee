@@ -145,6 +145,29 @@ knoxClient = knox.createClient
   bucket: 'cardsly'
 #
 #
+connect = require 'connect'
+redis_store = require('connect-redis') connect
+#
+redis_options =
+  host: 'localhost'
+  port: 6379
+if process.env.REDISTOGO_URL
+  redis_options = 
+    host: process.env.REDISTOGO_URL.replace /.*@([^:]*).*/ig, '$1'
+    port: process.env.REDISTOGO_URL.replace /.*@.*:([^\/]*).*/ig, '$1'
+    pass: process.env.REDISTOGO_URL.replace /.*:.*:(.*)@.*/ig, '$1'
+session_store = new redis_store redis_options
+#
+#
+redis = require 'redis'
+#
+#
+redis_pub = redis.createClient redis_options.port, redis_options.host
+if redis_options.pass
+  redis_pub.auth redis_options.pass, maybe_log_err
+redis_pub.on 'error', log_err
+#
+#
 #
 short_domain = 'http://cards.ly/'
 if process.env and process.env.SHORT_URL
@@ -616,7 +639,6 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
   promise = new Promise()
   #
   #
-  console.log 'USER META: ', user_meta
   #
   #
   add_user_meta_to_user = (user) ->
@@ -676,9 +698,10 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
         log_err err
         promise.fail err
       else
-        #console.log 'user created: ', createduser
+        #
         promise.fulfill saved_user
-
+        #
+        redis_pub.publish 'logins', saved_user._id
   #
   #
   #
@@ -824,18 +847,6 @@ EXPRESS APPLICATION CONFIG
 ###
 #
 #
-connect = require 'connect'
-redis_store = require('connect-redis') connect
-
-redis_options =
-  host: 'localhost'
-  port: 6379
-if process.env.REDISTOGO_URL
-  redis_options = 
-    host: process.env.REDISTOGO_URL.replace /.*@([^:]*).*/ig, '$1'
-    port: process.env.REDISTOGO_URL.replace /.*@.*:([^\/]*).*/ig, '$1'
-    pass: process.env.REDISTOGO_URL.replace /.*:.*:(.*)@.*/ig, '$1'
-session_store = new redis_store redis_options
 #
 # ## App configurations
 # ### Global app settings
@@ -924,35 +935,29 @@ io = require('socket.io').listen app
 maybe_log_err = (err) ->
   log_err err if err
 
-redis = require 'redis'
-###
-redis_sto = redis.createClient redis_options.port, redis_options.host
-if redis_options.pass
-  redis_sto.auth redis_options.pass, maybe_log_err
-redis_sto.on 'error', log_err
-###
-redis_pub = redis.createClient redis_options.port, redis_options.host
-if redis_options.pass
-  redis_pub.auth redis_options.pass, maybe_log_err
-redis_pub.on 'error', log_err
 
-redis_sub = redis.createClient redis_options.port, redis_options.host
+redis_visits_sub = redis.createClient redis_options.port, redis_options.host
 if redis_options.pass
-  redis_sub.auth redis_options.pass, maybe_log_err
-redis_sub.on 'error', log_err
+  redis_visits_sub.auth redis_options.pass, maybe_log_err
+redis_visits_sub.on 'error', log_err
 
+redis_logins_sub = redis.createClient redis_options.port, redis_options.host
+if redis_options.pass
+  redis_logins_sub.auth redis_options.pass, maybe_log_err
+redis_logins_sub.on 'error', log_err
 
-###
-RedisStore = require('socket.io/lib/stores/redis')
-io_store = new RedisStore
-  redisPub: redis_pub
-  redisSub: redis_sub
-  redisClient: redis_sto
-###
 
 save_session = (o) ->
+  #
+  #
+  #
   session_store.get unescape(o.sid), (err, saved_session) ->
-    saved_session.order_form = o.session.order_form
+    #
+    if not saved_session.order_form
+      saved_session.order_form = {}
+    #
+    _.extend saved_session.order_form, o.new_values
+    #
     session_store.set unescape(o.sid), saved_session, maybe_log_err
 
 
@@ -974,7 +979,15 @@ io.configure () ->
         next null, true
       else
         next null, false
-
+#
+#
+#
+#
+redis_logins_sub.subscribe 'logins'
+#
+#
+#
+#
 io_session = io.of('/order_form').on 'connection', (socket) ->
   hs = socket.handshake
   if hs.session and hs.sid
@@ -985,16 +998,19 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
     #
     socket.on 'save_order_form', (new_values) ->
       #
-      if not hs.session.order_form
-        hs.session.order_form = {}
       #
-      _.extend hs.session.order_form, new_values
-      #
-      save_session hs
+      save_session
+        sid: hs.sid
+        new_values: new_values
       #
       #
     #
     #
+    redis_logins_sub.on 'message', (pattern, key) ->
+      session_store.get unescape(hs.sid), (err, session) ->
+        if session and session.auth and session.auth.userId is key
+          mongo_user.findById key, (err, user) ->
+            socket.emit 'load_urls', user.profile_urls
     #
     #
     socket.on 'search_address', (new_values) ->
@@ -1013,9 +1029,9 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
         socket.emit 'load_map', new_values
         # 
         #
-        _.extend hs.session.order_form, new_values
-        #
-        save_session hs
+        save_session
+          sid: hs.sid
+          new_values: new_values
         #
       #
       #
@@ -1030,6 +1046,9 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
     socket.on 'get_themes', ->
       #
       user_to_find = null
+      #
+      #
+      #
       #
       #
       ###
@@ -1054,13 +1073,15 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
             if theme.user_id then '0' else theme.category + theme.date_added
           themes.reverse()
           socket.emit 'load_themes', themes
+      #
+      #
     # -----------------------------------
     # END Themes
     # ----------
 #
 #
 #
-redis_sub.subscribe 'visits'
+redis_visits_sub.subscribe 'visits'
 #
 #
 io_visits = io.of('/visits').on 'connection', (socket) ->
@@ -1068,7 +1089,6 @@ io_visits = io.of('/visits').on 'connection', (socket) ->
   if hs.session
     socket.on 'subscribe_to', (params) ->
       #
-      console.log 'SUBSCRIBED: ', params.search_string
       # The function used either way
       show_visits = (err, visits) ->
         #
@@ -1082,7 +1102,7 @@ io_visits = io.of('/visits').on 'connection', (socket) ->
       #
       #
       # On each update find 1
-      redis_sub.on 'message', (pattern, key) ->
+      redis_visits_sub.on 'message', (pattern, key) ->
         if params.search_string is key
           console.log 'FOUND: ', params.search_string
           mongo_visit.find
