@@ -697,6 +697,8 @@ $ ->
           $new_item.hide().slideDown()
         #
         #
+      #
+      $pull_list.html ''
       io_visit.emit 'subscribe_to',
         search_string: 'loghome'
   #
@@ -756,9 +758,6 @@ $ ->
     #
     #
     #
-    #
-    #
-    #
     $areas = $home_designer.find '.area'
     #
     #
@@ -795,12 +794,20 @@ $ ->
     $thumbs = undefined
     #
     #
-    $.ajax
-      url: '/get-themes'
-      success: (all_data) ->
+    #
+    #
+    io_session = io.connect('/session')
+    io_session.on 'connect', () ->
+      io_session.on 'load_session', (session) ->
+        console.log session
+      #
+      if not $thumbs
+        io_session.emit 'get_themes', true
+      #
+      io_session.on 'load_themes', (themes) ->
         #
         #
-        for theme,i in all_data.themes
+        for theme,i in themes
           #
           $new_image = $ '<img />'
           $new_image.attr
@@ -831,11 +838,10 @@ $ ->
         #
         #
         $thumbs.eq(0).click()
-      #
-      #
-      error: ->
-        $.load_alert
-          content: 'Error loading themes. Please try again later.'
+    #
+    #
+    #
+    #
     #
     #
   #
@@ -847,16 +853,6 @@ $ ->
   #
   #
   #
-  #
-  #
-  #
-  #
-  #
-  #
-  socket = io.connect('/session')
-  socket.on 'connect', () ->
-    socket.on 'load-session', (session) ->
-      console.log session
   #
   #
   #

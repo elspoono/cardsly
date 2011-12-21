@@ -954,6 +954,7 @@ io_store = new RedisStore
 io.configure () ->
   io.set 'transports', ['xhr-polling']
   #io.set 'store', io_store
+  io.set 'log level', '2'
   io.set 'authorization', (data, next) ->
     cookies = data.headers.cookie.split /; */
     sid = false
@@ -970,8 +971,35 @@ io.configure () ->
 
 io_session = io.of('/session').on 'connection', (socket) ->
   hs = socket.handshake
-  #if hs.session
-  #  socket.emit 'load-session', hs.session
+  if hs.session
+    socket.emit 'load_session', hs.session
+    socket.on 'get_themes', ->
+      #
+      user_to_find = null
+      #
+      #
+      ###
+      if req.user and req.user._id
+        user_to_find = 
+          $in: [null,req.user._id]
+      #
+      else if req.sessionID
+        user_to_find = 
+          $in: [null,req.sessionID]
+      ###
+      #
+      #
+      mongo_theme.find
+        active: true
+        user_id: user_to_find
+      , (err, themes) ->
+        if err
+          log_err err
+        else
+          themes = _(themes).sortBy (theme) ->
+            if theme.user_id then '0' else theme.category + theme.date_added
+          themes.reverse()
+          socket.emit 'load_themes', themes
 #
 #
 #
@@ -2201,38 +2229,6 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
       url: url
 #
 #
-#
-#
-#
-# Get Themes (post route for get themes :)
-app.post '/get-themes', (req,res,next) ->
-  #
-  #
-  #
-  user_to_find = null
-  #
-  #
-  #
-  if req.user and req.user._id
-    user_to_find = 
-      $in: [null,req.user._id]
-  #
-  else if req.sessionID
-    user_to_find = 
-      $in: [null,req.sessionID]
-  #
-  #
-  #
-  mongo_theme.find
-    active: true
-    user_id: user_to_find
-  , (err, themes) ->
-    if check_no_err_ajax err, res
-      themes = _(themes).sortBy (theme) ->
-        if theme.user_id then '0' else theme.category + theme.date_added
-      themes.reverse()
-      res.send
-        themes: themes
 #
 #
 #
