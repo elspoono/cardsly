@@ -1130,7 +1130,7 @@ mongo_url_redirect.findOne
 , (err, url_redirect) ->
   if not url_redirect
     url_redirect = new mongo_url_redirect
-  url_redirect.redirect_to = '/just-pulldown'
+  url_redirect.redirect_to = '/alerts'
   url_redirect.url_string = 'loghome'
   url_redirect.save (err) ->
     log_err err if err
