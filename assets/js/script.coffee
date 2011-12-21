@@ -538,8 +538,6 @@ $ ->
     $(this).removeClass 'hover'
   #
   #
-  logged_in_callback = ->
-    console.log 'in'
   #
   #
   #
@@ -555,7 +553,6 @@ $ ->
         #
         #
         # DO MORE HERE
-        logged_in_callback()
         #
         #
         #
@@ -623,10 +620,10 @@ $ ->
   #
   #
   #
-  if typeof(window.orientation) isnt undefined and window.screen and window.screen.width and window.screen.width is 320
+  if typeof(window.orientation) isnt undefined and window.screen and window.screen.width
     do_orient = () ->
       if window.orientation is 0 or window.orientation is 180
-        $('meta[name=viewport]').attr 'content', 'width=320, initial-scale=1.0, user-scalable=no'
+        $('meta[name=viewport]').attr 'content', 'width='+window.screen.width+', initial-scale=1.0, user-scalable=no'
       else
         $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale=.3125, user-scalable=yes'
     window.onorientationchange = do_orient
@@ -808,6 +805,9 @@ $ ->
     $themes = $home_designer.find '.themes'
     $thumbs = undefined
     #
+    $notify_form = $ '.notify_form'
+    #
+    $link_items = $notify_form.find '.link_items'
     #
     #
     #
@@ -817,7 +817,20 @@ $ ->
       #
       #
       io_session.on 'load_urls', (urls) ->
-        console.log urls
+        #
+        $items = $link_items.find '.item'
+        #
+        for url in urls
+          found = false
+          $items.each ->
+            $i = $ this
+            if $i.attr('url') is url
+              found = true
+          if not found
+            short_url = url.replace /http:\/\//, ''
+            if short_url.length > 17
+              short_url = short_url.substr(0, 15)+'...'
+            $link_items.append '<div class="item" url="'+url+'"><div class="url">'+short_url+'</div><div class="button">-</div></div>'
       #
       #
       #
@@ -857,7 +870,7 @@ $ ->
           $thumb.addClass 'active'
           #
           #
-          console.log id
+          #console.log id
         #
         #
         $thumbs.eq(0).click()
