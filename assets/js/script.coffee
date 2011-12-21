@@ -538,10 +538,9 @@ $ ->
     $(this).removeClass 'hover'
   #
   #
-  logged_in = ->
+  logged_in_callback = ->
     console.log 'in'
   #
-  logged_in()
   #
   #
   # Watch the popup windows every 200ms for when they set a cookie
@@ -556,7 +555,7 @@ $ ->
         #
         #
         # DO MORE HERE
-        logged_in()
+        logged_in_callback()
         #
         #
         #
@@ -803,6 +802,12 @@ $ ->
     #
     io_session = io.connect('/order_form')
     io_session.on 'connect', () ->
+      #
+      #
+      #
+      io_session.on 'load_urls', (urls) ->
+        console.log urls
+      #
       #
       #
       # ---------
