@@ -687,7 +687,7 @@ $ ->
         for visit in visits
           #
           $new_item = $ '<div class="item" />'
-          $new_item.html 'Scanned '+visit.by_an_in
+          $new_item.html '#1 scanned '+visit.by_an_in
           #
           $new_date = $ '<div class="date" />'
           $new_date.html new Date(visit.date_added).ago()
