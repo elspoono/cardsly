@@ -676,7 +676,7 @@ $ ->
     #
     #
     #
-    if $('.hero').length is 0
+    if $('.derek_hero').length is 0
       $pull_down.click()
     #
     #
