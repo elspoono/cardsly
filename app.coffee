@@ -3027,6 +3027,25 @@ app.get '/phx', (req, res) ->
 #
 #
 #
+#
+#
+app.get '/gangplank', (req, res) ->
+  res.render 'gangplank'
+    req: req
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Hello Gangplank!'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    #
+    # (Uncomment means remove the single # character at the start of it :)\
+#
+#
+#
+#
 app.get '/sample-landing-page', (req, res) ->
   res.render 'sample_landing_page'
     req: req
