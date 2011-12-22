@@ -631,7 +631,7 @@ $ ->
 
   #
   #
-  $pull_down = $ '.pull_down'
+  $pull_down = $ '.pull_down:visible'
   #
   #
   if $pull_down.length
