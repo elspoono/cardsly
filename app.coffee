@@ -2804,6 +2804,19 @@ app.get '/orders', securedAdminPage, (req, res, next) ->
           'orders'
         ]
 #
+app.get '/shipped', securedAdminPage, (req, res, next) ->
+  mongo_order.find
+    'charge.paid': true
+    'status': 'Shipped'
+  , (err, orders) ->
+    req.orders = orders
+    if check_no_err err, res
+      res.render 'orders'
+        req: req
+        scripts:[
+          'orders'
+        ]
+#
 # Admin Page Mockup
 app.get '/admin', securedAdminPage, (req, res, next) ->
   res.render 'admin'
