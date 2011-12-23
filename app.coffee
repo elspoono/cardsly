@@ -1101,6 +1101,7 @@ create_urls
 
 ###
 create_urls = (options, next) ->
+  console.log 'CREATE OPTIONS: ', options
   if typeof(options) isnt 'object'
     next 'No Options Sent'
   else if not options.redirect_to
@@ -1639,7 +1640,7 @@ app.post '/get-themes', (req,res,next) ->
         themes: themes
 #
 #
-add_urls_to_order = (order, user, res) ->
+add_urls_to_order = (order, user, res, passed_volume) ->
   #
   #
   #
@@ -1653,44 +1654,71 @@ add_urls_to_order = (order, user, res) ->
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
+  console.log 'REDIRECT TO: ', redirect_to
+  #
+  #
   volume = 100
   volume = 250 if order.quantity*1 is 25
   volume = 500 if order.quantity*1 is 35
   volume = 1500 if order.quantity*1 is 70
-
   #
+  #
+  volume = passed_volume*1 if passed_volume
+  #
+  console.log 'VOLUME: ', volume
   #
   create_urls
     redirect_to: redirect_to
     volume: volume
   , (err, new_urls) ->
-
-    url_group = new mongo_url_group
-    url_group.order_id = order._id
-    url_group.user_id = user._id
-    url_group.redirect_to = redirect_to
-    url_group.urls = []
     #
-    for new_url in new_urls
-      user.card_number++
-      url_group.urls.push
-        url_string: new_url.url_string
-        redirect_to: redirect_to
-        card_number: user.card_number
+    console.log 'CREATED URLS: ', new_urls.length
     #
     #
-    url_group.save (err, saved_group) ->
-      if err
-        log_err err
+    mongo_url_group.findOne
+      order_id: order._id
+    , (err, found_url_group) ->
+      #
+      #
+      if found_url_group
+        #
+        url_group = found_url_group
+        #
+        console.log 'FOUND GROUP OF LENGTH: ', url_group.urls.length
+        #
       else
         #
-        # This is where we kick off the processing of the pdf
-        process_pdf order._id
-    #
-    #
-    user.save (err, saved_user) ->
-      if err
-        log_err err
+        url_group = new mongo_url_group
+        url_group.order_id = order._id
+        url_group.user_id = user._id
+        url_group.redirect_to = redirect_to
+        url_group.urls = []
+        #
+        #
+        console.log 'CREATED NEW GROUP'
+      #
+      #
+      #
+      for new_url in new_urls
+        user.card_number++
+        url_group.urls.push
+          url_string: new_url.url_string
+          redirect_to: redirect_to
+          card_number: user.card_number
+      #
+      #
+      url_group.save (err, saved_group) ->
+        if err
+          log_err err
+        else
+          #
+          # This is where we kick off the processing of the pdf
+          process_pdf order._id
+      #
+      #
+      user.save (err, saved_user) ->
+        if err
+          log_err err
     #
     #
   volume
@@ -2501,6 +2529,22 @@ app.get '/update-patterns', (req, res, next) ->
 #
 #
 #
+app.get '/add-urls-to-order/:volume/:order_id', (req, res, next) ->
+  #
+  #
+  #
+  console.log 'ADD URLS HIT FOR ', req.params.order_id
+  # Find the Order that's passed in
+  mongo_order.findById req.params.order_id, (err, order) ->
+    if check_no_err err
+      mongo_user.findById order.user_id, (err, found_user) ->
+        if check_no_err err
+          add_urls_to_order order, found_user, res, req.params.volume
+          res.send
+            'success': true
+#
+#
+#
 app.get '/re-process-pdf/:order_id', (req, res, next) ->
   #
   #
@@ -2975,7 +3019,7 @@ app.get '/cardsly-with-moo', (req, res, next) ->
 #
 #
 #
-app.get '/buy', get_url_groups, (req, res, next) ->
+app.get '/buy', (req, res, next) ->
   session = req.session
   if req.user
     if (session and session.saved_form and session.saved_form.values and session.saved_form.values.length > 0 and session.saved_form.values[0] is "John Stamos") or !session or !session.saved_form or !session.saved_form.values or !session.saved_form.values.length
@@ -2989,6 +3033,8 @@ app.get '/buy', get_url_groups, (req, res, next) ->
         if err
           log_err err
         else
+          if not req.session.saved_form
+            req.session.saved_form = {}
           if found_order.length and found_order[0].values and found_order[0].address and found_order[0].city and found_order[0].full_address
             req.session.saved_form.values = found_order[0].values
             req.session.saved_address =
@@ -3011,12 +3057,6 @@ app.get '/buy', get_url_groups, (req, res, next) ->
     #
     description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
     #
-    # Uncomment the following line to add a custom h1 tag!
-    #h1: 'some other h1 tag'
-    #
-    # (Uncomment means remove the single # character at the start of it :)
-    #
-    url_groups: req.url_groups
 #
 #
 #
