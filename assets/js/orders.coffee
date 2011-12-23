@@ -10,7 +10,7 @@ ok.
 ###
 
 $ ->
-  $('.printed').mousedown ->
+  $('.printed').mouseup ->
     $t = $ this
     $o = $t.closest '.order_row'
     order_id = $o.attr 'order_id'
