@@ -1,45 +1,45 @@
 include pull_down
 .center_column
 
-  .derek_hero
+  .hero
+    .super_top
+      h3 
+        i.one Get
+        em &nbsp;Alerts&nbsp;
+        i.two for your best leads with
+      img(src='/images/alert_txt.png')
     .top
       .left
-        img(src='/images/newlogo.png')
+        img(src='/images/logonew.png')
       .right
         h1.one 
           .one QR Code 
           .two Business
           .three Cards
-
-  .steve_hero
-    .top
-      .hands
-        .scan 
-          img(src='/images/scanhands.png')
-          p They Scan!
-        .notify
-          img(src='/images/notifyhands.png')
-          p You get Notified!
-      .copy
-        .logo2
-          img(src='/images/logo.png')
-        .one
-          p QR Code
-        .two
-          p Business Cards
-        .three
-          p That Give You Control
   .bottom
     .left
-      img.scanhands(src='/images/scanhands.png')
       .home_designer
         h1.two
-          .one Design Your Card
-          .two Use a theme to start, or create your own
+          .one Design Your Cards
+          .two Customize colors and fonts
+        .home_images
+          img(src='/images/paint_brush.png')
         .controls
           .areas
             .area.active
               .color_picker
+                .overlay
+                .arrow_container
+                  .arrow
+              .toggle
+                .bg
+                  .option.left
+                  .option.center
+                  .option.right
+              - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+              .font_families
+                -for font_family in font_families
+                  .font_family(style='font-family:'+font_family+';')=font_family
             .area
             .area
         .card
@@ -47,12 +47,14 @@ include pull_down
         .themes
     .right
       h1.two 
-        .one Get Notified!
-        .two Email or text alerts when they scan
-      img.get_guy(src='/images/get_guy.png')
+        .one Get Notified
+        .two Learn who scanned your cards
+      .notify_images
+        img.email(src='/images/alert_email.png')
+        img.text(src='/images/alert_small.png')
       .notify_form
         h2 Set Alerts
-        p Learn who's interested in you
+        p Emails or Texts with details
         .field.email
           input(placeholder='my@email.com')
           .toggle
@@ -80,7 +82,7 @@ include pull_down
             .link_items
       h1.two.checkout_header
         .one Checkout
-        .two The last bit of info we need
+        .two The last step
       .shipping_form
         h2 Shipping
         p Free via USPS priority mail
