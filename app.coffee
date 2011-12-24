@@ -1075,6 +1075,18 @@ io_session = io.of('/order_form').on 'connection', (socket) ->
           socket.emit 'load_themes', themes
       #
       #
+    socket.on 'get_theme', (theme_id) ->
+      #
+      #
+      #
+      #
+      mongo_theme.findById theme_id, (err, theme) ->
+        if err
+          log_err err
+        else
+          socket.emit 'load_theme', theme
+      #
+      #
     # -----------------------------------
     # END Themes
     # ----------

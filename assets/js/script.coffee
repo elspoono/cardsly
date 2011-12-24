@@ -148,6 +148,7 @@ $.create_card_from_theme = (options) ->
     width: 158
     theme: null
     active_view: 0
+    card: null
   #
   if options
     $.extend settings, options
@@ -158,7 +159,10 @@ $.create_card_from_theme = (options) ->
   #
   #
   # Prep the Card
-  $my_card = $ '<div class="card"><img class="qr" /></div>'
+  if settings.card
+    $my_card = settings.card
+  else
+    $my_card = $ '<div class="card"><img class="qr" /></div>'
   #
   $my_card.data 'theme', settings.theme
   #
@@ -180,9 +184,17 @@ $.create_card_from_theme = (options) ->
   #
   #
   #
+  $lines = $my_card.find '.line'
+  #
+  #
   for pos,i in theme_template.lines
-    $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
-    $li.appendTo($my_card).css
+    if $lines.eq(i).length
+      $li = $lines.eq(i)
+    else
+      $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
+      $li.appendTo $my_card
+
+    $li.css
       position: 'absolute'
       top: pos.y/100 * settings.height
       left: pos.x/100 * settings.width
@@ -903,6 +915,19 @@ $ ->
       if not $thumbs
         io_session.emit 'get_themes', true
       #
+      io_session.on 'load_theme', (theme) ->
+        #
+        #
+        $.create_card_from_theme
+          height: 300
+          width: 525
+          theme: theme
+          active_view: 0
+          card: $card
+        #
+        #
+      #
+      #
       io_session.on 'load_themes', (themes) ->
         #
         #
@@ -929,8 +954,9 @@ $ ->
           $thumb = $ this
           id = $thumb.attr 'id'
           #
-          $thumbs.removeClass 'active'
-          $thumb.addClass 'active'
+          $thumb.make_active()
+          #
+          io_session.emit 'get_theme', $thumb.attr('id')
           #
           #
           #console.log id
