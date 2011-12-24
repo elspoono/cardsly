@@ -495,7 +495,7 @@ input,textarea,select
     height 300px
     background #FFF
     box_shadow(0,color_two,15px)
-    z-index 200
+    z-index 150
   .controls
     margin 20px 0 0 0
     width 525px
@@ -503,14 +503,10 @@ input,textarea,select
       box_shadow(0,color_two,15px)
       position relative
       z-index 160
-      width 485px
+      width 525px
       height 100px
       background color_five
       display none
-      padding 20px
-      input
-        width 140px
-        margin 10px 20px
     .area.active
       display block
   
@@ -543,12 +539,72 @@ input,textarea,select
 
 
 .font_families
-  height 30px
-  overflow auto
-  width 150px
+  float left
+  margin 15px
+.dropdown
+  border_radius(20px)
+  box_shadow(0,color_two,5px)
+  position relative
+  padding 0 30px 0 0
+  height 40px
+  z-index 300
+  overflow hidden
+  .arrow_container
+    cursor pointer
+    position absolute
+    height 40px
+    width 40px
+    gradient(darken(color_five,0),darken(color_five,20))
+    box_shadow(0,color_two,5px)
+    border_radius(20px)
+    right 0
+    top 0
+  .arrow
+    margin 14px 0 0 12px
+    border-top 12px solid color_two_alt
+    border-left 8px solid transparent
+    border-right 8px solid transparent
+    border-bottom none
+    border_radius(4px)
+    width 0
+    height 0
+  .bg_scroll
+    overflow hidden
+    height 40px
   .font_family
-    height 30px
-    line-height 30px
+    height 40px
+    font-size 16px
+    line-height 40px
+    text-align center
+    cursor pointer
+    padding 0 10px
+    color color_two
+  .active
+    color color_two_alt
+    padding 0 40px 0 10px
+    margin-right -30px
+    gradient(color_five,darken(color_five,20))
+    box_shadow(0,color_two,5px)
+    border_radius_left_only(20px)
+.dropdown.active
+  overflow visible
+  .active
+    padding 0 10px
+    margin-right 0
+  .bg
+    border_radius_except_top_right(20px)
+    background color_five
+    gradient(darken(color_five,20),darken(color_five,0))
+    box_shadow(0,color_two,5px,inset)
+    height 240px
+  .bg_scroll
+    overflow auto
+    height 240px
+  .bg_bg
+    height 240px
+    width 100%
+    position absolute
+    z-index -1
 
 
 

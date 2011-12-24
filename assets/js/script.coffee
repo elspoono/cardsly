@@ -577,36 +577,112 @@ $ ->
   #
   #
   #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  $dropdown = $ '.dropdown'
+  $dropdown.each ->
+    #
+    $d = $ this
+    #
+    #
+    $options = $d.find '.option'
+    #
+    $options.click ->
+      $f = $ this
+      $f.make_active()
+    #
+    $options.first().click()
+    #
+    $d.click ->
+      unless $d.hasClass 'active'
+        $d.addClass 'active'
+        #
+        #
+        #
+        setTimeout ->
+          $body.one 'click', ->
+            $d.removeClass 'active'
+            $d.find('.bg_scroll').scrollTo $d.find '.active'
+        , 0
+        #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
   ctrl_pressed = false
   shift_pressed = false
-  # Prevent Backspace
-
+  #
   $body = $ document
   $body.keydown (e) ->
-    if e.keyCode is 8
+    k = e.keyCode
+    #
+    #
+    # Prevent Backspace
+    if k is 8
       $t = $ e.target
       if not $t.closest('input').andSelf().filter('input').length
         if not $t.closest('textarea').andSelf().filter('textarea').length
           e.preventDefault()
     #
     # Modify the amount we shift when the shift key is pressed
-    if e.keyCode is 16
+    if k is 16
       shift_pressed = true
     #
     # Ctrl or Command Pressed Down
-    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+    if k is 17 or k is 91 or k is 93
       ctrl_pressed = true
     #
     #
     # Undo 
-    if ctrl_pressed and not shift_pressed and e.keyCode is 90
+    if ctrl_pressed and not shift_pressed and k is 90
       e.preventDefault()
       console.log 'undo'
     #
     # Redo
-    if ctrl_pressed and shift_pressed and e.keyCode is 90
+    if ctrl_pressed and shift_pressed and k is 90
       e.preventDefault()
       console.log 'redo'
+    #
+    #
+    #
+    # Up and Down
+    if k is 38 or k is 40
+      $active_dropdown = $dropdown.filter '.active'
+      if $active_dropdown.length
+        $active_option = $active_dropdown.find '.active'
+        e.preventDefault()
+        if k is 38
+          $new_option = $active_option.prev()
+        if k is 40
+          $new_option = $active_option.next()
+        #
+        if $new_option.length
+          #
+          $new_option.make_active()
+          #
+          $active_dropdown.find('.bg_scroll').scrollTo $new_option
+    #
+    if k is 37 or k is 39 or k is 13 or k is 9 or k is 32
+      $active_dropdown = $dropdown.filter '.active'
+      if $active_dropdown.length
+        e.preventDefault()
+        $body.click()
+    #
+    #
     #
   $body.keyup (e) ->
     if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
@@ -770,33 +846,20 @@ $ ->
     #
     #
     #
+    #
+    #
+    #
+    #
     $areas = $home_designer.find '.area'
     #
     #
-    $titles = $home_designer.find '.title'
-    $titles.each (title_index) ->
-      $title = $ this
-      $title.click ->
-        #
-        #
-        $titles.removeClass 'active'
-        $areas.removeClass 'active'
-        #
-        #
-        $area = $areas.eq title_index
-        #
-        $area.addClass 'active'
-        $title.addClass 'active'
-        #
-        $area.html ''
-        #
-        #
-        if $title.html() is 'Text'
-          for i in [1..6]
-            $area.append '<input />'
     #
     #
-    $titles.eq(0).click()
+    #
+    #
+    #
+    #
+    #
     #
     #
     #
