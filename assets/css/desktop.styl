@@ -4,6 +4,7 @@ color_two = #000
 color_two_alt = #FFF
 color_three = #000
 color_four = #DED4B9
+color_four = lighten(color_four,5)
 color_five = #64B6B1
 color_six = #ce6d4e
 
@@ -313,8 +314,8 @@ input,textarea,select
       line-height 40px
       height 40px
       width 40px
-      color color_two_alt
-      gradient(color_five,darken(color_five,20))
+      color color_seven
+      gradient(color_four,darken(color_four,20))
       border_radius(10px)
       box_shadow(0,color_two,5px)
       float left
@@ -333,9 +334,9 @@ input,textarea,select
       cursor pointer
       margin 15px 0 0 0
       float right
-      gradient(color_five,darken(color_five,20))
+      gradient(color_four,darken(color_four,20))
       border_radius_right_only(10px)
-      color color_two_alt
+      color color_seven
       font-family huge_text
       line-height 40px
       height 40px
@@ -365,10 +366,10 @@ input,textarea,select
     .bg
       border_radius(20px)
       overflow hidden
-      gradient(darken(color_five,20),color_five)
+      gradient(darken(color_four,20),color_four)
       box_shadow(0,color_two,5px,inset)
     .option
-      color lighten(color_five,10)
+      color lighten(color_four,10)
       border_radius(20px)
       height 40px
       line-height 40px
@@ -376,8 +377,8 @@ input,textarea,select
       float left
       cursor pointer
     .active
-      color color_two_alt
-      gradient(color_five,darken(color_five,20))
+      color color_seven
+      gradient(color_four,darken(color_four,20))
       box_shadow(0,color_two,5px)
 .checkout_header
   margin 100px 0 20px 0
@@ -543,7 +544,7 @@ input,textarea,select
   margin 15px
 .dropdown
   border_radius(20px)
-  box_shadow(0,color_two,5px)
+  box_shadow(0,color_seven,5px)
   position relative
   padding 0 30px 0 0
   height 40px
@@ -554,14 +555,14 @@ input,textarea,select
     position absolute
     height 40px
     width 40px
-    gradient(darken(color_five,0),darken(color_five,20))
-    box_shadow(0,color_two,5px)
+    gradient(darken(color_four,0),darken(color_four,20))
+    box_shadow(0,color_seven,5px)
     border_radius(20px)
     right 0
     top 0
   .arrow
     margin 14px 0 0 12px
-    border-top 12px solid color_two_alt
+    border-top 12px solid color_seven
     border-left 8px solid transparent
     border-right 8px solid transparent
     border-bottom none
@@ -570,6 +571,9 @@ input,textarea,select
     height 0
   .bg_scroll
     overflow hidden
+    border_radius(20px)
+    margin-right -30px
+    padding-right 30px
     height 40px
   .font_family
     height 40px
@@ -578,13 +582,13 @@ input,textarea,select
     text-align center
     cursor pointer
     padding 0 10px
-    color color_two
+    color color_seven
   .active
-    color color_two_alt
+    color color_seven
     padding 0 40px 0 10px
     margin-right -30px
-    gradient(color_five,darken(color_five,20))
-    box_shadow(0,color_two,5px)
+    gradient(color_four,darken(color_four,20))
+    box_shadow(0,color_seven,5px)
     border_radius_left_only(20px)
 .dropdown.active
   overflow visible
@@ -593,11 +597,13 @@ input,textarea,select
     margin-right 0
   .bg
     border_radius_except_top_right(20px)
-    background color_five
-    gradient(darken(color_five,20),darken(color_five,0))
-    box_shadow(0,color_two,5px,inset)
+    gradient(darken(color_four,20),darken(color_four,0))
+    box_shadow(0,color_seven,5px,inset)
     height 240px
   .bg_scroll
+    margin-right 0
+    padding-right 0
+    border_radius(0)
     overflow auto
     height 240px
   .bg_bg
