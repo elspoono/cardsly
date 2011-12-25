@@ -27,6 +27,9 @@ include pull_down
         .controls
           .areas
             .area.active
+              input.line_value(placeholder='Enter Text Here')
+              .button.save Save
+              .clear
               .color_picker
                 .overlay
                 .arrow_container
@@ -45,13 +48,15 @@ include pull_down
                   .bg_scroll
                     -for font_family in font_families
                       .font_family.option(style='font-family:'+font_family+';')=font_family
-              .clear
-              input.line_value(placeholder='Enter Text Here')
             .area
             .area
         .card
-        .clear
-        .themes
+        
+        .theme_container
+          .top_anchor
+            h2 Themes
+          .themes
+          .bottom_anchor
     .right
       h1.two 
         .one Get Notified

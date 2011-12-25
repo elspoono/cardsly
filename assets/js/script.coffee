@@ -906,16 +906,19 @@ $ ->
         #
         for theme,i in themes
           #
+          $new_thumb = $ '<div class="thumb" />'
+          $new_thumb.attr
+            id: theme._id
           $new_image = $ '<img />'
           $new_image.attr
             src: '/thumb/'+theme._id
-            id: theme._id
           #
+          $new_thumb.append $new_image
           #
-          $themes.append $new_image
+          $themes.append $new_thumb
           #
         #
-        $thumbs = $themes.find 'img'
+        $thumbs = $themes.find '.thumb'
         #
         $thumbs.hover ->
           $(this).addClass 'hover'
