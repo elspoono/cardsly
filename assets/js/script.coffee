@@ -823,6 +823,8 @@ $ ->
     #
     #
     #
+    $card = $home_designer.find '.card'
+    c_o = $card.offset()
     #
     #
     #
