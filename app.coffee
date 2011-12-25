@@ -679,7 +679,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
     # Twitter
     if user_meta.screen_name
       user.name = user_meta.name
-      user.twitter_url = 'http://twitter.com/#!'+user_meta.screen_name
+      user.twitter_url = 'http://twitter.com/'+user_meta.screen_name
       #
       add_url user.twitter_url
       add_url user_meta.url if user_meta.url

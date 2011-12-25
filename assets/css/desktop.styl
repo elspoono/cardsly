@@ -349,38 +349,60 @@ input,textarea,select
         text-align right
         width 95px
         padding 0 10px
-        height 25px
-        line-height 25px
+        height 20px
+        line-height 20px
         font-size 12px
-        font-style italic
-        font-family normal_text
       .button
-        height 25px
-        line-height 25px
-        border_radius(13px)
+        height 20px
+        width 20px
+        line-height 20px
+        border_radius(20px)
+        box_shadow(0,color_two,3px)
         float left
+  /*
+    .toggle
+      float right
+      margin 15px
+      border_radius(20px)
+      box_shadow(0,color_two,5px)
+      .bg
+        border_radius(20px)
+        overflow hidden
+        gradient(darken(color_six,20),color_six)
+        box_shadow(0,color_two,5px,inset)
+      .option
+        color lighten(color_six,10)
+        border_radius(20px)
+        height 40px
+        line-height 40px
+        padding 0 10px
+        float left
+        cursor pointer
+      .active
+        color color_two_alt
+        gradient(color_six,darken(color_six,20))
+        box_shadow(0,color_two,5px)
+  */
   .toggle
     float right
-    margin 15px
-    border_radius(20px)
-    box_shadow(0,color_two,5px)
+    margin 15px 15px 15px 0
     .bg
-      border_radius(20px)
       overflow hidden
-      gradient(darken(color_six,20),color_six)
-      box_shadow(0,color_two,5px,inset)
     .option
-      color lighten(color_six,10)
-      border_radius(20px)
+      float left
+      color color_two
+      padding 0 10px
       height 40px
       line-height 40px
-      padding 0 10px
-      float left
       cursor pointer
+      border_radius(15px)
     .active
-      color color_two_alt
-      gradient(color_six,darken(color_six,20))
-      box_shadow(0,color_two,5px)
+      background color_two_alt
+      border 4px solid color_two
+      padding 0 6px
+      height 32px
+      line-height 32px
+    
 .checkout_header
   margin 100px 0 20px 0
 .shipping_form
