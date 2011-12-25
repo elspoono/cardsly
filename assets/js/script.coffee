@@ -708,17 +708,6 @@ $ ->
   #
   #
   #
-  if typeof(window.orientation) isnt undefined and window.screen and window.screen.width
-    do_orient = () ->
-      if window.orientation is 0 or window.orientation is 180
-        $('meta[name=viewport]').attr 'content', 'width='+window.screen.width+', initial-scale=1.0, user-scalable=no'
-      else
-        $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale=.3125, user-scalable=yes'
-    window.onorientationchange = do_orient
-    do_orient()
-
-  #
-  #
   $pull_down = $ '.pull_down:visible'
   #
   #
@@ -833,24 +822,6 @@ $ ->
     #
     #
     #
-    #
-    # Scroll the card preview
-    #
-    $card = $home_designer.find '.card'
-    c_o = $card.offset()
-    $card.css
-      'position' : 'absolute'
-      'top' : c_o.top
-    $window.scroll ->
-      b_t = $body.scrollTop()
-      if c_o.top < b_t
-        $card.css
-          'position' : 'fixed'
-          'top' : 0
-      else
-        $card.css
-          'position' : 'absolute'
-          'top' : c_o.top
     #
     #
     #
