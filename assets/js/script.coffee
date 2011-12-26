@@ -883,7 +883,6 @@ $ ->
           card: $card
           side: $front_back.filter('.active').html()
         #
-        console.log $front_back.filter('.active').html()
         #
       #
       #
