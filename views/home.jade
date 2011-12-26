@@ -108,8 +108,9 @@ include pull_down
         p Free via USPS priority mail
         .field
           input.street(placeholder='123 Main St.')
-          img.map(src='')
-          .full_address
+          .map
+          .full_address_container
+            .full_address
           input.zip_code(placeholder='85022')
         h2 Quantity
         .quantity

@@ -976,9 +976,11 @@ $ ->
       #
       check_address_timer = 0
       maybe_check_address = ->
+        $map.html 'Waiting'
         clearTimeout check_address_timer
         check_address_timer = setTimeout ->
           #
+          $map.html 'Searching ...'
           #
           # 
           io_session.emit 'search_address',
@@ -992,12 +994,16 @@ $ ->
       $zip_code.keyup maybe_check_address
       #
       load_map = (map) ->
+        $new_img = $ '<img />'
         if map.full_address
           coordinates = map.latitude+','+map.longitude
-          $map.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
-          $full_address.html map.full_address
+          $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
+          $full_address.html map.full_address.replace /,/, '<br>'
         else
-          $map.attr 'src', null
+          $new_img.attr 'src', null
+        #
+        $map.html ''
+        $map.append $new_img
       #
       io_session.on 'load_map', load_map
       #
