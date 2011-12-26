@@ -406,14 +406,6 @@ input,textarea,select
   .line,.qr,.img
     cursor pointer
   box_shadow(0,color_two,10px)
-.card_stack
-  position absolute
-  margin-left -20px
-  margin-top -15px
-  width 585px
-.card.preview
-  box_shadow(1px,color_ten,1px)
-  transform_matrix(1,0.01,-.01,1,0,0)
 
 .preview_count
   text-align right
@@ -429,6 +421,8 @@ input,textarea,select
   .large
     font-size 48px
     line-height 60px
+
+
 
 
 .toggle
@@ -547,6 +541,38 @@ input,textarea,select
       display none
     .area.active
       display block
+
+
+
+
+
+
+
+
+.card_stack
+  position absolute
+  margin-left -20px
+  margin-top -15px
+  width 585px
+.card.preview
+  box_shadow(1px,color_ten,5px)
+  transform_matrix(1,-.01,.01,1,0,0)
+.card.preview_2
+  position absolute
+  box_shadow(0,color_ten,150px,inset)
+  transform_matrix(1,.01,-.01,1,0,0)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .line_value

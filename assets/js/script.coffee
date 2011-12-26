@@ -203,7 +203,7 @@ $.create_card_from_theme = (options) ->
     #
     #
     #
-    if settings.side is 'back'
+    if settings.side is 'back' and not $my_card.hasClass 'preview_2'
       #
       $lines.hide()
       #
@@ -777,8 +777,12 @@ $ ->
     #
     #
     #
-    $card = $home_designer.find '.card'
+    $all_card = $home_designer.find '.card'
+    #
+    $card = $all_card.filter ':not(.preview_2)'
+    #
     c_o = $card.offset()
+    #
     #
     #
     #
@@ -874,14 +878,15 @@ $ ->
         #
         #
         #
+        side = $front_back.filter('.active').html()
         #
         $.create_card_from_theme
           height: 300
           width: 525
           theme: theme
           active_view: 0
-          card: $card
-          side: $front_back.filter('.active').html()
+          card: $all_card
+          side: side
         #
         #
       #
