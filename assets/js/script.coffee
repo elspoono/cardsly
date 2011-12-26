@@ -162,7 +162,7 @@ $.create_card_from_theme = (options) ->
   if settings.card
     $my_cards = settings.card
   else
-    $my_cards = $ '<div class="card"><img class="qr" /></div>'
+    $my_cards = $ '<div class="card"></div>'
   #
   #
   #
@@ -181,6 +181,9 @@ $.create_card_from_theme = (options) ->
     $my_card.data 'theme', settings.theme
     #
     $my_qr = $my_card.find('.qr')
+    if not $my_qr.length
+      $my_qr = $ '<img class="qr" /></div>'
+      $my_card.append $my_qr
     #
     # Calculate the alpha
     alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
