@@ -148,6 +148,8 @@ $.create_card_from_theme = (options) ->
     width: 158
     theme: null
     active_view: 0
+    card: null
+    side: 'front'
   #
   if options
     $.extend settings, options
@@ -158,46 +160,97 @@ $.create_card_from_theme = (options) ->
   #
   #
   # Prep the Card
-  $my_card = $ '<div class="card"><img class="qr" /></div>'
-  #
-  $my_card.data 'theme', settings.theme
-  #
-  $my_qr = $my_card.find('.qr')
-  #
-  # Calculate the alpha
-  alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-  #
-  #
-  $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
-  #
-  $my_qr.css
-    height: theme_template.qr.h/100 * settings.height
-    width: theme_template.qr.w/100 * settings.width
-    position: 'absolute'
-    top: theme_template.qr.y/100 * settings.height
-    left: theme_template.qr.x/100 * settings.width
-    zIndex: 200
+  if settings.card
+    $my_cards = settings.card
+  else
+    $my_cards = $ '<div class="card"></div>'
   #
   #
   #
-  for pos,i in theme_template.lines
-    $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
-    $li.appendTo($my_card).css
-      position: 'absolute'
-      top: pos.y/100 * settings.height
-      left: pos.x/100 * settings.width
-      width: (pos.w/100 * settings.width) + 'px'
-      fontSize: (pos.h/100 * settings.height) + 'px'
-      lineHeight: (pos.h/100 * settings.height) + 'px'
-      fontFamily: pos.font_family
-      textAlign: pos.text_align
-      color: '#'+pos.color
   #
   #
-  # Set the card background
-  $my_card.css
-    background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
-#
+  #
+  #
+  #
+  $my_cards.each ->
+    #
+    #
+    $my_card = $ this
+    #
+    #
+    #
+    $my_card.data 'theme', settings.theme
+    #
+    #
+    #
+    $my_qr = $my_card.find('.qr')
+    if not $my_qr.length
+      $my_qr = $ '<img class="qr" /></div>'
+      $my_card.append $my_qr
+    #
+    #
+    #
+    $lines = $my_card.find '.line'
+    #
+    #
+    for pos,i in theme_template.lines
+      if $lines.eq(i).length
+        $li = $lines.eq(i)
+      else
+        $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
+        $li.appendTo $my_card
+    #
+    #
+    #
+    #
+    if settings.side is 'back'
+      #
+      $lines.hide()
+      #
+      $my_qr.hide()
+      #
+    else
+      # Calculate the alpha
+      alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+      #
+      #
+      $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
+      #
+      $my_qr.show().css
+        height: theme_template.qr.h/100 * settings.height
+        width: theme_template.qr.w/100 * settings.width
+        position: 'absolute'
+        top: theme_template.qr.y/100 * settings.height
+        left: theme_template.qr.x/100 * settings.width
+        zIndex: 200
+      #
+      #
+      #
+      $lines = $my_card.find '.line'
+      #
+      #
+      for pos,i in theme_template.lines
+        $li = $lines.eq(i)
+        #
+        $li.show().css
+          position: 'absolute'
+          top: pos.y/100 * settings.height
+          left: pos.x/100 * settings.width
+          width: (pos.w/100 * settings.width) + 'px'
+          fontSize: (pos.h/100 * settings.height) + 'px'
+          lineHeight: (pos.h/100 * settings.height) + 'px'
+          fontFamily: pos.font_family
+          textAlign: pos.text_align
+          color: '#'+pos.color
+      #
+      #
+    #
+    #
+    #
+    # Set the card background
+    $my_card.css
+      background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
+  #
 #
 # another helper function to add it to a category
 $.add_card_to_category = ($my_card, theme) ->
@@ -538,8 +591,6 @@ $ ->
     $(this).removeClass 'hover'
   #
   #
-  logged_in_callback = ->
-    console.log 'in'
   #
   #
   #
@@ -555,7 +606,6 @@ $ ->
         #
         #
         # DO MORE HERE
-        logged_in_callback()
         #
         #
         #
@@ -580,36 +630,112 @@ $ ->
   #
   #
   #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  $dropdown = $ '.dropdown'
+  $dropdown.each ->
+    #
+    $d = $ this
+    #
+    #
+    $options = $d.find '.option'
+    #
+    $options.click ->
+      $f = $ this
+      $f.make_active()
+    #
+    $options.first().click()
+    #
+    $d.click ->
+      unless $d.hasClass 'active'
+        $d.addClass 'active'
+        #
+        #
+        #
+        setTimeout ->
+          $body.one 'click', ->
+            $d.removeClass 'active'
+            $d.find('.bg_scroll').scrollTo $d.find '.active'
+        , 0
+        #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #
   ctrl_pressed = false
   shift_pressed = false
-  # Prevent Backspace
-
+  #
   $body = $ document
   $body.keydown (e) ->
-    if e.keyCode is 8
+    k = e.keyCode
+    #
+    #
+    # Prevent Backspace
+    if k is 8
       $t = $ e.target
       if not $t.closest('input').andSelf().filter('input').length
         if not $t.closest('textarea').andSelf().filter('textarea').length
           e.preventDefault()
     #
     # Modify the amount we shift when the shift key is pressed
-    if e.keyCode is 16
+    if k is 16
       shift_pressed = true
     #
     # Ctrl or Command Pressed Down
-    if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
+    if k is 17 or k is 91 or k is 93
       ctrl_pressed = true
     #
     #
     # Undo 
-    if ctrl_pressed and not shift_pressed and e.keyCode is 90
+    if ctrl_pressed and not shift_pressed and k is 90
       e.preventDefault()
       console.log 'undo'
     #
     # Redo
-    if ctrl_pressed and shift_pressed and e.keyCode is 90
+    if ctrl_pressed and shift_pressed and k is 90
       e.preventDefault()
       console.log 'redo'
+    #
+    #
+    #
+    # Up and Down
+    if k is 38 or k is 40
+      $active_dropdown = $dropdown.filter '.active'
+      if $active_dropdown.length
+        $active_option = $active_dropdown.find '.active'
+        e.preventDefault()
+        if k is 38
+          $new_option = $active_option.prev()
+        if k is 40
+          $new_option = $active_option.next()
+        #
+        if $new_option.length
+          #
+          $new_option.make_active()
+          #
+          $active_dropdown.find('.bg_scroll').scrollTo $new_option
+    #
+    if k is 37 or k is 39 or k is 13 or k is 9 or k is 32
+      $active_dropdown = $dropdown.filter '.active'
+      if $active_dropdown.length
+        e.preventDefault()
+        $body.click()
+    #
+    #
     #
   $body.keyup (e) ->
     if e.keyCode is 17 or e.keyCode is 91 or e.keyCode is 93
@@ -618,104 +744,6 @@ $ ->
       shift_pressed = false
   #
   #
-  #
-  #
-  #
-  #
-  #
-  if typeof(window.orientation) isnt undefined and window.screen and window.screen.width and window.screen.width is 320
-    do_orient = () ->
-      if window.orientation is 0 or window.orientation is 180
-        $('meta[name=viewport]').attr 'content', 'width=320, initial-scale=1.0, user-scalable=no'
-      else
-        $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale=.3125, user-scalable=yes'
-    window.onorientationchange = do_orient
-    do_orient()
-
-  #
-  #
-  $pull_down = $ '.pull_down'
-  #
-  #
-  if $pull_down.length
-    #
-    #
-    #
-    #
-    detect_pull_start = (e) ->
-      unless $pull_down.data 'active'
-        o = [e.offsetX,e.offsetY]
-        if o[1] < 480 or (o[0] > 90 and o[0] < 132)
-          $pull_down.unbind 'mousemove', detect_pull_start
-          $pull_down.stop(true,false).animate
-            marginTop: 10
-          , 200
-          $pull_down.one 'mouseout', ->
-            unless $pull_down.data 'active'
-              $pull_down.stop(true,false).animate
-                marginTop: 0
-              , 200
-    #
-    #
-    $pull_down.bind 'mouseover', (e) ->
-      $pull_down.bind 'mousemove', detect_pull_start
-      detect_pull_start e
-    $pull_down.bind 'mouseout', (e) ->
-      $pull_down.unbind 'mousemove', detect_pull_start
-    #
-    $pull_down.find('a').click ->
-      window.open '/loghome', 'loghome', 'height=575,width=320'
-      false
-    #
-    $pull_down.bind 'click', (e) ->
-      unless $pull_down.data 'active'
-        $pull_down.stop(true,false).animate
-          marginTop: 690
-        , 400
-        $pull_down.data 'active', true
-        setTimeout ->
-          body_click = (e) ->
-            $e = $ e.target
-            $e = $e.closest('.pull_down').andSelf()
-            unless $e[0] is $pull_down[0]
-              $pull_down.stop(true,false).animate
-                marginTop: 0
-              , 200
-              $pull_down.data 'active', false
-              $body.unbind 'click', body_click
-          $body.bind 'click', body_click
-        , 0
-        
-    #
-    $pull_list = $pull_down.find '.contents .list'
-    #
-    #
-    #
-    if $('.derek_hero').length is 0
-      $pull_down.click()
-    #
-    #
-    #
-    io_visit = io.connect('/visits')
-    io_visit.on 'connect', () ->
-      io_visit.on 'load_visits', (visits) ->
-        for visit in visits
-          #
-          $new_item = $ '<div class="item" />'
-          $new_item.html '#1 scanned '+visit.by_an_in
-          #
-          $new_date = $ '<div class="date" />'
-          $new_date.html new Date(visit.date_added).ago()
-          #
-          $new_item.append $new_date
-          $pull_list.prepend $new_item
-          $new_item.hide().slideDown()
-        #
-        #
-      #
-      $pull_list.html ''
-      io_visit.emit 'subscribe_to',
-        search_string: 'loghome'
   #
   #
   #
@@ -749,23 +777,11 @@ $ ->
     #
     #
     #
-    # Scroll the card preview
-    #
     $card = $home_designer.find '.card'
     c_o = $card.offset()
-    $card.css
-      'position' : 'absolute'
-      'top' : c_o.top
-    $window.scroll ->
-      b_t = $body.scrollTop()
-      if c_o.top < b_t
-        $card.css
-          'position' : 'fixed'
-          'top' : 0
-      else
-        $card.css
-          'position' : 'absolute'
-          'top' : c_o.top
+    #
+    #
+    #
     #
     #
     #
@@ -776,30 +792,13 @@ $ ->
     $areas = $home_designer.find '.area'
     #
     #
-    $titles = $home_designer.find '.title'
-    $titles.each (title_index) ->
-      $title = $ this
-      $title.click ->
-        #
-        #
-        $titles.removeClass 'active'
-        $areas.removeClass 'active'
-        #
-        #
-        $area = $areas.eq title_index
-        #
-        $area.addClass 'active'
-        $title.addClass 'active'
-        #
-        $area.html ''
-        #
-        #
-        if $title.html() is 'Text'
-          for i in [1..6]
-            $area.append '<input />'
     #
     #
-    $titles.eq(0).click()
+    #
+    #
+    #
+    #
+    #
     #
     #
     #
@@ -808,6 +807,9 @@ $ ->
     $themes = $home_designer.find '.themes'
     $thumbs = undefined
     #
+    $notify_form = $ '.notify_form'
+    #
+    $link_items = $notify_form.find '.link_items'
     #
     #
     #
@@ -817,31 +819,99 @@ $ ->
       #
       #
       io_session.on 'load_urls', (urls) ->
-        console.log urls
+        #
+        $items = $link_items.find '.item'
+        #
+        for url in urls
+          found = false
+          $items.each ->
+            $i = $ this
+            if $i.attr('url') is url
+              found = true
+          if not found
+            short_url = url.replace /http:\/\//, ''
+            if short_url.length > 17
+              short_url = short_url.substr(0, 15)+'...'
+            $link_items.append '<div class="item" url="'+url+'"><div class="url">'+short_url+'</div><div class="button">-</div></div>'
       #
       #
       #
       # ---------
       # Thumbs
       # ------------------------------------
+      #
+      #
+      $front_back = $home_designer.find '.front_back .option'
+      $front_back.click ->
+        $f_b = $ this
+        $f_b.make_active()
+        $themes.removeClass 'front back'
+        $themes.addClass $f_b.html()
+        #
+        #
+        $card.addClass 'collapsed'
+        #
+        setTimeout ->
+          $thumbs.filter('.active').click()
+          #
+          #
+          $card.addClass 'stop_animate'
+          $card.removeClass 'collapsed'
+          $card.addClass 'collapsed2'
+          setTimeout ->
+            $card.removeClass 'stop_animate'
+            $card.removeClass 'collapsed2'
+          , 0
+        , 500
+      #
+      #
+      #
       if not $thumbs
         io_session.emit 'get_themes', true
+      #
+      io_session.on 'load_theme', (theme) ->
+        #
+        #
+        #
+        #
+        #
+        $.create_card_from_theme
+          height: 300
+          width: 525
+          theme: theme
+          active_view: 0
+          card: $card
+          side: $front_back.filter('.active').html()
+        #
+        #
+      #
+      #
+      #
       #
       io_session.on 'load_themes', (themes) ->
         #
         #
         for theme,i in themes
           #
-          $new_image = $ '<img />'
-          $new_image.attr
-            src: '/thumb/'+theme._id
+          $new_thumb = $ '<div class="thumb"><div class="fg_bg" /><div class="bg_bg" /></div>'
+          $new_thumb.attr
             id: theme._id
           #
+          $fg_image = $ '<img class="fg" />'
+          $fg_image.attr
+            src: '/thumb/'+theme._id+''
+          $new_thumb.append $fg_image
           #
-          $themes.append $new_image
+          #
+          $bg_image = $ '<img class="bg" />'
+          $bg_image.attr
+            src: '/thumb/'+theme._id+'/back'
+          $new_thumb.append $bg_image
+          #
+          $themes.append $new_thumb
           #
         #
-        $thumbs = $themes.find 'img'
+        $thumbs = $themes.find '.thumb'
         #
         $thumbs.hover ->
           $(this).addClass 'hover'
@@ -853,11 +923,12 @@ $ ->
           $thumb = $ this
           id = $thumb.attr 'id'
           #
-          $thumbs.removeClass 'active'
-          $thumb.addClass 'active'
+          $thumb.make_active()
+          #
+          io_session.emit 'get_theme', $thumb.attr('id')
           #
           #
-          console.log id
+          #console.log id
         #
         #
         $thumbs.eq(0).click()
@@ -874,8 +945,14 @@ $ ->
       # Quantity
       # -------
       $quantity = $shipping_form.find '.quantity .option'
+      #
+      $preview_count = $ '.preview_count'
+      #
       $quantity.click ->
         $q = $ this
+        #
+        #
+        $preview_count.html '<div class="large">'+$q.attr('cards')+'</div><div class="small">x</div>'
         #
         # Make this guy active
         $q.make_active()
@@ -904,9 +981,11 @@ $ ->
       #
       check_address_timer = 0
       maybe_check_address = ->
+        $map.html 'Waiting'
         clearTimeout check_address_timer
         check_address_timer = setTimeout ->
           #
+          $map.html 'Searching ...'
           #
           # 
           io_session.emit 'search_address',
@@ -920,12 +999,16 @@ $ ->
       $zip_code.keyup maybe_check_address
       #
       load_map = (map) ->
+        $new_img = $ '<img />'
         if map.full_address
           coordinates = map.latitude+','+map.longitude
-          $map.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
-          $full_address.html map.full_address
+          $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
+          $full_address.html map.full_address.replace /,/, '<br>'
         else
-          $map.attr 'src', null
+          $new_img.attr 'src', null
+        #
+        $map.html ''
+        $map.append $new_img
       #
       io_session.on 'load_map', load_map
       #
@@ -943,7 +1026,9 @@ $ ->
       #
       io_session.on 'load_order_form', (order_form) ->
         if order_form
-          $quantity.filter('[cards='+order_form.cards+']').make_active()
+          $a_q = $quantity.filter('[cards='+order_form.cards+']')
+          $a_q.make_active()
+          $preview_count.html '<div class="large">'+$a_q.attr('cards')+'</div><div class="small">x</div>'
           #
           #
           if order_form.full_address

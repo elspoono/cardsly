@@ -1,4 +1,5 @@
 node_modules/*
+builtAssets/*
 .DS_Store
 .monitor
 dump.rdb

@@ -4,6 +4,7 @@ color_two = #000
 color_two_alt = #FFF
 color_three = #000
 color_four = #DED4B9
+color_four = lighten(color_four,5)
 color_five = #64B6B1
 color_six = #ce6d4e
 
@@ -19,18 +20,44 @@ normal_text = Trebuchet MS
 
 body
   background color_four
-  background url('/images/body_bg.png')
+  background url('/images/patterns/3_1.jpg') top center
   font-family accent_text
 
 input,h1,h2,textarea,select
   font-family accent_text
 
-.logo
-  display none
-  height 56px
-  width 160px
-  background url('/images/logo-160x56.png')
-  margin -60px auto 0 auto
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .center_column
   width 1024px
@@ -45,23 +72,25 @@ input,h1,h2,textarea,select
   height 64px
   line-height 64px
   z-index 200
-  ul
-    margin 0 -20px
   .left
     float left
+    li
+      float left
+      margin 0 40px 0 0
   .right
     float right
+    li
+      float left
+      margin 0 0 0 40px
   a
     font-size size_one
     color color_five
     text-decoration none
-  li
-    float left
-    margin 0 20px
   .hover
     a
       color color_four
 .pull_down
+  display none
   position absolute
   left 50%
   top -780px
@@ -133,18 +162,38 @@ h1
 
 
           
-.derek_hero
+.hero
   overflow visible
-  margin 120px 0 0 0
+  margin 100px 0 0 0
+  .super_top
+    img
+      position absolute
+      z-index -1
+      margin -18px 0 0 37px
+    overflow hidden
+    text-align left
+    em, i
+      float left
+    em
+      color color_six
+      font-size 48px
+      line-height 56px
+      padding 0 20px
+    i.one
+      line-height 38px
+    i.two
+      line-height 80px
+    i
+      font-size 20px
+      color color_seven
   .top
     overflow hidden
-    margin 40px 0 100px 0
+    margin 20px 0 100px 0
   .left
     float left
     img
       position absolute
       z-index -1
-      margin-top 0
   .right
     float right
     text-align right
@@ -152,58 +201,16 @@ h1
     font-family huge_text
     .one
       color color_six
-      font-size 140px
+      font-size 170px
       text-align right
     .two
-      font-size 80px
+      font-size 60px
       color color_seven
     .three
       color color_five
-      font-size 340px
+      font-size 356px
       text-align left
 
-
-.steve_hero
-  display none
-  overflow visible
-  margin 120px 0 0 0
-  background #ded8c8
-  .top
-    overflow hidden
-    margin 40px 0 20px 0
-    height 400px
-    .hands
-      .scan
-        float left
-        font-size 40px
-        text-align left
-        padding 5px
-        width 200px
-      .notify
-        float rigth
-        font-size 40px
-        text-align right
-        padding 5px 
-    .copy
-      .logo2
-        position relative
-        left 320px
-        top -315px
-      .one
-        position relative
-        left 360px
-        top -315px
-        font-size 50px
-        font-family huge_text
-      .two
-        position relative
-        left 360px
-        top -315px
-        font-size 60px
-        font-family huge_text
-      .three
-        font-size 40px
-        font-family huge_text
 
 .bottom
   .left
@@ -215,25 +222,42 @@ h1
     text-align center
 
 
+
+
+
+
+
+
+
+
+
+
+
 .clear
   clear both
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 h1.two
+  color color_seven
   .one
     font-size 48px
   .two
+    line-height 48px
     font-size 16px
-
-.qr_action
-  float right
-  width 200px
-  font-size 48px
-  line-height 24px
-  text-align center
-  margin -140px 0 0 0
-  text-decoration none
-  img
-    border 0
 
 input,textarea,select
   padding 0 10px
@@ -241,8 +265,17 @@ input,textarea,select
   font-size 18px
   border 0
 
+.notify_images
+  overflow hidden
+  img
+    margin 15px 15px 0 15px
+  .email
+    float left
+  .text
+    float right
+
 .notify_form,.shipping_form
-  box_shadow(0,color_two,15px)
+  box_shadow(0,color_two,10px)
   width 280px
   background color_six
   position relative
@@ -282,7 +315,7 @@ input,textarea,select
       height 40px
       width 40px
       color color_two_alt
-      gradient(color_five,darken(color_five,20))
+      gradient(color_six,darken(color_six,20))
       border_radius(10px)
       box_shadow(0,color_two,5px)
       float left
@@ -291,7 +324,7 @@ input,textarea,select
       line-height 50px
   .links
     float right
-    margin 0 15px 0 0
+    margin 0 0
     input
       width 95px
       text-align right
@@ -299,10 +332,11 @@ input,textarea,select
       margin 15px 0 0 0
     .button
       cursor pointer
-      margin 15px 0 0 0
+      margin 15px 15px 15px 0
       float right
-      gradient(color_five,darken(color_five,20))
+      gradient(color_six,darken(color_six,20))
       border_radius_right_only(10px)
+      box_shadow(0,color_two,5px)
       color color_two_alt
       font-family huge_text
       line-height 40px
@@ -315,35 +349,36 @@ input,textarea,select
         text-align right
         width 95px
         padding 0 10px
-        height 25px
-        line-height 25px
+        height 20px
+        line-height 20px
+        font-size 12px
       .button
-        height 25px
-        line-height 25px
-        border_radius(13px)
+        height 20px
+        width 20px
+        line-height 20px
+        border_radius(20px)
+        box_shadow(0,color_two,3px)
         float left
   .toggle
     float right
-    margin 15px
-    border_radius(20px)
-    box_shadow(0,color_two,5px)
+    margin 15px 15px 15px 0
     .bg
-      border_radius(20px)
       overflow hidden
-      gradient(darken(color_five,20),color_five)
-      box_shadow(0,color_two,5px,inset)
     .option
-      color lighten(color_five,10)
-      border_radius(20px)
+      float left
+      color color_two
+      padding 0 10px
       height 40px
       line-height 40px
-      padding 0 10px
-      float left
       cursor pointer
+      border_radius(15px)
     .active
-      color color_two_alt
-      gradient(color_five,darken(color_five,20))
-      box_shadow(0,color_two,5px)
+      background color_two_alt
+      border 4px solid color_two
+      padding 0 6px
+      height 32px
+      line-height 32px
+    
 .checkout_header
   margin 100px 0 20px 0
 .shipping_form
@@ -352,15 +387,21 @@ input,textarea,select
     width 90px
   .map
     float right
-    margin 15px
-  .full_address
+    margin 15px 15px 60px 15px
+    text-align center
+    line-height 110px
+    width 125px
+    height 110px
+  .full_address_container
     position absolute
     z-index 150
-    width 125px
-    text-align right
-    font-size 14px
-    alpha_bg(color_two_alt,.7)
-    margin 95px 0 0 140px
+    width 100%
+    margin 120px 0 0 0
+    .full_address
+      margin 15px
+      text-align right
+      font-size 14px
+      line-height 20px
   .quantity
     margin 15px 0
     .option
@@ -415,82 +456,266 @@ input,textarea,select
     margin 10px 0 0 20px
   cursor pointer
 
-.scanhands
-  position absolute
-  margin -60px 0 0 340px
-.get_guy
-  margin 10px 0 -190px 0
+
+
+
+
+
+
+.home_images
+  img
+    float right
+    margin-top -94px
+    margin-right 15px
+    width 96px
+
+.card.editor
+  .line,.qr,.img
+    cursor pointer
+  box_shadow(0,color_two,10px)
+
+.card.preview
+  box_shadow(0,color_two,10px)
+
+.preview_count
+  text-align right
+  height 60px
+  .small,.large
+    float right
+    color color_seven
+  .small
+    font-size 18px
+    line-height 60px
+    margin 0 10px
+  .large
+    font-size 48px
+    line-height 60px
+
+
+.theme_container
+  margin 0 0 60px 0
+  .top_anchor
+    box_shadow(0,color_two,10px)
+    background color_five
+    text-align center
+    position relative
+    z-index 90
+    .toggle
+      margin 5px auto
+      overflow hidden
+      display inline-block
+      .option
+        float left
+        color color_two
+        padding 0 10px
+        height 40px
+        line-height 40px
+        cursor pointer
+        border_radius(15px)
+      .active
+        background color_two_alt
+        border 4px solid color_two
+        padding 0 6px
+        height 32px
+        line-height 32px
+  .themes
+    box_shadow(0,color_two,10px)
+    background color_four
+    position relative
+    z-index 89
+    height 500px
+    overflow auto
+    .thumb
+      margin 30px 0 0 15px
+      cursor pointer
+      float left
+      height 120px
+      width 220px
+      padding 60px 0 0 15px
+      position relative
+      .bg,.fg,.bg_bg,.fg_bg
+        transition()
+        position absolute
+      .bg
+        z-index 200
+        transform_matrix(.25,-0.33,0,1,100,-25)
+      .fg
+        z-index 201
+        transform_matrix(.9,0.05,-0.01,1,0,0)
+      .fg_bg,.bg_bg
+        height 90px
+        width 158px
+        z-index 199
+        background color_two
+      .fg_bg
+        transform_matrix(.9,0.05,0.09,.2,-5,35)
+      .bg_bg
+        transform_matrix(.25,-0.33,.1,.1,95,15)
+    .active
+      img
+        border-color transparent
+      border 4px solid color_two
+      border_radius(15px)
+      margin 26px -4px -4px 11px
+      background color_two_alt
+    .hover
+      opacity(1)
+  .themes.back
+    .thumb
+      .bg
+        transform_matrix(.9,0.05,-0.01,1,0,0)
+      .fg
+        transform_matrix(.25,-0.33,0,1,100,-25)
+      .fg_bg
+        transform_matrix(.25,-0.33,.1,.1,95,15)
+      .bg_bg
+        transform_matrix(.9,0.05,0.09,.2,-5,35)
 
 .home_designer
   overflow visible
-  .themes
-    margin 370px 0
-    img
-      margin 0
-      cursor pointer
-      opacity(.3)
-      width 126px
-      height 72px
-      z-index 50
-      position relative
-    .active
-      margin -13px -20px
-      border 4px solid color_three
-      opacity(1)
-      width 158px
-      height 90px
-      z-index 150
-      box_shadow(0,color_three,10px)
-    .hover
-      opacity(1)
+  width 525px
   .card
-    position absolute
+    margin 0 auto
+    position relative
     width 525px
     height 300px
     background #FFF
-    box_shadow(0,color_two,15px)
-    z-index 200
+    z-index 149
+    transition(500ms)
+  .stop_animate
+    no_transition()
+  .card.collapsed2
+    transform_matrix(.0001,-.0001,0,1,0,0)
+  .card.collapsed
+    transform_matrix(.0001,.0001,0,1,0,0)
   .controls
-    margin 60px 0 0 0
+    margin 20px 0 0 0
     width 525px
     .area
-      box_shadow(0,color_two,15px)
+      box_shadow(0,color_two,10px)
       position relative
       z-index 160
-      width 485px
-      height 200px
+      width 525px
+      height 125px
       background color_five
       display none
-      padding 20px
-      input
-        width 140px
-        margin 10px 20px
     .area.active
       display block
-  
-    .titles
-      overflow visible
-    .title
-      box_shadow(0,color_two,15px)
-      position relative
-      z-index 150
-      background color_five
-      color color_three
-      font-size 18px
-      float left
-      padding 0 20px
-      margin 15px 1px 0 0
-      height 32px
-      line-height 32px
-      cursor pointer
-    .title.hover
-      color color_four
-    .title.active
-      z-index 155
-      margin 0 1px 0 0
-      font-size 32px
-      height 48px
-      line-height 48px
+
+
+.line_value
+  margin 15px 0 0 15px
+  height 40px
+  padding 0 20px
+  line-height 40px
+  text-align center
+  float left
+.button.save
+  float left
+  margin 15px 0 0 15px
+  gradient(color_five,darken(color_five,20))
+  border_radius(10px)
+  box_shadow(0,color_two,5px)
+  color color_two_alt
+  padding 0 15px
+  line-height 38px
+  height 40px
+  font-size 26px
+  cursor pointer
+
+
+.font_families
+  float right
+  margin 15px
+.dropdown
+  border_radius(10px)
+  position relative
+  padding 0 30px 0 0
+  height 40px
+  z-index 300
+  .arrow_container
+    cursor pointer
+    position absolute
+    height 40px
+    width 30px
+    gradient(darken(color_five,0),darken(color_five,20))
+    box_shadow(0,color_two,5px)
+    border_radius(10px)
+    right 0
+    top 0
+  .arrow
+    margin 16px 0 0 11px
+    border-top 8px solid color_two_alt
+    border-left 4px solid transparent
+    border-right 4px solid transparent
+    border-bottom none
+    width 0
+    height 0
+  .bg_scroll
+    overflow hidden
+    margin-right -30px
+    padding-right 30px
+    height 40px
+  .font_family
+    height 40px
+    font-size 16px
+    line-height 40px
+    text-align right
+    cursor pointer
+    padding 0 10px
+    color color_two
+  .active
+    color color_two
+    padding 0 20px 0 10px
+    margin-right -10px
+.dropdown.active
+  overflow visible
+  .active
+    padding 0 10px
+    margin-right 0
+    color color_two_alt
+    background color_two
+  .bg
+    box_shadow(0,color_two,5px,inset)
+    height 240px
+  .bg_scroll
+    background color_two_alt
+    margin-right 0
+    padding-right 0
+    overflow auto
+    height 240px
+  .bg_bg
+    height 240px
+    width 100%
+    position absolute
+    z-index -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
