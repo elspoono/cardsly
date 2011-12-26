@@ -946,8 +946,14 @@ $ ->
       # Quantity
       # -------
       $quantity = $shipping_form.find '.quantity .option'
+      #
+      $preview_count = $ '.preview_count'
+      #
       $quantity.click ->
         $q = $ this
+        #
+        #
+        $preview_count.html '<div class="large">'+$q.attr('cards')+'</div><div class="small">x</div>'
         #
         # Make this guy active
         $q.make_active()
@@ -1021,7 +1027,9 @@ $ ->
       #
       io_session.on 'load_order_form', (order_form) ->
         if order_form
-          $quantity.filter('[cards='+order_form.cards+']').make_active()
+          $a_q = $quantity.filter('[cards='+order_form.cards+']')
+          $a_q.make_active()
+          $preview_count.html '<div class="large">'+$a_q.attr('cards')+'</div><div class="small">x</div>'
           #
           #
           if order_form.full_address
