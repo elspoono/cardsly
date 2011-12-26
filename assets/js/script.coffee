@@ -844,25 +844,42 @@ $ ->
       # Thumbs
       # ------------------------------------
       #
+      active_theme = {}
       #
       $front_back = $home_designer.find '.front_back .option'
       $front_back.click ->
         $f_b = $ this
         $f_b.make_active()
+        #
+        #
+        $thumbs.filter('.active').click()
+        #
+        side = $f_b.html()
+        #
+        #
         $themes.removeClass 'front back'
-        $themes.addClass $f_b.html()
+        $themes.addClass side
         #
         #
         $card.addClass 'collapsed'
         #
         setTimeout ->
-          $thumbs.filter('.active').click()
           #
           #
           $card.addClass 'stop_animate'
           $card.removeClass 'collapsed'
           $card.addClass 'collapsed2'
           setTimeout ->
+            #
+            #
+            $.create_card_from_theme
+              height: 300
+              width: 525
+              theme: active_theme
+              active_view: 0
+              card: $all_card
+              side: side
+            #
             $card.removeClass 'stop_animate'
             $card.removeClass 'collapsed2'
           , 0
@@ -876,18 +893,22 @@ $ ->
       io_session.on 'load_theme', (theme) ->
         #
         #
+        active_theme = theme
         #
         #
         side = $front_back.filter('.active').html()
         #
-        $.create_card_from_theme
-          height: 300
-          width: 525
-          theme: theme
-          active_view: 0
-          card: $all_card
-          side: side
         #
+        unless $card.hasClass 'collapsed'
+          #
+          $.create_card_from_theme
+            height: 300
+            width: 525
+            theme: theme
+            active_view: 0
+            card: $all_card
+            side: side
+          #
         #
       #
       #
