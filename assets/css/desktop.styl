@@ -406,13 +406,19 @@ input,textarea,select
   .line,.qr,.img
     cursor pointer
   box_shadow(0,color_two,10px)
-
+.card_stack
+  position absolute
+  margin-left -20px
+  margin-top -15px
+  width 585px
 .card.preview
-  box_shadow(0,color_two,10px)
+  box_shadow(1px,color_ten,1px)
+  transform_matrix(1,0.01,-.01,1,0,0)
 
 .preview_count
   text-align right
   height 60px
+  margin 30px 0
   .small,.large
     float right
     color color_two
