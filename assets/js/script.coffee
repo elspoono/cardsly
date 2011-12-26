@@ -918,6 +918,17 @@ $ ->
         #
       #
       #
+      #
+      $front_back = $home_designer.find '.front_back .option'
+      $front_back.click ->
+        $f_b = $ this
+        $f_b.make_active()
+        $themes.removeClass 'front back'
+        $themes.addClass $f_b.html()
+      #
+      #
+      #
+      #
       io_session.on 'load_themes', (themes) ->
         #
         #

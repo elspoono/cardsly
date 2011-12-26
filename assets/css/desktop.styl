@@ -531,7 +531,11 @@ input,textarea,select
       width 220px
       padding 60px 0 0 15px
       position relative
-      .bg,.fg
+      .bg,.fg,.bg_bg,.fg_bg
+        -webkit-transition: all 1s ease-in-out;
+        -moz-transition: all 1s ease-in-out;
+        -o-transition: all 1s ease-in-out;
+        -ms-transition: all 1s ease-in-out;
         position absolute
       .bg
         z-index 200
@@ -542,7 +546,6 @@ input,textarea,select
       .fg_bg,.bg_bg
         height 90px
         width 158px
-        position absolute
         z-index 199
         background color_two
       .fg_bg
@@ -558,6 +561,16 @@ input,textarea,select
       background color_two_alt
     .hover
       opacity(1)
+  .themes.back
+    .thumb
+      .bg
+        transform_matrix(.9,0.05,-0.01,1,0,0)
+      .fg
+        transform_matrix(.25,-0.33,0,1,100,-25)
+      .fg_bg
+        transform_matrix(.25,-0.33,.1,.1,95,15)
+      .bg_bg
+        transform_matrix(.9,0.05,0.09,.2,-5,35)
 
 .home_designer
   overflow visible
