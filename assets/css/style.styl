@@ -166,12 +166,19 @@ transform_scale(width=0.5,height=width)
   -ms-transform: scale(height, width);
   transform: scale(height, width);
 
-transition()
-  -webkit-transition all 1s ease-in-out
-  -moz-transition all 1s ease-in-out
-  -o-transition all 1s ease-in-out
-  -ms-transition all 1s ease-in-out
-  transition all 1s ease-in-out
+transition(speed=1s)
+  -webkit-transition all speed linear
+  -moz-transition all speed linear
+  -o-transition all speed linear
+  -ms-transition all speed linear
+  transition all speed linear
+
+no_transition()
+  -webkit-transition none
+  -moz-transition none
+  -o-transition none
+  -ms-transition none
+  transition none
 
 // Rotate (pass in degrees)
 box_rotate(degrees=7.5deg)

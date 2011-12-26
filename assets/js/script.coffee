@@ -149,6 +149,7 @@ $.create_card_from_theme = (options) ->
     theme: null
     active_view: 0
     card: null
+    side: 'front'
   #
   if options
     $.extend settings, options
@@ -180,24 +181,12 @@ $.create_card_from_theme = (options) ->
     #
     $my_card.data 'theme', settings.theme
     #
+    #
+    #
     $my_qr = $my_card.find('.qr')
     if not $my_qr.length
       $my_qr = $ '<img class="qr" /></div>'
       $my_card.append $my_qr
-    #
-    # Calculate the alpha
-    alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-    #
-    #
-    $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
-    #
-    $my_qr.css
-      height: theme_template.qr.h/100 * settings.height
-      width: theme_template.qr.w/100 * settings.width
-      position: 'absolute'
-      top: theme_template.qr.y/100 * settings.height
-      left: theme_template.qr.x/100 * settings.width
-      zIndex: 200
     #
     #
     #
@@ -210,17 +199,52 @@ $.create_card_from_theme = (options) ->
       else
         $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
         $li.appendTo $my_card
-
-      $li.css
+    #
+    #
+    #
+    #
+    if settings.side is 'back'
+      #
+      $lines.hide()
+      #
+      $my_qr.hide()
+      #
+    else
+      # Calculate the alpha
+      alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+      #
+      #
+      $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
+      #
+      $my_qr.show().css
+        height: theme_template.qr.h/100 * settings.height
+        width: theme_template.qr.w/100 * settings.width
         position: 'absolute'
-        top: pos.y/100 * settings.height
-        left: pos.x/100 * settings.width
-        width: (pos.w/100 * settings.width) + 'px'
-        fontSize: (pos.h/100 * settings.height) + 'px'
-        lineHeight: (pos.h/100 * settings.height) + 'px'
-        fontFamily: pos.font_family
-        textAlign: pos.text_align
-        color: '#'+pos.color
+        top: theme_template.qr.y/100 * settings.height
+        left: theme_template.qr.x/100 * settings.width
+        zIndex: 200
+      #
+      #
+      #
+      $lines = $my_card.find '.line'
+      #
+      #
+      for pos,i in theme_template.lines
+        $li = $lines.eq(i)
+        #
+        $li.show().css
+          position: 'absolute'
+          top: pos.y/100 * settings.height
+          left: pos.x/100 * settings.width
+          width: (pos.w/100 * settings.width) + 'px'
+          fontSize: (pos.h/100 * settings.height) + 'px'
+          lineHeight: (pos.h/100 * settings.height) + 'px'
+          fontFamily: pos.font_family
+          textAlign: pos.text_align
+          color: '#'+pos.color
+      #
+      #
+    #
     #
     #
     # Set the card background
@@ -725,93 +749,6 @@ $ ->
   #
   #
   #
-  $pull_down = $ '.pull_down:visible'
-  #
-  #
-  if $pull_down.length
-    #
-    #
-    #
-    #
-    detect_pull_start = (e) ->
-      unless $pull_down.data 'active'
-        o = [e.offsetX,e.offsetY]
-        if o[1] < 480 or (o[0] > 90 and o[0] < 132)
-          $pull_down.unbind 'mousemove', detect_pull_start
-          $pull_down.stop(true,false).animate
-            marginTop: 10
-          , 200
-          $pull_down.one 'mouseout', ->
-            unless $pull_down.data 'active'
-              $pull_down.stop(true,false).animate
-                marginTop: 0
-              , 200
-    #
-    #
-    $pull_down.bind 'mouseover', (e) ->
-      $pull_down.bind 'mousemove', detect_pull_start
-      detect_pull_start e
-    $pull_down.bind 'mouseout', (e) ->
-      $pull_down.unbind 'mousemove', detect_pull_start
-    #
-    $pull_down.find('a').click ->
-      window.open '/loghome', 'loghome', 'height=575,width=320'
-      false
-    #
-    $pull_down.bind 'click', (e) ->
-      unless $pull_down.data 'active'
-        $pull_down.stop(true,false).animate
-          marginTop: 690
-        , 400
-        $pull_down.data 'active', true
-        setTimeout ->
-          body_click = (e) ->
-            $e = $ e.target
-            $e = $e.closest('.pull_down').andSelf()
-            unless $e[0] is $pull_down[0]
-              $pull_down.stop(true,false).animate
-                marginTop: 0
-              , 200
-              $pull_down.data 'active', false
-              $body.unbind 'click', body_click
-          $body.bind 'click', body_click
-        , 0
-        
-    #
-    $pull_list = $pull_down.find '.contents .list'
-    #
-    #
-    #
-    if $('.derek_hero').length is 0
-      $pull_down.click()
-    #
-    #
-    #
-    io_visit = io.connect('/visits')
-    io_visit.on 'connect', () ->
-      io_visit.on 'load_visits', (visits) ->
-        for visit in visits
-          #
-          $new_item = $ '<div class="item" />'
-          $new_item.html '#1 scanned '+visit.by_an_in
-          #
-          $new_date = $ '<div class="date" />'
-          $new_date.html new Date(visit.date_added).ago()
-          #
-          $new_item.append $new_date
-          $pull_list.prepend $new_item
-          $new_item.hide().slideDown()
-        #
-        #
-      #
-      $pull_list.html ''
-      io_visit.emit 'subscribe_to',
-        search_string: 'loghome'
-  #
-  #
-  #
-  #
-  #
   #
   #
   #
@@ -902,21 +839,6 @@ $ ->
       # ---------
       # Thumbs
       # ------------------------------------
-      if not $thumbs
-        io_session.emit 'get_themes', true
-      #
-      io_session.on 'load_theme', (theme) ->
-        #
-        #
-        $.create_card_from_theme
-          height: 300
-          width: 525
-          theme: theme
-          active_view: 0
-          card: $card
-        #
-        #
-      #
       #
       #
       $front_back = $home_designer.find '.front_back .option'
@@ -925,6 +847,44 @@ $ ->
         $f_b.make_active()
         $themes.removeClass 'front back'
         $themes.addClass $f_b.html()
+        #
+        #
+        $card.addClass 'collapsed'
+        #
+        setTimeout ->
+          $thumbs.filter('.active').click()
+          #
+          #
+          $card.addClass 'stop_animate'
+          $card.removeClass 'collapsed'
+          $card.addClass 'collapsed2'
+          setTimeout ->
+            $card.removeClass 'stop_animate'
+            $card.removeClass 'collapsed2'
+          , 0
+        , 500
+      #
+      #
+      #
+      if not $thumbs
+        io_session.emit 'get_themes', true
+      #
+      io_session.on 'load_theme', (theme) ->
+        #
+        #
+        #
+        #
+        #
+        $.create_card_from_theme
+          height: 300
+          width: 525
+          theme: theme
+          active_view: 0
+          card: $card
+          side: $front_back.filter('.active').html()
+        #
+        console.log $front_back.filter('.active').html()
+        #
       #
       #
       #

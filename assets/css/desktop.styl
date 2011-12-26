@@ -359,30 +359,6 @@ input,textarea,select
         border_radius(20px)
         box_shadow(0,color_two,3px)
         float left
-  /*
-    .toggle
-      float right
-      margin 15px
-      border_radius(20px)
-      box_shadow(0,color_two,5px)
-      .bg
-        border_radius(20px)
-        overflow hidden
-        gradient(darken(color_six,20),color_six)
-        box_shadow(0,color_two,5px,inset)
-      .option
-        color lighten(color_six,10)
-        border_radius(20px)
-        height 40px
-        line-height 40px
-        padding 0 10px
-        float left
-        cursor pointer
-      .active
-        color color_two_alt
-        gradient(color_six,darken(color_six,20))
-        box_shadow(0,color_two,5px)
-  */
   .toggle
     float right
     margin 15px 15px 15px 0
@@ -490,18 +466,19 @@ input,textarea,select
 .card.editor
   .line,.qr,.img
     cursor pointer
+  box_shadow(0,color_two,10px)
 
 .card.preview
-  box_shadow(0,color_two,15px)
+  box_shadow(0,color_two,10px)
 
 .theme_container
   margin 0 0 60px 0
-  box_shadow(0,color_two,10px)
-  position relative
-  z-index 151
-  background color_five
   .top_anchor
+    box_shadow(0,color_two,10px)
+    background color_five
     text-align center
+    position relative
+    z-index 90
     .toggle
       margin 5px auto
       overflow hidden
@@ -521,6 +498,10 @@ input,textarea,select
         height 32px
         line-height 32px
   .themes
+    box_shadow(0,color_two,10px)
+    background color_four
+    position relative
+    z-index 89
     height 500px
     overflow auto
     .thumb
@@ -571,12 +552,21 @@ input,textarea,select
 
 .home_designer
   overflow visible
+  width 525px
   .card
+    margin 0 auto
     position relative
     width 525px
     height 300px
     background #FFF
     z-index 149
+    transition(500ms)
+  .stop_animate
+    no_transition()
+  .card.collapsed2
+    transform_matrix(.0001,-.0001,0.008,1,0,0)
+  .card.collapsed
+    transform_matrix(.0001,.0001,-0.008,1,0,0)
   .controls
     margin 20px 0 0 0
     width 525px
