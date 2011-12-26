@@ -487,6 +487,10 @@ input,textarea,select
     margin-right 15px
     width 96px
 
+.card.editor
+  .line,.qr,.img
+    cursor pointer
+
 .card.preview
   box_shadow(0,color_two,15px)
 
@@ -523,10 +527,28 @@ input,textarea,select
       margin 30px 0 0 15px
       cursor pointer
       float left
-      img
-        margin 15px 15px
-        width 126px
-        height 72px
+      height 120px
+      width 220px
+      padding 60px 0 0 15px
+      position relative
+      .bg,.fg
+        position absolute
+      .bg
+        z-index 200
+        transform_matrix(.25,-0.33,0,1,100,-25)
+      .fg
+        z-index 201
+        transform_matrix(.9,0.05,-0.01,1,0,0)
+      .fg_bg,.bg_bg
+        height 90px
+        width 158px
+        position absolute
+        z-index 199
+        background color_two
+      .fg_bg
+        transform_matrix(.9,0.05,0.09,.2,-5,35)
+      .bg_bg
+        transform_matrix(.25,-0.33,.1,.1,95,15)
     .active
       img
         border-color transparent

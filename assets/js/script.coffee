@@ -923,14 +923,20 @@ $ ->
         #
         for theme,i in themes
           #
-          $new_thumb = $ '<div class="thumb" />'
+          $new_thumb = $ '<div class="thumb"><div class="fg_bg" /><div class="bg_bg" /></div>'
           $new_thumb.attr
             id: theme._id
-          $new_image = $ '<img />'
-          $new_image.attr
-            src: '/thumb/'+theme._id
           #
-          $new_thumb.append $new_image
+          $fg_image = $ '<img class="fg" />'
+          $fg_image.attr
+            src: '/thumb/'+theme._id+''
+          $new_thumb.append $fg_image
+          #
+          #
+          $bg_image = $ '<img class="bg" />'
+          $bg_image.attr
+            src: '/thumb/'+theme._id+'/back'
+          $new_thumb.append $bg_image
           #
           $themes.append $new_thumb
           #

@@ -458,7 +458,9 @@ theme_schema = new schema
   color1: String
   color2: String
   s3_id: String
-  thumb_cache: Boolean
+  cache:
+    front: Boolean
+    back: Boolean
   date_updated:
     type: Date
     default: Date.now
@@ -2150,18 +2152,19 @@ app.get '/success', (req, res) ->
 #
 #
 render_image = (o) ->
-
+  #
+  o.side = 'front' unless o.side
   #
   mongo_theme.findById o.theme_id, (err, theme) ->
     theme_template = theme.theme_templates[o.active_view]
     #z
     imagedata = ''
     #
-    if o.thumb_cache and theme.thumb_cache
+    if o.thumb_cache and theme.cache and ((theme.cache.front and o.side is 'front') or (theme.cache.back and o.side is 'back'))
       #
       #
       o.res.send '',
-        Location: '//d3eo3eito2cquu.cloudfront.net/thumb_cache/'+theme._id
+        Location: '//d3eo3eito2cquu.cloudfront.net/thumb_cache/'+o.side+'/'+theme._id
       , 302
       #
       #
@@ -2189,43 +2192,7 @@ render_image = (o) ->
               img.src = buff
               ctx.drawImage img, 0, 0, o.width, o.height
               
-
-
-              for line,i in theme_template.lines
-                h = Math.round(line.h/100*o.height)
-                x = line.x/100*o.width
-                y = line.y/100*o.height
-                w = line.w/100*o.width
-                ctx.fillStyle = hex_to_rgba line.color
-                ctx.font = h + 'px "' + line.font_family + '"'
-                if line.text_align is 'left'
-                  ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                else
-                  measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                  if line.text_align is 'right'
-                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                  if line.text_align is 'center'
-                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-
-
-
-              alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-              #
-              qr_canvas = qr_code.draw_qr
-                node_canvas: node_canvas
-                style: 'round'
-                url: o.url
-                hex: theme_template.qr.color1
-                hex_2: theme_template.qr.color2+alpha
-              #
-              #
-              #
-              qr_canvas.toBuffer (err, qr_buff) ->
-                qr_img = new node_canvas.Image
-                qr_img.src = qr_buff
-                #
-                #
-                ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
+              save_image = ->
                 #
                 #
                 canvas.toBuffer (err, buff) ->
@@ -2235,21 +2202,71 @@ render_image = (o) ->
                   #
                   #
                   #
-                  if o.thumb_cache and not theme.thumb_cache
+                  if o.thumb_cache
                     # Send that new file to Amazon to be saved!
-                    knoxReq = knoxClient.put '/thumb_cache/'+theme._id,
+                    knoxReq = knoxClient.put '/thumb_cache/'+o.side+'/'+theme._id,
                       'Content-Length': buff.length
                       'Content-Type' : 'image/png'
                     knoxReq.on 'response', (awsRes) ->
                       if awsRes.statusCode != 200
                         console.log 'ERR', awsRes
                       else
-                        theme.thumb_cache = true
+                        theme.cache = {} unless theme.cache
+                        theme.cache[o.side] = true
                         theme.save maybe_log_err
                     knoxReq.end buff
+              #
+              #
+              if o.side and o.side is 'back'
+                #
+                save_image()
+                #
+              else
+                #
+                #
+                for line,i in theme_template.lines
+                  h = Math.round(line.h/100*o.height)
+                  x = line.x/100*o.width
+                  y = line.y/100*o.height
+                  w = line.w/100*o.width
+                  ctx.fillStyle = hex_to_rgba line.color
+                  ctx.font = h + 'px "' + line.font_family + '"'
+                  if line.text_align is 'left'
+                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                  else
+                    measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                    if line.text_align is 'right'
+                      ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                    if line.text_align is 'center'
+                      ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+                #
+                #
+                #
+                #
+                #
+                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                #
+                qr_canvas = qr_code.draw_qr
+                  node_canvas: node_canvas
+                  style: 'round'
+                  url: o.url
+                  hex: theme_template.qr.color1
+                  hex_2: theme_template.qr.color2+alpha
+                #
+                #
+                #
+                qr_canvas.toBuffer (err, qr_buff) ->
+                  qr_img = new node_canvas.Image
+                  qr_img.src = qr_buff
+                  #
+                  #
+                  ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
+                  #
+                  #
+                  save_image()
   #
 #
-app.get '/thumb/:theme_id', (req, res, next) ->
+app.get '/thumb/:theme_id/:side?', (req, res, next) ->
   #
   #
   url = '1'
@@ -2266,6 +2283,7 @@ app.get '/thumb/:theme_id', (req, res, next) ->
     values: default_line_copy
     active_view: 0
     theme_id: req.params.theme_id
+    side: req.params.side
     url: url
 #
 #
