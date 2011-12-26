@@ -160,56 +160,70 @@ $.create_card_from_theme = (options) ->
   #
   # Prep the Card
   if settings.card
-    $my_card = settings.card
+    $my_cards = settings.card
   else
-    $my_card = $ '<div class="card"><img class="qr" /></div>'
-  #
-  $my_card.data 'theme', settings.theme
-  #
-  $my_qr = $my_card.find('.qr')
-  #
-  # Calculate the alpha
-  alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-  #
-  #
-  $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
-  #
-  $my_qr.css
-    height: theme_template.qr.h/100 * settings.height
-    width: theme_template.qr.w/100 * settings.width
-    position: 'absolute'
-    top: theme_template.qr.y/100 * settings.height
-    left: theme_template.qr.x/100 * settings.width
-    zIndex: 200
+    $my_cards = $ '<div class="card"><img class="qr" /></div>'
   #
   #
   #
-  $lines = $my_card.find '.line'
   #
   #
-  for pos,i in theme_template.lines
-    if $lines.eq(i).length
-      $li = $lines.eq(i)
-    else
-      $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
-      $li.appendTo $my_card
-
-    $li.css
+  #
+  #
+  #
+  $my_cards.each ->
+    #
+    #
+    $my_card = $ this
+    #
+    #
+    #
+    $my_card.data 'theme', settings.theme
+    #
+    $my_qr = $my_card.find('.qr')
+    #
+    # Calculate the alpha
+    alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+    #
+    #
+    $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
+    #
+    $my_qr.css
+      height: theme_template.qr.h/100 * settings.height
+      width: theme_template.qr.w/100 * settings.width
       position: 'absolute'
-      top: pos.y/100 * settings.height
-      left: pos.x/100 * settings.width
-      width: (pos.w/100 * settings.width) + 'px'
-      fontSize: (pos.h/100 * settings.height) + 'px'
-      lineHeight: (pos.h/100 * settings.height) + 'px'
-      fontFamily: pos.font_family
-      textAlign: pos.text_align
-      color: '#'+pos.color
+      top: theme_template.qr.y/100 * settings.height
+      left: theme_template.qr.x/100 * settings.width
+      zIndex: 200
+    #
+    #
+    #
+    $lines = $my_card.find '.line'
+    #
+    #
+    for pos,i in theme_template.lines
+      if $lines.eq(i).length
+        $li = $lines.eq(i)
+      else
+        $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
+        $li.appendTo $my_card
+
+      $li.css
+        position: 'absolute'
+        top: pos.y/100 * settings.height
+        left: pos.x/100 * settings.width
+        width: (pos.w/100 * settings.width) + 'px'
+        fontSize: (pos.h/100 * settings.height) + 'px'
+        lineHeight: (pos.h/100 * settings.height) + 'px'
+        fontFamily: pos.font_family
+        textAlign: pos.text_align
+        color: '#'+pos.color
+    #
+    #
+    # Set the card background
+    $my_card.css
+      background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
   #
-  #
-  # Set the card background
-  $my_card.css
-    background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
-#
 #
 # another helper function to add it to a category
 $.add_card_to_category = ($my_card, theme) ->
