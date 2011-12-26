@@ -20,7 +20,7 @@ include pull_down
     .left
       .home_designer
         h1.two
-          .one Design Your Cards
+          .one Design Cards
           .two Customize colors and fonts
         .home_images
           img(src='/images/paint_brush.png')
@@ -34,11 +34,6 @@ include pull_down
                 .overlay
                 .arrow_container
                   .arrow
-              .toggle
-                .bg
-                  .option.left
-                  .option.center
-                  .option.right
               - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
               .font_families.dropdown
                 .bg
@@ -56,8 +51,9 @@ include pull_down
         .theme_container
           .top_anchor
             .toggle.front_back
-              .option.active front
-              .option back
+              .bg
+                .option.active front
+                .option back
           .themes
         h1.two
           .one Cart
@@ -67,7 +63,7 @@ include pull_down
         .preview_count
     .right
       h1.two 
-        .one Get Notified
+        .one Get Alerts
         .two Learn who scanned your cards
       .notify_images
         img.email(src='/images/alert_email.png')
@@ -112,7 +108,7 @@ include pull_down
           .full_address_container
             .full_address
           input.zip_code(placeholder='85022')
-        h2 Quantity
+        h2.q Quantity
         .quantity
           .option(cards=100,cost=10)
             .label 100 cards

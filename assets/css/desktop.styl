@@ -4,13 +4,16 @@ color_two = #000
 color_two_alt = #FFF
 color_three = #000
 color_four = #DED4B9
-color_four = lighten(color_four,5)
-color_five = #64B6B1
+color_five = #DED4B9
 color_six = #ce6d4e
 
-color_seven = #6484b6
+color_seven = #447fb4
 
-color_eight = #6484b6
+color_eight = #447fb4
+
+color_nine = #447fb4
+
+color_ten = #333
 
 
 size_one = 32px
@@ -26,6 +29,7 @@ body
 
 input,h1,h2,textarea,select
   font-family accent_text
+  color color_ten
 
 
 
@@ -89,73 +93,7 @@ input,h1,h2,textarea,select
     text-decoration none
   .hover
     a
-      color color_four
-.pull_down
-  display none
-  position absolute
-  left 50%
-  top -780px
-  z-index 150
-  .bg,.contents
-    position absolute
-  .bg
-    margin 0 0 0 -370px
-  a
-    color color_seven
-    text-decoration none
-  .contents
-    color color_seven
-    margin 160px 0 0 -350px
-    width 190px
-    text-align center
-    h2
-      font-size 42px
-      margin 0 0 5px 0
-    p
-      margin 10px 0 0 0
-      font-size 14px
-    img
-      width 140px
-      margin 0 auto
-      display block
-  h3
-    font-size 26px
-    margin 50px 0 5px 0
-    color color_six
-  .list
-    color color_six
-    font-family normal_text
-    height 250px
-    overflow auto
-    font-size 14px
-    line-height 18px
-    border-top 3px dashed color_seven
-    .item
-      padding 10px 5px 5px 5px
-      border-bottom 3px dashed color_seven
-    .date
-      font-size 10px
-      font-style italic
-      text-align right
-.alert
-  position absolute
-  top 50px
-  left 50%
-  z-index 150
-  width 90px
-  .top
-    margin-top 120px
-  .mid
-    margin-top 150px
-  .alerttext
-    img
-      margin-left -10px
-    width 90px
-    margin-left -140px
-    font-size 20px
-    text-align left
-
-
+      color color_seven
 h1
   color color_three
 
@@ -206,9 +144,9 @@ h1
       text-align right
     .two
       font-size 60px
-      color color_seven
+      color color_two
     .three
-      color color_five
+      color color_nine
       font-size 356px
       text-align left
 
@@ -255,15 +193,17 @@ h1
 h1.two
   color color_seven
   .one
-    font-size 48px
+    color color_two
+    font-size 56px
   .two
+    color color_two
     line-height 48px
-    font-size 16px
+    font-size 14px
 
 input,textarea,select
   padding 0 10px
   line-height 32px
-  font-size 18px
+  font-size 14px
   border 0
 
 .notify_images
@@ -276,16 +216,18 @@ input,textarea,select
     float right
 
 .notify_form,.shipping_form
+  color color_ten
   box_shadow(0,color_two,10px)
   width 280px
   background color_six
   position relative
   h2
-    font-size 32px
+    font-size 26px
     margin 30px 0 0 0
     padding 30px 0 0 0
   p
     margin 20px
+    font-size 14px
   .field
     overflow hidden
   input,select
@@ -316,7 +258,7 @@ input,textarea,select
       height 40px
       width 40px
       color color_two_alt
-      gradient(color_eight,darken(color_eight,20))
+      gradient(lighten(color_eight,10),darken(color_eight,10))
       border_radius(10px)
       box_shadow(0,color_two,5px)
       float left
@@ -335,7 +277,7 @@ input,textarea,select
       cursor pointer
       margin 15px 15px 15px 0
       float right
-      gradient(color_eight,darken(color_eight,20))
+      gradient(lighten(color_eight,10),darken(color_eight,10))
       border_radius_right_only(10px)
       box_shadow(0,color_two,5px)
       color color_two_alt
@@ -352,7 +294,7 @@ input,textarea,select
         padding 0 10px
         height 20px
         line-height 20px
-        font-size 12px
+        font-size 14px
       .button
         height 20px
         width 20px
@@ -362,23 +304,7 @@ input,textarea,select
         float left
   .toggle
     float right
-    margin 15px 15px 15px 0
-    .bg
-      overflow hidden
-    .option
-      float left
-      color color_two
-      padding 0 10px
-      height 40px
-      line-height 40px
-      cursor pointer
-      border_radius(15px)
-    .active
-      background color_two_alt
-      border 4px solid color_two
-      padding 0 6px
-      height 32px
-      line-height 32px
+    margin 15px
     
 .checkout_header
   margin 100px 0 20px 0
@@ -403,7 +329,10 @@ input,textarea,select
       text-align right
       font-size 14px
       line-height 20px
+  .q
+    color color_ten
   .quantity
+    color color_seven
     margin 15px 0
     .option
       cursor pointer
@@ -415,7 +344,7 @@ input,textarea,select
       border_radius(15px)
     .active
       background color_two_alt
-      border 4px solid color_two
+      border 4px solid color_seven
       margin 11px -4px 26px 11px
     img
       margin 5px auto 0 auto
@@ -438,14 +367,14 @@ input,textarea,select
       width 30px
     select
       width auto
-      font-size 16px
+      font-size 14px
     .cvc
       input
         width 40px
 .checkout
   margin 30px 0 120px 0
   color color_two_alt
-  gradient(lighten(color_eight,0),darken(color_eight,20))
+  gradient(lighten(color_eight,10),darken(color_eight,10))
   border_radius(15px)
   height 70px
   line-height 70px
@@ -483,9 +412,9 @@ input,textarea,select
   height 60px
   .small,.large
     float right
-    color color_seven
+    color color_two
   .small
-    font-size 18px
+    font-size 14px
     line-height 60px
     margin 0 10px
   .large
@@ -493,6 +422,27 @@ input,textarea,select
     line-height 60px
 
 
+.toggle
+  border_radius(20px)
+  box_shadow(0,color_two,5px)
+  .bg
+    border_radius(20px)
+    overflow hidden
+    gradient(darken(color_eight,10),lighten(color_eight,10))
+    box_shadow(0,color_two,5px,inset)
+  .option
+    color lighten(color_eight,20)
+    border_radius(20px)
+    height 40px
+    line-height 40px
+    padding 0 10px
+    float left
+    cursor pointer
+  .active
+    color color_two_alt
+    gradient(lighten(color_eight,10),darken(color_eight,10))
+    box_shadow(0,color_two,5px)
+    
 .theme_container
   margin 0 0 60px 0
   .top_anchor
@@ -502,23 +452,9 @@ input,textarea,select
     position relative
     z-index 90
     .toggle
-      margin 5px auto
+      margin 15px auto
       overflow hidden
       display inline-block
-      .option
-        float left
-        color color_two
-        padding 0 10px
-        height 40px
-        line-height 40px
-        cursor pointer
-        border_radius(15px)
-      .active
-        background color_two_alt
-        border 4px solid color_two
-        padding 0 6px
-        height 32px
-        line-height 32px
   .themes
     box_shadow(0,color_two,10px)
     background color_four
@@ -555,7 +491,7 @@ input,textarea,select
     .active
       img
         border-color transparent
-      border 4px solid color_two
+      border 4px solid color_seven
       border_radius(15px)
       margin 26px -4px -4px 11px
       background color_two_alt
@@ -614,7 +550,7 @@ input,textarea,select
 .button.save
   float left
   margin 15px 0 0 15px
-  gradient(color_eight,darken(color_eight,20))
+  gradient(lighten(color_eight,10),darken(color_eight,10))
   border_radius(10px)
   box_shadow(0,color_two,5px)
   color color_two_alt
@@ -639,7 +575,7 @@ input,textarea,select
     position absolute
     height 40px
     width 30px
-    gradient(darken(color_eight,0),darken(color_eight,20))
+    gradient(lighten(color_eight,10),darken(color_eight,10))
     box_shadow(0,color_two,5px)
     border_radius(10px)
     right 0
@@ -659,14 +595,14 @@ input,textarea,select
     height 40px
   .font_family
     height 40px
-    font-size 16px
+    font-size 14px
     line-height 40px
     text-align right
     cursor pointer
     padding 0 10px
-    color color_two
+    color color_ten
   .active
-    color color_two
+    color color_ten
     padding 0 20px 0 10px
     margin-right -10px
 .dropdown.active
@@ -675,7 +611,7 @@ input,textarea,select
     padding 0 10px
     margin-right 0
     color color_two_alt
-    background color_two
+    background color_ten
   .bg
     box_shadow(0,color_two,5px,inset)
     height 240px
@@ -730,7 +666,7 @@ input,textarea,select
   height 32px
   line-height 32px
   color color_four
-  font-size 12px
+  font-size 14px
   text-align center
   .g,.t,.f
     a
@@ -746,7 +682,7 @@ input,textarea,select
     a
       margin-top 4px
   a
-    font-size 12px
+    font-size 14px
     color color_four
     text-decoration none
     padding 0
