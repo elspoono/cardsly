@@ -71,33 +71,35 @@ include pull_down
         img.text(src='/images/alert_small.png')
     .left
       .notify_form
-        h2 Set Alerts
-        p Emails or Texts with details
-        .field.email
-          input(placeholder='my@email.com')
-          .toggle
-            .bg
-              .option.active on
-              .option off
-        .field.text
-          input(placeholder='555.555.5555')
-          .toggle
-            .bg
-              .option on
-              .option.active off
-        h2 Set Links
-        p Where they go, when they scan
-        .link_editor
-          ul.socials
-            li.facebook F
-            li.twitter.shift t
-            li.linkedin l
-            li.google g
-          .links
-            .field
-              .button +
-              input(placeholder='mysite.com')
-            .link_items
+        .set_alerts
+          h2 Set Alerts
+          p Emails or Texts with details
+          .field.email
+            input(placeholder='my@email.com')
+            .toggle
+              .bg
+                .option.active on
+                .option off
+          .field.text
+            input(placeholder='555.555.5555')
+            .toggle
+              .bg
+                .option on
+                .option.active off
+        .set_links
+          h2 Set Links
+          p Where they go, when they scan
+          .link_editor
+            ul.socials
+              li.facebook F
+              li.twitter.shift t
+              li.linkedin l
+              li.google g
+            .links
+              .field
+                .button +
+                input(placeholder='mysite.com')
+              .link_items
   .row
     .top
       h1.two
