@@ -2,34 +2,36 @@
   .overlay
 .navigation
   .center_column
-    ul.left
-      li
-        a(href='/') Home
+    a.logo(href='/')
+      img(src='/images/logo-114x114.png')
+    ul
       li
         a(href='/') How It Works
-    ul.right
-      li
-        a(href='http://blog.cards.ly') Blog
-      li
-        a(href='/about') About
       li
         a(href='/login') Login
-.logo
 != body
 
 
 .clear
 .footer
-  ul.items
-    li.phone 480.428.8000
-    li.f
-      a(href='http://fb.com/cardsly') F
-    li.g
-      a(href='https://plus.google.com/101327189030192478503/posts') g
-    li.t
-      a(href='http://twitter.com/cardsly') t
-    li.email
-      a(href='mailto:help@cards.ly')
-        span help
-        span.at @
-        span cards.ly
+  .center_column
+    ul
+      li
+        a(href='/about') About
+      li
+        a(href='http://blog.cards.ly') Blog
+    ul
+      li.f
+        a(href='http://fb.com/cardsly') F
+      li.g
+        a(href='https://plus.google.com/101327189030192478503/posts') g
+      li.t
+        a(href='http://twitter.com/cardsly') t
+    ul
+      li.email
+        a(href='mailto:help@cards.ly')
+          span help
+          span.at @
+          span cards.ly
+      li.phone
+        a(href='tel://4804288000') 480.428.8000
