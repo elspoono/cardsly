@@ -7,7 +7,6 @@ include pull_down
         i.one Get
         em &nbsp;Alerts&nbsp;
         i.two for the best leads with
-      img(src='/images/alert_txt.png')
     .top
       .left
         img(src='/images/scan_guy.png')
@@ -16,66 +15,58 @@ include pull_down
           .one QR Code 
           .two Business
           .three Cards
-  .bottom
+  .row.home_designer
+    .top
+      h1.two
+        .one Design Cards
+        .two Customize colors and fonts
+      .images
+        img(src='/images/paint_brush.png', width=80)
     .left
-      .home_designer
-        h1.two
-          .one Design Cards
-          .two Customize colors and fonts
-        .home_images
-          img(src='/images/paint_brush.png')
-        .controls
-          .areas
-            .area.active
-              input.line_value(placeholder='Enter Text Here')
-              .button.save Save
-              .clear
-              .color_picker
-                .shader
+      .controls
+        .areas
+          .area.active
+            input.line_value(placeholder='Enter Text Here')
+            .button.save Save
+            .clear
+            .color_picker
+              .shader
+              .arrow_container
+                .arrow
+            - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+            .font_families.dropdown
+              .bg
                 .arrow_container
                   .arrow
-              - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-              .font_families.dropdown
-                .bg
-                  .arrow_container
-                    .arrow
-                  .bg_bg
-                  .bg_scroll
-                    -for font_family in font_families
-                      .font_family.option(style='font-family:'+font_family+';')=font_family
-            .area
-            .area
+                .bg_bg
+                .bg_scroll
+                  -for font_family in font_families
+                    .font_family.option(style='font-family:'+font_family+';')=font_family
+          .area
+          .area
 
-        .card.editor
-        
-        .theme_container
-          .top_anchor
-            .toggle.ours_yours
-              .bg
-                .option.active Ours
-                .option Yours
-            .toggle.front_back
-              .bg
-                .option.active front
-                .option back
-          .themes
-        img.shopping_cart(src='/images/shopping_cart.png')
-        h1.two
-          .one Cart
-          .two Everything lookin' good?
-        img.card_stack(src='/images/card_stack_alpha.png')
-        
-        .card.preview_2
-        .card.preview
-  
-        .preview_count
+      .card.editor
     .right
+        .theme_container
+          .themes
+    .bottom
+      .toggle.ours_yours
+        .bg
+          .option.active Ours
+          .option Yours
+      .toggle.front_back
+        .bg
+          .option.active front
+          .option back
+  .row
+    .top
       h1.two 
         .one Get Alerts
         .two Learn who scanned your cards
-      .notify_images
+      .images
         img.email(src='/images/alert_email.png')
         img.text(src='/images/alert_small.png')
+    .left
       .notify_form
         h2 Set Alerts
         p Emails or Texts with details
@@ -104,67 +95,86 @@ include pull_down
               .button +
               input(placeholder='mysite.com')
             .link_items
-      h1.two.checkout_header
+  .row
+    .top
+      h1.two
+        .one Cart
+        .two Everything lookin' good?
+      .images
+        img.shopping_cart(src='/images/shopping_cart.png')
+    .left
+      
+      img.card_stack(src='/images/card_stack_alpha.png')
+      .card.preview_2
+      .card.preview
+
+      .preview_count
+    .right
+      h2.q Quantity
+      .quantity
+        .option(cards=100,cost=10)
+          .label 100 cards
+          img(src='/images/100.png')
+          .value 
+            span.dollar $
+            span 10
+        .option(cards=250,cost=25)
+          .label 250 cards
+          img(src='/images/250.png')
+          .value 
+            span.dollar $
+            span 25
+        .option(cards=500,cost=35)
+          .label 500 cards
+          img(src='/images/500.png')
+          .value 
+            span.dollar $
+            span 35
+        .option(cards=1500,cost=75)
+          .label 1500 cards
+          img(src='/images/1500.png')
+          .value 
+            span.dollar $
+            span 75
+  .row
+    .top
+      h1.two
         .one Checkout
         .two The last step
-      .shipping_images
+      .images
         img.truck(src='/images/truck.png')
         img.credit_image(src='/images/credit_card.png')
-      .shipping_form
-        h2 Shipping
-        p Free via USPS priority mail
-        .field
-          input.street(placeholder='123 Main St.')
-          .map
-          .full_address_container
-            .full_address
-          input.zip_code(placeholder='85022')
-        h2.q Quantity
-        .quantity
-          .option(cards=100,cost=10)
-            .label 100 cards
-            img(src='/images/100.png')
-            .value 
-              span.dollar $
-              span 10
-          .option(cards=250,cost=25)
-            .label 250 cards
-            img(src='/images/250.png')
-            .value 
-              span.dollar $
-              span 25
-          .option(cards=500,cost=35)
-            .label 500 cards
-            img(src='/images/500.png')
-            .value 
-              span.dollar $
-              span 35
-          .option(cards=1500,cost=75)
-            .label 1500 cards
-            img(src='/images/1500.png')
-            .value 
-              span.dollar $
-              span 75
-        h2 Credit Card
-        .billing
-          .credit-card
-            .field
-              label cc #
-              input(placeholder='4111111111111111')
-          .cvc
-            .field
-              label cvc
-              input(placeholder='1234')
-          .expiration
-            .field
-              label Exp.
-              select.card_expiry_month(name='credit_card[expiry_month]')
-                - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-                - for (var i in months)
-                  option(value=(i*1)+1)=months[i]
-              select.card_expiry_year(name='credit_card[expiry_year]')
-                - for (var year = 2011; year<2032; year++)
-                  option(value=year)=year
+    .left
+      h2 Shipping
+      p Free via USPS priority mail
+      .field
+        input.street(placeholder='123 Main St.')
+        .map
+        .full_address_container
+          .full_address
+        input.zip_code(placeholder='85022')
+    .right
+      h2 Credit Card
+      .billing
+        .credit-card
+          .field
+            label cc #
+            input(placeholder='4111111111111111')
+        .cvc
+          .field
+            label cvc
+            input(placeholder='1234')
+        .expiration
+          .field
+            label Exp.
+            select.card_expiry_month(name='credit_card[expiry_month]')
+              - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+              - for (var i in months)
+                option(value=(i*1)+1)=months[i]
+            select.card_expiry_year(name='credit_card[expiry_year]')
+              - for (var year = 2011; year<2032; year++)
+                option(value=year)=year
+    .bottom
       .button.normal.checkout
         img(src='/images/lock_icon.png')
         | Purchase

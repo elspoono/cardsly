@@ -1,6 +1,6 @@
 
 // Palette One
-color_two = #333
+color_two = #000
 color_three = #FFF
 color_four = #DED4B9
 color_five = #DED4B9
@@ -12,7 +12,7 @@ color_eight = #447fb4
 
 color_nine = #447fb4
 
-color_ten = #333
+color_ten = #000
 
 
 size_one = 32px
@@ -43,7 +43,7 @@ input,textarea,select
 .overlay_container
   position absolute
   width 100%
-  top 30px
+  top 40px
   left 0
   height 760px
   z-index -1
@@ -93,8 +93,8 @@ body
   top 0
   left 0
   width 100%
-  height 30px
-  line-height 30px
+  height 40px
+  line-height 40px
   z-index 200
   a
     font-size 14px
@@ -114,13 +114,14 @@ body
     img
       display block
       height 30px
+      margin-top 5px
 
 
 
           
 .hero
   overflow visible
-  margin 100px 0 0 0
+  margin 60px 0 0 0
   .super_top
     img
       position absolute
@@ -133,13 +134,17 @@ body
     em
       color color_six
       font-size 48px
-      line-height 56px
-      padding 0 20px
+      text-align center
+      line-height 90px
+      background url('/images/alert_txt.png')
+      height 101px
+      width 198px
     i.one
       line-height 38px
     i.two
       line-height 80px
     i
+      margin-top 20px
       font-size 20px
       color color_two
   .top
@@ -168,21 +173,28 @@ body
       text-align left
 
 
-.bottom
+
+
+.row
+  margin 120px 0
+  overflow hidden
+  clear both
+  .top
+    h1.two
+      float left
+    .images
+      margin 10px 0 0 30px
+      float left
+      img
+        margin 0 30px 0 0
+    clear both
+    overflow hidden
   .left
-    width 525px
     float left
   .right
-    width 280px
     float right
-    text-align center
-
-
-
-
-
-
-
+  .bottom
+    clear both
 
 
 
@@ -223,19 +235,11 @@ input,textarea,select
   font-size 14px
   border 0
 
-.notify_images
-  overflow hidden
-  img
-    margin 15px 15px 0 15px
-  .email
-    float left
-  .text
-    float right
-
 .notify_form,.shipping_form
   color color_ten
   width 280px
   position relative
+  text-align center
   h2
     font-size 26px
     margin 30px 0 0 0
@@ -406,16 +410,22 @@ input,textarea,select
 
 
 
+.card
+  position relative
+  width 525px
+  height 300px
+  background #FFF
+  z-index 149
+  transition(500ms)
+.stop_animate
+  no_transition()
+.card.collapsed2
+  transform_matrix(.0001,-.0001,0,1,0,0)
+.card.collapsed
+  transform_matrix(.0001,.0001,0,1,0,0)
 
 
 
-
-.home_images
-  img
-    float right
-    margin-top -94px
-    margin-right 15px
-    width 96px
 
 .card.editor
   .line,.qr,.img
@@ -463,34 +473,21 @@ input,textarea,select
     box_shadow(0,color_two,5px)
     
 .theme_container
-  margin 0 0 60px 0
-  .top_anchor
-    text-align center
-    position relative
-    z-index 90
-    overflow hidden
-    .front_back
-      float left
-    .ours_yours
-      float right
-      display none
-    .toggle
-      margin 15px
-      overflow hidden
   .themes
+    width 485px
     box_shadow(0,color_two,10px,inset)
     background color_four
     position relative
     z-index 250
-    height 500px
+    height 440px
     overflow auto
     .thumb
       margin 30px 0 0 15px
       cursor pointer
       float left
-      height 120px
-      width 220px
-      padding 60px 0 0 15px
+      height 105px
+      width 210px
+      padding 60px 0 0 8px
       position relative
       .bg,.fg,.bg_bg,.fg_bg
         transition()
@@ -532,22 +529,7 @@ input,textarea,select
 
 .home_designer
   overflow visible
-  width 525px
-  .card
-    position relative
-    width 525px
-    height 300px
-    background #FFF
-    z-index 149
-    transition(500ms)
-  .stop_animate
-    no_transition()
-  .card.collapsed2
-    transform_matrix(.0001,-.0001,0,1,0,0)
-  .card.collapsed
-    transform_matrix(.0001,.0001,0,1,0,0)
   .controls
-    margin 20px 0 0 0
     width 525px
     .area
       position relative
@@ -559,8 +541,16 @@ input,textarea,select
       background color_four
     .area.active
       display block
-
-
+  .top
+    clear both
+  .bottom
+    padding 15px 0
+    overflow visible
+    .ours_yours
+      float right
+      display none
+    .front_back
+      float left
 
 
 
@@ -568,14 +558,6 @@ input,textarea,select
 .shopping_cart
   float right
   margin 30px 15px 0 0
-
-.shipping_images
-  overflow hidden
-  padding 0 15px
-  .truck
-    float left
-  .credit_image
-    float right
 
 
 .card_stack
