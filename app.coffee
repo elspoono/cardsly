@@ -2019,8 +2019,6 @@ app.post '/confirm-purchase', (req, res, next) ->
   order.city = req.session.saved_address.city
   order.full_address = req.session.saved_address.full_address
   order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
-  if req.session.discount
-    order.amount = order.amount + req.session.discount
   order.email = req.body.email
   #
   #
@@ -2083,11 +2081,15 @@ app.post '/confirm-purchase', (req, res, next) ->
   #
   new_order = req.order
   #
+  to_charge_amount = new_order.amount*1
+
+  if req.session.discount
+    to_charge_amount = to_charge_amount - req.session.discount*1
   #
   # Attempt a charge
   stripe.charges.create
     currency: 'usd'
-    amount: new_order.amount*1
+    amount: to_charge_amount
     customer: req.user.stripe.id
     description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
   , (err, charge) ->
