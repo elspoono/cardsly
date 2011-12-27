@@ -1,8 +1,7 @@
 
 // Palette One
-color_two = #000
-color_two_alt = #FFF
-color_three = #000
+color_two = #333
+color_three = #FFF
 color_four = #DED4B9
 color_five = #DED4B9
 color_six = #ce6d4e
@@ -41,6 +40,21 @@ input,textarea,select
 
 
 
+.overlay_container
+  position absolute
+  width 100%
+  top 30px
+  left 0
+  height 760px
+  z-index -1
+  overflow hidden
+  .overlay
+    position relative
+    width 120%
+    height 100%
+    margin-left -10%
+    background color_four
+    box_shadow(0,color_two,10px,inset)
 
 
 
@@ -51,10 +65,10 @@ input,textarea,select
 
 
 
-
-
-
-
+body
+  background color_three
+  background #F9F9F9
+  background url('/images/body_bg.png')
 
 
 
@@ -71,35 +85,35 @@ input,textarea,select
   width 1024px
   margin 0 auto
 
+
+
+
 .navigation
-  background color_two
   position absolute
   top 0
   left 0
   width 100%
-  height 64px
-  line-height 64px
+  height 30px
+  line-height 30px
   z-index 200
-  .left
-    float left
-    li
-      float left
-      margin 0 40px 0 0
-  .right
-    float right
-    li
-      float left
-      margin 0 0 0 40px
   a
-    font-size size_one
-    color color_five
+    font-size 14px
+    color color_ten
     text-decoration none
+  li
+    float left
+    margin 0 0 0 30px
+  ul
+    float right
   .hover
     a
       color color_seven
-h1
-  color color_three
-
+  
+  .logo
+    float left
+    img
+      display block
+      height 30px
 
 
 
@@ -220,9 +234,7 @@ input,textarea,select
 
 .notify_form,.shipping_form
   color color_ten
-  box_shadow(0,color_two,10px)
   width 280px
-  background color_six
   position relative
   h2
     font-size 26px
@@ -245,6 +257,8 @@ input,textarea,select
     height 40px
     margin 15px
 .notify_form
+  box_shadow(0,color_two,8px)
+  background color_six
   padding 0 0 30px 0
   .link_editor
     overflow hidden
@@ -260,7 +274,7 @@ input,textarea,select
       line-height 40px
       height 40px
       width 40px
-      color color_two_alt
+      color color_three
       gradient(lighten(color_eight,10),darken(color_eight,10))
       border_radius(10px)
       box_shadow(0,color_two,5px)
@@ -283,7 +297,7 @@ input,textarea,select
       gradient(lighten(color_eight,10),darken(color_eight,10))
       border_radius_right_only(10px)
       box_shadow(0,color_two,5px)
-      color color_two_alt
+      color color_three
       font-family huge_text
       line-height 40px
       height 40px
@@ -312,7 +326,8 @@ input,textarea,select
 .checkout_header
   margin 100px 0 20px 0
 .shipping_form
-  background color_five
+  box_shadow(0,color_two,10px,inset)
+  background color_four
   .street,.zip_code
     width 90px
   .map
@@ -346,7 +361,7 @@ input,textarea,select
       margin 15px 0 30px 15px
       border_radius(15px)
     .active
-      background color_two_alt
+      background color_three
       border 4px solid color_seven
       margin 11px -4px 26px 11px
     img
@@ -376,7 +391,7 @@ input,textarea,select
         width 40px
 .checkout
   margin 30px 0 120px 0
-  color color_two_alt
+  color color_three
   gradient(lighten(color_eight,10),darken(color_eight,10))
   border_radius(15px)
   height 70px
@@ -405,7 +420,8 @@ input,textarea,select
 .card.editor
   .line,.qr,.img
     cursor pointer
-  box_shadow(0,color_two,10px)
+  box_shadow(0,color_two,8px)
+  margin 15px 0 0 0
 
 .preview_count
   text-align right
@@ -442,27 +458,30 @@ input,textarea,select
     float left
     cursor pointer
   .active
-    color color_two_alt
+    color color_three
     gradient(lighten(color_eight,10),darken(color_eight,10))
     box_shadow(0,color_two,5px)
     
 .theme_container
   margin 0 0 60px 0
   .top_anchor
-    box_shadow(0,color_two,10px)
-    background color_five
     text-align center
     position relative
     z-index 90
+    overflow hidden
+    .front_back
+      float left
+    .ours_yours
+      float right
+      display none
     .toggle
-      margin 15px auto
+      margin 15px
       overflow hidden
-      display inline-block
   .themes
-    box_shadow(0,color_two,10px)
+    box_shadow(0,color_two,10px,inset)
     background color_four
     position relative
-    z-index 89
+    z-index 250
     height 500px
     overflow auto
     .thumb
@@ -497,7 +516,7 @@ input,textarea,select
       border 4px solid color_seven
       border_radius(15px)
       margin 26px -4px -4px 11px
-      background color_two_alt
+      background color_three
     .hover
       opacity(1)
   .themes.back
@@ -515,7 +534,6 @@ input,textarea,select
   overflow visible
   width 525px
   .card
-    margin 0 auto
     position relative
     width 525px
     height 300px
@@ -532,13 +550,13 @@ input,textarea,select
     margin 20px 0 0 0
     width 525px
     .area
-      box_shadow(0,color_two,10px)
       position relative
-      z-index 160
+      z-index 140
       width 525px
       height 125px
-      background color_five
       display none
+      box_shadow(0,color_two,10px,inset)
+      background color_four
     .area.active
       display block
 
@@ -547,12 +565,23 @@ input,textarea,select
 
 
 
+.shopping_cart
+  float right
+  margin 30px 15px 0 0
+
+.shipping_images
+  overflow hidden
+  padding 0 15px
+  .truck
+    float left
+  .credit_image
+    float right
 
 
 .card_stack
   position absolute
-  margin-left -20px
-  margin-top -15px
+  margin-left -21px
+  margin-top -16px
   width 585px
 .card.preview
   box_shadow(1px,color_ten,5px)
@@ -587,7 +616,7 @@ input,textarea,select
   gradient(lighten(color_eight,10),darken(color_eight,10))
   border_radius(10px)
   box_shadow(0,color_two,5px)
-  color color_two_alt
+  color color_three
   padding 0 15px
   line-height 38px
   height 40px
@@ -616,7 +645,7 @@ input,textarea,select
     top 0
   .arrow
     margin 16px 0 0 11px
-    border-top 8px solid color_two_alt
+    border-top 8px solid color_three
     border-left 4px solid transparent
     border-right 4px solid transparent
     border-bottom none
@@ -644,13 +673,13 @@ input,textarea,select
   .active
     padding 0 10px
     margin-right 0
-    color color_two_alt
+    color color_three
     background color_ten
   .bg
     box_shadow(0,color_two,5px,inset)
     height 240px
   .bg_scroll
-    background color_two_alt
+    background color_three
     margin-right 0
     padding-right 0
     overflow auto
@@ -689,49 +718,28 @@ input,textarea,select
 
 
 .footer
-  position fixed
-  z-index 250
-  bottom 0
-  left 0
-  width 100%
-  background color_two
-  height 32px
-  line-height 32px
-  color color_four
-  font-size 14px
-  text-align center
+  .center_column
+    border-left 1px solid color_two
+    margin 60px auto
+    overflow hidden
   .g,.t,.f
     a
-      font-size 18px
-      line-height 22px
-      display block
-      margin-top 6px
       font-family JustVector
-  .t
-    a
-      margin-top 7px
-  .f
-    a
-      margin-top 4px
+      font-size 20px
+  ul
+    padding 15px 0
+    border-top 1px solid color_two
+  ul,li,a
+    display block
+    float left
+    clear both
   a
+    padding 15px
     font-size 14px
-    color color_four
+    color color_ten
     text-decoration none
-    padding 0
-    margin 0
+  .hover
+    a
+      color color_seven
   .at
     font-family huge_text
-  li
-    float left
-    padding 0 20px 0 0
-  .items
-    width auto
-    overflow hidden
-    display inline-block
-    margin 0 auto
-    
-.about
-  position relative
-  top 100px
-  .team
-    float left

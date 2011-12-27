@@ -6,11 +6,11 @@ include pull_down
       h3 
         i.one Get
         em &nbsp;Alerts&nbsp;
-        i.two from your best leads with
+        i.two for the best leads with
       img(src='/images/alert_txt.png')
     .top
       .left
-        img(src='/images/logonew.png')
+        img(src='/images/scan_guy.png')
       .right
         h1.one 
           .one QR Code 
@@ -31,7 +31,7 @@ include pull_down
               .button.save Save
               .clear
               .color_picker
-                .overlay
+                .shader
                 .arrow_container
                   .arrow
               - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
@@ -50,15 +50,19 @@ include pull_down
         
         .theme_container
           .top_anchor
+            .toggle.ours_yours
+              .bg
+                .option.active Ours
+                .option Yours
             .toggle.front_back
               .bg
                 .option.active front
                 .option back
           .themes
+        img.shopping_cart(src='/images/shopping_cart.png')
         h1.two
           .one Cart
           .two Everything lookin' good?
-
         img.card_stack(src='/images/card_stack_alpha.png')
         
         .card.preview_2
@@ -103,6 +107,9 @@ include pull_down
       h1.two.checkout_header
         .one Checkout
         .two The last step
+      .shipping_images
+        img.truck(src='/images/truck.png')
+        img.credit_image(src='/images/credit_card.png')
       .shipping_form
         h2 Shipping
         p Free via USPS priority mail

@@ -631,6 +631,16 @@ $ ->
   #
   #
   #
+  if typeof(window.orientation) isnt 'undefined'
+    check_orient = ->
+      if window.orientation is 0 or window.orientation is 180
+        w = screen.width
+        $('meta[name=viewport]').attr 'content', 'width=525, initial-scale='+(w/525)+', user-scalable=no'
+      else
+        h = screen.height
+        $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale='+(h/1024)+', user-scalable=yes'
+    window.onorientationchange = check_orient
+    check_orient()
   #
   #
   #
@@ -844,25 +854,42 @@ $ ->
       # Thumbs
       # ------------------------------------
       #
+      active_theme = {}
       #
       $front_back = $home_designer.find '.front_back .option'
       $front_back.click ->
         $f_b = $ this
         $f_b.make_active()
+        #
+        #
+        $thumbs.filter('.active').click()
+        #
+        side = $f_b.html()
+        #
+        #
         $themes.removeClass 'front back'
-        $themes.addClass $f_b.html()
+        $themes.addClass side
         #
         #
         $card.addClass 'collapsed'
         #
         setTimeout ->
-          $thumbs.filter('.active').click()
           #
           #
           $card.addClass 'stop_animate'
           $card.removeClass 'collapsed'
           $card.addClass 'collapsed2'
           setTimeout ->
+            #
+            #
+            $.create_card_from_theme
+              height: 300
+              width: 525
+              theme: active_theme
+              active_view: 0
+              card: $all_card
+              side: side
+            #
             $card.removeClass 'stop_animate'
             $card.removeClass 'collapsed2'
           , 0
@@ -876,18 +903,22 @@ $ ->
       io_session.on 'load_theme', (theme) ->
         #
         #
+        active_theme = theme
         #
         #
         side = $front_back.filter('.active').html()
         #
-        $.create_card_from_theme
-          height: 300
-          width: 525
-          theme: theme
-          active_view: 0
-          card: $all_card
-          side: side
         #
+        unless $card.hasClass 'collapsed'
+          #
+          $.create_card_from_theme
+            height: 300
+            width: 525
+            theme: theme
+            active_view: 0
+            card: $all_card
+            side: side
+          #
         #
       #
       #
