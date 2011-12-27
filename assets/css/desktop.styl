@@ -1,6 +1,6 @@
 
 // Palette One
-color_two = #000
+color_two = #333
 color_two_alt = #FFF
 color_three = #000
 color_four = #DED4B9
@@ -41,14 +41,29 @@ input,textarea,select
 
 
 
+.overlay_container
+  position absolute
+  width 100%
+  top 30px
+  left 0
+  height 780px
+  z-index -1
+  overflow hidden
+  .overlay
+    position relative
+    width 120%
+    height 100%
+    margin-left -10%
+    background color_four
+    box_shadow(0,color_two,10px,inset)
 
 
 
 
 
 
-
-
+.navigation,.footer
+  display none
 
 
 
@@ -220,9 +235,7 @@ input,textarea,select
 
 .notify_form,.shipping_form
   color color_ten
-  box_shadow(0,color_two,10px)
   width 280px
-  background color_six
   position relative
   h2
     font-size 26px
@@ -245,6 +258,8 @@ input,textarea,select
     height 40px
     margin 15px
 .notify_form
+  box_shadow(0,color_two,10px)
+  background color_six
   padding 0 0 30px 0
   .link_editor
     overflow hidden
@@ -312,7 +327,8 @@ input,textarea,select
 .checkout_header
   margin 100px 0 20px 0
 .shipping_form
-  background color_five
+  box_shadow(0,color_two,10px,inset)
+  background color_four
   .street,.zip_code
     width 90px
   .map
@@ -406,6 +422,7 @@ input,textarea,select
   .line,.qr,.img
     cursor pointer
   box_shadow(0,color_two,10px)
+  margin 15px 0 0 0
 
 .preview_count
   text-align right
@@ -449,8 +466,6 @@ input,textarea,select
 .theme_container
   margin 0 0 60px 0
   .top_anchor
-    box_shadow(0,color_two,10px)
-    background color_five
     text-align center
     position relative
     z-index 90
@@ -464,10 +479,10 @@ input,textarea,select
       margin 15px
       overflow hidden
   .themes
-    box_shadow(0,color_two,10px)
+    box_shadow(0,color_two,10px,inset)
     background color_four
     position relative
-    z-index 89
+    z-index 250
     height 500px
     overflow auto
     .thumb
@@ -520,7 +535,6 @@ input,textarea,select
   overflow visible
   width 525px
   .card
-    margin 0 auto
     position relative
     width 525px
     height 300px
@@ -537,13 +551,13 @@ input,textarea,select
     margin 20px 0 0 0
     width 525px
     .area
-      box_shadow(0,color_two,10px)
       position relative
-      z-index 160
+      z-index 140
       width 525px
       height 125px
-      background color_five
       display none
+      box_shadow(0,color_two,10px,inset)
+      background color_four
     .area.active
       display block
 
