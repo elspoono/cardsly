@@ -631,6 +631,16 @@ $ ->
   #
   #
   #
+  if typeof(window.orientation) isnt 'undefined'
+    check_orient = ->
+      if window.orientation is 0 or window.orientation is 180
+        w = screen.width
+        $('meta[name=viewport]').attr 'content', 'width=525, initial-scale='+(w/525)+', user-scalable=no'
+      else
+        h = screen.height
+        $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale='+(h/1024)+', user-scalable=yes'
+    window.onorientationchange = check_orient
+    check_orient()
   #
   #
   #
