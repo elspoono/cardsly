@@ -2019,6 +2019,8 @@ app.post '/confirm-purchase', (req, res, next) ->
   order.city = req.session.saved_address.city
   order.full_address = req.session.saved_address.full_address
   order.amount = (req.session.saved_form.quantity*1 + req.session.saved_form.shipping_method*1) * 100
+  if req.session.discount
+    order.amount = order.amount + req.session.discount
   order.email = req.body.email
   #
   #
@@ -2174,6 +2176,36 @@ app.post '/confirm-purchase', (req, res, next) ->
               log_err err
 #
 #
+#
+#
+#
+app.post '/validate-coupon', (req, res, next) ->
+  #
+  #
+  #
+  if req.body.coupon_code and req.body.coupon_code is 'ferdur120'
+    req.session.discount = 10
+    res.send
+      discount: 10
+  else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
+    res.send
+      error: 'Discount code not found.'
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
 #
 #
 #
