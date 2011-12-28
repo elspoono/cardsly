@@ -488,10 +488,28 @@ input,textarea,select
     padding 0 10px
     float left
     cursor pointer
+    .img
+      display block
+      margin-top 11px
+      height 17px
+      width 20px
+      background url('/images/text_sprite.png')
+    .img.left
+      background-position 0 -17px
+    .img.center
+      background-position -20px -17px
+    .img.right
+      background-position -40px -17px
   .active
     color color_three
     gradient(lighten(color_eight,10),darken(color_eight,10))
     box_shadow(0,color_two,5px)
+    .img.left
+      background-position 0 0
+    .img.center
+      background-position -20px 0
+    .img.right
+      background-position -40px 0
     
 .theme_container
   .themes
@@ -606,30 +624,29 @@ input,textarea,select
 
 
 
+.area
+  .line_value
+    margin 15px 0 0 15px
+    height 40px
+    padding 0 20px
+    line-height 40px
+    float left
+  .button.save
+    float left
+    margin 15px 0 0 15px
+    gradient(lighten(color_eight,10),darken(color_eight,10))
+    border_radius(10px)
+    box_shadow(0,color_two,5px)
+    color color_three
+    padding 0 15px
+    line-height 38px
+    height 40px
+    font-size 26px
+    cursor pointer
 
-.line_value
-  margin 15px 0 0 15px
-  height 40px
-  padding 0 20px
-  line-height 40px
-  float left
-.button.save
-  float left
-  margin 15px 0 0 15px
-  gradient(lighten(color_eight,10),darken(color_eight,10))
-  border_radius(10px)
-  box_shadow(0,color_two,5px)
-  color color_three
-  padding 0 15px
-  line-height 38px
-  height 40px
-  font-size 26px
-  cursor pointer
-
-
-.font_families
-  float left
-  margin 15px
+  .toggle,.font_families
+    float left
+    margin 15px 0 15px 15px
 
 .paper
   z-index 14

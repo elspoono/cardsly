@@ -50,6 +50,14 @@ include pull_down
             select.font_families
               -for font_family in font_families
                 option(style='font-family:'+font_family+';')=font_family
+            .toggle.text_align
+              .bg
+                .option.active(align='left')
+                  .img.left
+                .option(align='center')
+                  .img.center
+                .option(align='right')
+                  .img.right
           .area
           .area
 

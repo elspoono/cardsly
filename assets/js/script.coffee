@@ -854,6 +854,15 @@ $ ->
       # Thumbs
       # ------------------------------------
       #
+      $text_align = $home_designer.find '.text_align .option'
+      #
+      card_loaded = ->
+        #
+        $text_align.unbind('click').click ->
+          $t_a = $ this
+          $t_a.make_active()
+      #
+      #
       active_theme = {}
       #
       $front_back = $home_designer.find '.front_back .option'
@@ -892,6 +901,9 @@ $ ->
             #
             $card.removeClass 'stop_animate'
             $card.removeClass 'collapsed2'
+            #
+            card_loaded()
+            #
           , 0
         , 500
       #
@@ -918,6 +930,8 @@ $ ->
             active_view: 0
             card: $all_card
             side: side
+          #
+          card_loaded()
           #
         #
       #
