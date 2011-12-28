@@ -675,59 +675,10 @@ h1.two
 
 
 .about
-  position relative
-  top 150px
+  width 1024px
   .team
-    position relative
-    left 200px
-    .steven
+    li
       float left
-      padding 20px
-      .stitle
-        position relative
-        top 25px
-        right 50px
-      .stext
-        position relative
-        top 25px
-        right 50px
-    .johnny
-      float left
-      padding 20px
-      .jtitle
-        position relative
-        top 25px
-        right 50px
-      .jtext
-        position relative
-        top 25px
-        right 50px
-    .derek
-      float left
-      padding 20px
-      .dtitle
-        position relative
-        top 25px
-        right 50px
-      .dtext
-        position relative
-        top 25px
-        right 50px
-    .scott
-      float left
-      padding 20px
-      .sctitle
-        position relative
-        top 25px
-        right 50px
-      .sctext
-        position relative
-        top 25px
-        right 50px
-  .information
-    text-align left
-    position relative
-    top 250px
     
 
 
@@ -738,10 +689,11 @@ h1.two
   border-top 1px solid color_four
   .center_column
     overflow hidden
-  .g,.t,.f
+    font-family normal_text
+  .g,.t
     a
-      font-family JustVector
-      font-size 15px
+      font-family normal_text
+      font-size 18px
   ul
     padding 15px 0
     float left
@@ -750,12 +702,29 @@ h1.two
     border-left 1px solid color_four
   a
     padding 5px 40px
-    font-size 16px
-    color color_ten
+    font-size 15px
+    color lighten(color_ten,70)
     text-decoration none
     float left
+  .f
+    a
+      font-family normal_text
+      font-size 15px
+    ul
+      padding 15px 0
+      float left
+    li
+      float left
+      border-left 1px solid color_four
+    a
+      padding 5px 40px
+      font-size 20px
+      color lighten(color_ten,70)
+      text-decoration none
+      float left
+
   .hover
     a
       color color_seven
   .at
-    font-family huge_text
+    font-family normal_text
