@@ -19,7 +19,7 @@ size_one = 32px
 
 huge_text = FFFTusjBold
 accent_text = EdoRegular
-normal_text = Trebuchet MS
+normal_text = Underwood Champion
 
 body
   background color_four
@@ -31,6 +31,8 @@ input,h1,h2,textarea,select
   color color_ten
 input,textarea,select
   color color_seven
+input,textarea,select,p
+  font-family normal_text
 
 
 
@@ -45,7 +47,7 @@ input,textarea,select
   width 100%
   top 40px
   left 0
-  height 700px
+  height 840px
   z-index -1
   overflow hidden
   .overlay
@@ -97,7 +99,7 @@ body
   line-height 40px
   z-index 200
   a
-    font-size 14px
+    font-size 16px
     color color_ten
     text-decoration none
   li
@@ -121,40 +123,47 @@ body
           
 .hero
   overflow visible
-  margin 100px 0 0 0
+  margin 80px 0 0 0
   h3
     margin-bottom 15px
-    height 91px
+    height 101px
     em, i
       float left
-      height 91px
+      height 101px
       display block
     em
       color color_six
-      font-size 44px
+      font-size 50px
       text-align center
-      line-height 80px
-      background url('/images/alert_txt_3.png')
-      width 175px
-      margin 0 10px
+      line-height 90px
+      background url('/images/alert_txt.png')
+      width 198px
+      margin 0 20px
     i
-      font-size 24px
-      line-height 80px
+      font-size 32px
+      line-height 90px
       color color_two
   .mid
-    margin 60px 0
     overflow hidden
     clear both
-    p
+    margin 30px 0
+    .l,.r
       float left
       text-align left
-      width 240px
-      line-height 28px
-      font-size 14px
-    p.first
-      margin-right 45px
+      width 215px
+      line-height 32px
+      font-size 16px
+    p
+      margin 30px 0
+    .l
+      margin-right 42px
+    .r
+      padding-left 42px
+      border-left 1px solid color_two
   .left
     float left
+    img
+      margin-top -20px
   .right
     float right
     text-align right
@@ -229,12 +238,12 @@ h1.two
   .two
     color color_two
     line-height 48px
-    font-size 14px
+    font-size 16px
 
 input,textarea,select
   padding 0 10px
   line-height 32px
-  font-size 14px
+  font-size 16px
   border 0
 
 .notify_form,.shipping_form
@@ -248,7 +257,7 @@ input,textarea,select
     padding 30px 0 0 0
   p
     margin 20px
-    font-size 14px
+    font-size 16px
   .field
     overflow hidden
   input,select
@@ -327,7 +336,7 @@ input,textarea,select
         padding 0 10px
         height 20px
         line-height 20px
-        font-size 14px
+        font-size 16px
       .button
         height 20px
         width 20px
@@ -361,7 +370,7 @@ input,textarea,select
     .full_address
       margin 15px
       text-align right
-      font-size 14px
+      font-size 16px
       line-height 20px
   .q
     color color_ten
@@ -401,7 +410,7 @@ input,textarea,select
       width 30px
     select
       width auto
-      font-size 14px
+      font-size 16px
     .cvc
       input
         width 40px
@@ -453,7 +462,7 @@ input,textarea,select
     float right
     color color_two
   .small
-    font-size 14px
+    font-size 16px
     line-height 60px
     margin 0 10px
   .large
@@ -652,7 +661,7 @@ input,textarea,select
     height 40px
   .font_family
     height 40px
-    font-size 14px
+    font-size 16px
     line-height 40px
     text-align right
     cursor pointer
@@ -780,7 +789,7 @@ input,textarea,select
     clear both
   a
     padding 15px
-    font-size 14px
+    font-size 16px
     color color_ten
     text-decoration none
   .hover
