@@ -4,29 +4,20 @@ include pull_down
     .super_top
     .top
       .left
-        h3 
+        h3
           i.one Get
           em &nbsp;Alerts&nbsp;
-          i.two from ...
+          i.two from your ...
         img(src='/images/googley_4.png')
-        p *Each card has a number, for example 
-          em #1 
-          | or 
-          em #47
-          | .
       .right
-        h1.one 
-          .one QR Code 
+        h1.one
+          .one QR Code
           .two Business
           .three Cards
         .mid
-          .l
-            p At the “big interview”, if you ever wanted to know if they were interested but you couldn't tell, now you can!
-          .r
-            p Leave a Cardsly business card. When it's scanned you will get an email or text message letting you know that they looked at that specific card 
-              em #
-              |. 
-            p Now you can follow up with confidence.
+          h4 Learn who's interested
+          p Leave a Cardsly business card, and when it is scanned you will get an email or text message.
+          p The unique card number in that message let's you know who scanned.
   .clear
   .row.home_designer
     .top
@@ -47,6 +38,9 @@ include pull_down
               select.font_families
                 -for font_family in font_families
                   option(style='font-family:'+font_family+';')=font_family
+              select.font_size
+                -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
+                  option(value=size)=size
               .toggle.text_align
                 .bg
                   .option.active(align='left')
