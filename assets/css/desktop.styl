@@ -508,62 +508,61 @@ h1.two
       background-position -20px 0
     .img.right
       background-position -40px 0
-    
-.theme_container
-  .themes
-    width 470px
+  
+.themes
+  width 470px
+  z-index 250
+  height 510px
+  overflow auto
+  .thumb
+    margin 30px 0 0 15px
+    cursor pointer
+    float left
+    height 105px
+    width 210px
+    padding 60px 0 0 8px
     position relative
-    z-index 250
-    height 440px
-    overflow auto
-    .thumb
-      margin 30px 0 0 15px
-      cursor pointer
-      float left
-      height 105px
-      width 210px
-      padding 60px 0 0 8px
-      position relative
-      .bg,.fg,.bg_bg,.fg_bg
-        transition()
-        position absolute
-      .bg
-        z-index 200
-        transform_matrix(.25,-0.33,0,1,100,-25)
-      .fg
-        z-index 201
-        transform_matrix(.9,0.05,-0.01,1,0,0)
-      .fg_bg,.bg_bg
-        height 90px
-        width 158px
-        z-index 199
-        background color_two
-      .fg_bg
-        transform_matrix(.9,0.05,0.09,.2,-5,35)
-      .bg_bg
-        transform_matrix(.25,-0.33,.1,.1,95,15)
-    .active
-      img
-        border-color transparent
-      border 4px solid color_seven
-      border_radius(15px)
-      margin 26px -4px -4px 11px
-      background color_three
-    .hover
-      opacity(1)
-  .themes.back
-    .thumb
-      .bg
-        transform_matrix(.9,0.05,-0.01,1,0,0)
-      .fg
-        transform_matrix(.25,-0.33,0,1,100,-25)
-      .fg_bg
-        transform_matrix(.25,-0.33,.1,.1,95,15)
-      .bg_bg
-        transform_matrix(.9,0.05,0.09,.2,-5,35)
+    .bg,.fg,.bg_bg,.fg_bg
+      transition()
+      position absolute
+    .bg
+      z-index 200
+      transform_matrix(.25,-0.33,0,1,100,-25)
+    .fg
+      z-index 201
+      transform_matrix(.9,0.05,-0.01,1,0,0)
+    .fg_bg,.bg_bg
+      height 90px
+      width 158px
+      z-index 199
+      background color_two
+    .fg_bg
+      transform_matrix(.9,0.05,0.09,.2,-5,35)
+    .bg_bg
+      transform_matrix(.25,-0.33,.1,.1,95,15)
+  .active
+    img
+      border-color transparent
+    border 4px solid color_seven
+    border_radius(15px)
+    margin 26px -4px -4px 11px
+    background color_three
+  .hover
+    opacity(1)
+.themes.back
+  .thumb
+    .bg
+      transform_matrix(.9,0.05,-0.01,1,0,0)
+    .fg
+      transform_matrix(.25,-0.33,0,1,100,-25)
+    .fg_bg
+      transform_matrix(.25,-0.33,.1,.1,95,15)
+    .bg_bg
+      transform_matrix(.9,0.05,0.09,.2,-5,35)
 
 .home_designer
   overflow visible
+  position relative
   .controls
     width 525px
     .area
@@ -576,14 +575,13 @@ h1.two
       display block
   .top
     clear both
-  .bottom
-    padding 15px 15px
-    overflow visible
-    .ours_yours
-      float right
-      display none
-    .front_back
-      float left
+  .ours_yours,.front_back
+    margin 15px
+  .ours_yours
+    float right
+    display none
+  .front_back
+    float left
 
 
 
