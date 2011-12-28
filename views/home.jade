@@ -41,10 +41,6 @@ include pull_down
             input.line_value(placeholder='Enter Text Here')
             .button.save Save
             .clear
-            .color_picker
-              .shader
-              .arrow_container
-                .arrow
             - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
             select.font_families
               -for font_family in font_families
@@ -57,6 +53,13 @@ include pull_down
                   .img.center
                 .option(align='right')
                   .img.right
+            .color_picker
+              .bg
+                .color
+                .shader
+                .arrow_container
+                  .arrow_1
+                  .arrow_2
           .area
           .area
 
@@ -73,6 +76,7 @@ include pull_down
         .bg
           .option.active front
           .option back
+      .clear
   .row
     .top
       h1.two 

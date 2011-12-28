@@ -33,9 +33,11 @@ input,textarea,select
   height 40px
   line-height 40px
   color color_seven
+  font-size 16px
+  padding 0 10px
+  border 0
 input,textarea,select,p
   font-family normal_text
-
 
 
 
@@ -242,11 +244,6 @@ h1.two
     line-height 48px
     font-size 16px
 
-input,textarea,select
-  padding 0 10px
-  line-height 32px
-  font-size 16px
-  border 0
 
 .notify_form,.shipping_form
   color color_ten
@@ -566,7 +563,6 @@ input,textarea,select
 
 .home_designer
   overflow visible
-  box_shadow(0,color_two,10px,inset)
   .controls
     width 525px
     .area
@@ -626,9 +622,6 @@ input,textarea,select
 .area
   .line_value
     margin 15px 0 0 15px
-    height 40px
-    padding 0 20px
-    line-height 40px
     float left
   .button.save
     float left
@@ -643,9 +636,40 @@ input,textarea,select
     font-size 26px
     cursor pointer
 
-  .toggle,.font_families
+  .toggle,.font_families,.color_picker
     float left
     margin 15px 0 15px 15px
+  
+.color_picker
+  cursor pointer
+  box_shadow(0,color_two,5px)
+  border_radius(10px)
+  height 40px
+  width 52px
+  .bg
+    gradient(darken(color_eight,10),lighten(color_eight,10))
+    box_shadow(0,color_two,5px,inset)
+    border_radius(10px)
+    height 40px
+    width 52px
+  .color
+    margin 5px 0 0 5px
+    height 30px
+    width 30px
+    background color_three
+    box_shadow(0,color_two,5px)
+    border_radius(8px)
+    float left
+  .arrow_1,.arrow_2
+    float right
+    border-style solid
+    border-color lighten(color_eight,20) transparent lighten(color_eight,20) transparent
+  .arrow_1
+    border-width 0 3px 6px 3px
+    margin 13px 6px 0 0
+  .arrow_2
+    border-width 6px 3px 0 3px
+    margin 3px 6px 0 0
 
 .paper
   z-index 14
