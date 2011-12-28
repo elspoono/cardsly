@@ -271,9 +271,6 @@ input,textarea,select
     line-height 40px
     height 40px
     margin 15px
-.left
-  height 300px
-
 .notify_form
   box_shadow(0,color_two,8px)
   background color_six
@@ -377,6 +374,7 @@ input,textarea,select
   .quantity
     color color_seven
     margin 15px 0
+    float left
     .option
       cursor pointer
       text-align center
@@ -550,6 +548,7 @@ input,textarea,select
 
 .home_designer
   overflow visible
+  box_shadow(0,color_two,10px,inset)
   .controls
     width 525px
     .area
@@ -772,8 +771,8 @@ input,textarea,select
 
 
 .footer
+  background color_ten
   .center_column
-    border-left 1px solid color_two
     margin 60px auto
     overflow hidden
   .g,.t,.f
@@ -782,16 +781,17 @@ input,textarea,select
       font-size 20px
   ul
     padding 15px 0
-    border-top 1px solid color_two
-  ul,li,a
-    display block
+    border-top 1px solid color_four
     float left
-    clear both
+  li
+    float left
+    border-left 1px solid color_four
   a
     padding 15px
     font-size 16px
-    color color_ten
+    color color_four
     text-decoration none
+    float left
   .hover
     a
       color color_seven
