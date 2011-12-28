@@ -1162,24 +1162,46 @@ $ ->
   #
   #
   #
+  amount = 10
+  discount = 0
   #
   #
   #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
+  # Coupon Collection
+  $('.coupon').click ->
+    $.load_modal
+      content: '<p>Please enter a coupon code:</p><input class="coupon_code" />'
+      buttons: [
+        action: (close) ->
+          coupon_code = $('.coupon_code').val()
+          $.load_loading {}, (loading_close) ->
+            $.ajax
+              url: '/validate-coupon' 
+              data: JSON.stringify
+                coupon_code: coupon_code
+              success: (result) ->
+                loading_close()
+                if result and result.discount
+                  discount = result.discount
+                  update_radio_highlights()
+                  $.load_alert
+                    content: 'Discount of $'+result.discount+' applied.'
+                else
+                  $.load_alert
+                    content: 'I\'m sorry, that code doesn\'t appear to be valid still.'
+              error: ->
+                loading_close()
+                $.load_alert
+                  content: 'Something went wrong, please try again later.'
+            close()
+        label: 'Apply'
+      ,
+        action: (close) -> 
+          close()
+        label: 'Cancel'
+        class: 'gray'
+      ]
+    false
   #
   #
   #

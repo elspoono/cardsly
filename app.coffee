@@ -1346,6 +1346,7 @@ create_urls
 
 ###
 create_urls = (options, next) ->
+  console.log 'CREATE OPTIONS: ', options
   if typeof(options) isnt 'object'
     next 'No Options Sent'
   else if not options.redirect_to
@@ -1514,7 +1515,7 @@ app.post '/get-user', (req,res,next) ->
 #
 #
 #
-add_urls_to_order = (order, user, res) ->
+add_urls_to_order = (order, user, res, passed_volume) ->
   #
   #
   #
@@ -1528,44 +1529,71 @@ add_urls_to_order = (order, user, res) ->
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
+  console.log 'REDIRECT TO: ', redirect_to
+  #
+  #
   volume = 100
   volume = 250 if order.quantity*1 is 25
   volume = 500 if order.quantity*1 is 35
   volume = 1500 if order.quantity*1 is 70
-
   #
+  #
+  volume = passed_volume*1 if passed_volume
+  #
+  console.log 'VOLUME: ', volume
   #
   create_urls
     redirect_to: redirect_to
     volume: volume
   , (err, new_urls) ->
-
-    url_group = new mongo_url_group
-    url_group.order_id = order._id
-    url_group.user_id = user._id
-    url_group.redirect_to = redirect_to
-    url_group.urls = []
     #
-    for new_url in new_urls
-      user.card_number++
-      url_group.urls.push
-        url_string: new_url.url_string
-        redirect_to: redirect_to
-        card_number: user.card_number
+    console.log 'CREATED URLS: ', new_urls.length
     #
     #
-    url_group.save (err, saved_group) ->
-      if err
-        log_err err
+    mongo_url_group.findOne
+      order_id: order._id
+    , (err, found_url_group) ->
+      #
+      #
+      if found_url_group
+        #
+        url_group = found_url_group
+        #
+        console.log 'FOUND GROUP OF LENGTH: ', url_group.urls.length
+        #
       else
         #
-        # This is where we kick off the processing of the pdf
-        process_pdf order._id
-    #
-    #
-    user.save (err, saved_user) ->
-      if err
-        log_err err
+        url_group = new mongo_url_group
+        url_group.order_id = order._id
+        url_group.user_id = user._id
+        url_group.redirect_to = redirect_to
+        url_group.urls = []
+        #
+        #
+        console.log 'CREATED NEW GROUP'
+      #
+      #
+      #
+      for new_url in new_urls
+        user.card_number++
+        url_group.urls.push
+          url_string: new_url.url_string
+          redirect_to: redirect_to
+          card_number: user.card_number
+      #
+      #
+      url_group.save (err, saved_group) ->
+        if err
+          log_err err
+        else
+          #
+          # This is where we kick off the processing of the pdf
+          process_pdf order._id
+      #
+      #
+      user.save (err, saved_user) ->
+        if err
+          log_err err
     #
     #
   volume
@@ -1882,11 +1910,15 @@ charge_stripe_token = (req, res, next) ->
   #
   new_order = req.order
   #
+  to_charge_amount = new_order.amount*1
+
+  if req.session.discount
+    to_charge_amount = to_charge_amount - req.session.discount*100
   #
   # Attempt a charge
   stripe.charges.create
     currency: 'usd'
-    amount: new_order.amount*1
+    amount: to_charge_amount
     customer: req.user.stripe.id
     description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
   , (err, charge) ->
@@ -1896,9 +1928,151 @@ charge_stripe_token = (req, res, next) ->
     #
     #
     #
+    # Save the order's url
+    #
+    #  - This is used to show the "contact page" for an order
+    #
+    create_url 'http://cards.ly/order/'+new_order._id, (err, order_url) ->
+      if check_no_err_ajax err, res
+        #
+        #
+        # Save that url to the order
+        new_order.order_number = order_url.url_string
+        #
+        #
+        # Save the charge result to the order
+        new_order.charge = charge
+        #
+        #
+        new_order.save (err, final_order) ->
+          if err
+            log_err err
+        #
+        #
+        #
+        if err
+          log_err err
+          res.send
+            err: charge.error.message
+        else if not charge.paid
+          console.log 'ERR: stripe charge resulted in not paid for some reason.'
+          res.send
+            err: 'Charge resulted in not paid for some reason.'
+        else
+          res.send
+            order_id: new_order._id
+            charge: charge
+          #
+          #
+          ################################
+          # Do Cleanup and send emails etc
+          ################################
+          #
+          #
+          # Generate the Urls
+          volume = add_urls_to_order new_order, req.user
+          #
+          #
+          #
+          #
+          ############
+          # Send Email
+          ############
+          #
+          # Send Confirmation Email
+          #####
+          # Prep the Email Message
+          total_paid = to_charge_amount/100
+          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+          #
+          # Send the user an email
+          if new_order.email
+            nodemailer.send_mail
+              sender: 'help@cards.ly'
+              to: new_order.email
+              subject: 'Cardsly Order Confirmation - Order ID: ' + new_order.order_number
+              html: message
+            , (err, data) ->
+              if err
+                log_err err
+          #
+          # Send us an email
+          nodemailer.send_mail
+            sender: 'support@cards.ly'
+            to: 'help@cards.ly'
+            subject: 'Cardsly Order Received - Order ID: ' + new_order.order_number
+            html: '<p>A new order was received!</p><blockquote>' + message + '</blockquote>'
+          , (err, data) ->
+            if err
+              log_err err
 #
 #
 #
+app.post '/validate-coupon', (req, res, next) ->
+  #
+  #
+  #
+  if req.body.coupon_code and req.body.coupon_code is 'ferdur120'
+    req.session.discount = 10
+    res.send
+      discount: 10
+  else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
+    res.send
+      error: 'Discount code not found.'
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
+#
+#
+#
+app.post '/validate-purchase', (req, res, next) ->
+  #
+  #
+  #
+  if not req.user
+    res.send
+      error: 'Please sign in'
+  else if not req.session.saved_address
+    res.send
+      error: 'Please enter shipping info'
+  else if not req.session.saved_address.full_address
+    res.send
+      error: 'Please check the address'
+  else if req.session.saved_form.values[0] is "1) John Stamos"
+    res.send
+      error: 'Hey Uncle Jesse, is that you?'
+  else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
+    res.send
+      success: true
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
 #
 #
 #
@@ -2149,6 +2323,39 @@ app.get '/success', (req, res) ->
 #
 #
 #
+app.get '/add-urls-to-order/:volume/:order_id', (req, res, next) ->
+  #
+  #
+  #
+  console.log 'ADD URLS HIT FOR ', req.params.order_id
+  # Find the Order that's passed in
+  mongo_order.findById req.params.order_id, (err, order) ->
+    if check_no_err err
+      mongo_user.findById order.user_id, (err, found_user) ->
+        if check_no_err err
+          add_urls_to_order order, found_user, res, req.params.volume
+          res.send
+            'success': true
+#
+#
+#
+app.get '/re-process-pdf/:order_id', (req, res, next) ->
+  #
+  #
+  # This is where we kick off the processing of the pdf
+  process_pdf req.params.order_id
+  #
+  console.log 'REPROCESS HIT FOR ', req.params.order_id
+  # Find the Order that's passed in
+  mongo_order.findById req.params.order_id, (err, order) ->
+    if check_no_err err
+      order.date_added = new Date()
+      order.save (err, saved_order) ->
+        if check_no_err err
+          #
+          res.send '',
+            Location: '/orders'
+          , 302
 #
 #
 render_image = (o) ->
@@ -2264,7 +2471,195 @@ render_image = (o) ->
                   #
                   #
                   save_image()
-  #
+#
+#
+#
+#
+#
+#
+#
+# Success Page
+#
+# Where they land after authenticating
+# This should close automatically or redirect to the home page if no caller
+app.get '/success', (req, res) ->
+  res.cookie 'success_login', true
+  res.send '<script>window.onload = function(){window.close();}',
+    'Content-Type': 'text/html'
+  , 200
+#
+# Get the order information
+get_order_info = (req, res, next) ->
+  mongo_order.find
+    user_id: req.user._id
+    'charge.paid': true
+  , (err, orders) ->
+    if check_no_err err, res
+      req.orders = orders
+      next()
+#
+#
+#
+get_url_groups = (req, res, next) ->
+  if req.user
+    mongo_url_group.find
+      user_id: req.user._id
+    , (err, url_groups) ->
+      if check_no_err err
+        #
+        #
+        for url_group in url_groups
+          #
+          #
+          #
+          #
+          #
+          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
+          #
+          #
+          # Sort by last updated within the url groups
+          url_group.urls = _(url_group.urls).sortBy (url) ->
+            url.last_updated
+          url_group.urls.reverse()
+          #
+          #
+          #
+          #
+          # -
+          # ------
+          # ---------------
+          # --------------------------------------------------
+          # Try to group the ranges of numbers, BLEGH! :O
+          #
+          #
+          url_group.ranged_urls = []
+          #
+          # Get the groups
+          # Filter out the visited
+          not_visited = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
+          #
+          #
+
+          at_defaults = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
+          #
+          url_group.at_defaults = at_defaults.length
+          #
+          #
+          grouped = _(not_visited).groupBy (url) ->
+            url.redirect_to
+          for redirect_to,group of grouped
+            #
+            #
+            group = _(group).sortBy (url) ->
+              url.card_number
+            #
+            #
+            final = group[0]
+            #
+            prev_card_number = final.card_number-1
+            length = 0
+            for url in group
+              if url.card_number*1 isnt prev_card_number*1+1
+                if length > 1
+                  final.card_number = final.card_number + '-' + prev_card_number
+                final.card_number = final.card_number + ', ' + url.card_number
+                length = 0
+              length++
+              prev_card_number = url.card_number
+              #
+            #
+            if length > 1
+              final.card_number = final.card_number + '-' + prev_card_number
+            #
+            #
+            url_group.ranged_urls.push final
+          #
+          #
+          #
+          # --------------------------------------------------
+          # ---------------
+          # ------
+          # -
+          #
+          #
+        #
+        #
+        #
+        req.url_groups = url_groups
+        #
+        next()
+  else
+    next()
+#
+#
+#
+#
+# Make me an admin
+app.get '/make-me-admin', secured_page, (req, res) ->
+  req.user.role = 'admin'
+  req.user.save (err) ->
+    log_err err if err
+    res.send '',
+      Location: '/admin'
+    , 302
+#
+#
+#
+# About Page
+app.get '/about', (req, res) ->
+  res.render 'about'
+    req: req
+#
+#
+#
+
+# Forgot Password
+app.get '/forgot-password', (req, res) ->
+  res.render 'forgot_password'
+    req: req
+    scripts:[
+      'forgot'
+    ]
+    
+# Password Reset
+app.get '/reset-password/:password_reset_id', (req, res) ->
+  res.render 'reset_password'
+    req: req
+    scripts:[
+      'reset_password'
+    ]
+
+
+# Redirect for Kickstarter campagin
+app.get '/fundourprinter', (req, res, next) ->
+  console.log req.url
+  res.send '',
+    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
+  , 301
+  
+# Splash Page
+app.get '/old-browser', (req, res) -> 
+  res.render 'old_browser'
+    req: req
+    layout: 'layout_min'
+#
+# Error Page
+app.get '/error', (req, res) -> 
+  res.render 'error'
+    req: req
+    layout: 'layout_min'
+
+# Cute Animal PAges
+app.get '/cute-animal', (req, res) -> 
+  res.render 'cute_animal'
+    req: req
+    layout: 'layout_min'
+#
+#
+OAuth = require('oauth').OAuth
+#
 #
 app.get '/thumb/:theme_id/:side?', (req, res, next) ->
   #
@@ -2322,8 +2717,6 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
 #
 #
 #
-#
-#
 # Make me an admin
 app.get '/make-me-admin', secured_page, (req, res) ->
   req.user.role = 'admin'
@@ -2335,12 +2728,65 @@ app.get '/make-me-admin', secured_page, (req, res) ->
 #
 #
 #
-# Real Index Page
-app.get '/just-pulldown', (req, res) -> 
-  #
-  #
-  res.render 'pull_down'
+#
+#
+app.get '/gangplank', (req, res) ->
+  res.render 'gangplank'
     req: req
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Hello Gangplank!'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Design and create your own business cards with qr codes. See analytics and update links anytime in the Cardsly dashboard.'
+    #
+    #
+    # (Uncomment means remove the single # character at the start of it :)\
+#
+# AB Test Pages
+
+# Page 1 Purchase
+app.get '/home1', get_url_groups, (req, res) ->
+  res.render 'home'
+    req: req
+    abtest: 1
+    url_groups: req.url_groups
+    scripts:[
+      'home'
+    ]
+
+
+# Page 2 Checkout
+app.get '/home2', get_url_groups, (req, res) ->
+  res.render 'home'
+    req: req
+    abtest: 2
+    url_groups: req.url_groups
+    scripts:[
+      'home'
+    ]
+
+# Page 3 Buy
+app.get '/home3', get_url_groups, (req, res) ->
+  res.render 'home'
+    req: req
+    abtest: 3
+    url_groups: req.url_groups
+    scripts:[
+      'home'
+    ]
+
+#
+#
+# Real Index Page
+app.get '/talking', get_url_groups, (req, res) -> 
+  #
+  #
+  #
+  res.render 'home'
+    req: req
+    abtest: 4
     #
     # Cut off at 60 characters 
     #
@@ -2349,9 +2795,12 @@ app.get '/just-pulldown', (req, res) ->
     #
     description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
     #
+    # Uncomment the following line to add a custom h1 tag!
+    h1: 'Talking business cards send you Email Alerts'
     #
     # (Uncomment means remove the single # character at the start of it :)
     #
+    url_groups: req.url_groups
     #
 #
 #
@@ -2540,6 +2989,8 @@ app.get '*', (req, res, next) ->
   res.send '',
     Location:'/'
   , 301
+#
+#
 #
 # ### Start server
 app.listen process.env.PORT or 4000
