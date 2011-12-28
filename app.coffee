@@ -2084,7 +2084,7 @@ app.post '/confirm-purchase', (req, res, next) ->
   to_charge_amount = new_order.amount*1
 
   if req.session.discount
-    to_charge_amount = to_charge_amount - req.session.discount*1
+    to_charge_amount = to_charge_amount - req.session.discount*100
   #
   # Attempt a charge
   stripe.charges.create
