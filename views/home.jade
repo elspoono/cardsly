@@ -8,7 +8,12 @@ include pull_down
           i.one Get
           em &nbsp;Alerts&nbsp;
           i.two from ...
-        img(src='/images/googley_3.png')
+        img(src='/images/googley_4.png')
+        p *Each card has it's own number from 
+          em #1 
+          | to 
+          em #50
+          | .
       .right
         h1.one 
           .one QR Code 
@@ -16,12 +21,11 @@ include pull_down
           .three Cards
         .mid
           .l
-            p Each card has it's own number, from #1 to #50.
-            p When a card is scanned it sends an email, or text message, with that unique #.
+            p At the “big interview”, if you ever wanted to know if they were interested but couldn't tell, now you can!
           .r
-            p Cardsly cards write home from their trip.
-            p And, let you update their links whenever.
-            p 'Cause cardsly cards are nice like that.
+            p Leave your Cardsly business card and when it gets scanned you will receive an email or text message letting you know that that specific card 
+              em # 
+              | was scanned. Now you can send them a thank you email and follow up with confidence.
   .clear
   .row.home_designer
     .top
@@ -42,14 +46,17 @@ include pull_down
               .arrow_container
                 .arrow
             - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-            .font_families.dropdown
+            select.font_families
+              -for font_family in font_families
+                option(style='font-family:'+font_family+';')=font_family
+            .toggle.text_align
               .bg
-                .arrow_container
-                  .arrow
-                .bg_bg
-                .bg_scroll
-                  -for font_family in font_families
-                    .font_family.option(style='font-family:'+font_family+';')=font_family
+                .option.active(align='left')
+                  .img.left
+                .option(align='center')
+                  .img.center
+                .option(align='right')
+                  .img.right
           .area
           .area
 

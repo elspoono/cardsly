@@ -30,6 +30,8 @@ input,h1,h2,textarea,select
   font-family accent_text
   color color_ten
 input,textarea,select
+  height 40px
+  line-height 40px
   color color_seven
 input,textarea,select,p
   font-family normal_text
@@ -143,6 +145,13 @@ body
       font-size 32px
       line-height 90px
       color color_two
+  p
+    margin 30px 0
+    line-height 32px
+    font-size 16px
+    width 245px
+    em
+      color color_six
   .mid
     overflow hidden
     clear both
@@ -150,16 +159,9 @@ body
     .l,.r
       float left
       text-align left
-      width 215px
-      line-height 32px
-      font-size 16px
-    p
-      margin 30px 0
+      width 245px
     .l
-      margin-right 42px
-    .r
-      padding-left 42px
-      border-left 1px solid color_two
+      margin-right 35px
   .left
     float left
     img
@@ -261,8 +263,6 @@ input,textarea,select
   .field
     overflow hidden
   input,select
-    height 40px
-    line-height 40px
     float left
     width 120px
     margin 15px 0 15px 15px
@@ -486,10 +486,28 @@ input,textarea,select
     padding 0 10px
     float left
     cursor pointer
+    .img
+      display block
+      margin-top 11px
+      height 17px
+      width 20px
+      background url('/images/text_sprite.png')
+    .img.left
+      background-position 0 -17px
+    .img.center
+      background-position -20px -17px
+    .img.right
+      background-position -40px -17px
   .active
     color color_three
     gradient(lighten(color_eight,10),darken(color_eight,10))
     box_shadow(0,color_two,5px)
+    .img.left
+      background-position 0 0
+    .img.center
+      background-position -20px 0
+    .img.right
+      background-position -40px 0
     
 .theme_container
   .themes
@@ -605,92 +623,29 @@ input,textarea,select
 
 
 
-
-.line_value
-  margin 15px 0 0 15px
-  height 40px
-  padding 0 20px
-  line-height 40px
-  float left
-.button.save
-  float left
-  margin 15px 0 0 15px
-  gradient(lighten(color_eight,10),darken(color_eight,10))
-  border_radius(10px)
-  box_shadow(0,color_two,5px)
-  color color_three
-  padding 0 15px
-  line-height 38px
-  height 40px
-  font-size 26px
-  cursor pointer
-
-
-.font_families
-  float right
-  margin 15px
-.dropdown
-  border_radius(10px)
-  position relative
-  padding 0 30px 0 0
-  height 40px
-  z-index 300
-  .arrow_container
-    cursor pointer
-    position absolute
+.area
+  .line_value
+    margin 15px 0 0 15px
     height 40px
-    width 30px
-    gradient(lighten(color_eight,10),darken(color_eight,10))
-    box_shadow(0,color_two,5px)
-    border_radius(10px)
-    right 0
-    top 0
-  .arrow
-    margin 16px 0 0 11px
-    border-top 8px solid color_three
-    border-left 4px solid transparent
-    border-right 4px solid transparent
-    border-bottom none
-    width 0
-    height 0
-  .bg_scroll
-    overflow hidden
-    margin-right -30px
-    padding-right 30px
-    height 40px
-  .font_family
-    height 40px
-    font-size 16px
+    padding 0 20px
     line-height 40px
-    text-align right
-    cursor pointer
-    padding 0 10px
-    color color_ten
-  .active
-    color color_ten
-    padding 0 20px 0 10px
-    margin-right -10px
-.dropdown.active
-  overflow visible
-  .active
-    padding 0 10px
-    margin-right 0
+    float left
+  .button.save
+    float left
+    margin 15px 0 0 15px
+    gradient(lighten(color_eight,10),darken(color_eight,10))
+    border_radius(10px)
+    box_shadow(0,color_two,5px)
     color color_three
-    background color_ten
-  .bg
-    box_shadow(0,color_two,5px,inset)
-    height 240px
-  .bg_scroll
-    background color_three
-    margin-right 0
-    padding-right 0
-    overflow auto
-    height 240px
-  .bg_bg
-    height 240px
-    width 100%
-    position absolute
-    z-index -1
+    padding 0 15px
+    line-height 38px
+    height 40px
+    font-size 26px
+    cursor pointer
+
+  .toggle,.font_families
+    float left
+    margin 15px 0 15px 15px
 
 .paper
   z-index 14
