@@ -36,7 +36,8 @@ input,textarea,select
   font-size 16px
   padding 0 10px
   border 0
-input,textarea,select,p
+  margin 0
+input,textarea,select,p,label
   font-family normal_text
 
 
@@ -255,27 +256,33 @@ h1.two
   h2, p
     margin 0 0 15px 0
   h2
-    height 40px
-    line-height 40px
     font-size 24px
+  p
+    width 250px
+    line-height 28px
+    font-size 16px
   overflow hidden
-.set_alerts
-  gradient(lighten(color_six,0),darken(color_six,20))
-  box_shadow(0,color_two,10px)
   .field
     float left
     margin 15px 45px 15px 15px
-  .field input
+  .input
     float left
-    margin 0 15px 0 0
+    margin 0
+    input,label
+      display block
+      margin 0 0 5px 0
   .toggle
     float right
+    margin 0 0 0 15px
+.set_alerts
+  gradient(lighten(color_six,0),darken(color_six,20))
+  box_shadow(0,color_two,10px)
 .set_links
   .socials
     text-align center
     float left
-    overflow hidden
-    padding 0 0 15px 0
+    overflow visible
+    padding 0 15px 0 0
     li
       cursor pointer
       font-family JustVector
@@ -288,22 +295,19 @@ h1.two
       border_radius(10px)
       box_shadow(0,color_two,5px)
       float right
-      margin 15px 0 0 15px
+      margin 0 0 0 15px
     .shift
       line-height 50px
   .links
-    float right
+    float left
     margin 0 0
     input
-      width 145px
-      text-align right
-      float right
-      margin 15px 0 15px 15px
+      width 200px
     .button
       text-align center
       cursor pointer
-      margin 15px 15px 15px 0
-      float right
+      margin 0 15px 15px 0
+      float left
       gradient(lighten(color_eight,10),darken(color_eight,10))
       border_radius_right_only(10px)
       box_shadow(0,color_two,5px)

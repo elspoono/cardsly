@@ -87,31 +87,38 @@
           h2 Set Alerts
           p Enter an email address or phone number to recieve messages when your cards are scanned.
         .field.email
-          input(placeholder='my@email.com')
+          .input
+            input(placeholder='my@email.com')
+            label E-mail Address
           .toggle
             .bg
-              .option.active on
-              .option off
+              .option on
+              .option.active off
         .field.text
-          input(placeholder='555.555.5555')
+          .input
+            input(placeholder='555.555.5555')
+            label Phone Number
           .toggle
             .bg
               .option on
               .option.active off
       .set_links
-        h2 Set Links
-        p Where they go, when they scan
-        .link_editor
-          ul.socials
-            li.facebook F
-            li.twitter.shift t
-            li.linkedin l
-            li.google g
-          .links
-            .field
+        .field
+          h2 Set Links
+          p Where they go, when they scan
+        .field
+          .link_editor
+            .links
+              .input
+                input(placeholder='mysite.com')
+                label Web Site URL
               .button +
-              input(placeholder='mysite.com')
-            .link_items
+            ul.socials
+              li.facebook F
+              li.twitter.shift t
+              li.linkedin l
+              li.google g
+          .link_items
       .clear
   .row
     .top
