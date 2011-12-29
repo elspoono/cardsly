@@ -1,0 +1,1722 @@
+info it worked if it ends with ok
+verbose cli [ 'node',
+verbose cli   '/usr/local/bin/npm',
+verbose cli   'install',
+verbose cli   'connect-assets' ]
+info using npm@1.0.106
+info using node@v0.4.7
+verbose config file /Users/derek/.npmrc
+verbose config file /usr/local/etc/npmrc
+verbose config file /usr/local/lib/node_modules/npm/npmrc
+silly testEngine { name: 'cham',
+silly testEngine   version: '0.0.1',
+silly testEngine   private: true,
+silly testEngine   dependencies: 
+silly testEngine    { express: '>= 0.0.1',
+silly testEngine      jade: '>= 0.0.1',
+silly testEngine      stylus: '>= 0.13.9',
+silly testEngine      'coffee-script': '>= 1.1.2',
+silly testEngine      connect: '>= 0.0.1',
+silly testEngine      'connect-redis': '>= 0.0.1',
+silly testEngine      mongoose: '>= 0.0.1',
+silly testEngine      bcrypt: '>=0.0.1',
+silly testEngine      geo: '>=0.0.1',
+silly testEngine      nodemailer: '>=0.0.1',
+silly testEngine      pdfkit: '>=0.0.1',
+silly testEngine      imagemagick: '>=0.0.1',
+silly testEngine      everyauth: '>=0.0.1',
+silly testEngine      knox: '>=0.0.1',
+silly testEngine      'connect-form': '>=0.0.1',
+silly testEngine      loggly: '>=0.0.1',
+silly testEngine      samurai: '>=0.0.1',
+silly testEngine      'connect-assets': '>=0.0.1' },
+silly testEngine   devDependencies: { vows: '>= 0.5.9' },
+silly testEngine   engines: { node: '*' },
+silly testEngine   author: 
+silly testEngine    { name: 'Grey Ang',
+silly testEngine      email: 'conancat@gmail.com',
+silly testEngine      url: 'http://grey-ang.com' },
+silly testEngine   description: 'Boilerplate for quick Coffeescript driven app, backed by Jade and Stylus',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/conancat/cham.git' },
+silly testEngine   scripts: { test: 'cake test' },
+silly testEngine   _id: 'cham@0.0.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/package.json
+verbose loadDefaults cham@0.0.1
+silly testEngine { name: 'coffee-script',
+silly testEngine   description: 'Unfancy JavaScript',
+silly testEngine   keywords: [ 'javascript', 'language', 'coffeescript', 'compiler' ],
+silly testEngine   author: { name: 'Jeremy Ashkenas' },
+silly testEngine   version: '1.1.3',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'http://github.com/jashkenas/coffee-script/raw/master/LICENSE' } ],
+silly testEngine   engines: { node: '>=0.4.0' },
+silly testEngine   directories: { lib: './lib/coffee-script' },
+silly testEngine   main: './lib/coffee-script/coffee-script',
+silly testEngine   bin: { coffee: './bin/coffee', cake: './bin/cake' },
+silly testEngine   homepage: 'http://coffeescript.org',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/jashkenas/coffee-script.git' },
+silly testEngine   devDependencies: { 'uglify-js': '1.0.6', jison: '0.2.11' },
+silly testEngine   _id: 'coffee-script@1.1.3',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/coffee-script/package.json
+verbose loadDefaults coffee-script@1.1.3
+silly testEngine { name: 'connect',
+silly testEngine   version: '1.8.2',
+silly testEngine   description: 'High performance middleware framework',
+silly testEngine   keywords: [ 'framework', 'web', 'middleware', 'connect', 'rack' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/senchalabs/connect.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca',
+silly testEngine      url: 'http://tjholowaychuk.com' },
+silly testEngine   dependencies: 
+silly testEngine    { qs: '>= 0.3.1',
+silly testEngine      mime: '>= 0.0.1',
+silly testEngine      formidable: '1.0.x' },
+silly testEngine   devDependencies: 
+silly testEngine    { expresso: '0.9.2',
+silly testEngine      koala: '0.1.2',
+silly testEngine      less: '1.1.1',
+silly testEngine      sass: '0.5.0',
+silly testEngine      markdown: '0.2.1',
+silly testEngine      ejs: '0.4.3',
+silly testEngine      should: '0.3.2' },
+silly testEngine   main: 'index',
+silly testEngine   engines: { node: '>= 0.4.1 < 0.7.0' },
+silly testEngine   _id: 'connect@1.8.2',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/connect/package.json
+verbose loadDefaults connect@1.8.2
+silly testEngine { name: 'connect-form',
+silly testEngine   description: 'urlencoded / multipart form parsing middleware for Connect',
+silly testEngine   version: '0.2.1',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   dependencies: { formidable: '>= 0.9.3' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'connect-form@0.2.1',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/connect-form/package.json
+verbose loadDefaults connect-form@0.2.1
+silly testEngine { name: 'connect-redis',
+silly testEngine   description: 'Redis session store for Connect',
+silly testEngine   version: '1.2.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   main: './index.js',
+silly testEngine   dependencies: { redis: '>= 0.0.1' },
+silly testEngine   devDependencies: { connect: '1.4.x' },
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'connect-redis@1.2.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/connect-redis/package.json
+verbose loadDefaults connect-redis@1.2.0
+silly testEngine { name: 'dnode',
+silly testEngine   version: '0.9.3',
+silly testEngine   description: 'freestyle RPC',
+silly testEngine   main: './index.js',
+silly testEngine   keywords: 
+silly testEngine    [ 'message passing',
+silly testEngine      'rpc',
+silly testEngine      'rmi',
+silly testEngine      'drb',
+silly testEngine      'remote',
+silly testEngine      'communication',
+silly testEngine      'websockets',
+silly testEngine      'socket.io' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/substack/dnode.git' },
+silly testEngine   directories: { lib: '.', examples: './examples' },
+silly testEngine   dependencies: 
+silly testEngine    { 'socket.io': '0.8.6',
+silly testEngine      'socket.io-client': 'https://github.com/substack/socket.io-client/tarball/master',
+silly testEngine      lazy: '>=1.0.5 <1.1',
+silly testEngine      traverse: '0.4.x',
+silly testEngine      'dnode-protocol': '0.1.x',
+silly testEngine      jsonify: '0.0.x' },
+silly testEngine   devDependencies: 
+silly testEngine    { tap: '0.0.x',
+silly testEngine      browserify: '1.4.x',
+silly testEngine      'uglify-js': '1.0.6' },
+silly testEngine   scripts: { test: 'tap test/*.js' },
+silly testEngine   browserify: 'browser/index.js',
+silly testEngine   engine: { node: '>=0.4.0' },
+silly testEngine   author: 
+silly testEngine    { name: 'James Halliday',
+silly testEngine      email: 'mail@substack.net',
+silly testEngine      url: 'http://substack.net' },
+silly testEngine   _id: 'dnode@0.9.3',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/dnode/package.json
+verbose loadDefaults dnode@0.9.3
+silly testEngine { name: 'everyauth',
+silly testEngine   description: 'Auth solution (password, facebook, & more) for your node.js Connect & Express apps',
+silly testEngine   version: '0.2.27',
+silly testEngine   homepage: 'https://github.com/bnoguchi/everyauth/',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/bnoguchi/everyauth.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'Brian Noguchi',
+silly testEngine      email: 'brian.noguchi@gmail.com',
+silly testEngine      url: 'https://github.com/bnoguchi/' },
+silly testEngine   keywords: 
+silly testEngine    [ 'auth',
+silly testEngine      'oauth',
+silly testEngine      'password',
+silly testEngine      'facebook',
+silly testEngine      'openid',
+silly testEngine      'twitter',
+silly testEngine      'authorization',
+silly testEngine      'authentication',
+silly testEngine      'connect',
+silly testEngine      'express' ],
+silly testEngine   main: './index.js',
+silly testEngine   directories: { lib: 'lib' },
+silly testEngine   dependencies: 
+silly testEngine    { oauth: '>=0.9.0',
+silly testEngine      restler: '>=0.2.1',
+silly testEngine      request: '>=2.2.0',
+silly testEngine      connect: '>=1 <2',
+silly testEngine      openid: '>=0.2.0',
+silly testEngine      xml2js: '>=0.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { express: '>=2.3.10',
+silly testEngine      jade: '>=0.12.1',
+silly testEngine      tobi: '>=0.2.2',
+silly testEngine      expresso: '>=0.8.1',
+silly testEngine      should: '>=0.2.1' },
+silly testEngine   engines: { node: '>=0.4' },
+silly testEngine   _id: 'everyauth@0.2.27',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/everyauth/package.json
+verbose loadDefaults everyauth@0.2.27
+silly testEngine { name: 'express',
+silly testEngine   description: 'Sinatra inspired web development framework',
+silly testEngine   version: '2.5.2',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'TJ Holowaychuk',
+silly testEngine        email: 'tj@vision-media.ca' },
+silly testEngine      { name: 'Aaron Heckmann',
+silly testEngine        email: 'aaron.heckmann+github@gmail.com' },
+silly testEngine      { name: 'Ciaran Jessup', email: 'ciaranj@gmail.com' },
+silly testEngine      { name: 'Guillermo Rauch', email: 'rauchg@gmail.com' } ],
+silly testEngine   dependencies: 
+silly testEngine    { connect: '1.8.x',
+silly testEngine      mime: '>= 0.0.1',
+silly testEngine      qs: '>= 0.3.1',
+silly testEngine      mkdirp: '0.0.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'connect-form': '0.2.1',
+silly testEngine      ejs: '0.4.2',
+silly testEngine      expresso: '0.9.2',
+silly testEngine      hamljs: '0.5.1',
+silly testEngine      jade: '0.16.2',
+silly testEngine      stylus: '0.13.0',
+silly testEngine      should: '0.3.2',
+silly testEngine      'express-messages': '0.0.2',
+silly testEngine      'node-markdown': '>= 0.0.1',
+silly testEngine      'connect-redis': '>= 0.0.1' },
+silly testEngine   keywords: [ 'framework', 'sinatra', 'web', 'rest', 'restful' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/express.git' },
+silly testEngine   main: 'index',
+silly testEngine   bin: { express: './bin/express' },
+silly testEngine   scripts: { test: 'make test', prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.4.1 < 0.7.0' },
+silly testEngine   _id: 'express@2.5.2',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/express/package.json
+verbose loadDefaults express@2.5.2
+silly testEngine { name: 'geo',
+silly testEngine   description: 'Geo is a very basic, but simple and extendable, geocode library for Node.js. Currently it only supports Google\'s Geocode API (v3) - Geo Spatial features are coming out soon',
+silly testEngine   homepage: 'http://geeks.aretotally.in/projects/geonode',
+silly testEngine   keywords: 
+silly testEngine    [ 'geo',
+silly testEngine      'geospatial',
+silly testEngine      'geocode',
+silly testEngine      'geocoding',
+silly testEngine      'geohash' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Felipe Oliveira',
+silly testEngine      email: 'felipera@gmail.com' },
+silly testEngine   contributors: [],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git@github.com:feliperazeek/geonode.git' },
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'GPLv3',
+silly testEngine        url: 'http://www.gnu.org/licenses/gpl-3.0.txt' } ],
+silly testEngine   dependencies: { geohash: '' },
+silly testEngine   lib: 'lib',
+silly testEngine   main: './lib/geo',
+silly testEngine   version: '0.0.3',
+silly testEngine   directories: { test: './test' },
+silly testEngine   engines: { node: '>= 0.3.0' },
+silly testEngine   _id: 'geo@0.0.3',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/geo/package.json
+verbose loadDefaults geo@0.0.3
+silly testEngine { name: 'imagemagick',
+silly testEngine   description: 'A wrapper around the imagemagick cli',
+silly testEngine   version: '0.1.2',
+silly testEngine   author: { name: 'Rasmus Andersson' },
+silly testEngine   licenses: [ { type: 'MIT' } ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/rsms/node-imagemagick.git' },
+silly testEngine   engine: [ 'node >=0.1.90' ],
+silly testEngine   main: 'imagemagick',
+silly testEngine   _id: 'imagemagick@0.1.2',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/imagemagick/package.json
+verbose loadDefaults imagemagick@0.1.2
+silly testEngine { name: 'jade',
+silly testEngine   description: 'Jade template engine',
+silly testEngine   version: '0.19.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/jade.git' },
+silly testEngine   main: './index.js',
+silly testEngine   bin: { jade: './bin/jade' },
+silly testEngine   dependencies: { commander: '0.2.x', mkdirp: '>= 0.0.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { mocha: '*',
+silly testEngine      'coffee-script': '>= 0.0.1',
+silly testEngine      markdown: '>= 0.0.1',
+silly testEngine      stylus: '>= 0.0.1',
+silly testEngine      uubench: '0.0.1',
+silly testEngine      'uglify-js': '>= 1.0.7' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _id: 'jade@0.19.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/jade/package.json
+verbose loadDefaults jade@0.19.0
+silly testEngine { name: 'knox',
+silly testEngine   description: 'Amazon S3 client',
+silly testEngine   keywords: [ 'aws', 'amazon', 's3' ],
+silly testEngine   version: '0.0.9',
+silly testEngine   author: { name: 'TJ Holowaychuk', email: 'tj@learnboost.com' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.2.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/knox.git' },
+silly testEngine   _id: 'knox@0.0.9',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/knox/package.json
+verbose loadDefaults knox@0.0.9
+silly testEngine { name: 'mime',
+silly testEngine   description: 'A comprehensive library for mime-type mapping',
+silly testEngine   url: 'http://github.com/bentomas/node-mime',
+silly testEngine   keywords: [ 'util', 'mime' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Benjamin Thomas',
+silly testEngine      email: 'benjamin@benjaminthomas.org' },
+silly testEngine   contributors: [],
+silly testEngine   dependencies: {},
+silly testEngine   lib: '.',
+silly testEngine   main: 'mime.js',
+silly testEngine   version: '1.2.2',
+silly testEngine   _id: 'mime@1.2.2',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/mime/package.json
+verbose loadDefaults mime@1.2.2
+silly testEngine { name: 'mongoose',
+silly testEngine   description: 'Mongoose MongoDB ODM',
+silly testEngine   version: '2.4.6',
+silly testEngine   author: 
+silly testEngine    { name: 'Guillermo Rauch',
+silly testEngine      email: 'guillermo@learnboost.com' },
+silly testEngine   keywords: 
+silly testEngine    [ 'mongodb',
+silly testEngine      'mongoose',
+silly testEngine      'orm',
+silly testEngine      'data',
+silly testEngine      'datastore',
+silly testEngine      'nosql' ],
+silly testEngine   dependencies: 
+silly testEngine    { hooks: '0.1.9',
+silly testEngine      mongodb: '0.9.7-1.4',
+silly testEngine      colors: '0.5.1' },
+silly testEngine   devDependencies: { should: '0.2.1', gleak: '0.2.1' },
+silly testEngine   directories: { lib: './lib/mongoose' },
+silly testEngine   scripts: { test: 'make test' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/mongoose.git' },
+silly testEngine   _id: 'mongoose@2.4.6',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/mongoose/package.json
+verbose loadDefaults mongoose@2.4.6
+silly testEngine { name: 'nodemailer',
+silly testEngine   description: 'Easy to use module to send e-mails, supports unicode and SSL/TLS',
+silly testEngine   version: '0.2.4',
+silly testEngine   author: { name: 'Andris Reinman' },
+silly testEngine   maintainers: [ { name: 'andris', email: 'andris@node.ee' } ],
+silly testEngine   homepage: 'http://www.nodemailer.org',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/andris9/nodemailer.git' },
+silly testEngine   main: './lib/mail',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'http://github.com/andris9/nodemailer/blob/master/LICENSE' } ],
+silly testEngine   dependencies: { 'mimelib-noiconv': '*' },
+silly testEngine   engine: [ 'node >=0.3.0' ],
+silly testEngine   keywords: [ 'e-mail', 'mime', 'email', 'sendmail' ],
+silly testEngine   _id: 'nodemailer@0.2.4',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/nodemailer/package.json
+verbose loadDefaults nodemailer@0.2.4
+silly testEngine { name: 'oauth',
+silly testEngine   description: 'Library for interacting with OAuth 1.0, 1.0A, 2 and Echo.  Provides simplified client access and allows for construction of more complex apis and OAuth providers.',
+silly testEngine   version: '0.9.5',
+silly testEngine   directories: { lib: './lib' },
+silly testEngine   main: 'index.js',
+silly testEngine   author: { name: 'Ciaran Jessup', email: 'ciaranj@gmail.com' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/ciaranj/node-oauth.git' },
+silly testEngine   devDependencies: { vows: '0.5.x' },
+silly testEngine   _id: 'oauth@0.9.5',
+silly testEngine   dependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/oauth/package.json
+verbose loadDefaults oauth@0.9.5
+silly testEngine { name: 'pdfkit',
+silly testEngine   description: 'A PDF generation library for Node.js',
+silly testEngine   keywords: 
+silly testEngine    [ 'pdf',
+silly testEngine      'pdf writer',
+silly testEngine      'pdf generator',
+silly testEngine      'graphics',
+silly testEngine      'document',
+silly testEngine      'vector' ],
+silly testEngine   version: '0.1.6',
+silly testEngine   homepage: 'http://devongovett.github.com/pdfkit/',
+silly testEngine   author: 
+silly testEngine    { name: 'Devon Govett',
+silly testEngine      email: 'devongovett@gmail.com',
+silly testEngine      url: 'http://badassjs.com/' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/devongovett/pdfkit.git' },
+silly testEngine   bugs: { name: 'http://github.com/devongovett/pdfkit/issues' },
+silly testEngine   directories: { lib: './lib', example: './demo' },
+silly testEngine   dependencies: { 'coffee-script': '>=1.0.1', flate: '>=1.0.2' },
+silly testEngine   engine: [ 'node >= v0.4.0' ],
+silly testEngine   _id: 'pdfkit@0.1.6',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/pdfkit/package.json
+verbose loadDefaults pdfkit@0.1.6
+silly testEngine { name: 'redis',
+silly testEngine   version: '0.7.1',
+silly testEngine   description: 'Redis client library',
+silly testEngine   author: { name: 'Matt Ranney', email: 'mjr@ranney.com' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Rick Olson' },
+silly testEngine      { name: 'Tim-Smart' },
+silly testEngine      { name: 'TJ Holowaychuk' },
+silly testEngine      { name: 'Orion Henry' },
+silly testEngine      { name: 'Hank Sims' },
+silly testEngine      { name: 'Aivo Paas' },
+silly testEngine      { name: 'Paul Carey' },
+silly testEngine      { name: 'Pieter Noordhuis' },
+silly testEngine      { name: 'Andy Ray' },
+silly testEngine      { name: 'Vladimir Dronnikov' },
+silly testEngine      { name: 'Dave Hoover' } ],
+silly testEngine   main: './index.js',
+silly testEngine   scripts: { test: 'node ./test.js' },
+silly testEngine   devDependencies: { metrics: '>=0.1.5' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/mranney/node_redis.git' },
+silly testEngine   _id: 'redis@0.7.1',
+silly testEngine   dependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/redis/package.json
+verbose loadDefaults redis@0.7.1
+silly testEngine { name: 'request',
+silly testEngine   description: 'Simplified HTTP request client.',
+silly testEngine   tags: [ 'http', 'simple', 'util', 'utility' ],
+silly testEngine   version: '2.2.9',
+silly testEngine   author: 
+silly testEngine    { name: 'Mikeal Rogers',
+silly testEngine      email: 'mikeal.rogers@gmail.com' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/mikeal/request.git' },
+silly testEngine   bugs: { url: 'http://github.com/mikeal/request/issues' },
+silly testEngine   engines: [ 'node >= 0.3.6', node: ' >= 0.3.6' ],
+silly testEngine   main: './main',
+silly testEngine   scripts: { test: 'bash tests/run.sh' },
+silly testEngine   _id: 'request@2.2.9',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/request/package.json
+verbose loadDefaults request@2.2.9
+silly testEngine { name: 'samurai',
+silly testEngine   description: 'Samurai payment gateway API client module for Node.js',
+silly testEngine   version: '0.2.4',
+silly testEngine   author: 
+silly testEngine    { name: 'FeeFighters',
+silly testEngine      email: 'samurai@feefighters.com' },
+silly testEngine   homepage: 'https://samurai.feefighters.com',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/FeeFighters/samurai-client-nodejs.git' },
+silly testEngine   bugs: 
+silly testEngine    { email: 'samurai@feefighters.com',
+silly testEngine      url: 'https://github.com/FeeFighters/samurai-client-nodejs/issues' },
+silly testEngine   maintainers: 
+silly testEngine    [ { name: 'Tisho Georgiev',
+silly testEngine        email: 'tisho@feefighters.com' },
+silly testEngine      { name: 'Joshua Krall',
+silly testEngine        email: 'josh@feefighters.com' } ],
+silly testEngine   main: './index.js',
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'https://github.com/FeeFighters/samurai-client-nodejs/blob/master/LICENSE' } ],
+silly testEngine   dependencies: 
+silly testEngine    { 'coffee-script': '1.x.x',
+silly testEngine      colors: '0.5.x',
+silly testEngine      'node-expat': '1.4.x',
+silly testEngine      xml2json: '0.2.x',
+silly testEngine      eco: '1.1.x' },
+silly testEngine   devDependencies: { mocha: '*', should: '*' },
+silly testEngine   engines: { node: '>=0.4.1' },
+silly testEngine   keywords: 
+silly testEngine    [ 'payments',
+silly testEngine      'payment gateway',
+silly testEngine      'payment processing',
+silly testEngine      'samurai',
+silly testEngine      'feefighters' ],
+silly testEngine   scripts: { test: 'cake test', prepublish: 'cake build' },
+silly testEngine   _id: 'samurai@0.2.4',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/samurai/package.json
+verbose loadDefaults samurai@0.2.4
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'snockets',
+silly testEngine   description: 'Sprockets-esque script concatenation for Node',
+silly testEngine   version: '1.3.3',
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/snockets',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/snockets.git' },
+silly testEngine   main: 'lib/snockets.js',
+silly testEngine   dependencies: 
+silly testEngine    { 'coffee-script': '>=1.1.2',
+silly testEngine      'dep-graph': '1.0.1',
+silly testEngine      mime: '1.2.2',
+silly testEngine      'uglify-js': '1.0.7',
+silly testEngine      underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'coffee-script': '1.1.2',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      'watch-tree': '0.1.1' },
+silly testEngine   _id: 'snockets@1.3.3',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/snockets/package.json
+verbose loadDefaults snockets@1.3.3
+silly testEngine { name: 'socket.io',
+silly testEngine   version: '0.8.7',
+silly testEngine   description: 'Real-time apps made cross-browser & easy with a WebSocket-like API',
+silly testEngine   homepage: 'http://socket.io',
+silly testEngine   keywords: 
+silly testEngine    [ 'websocket',
+silly testEngine      'socket',
+silly testEngine      'realtime',
+silly testEngine      'socket.io',
+silly testEngine      'comet',
+silly testEngine      'ajax' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Guillermo Rauch',
+silly testEngine      email: 'guillermo@learnboost.com' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Guillermo Rauch', email: 'rauchg@gmail.com' },
+silly testEngine      { name: 'Arnout Kazemier',
+silly testEngine        email: 'info@3rd-eden.com' },
+silly testEngine      { name: 'Vladimir Dronnikov',
+silly testEngine        email: 'dronnikov@gmail.com' },
+silly testEngine      { name: 'Einar Otto Stangvik',
+silly testEngine        email: 'einaros@gmail.com' } ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/socket.io.git' },
+silly testEngine   dependencies: 
+silly testEngine    { 'socket.io-client': '0.8.7',
+silly testEngine      policyfile: '0.0.4',
+silly testEngine      redis: '0.6.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { expresso: '0.9.2',
+silly testEngine      should: '0.0.4',
+silly testEngine      assertvanish: '0.0.3-1',
+silly testEngine      benchmark: '0.2.2',
+silly testEngine      microtime: '0.1.3-1',
+silly testEngine      colors: '0.5.1' },
+silly testEngine   main: 'index',
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   _id: 'socket.io@0.8.7',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/socket.io/package.json
+verbose loadDefaults socket.io@0.8.7
+silly testEngine { name: 'stylus',
+silly testEngine   description: 'Robust, expressive, and feature-rich CSS superset',
+silly testEngine   version: '0.20.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   keywords: 
+silly testEngine    [ 'css',
+silly testEngine      'parser',
+silly testEngine      'style',
+silly testEngine      'stylesheets',
+silly testEngine      'jade',
+silly testEngine      'language' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/learnboost/stylus.git' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '> 0.4.x < 0.7.0' },
+silly testEngine   bin: { stylus: './bin/stylus' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   dependencies: { cssom: '0.2.0', growl: '1.1.0', mkdirp: '0.0.7' },
+silly testEngine   _id: 'stylus@0.20.0',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/stylus/package.json
+verbose loadDefaults stylus@0.20.0
+silly testEngine { name: 'underscore',
+silly testEngine   description: 'JavaScript\'s functional programming helper library.',
+silly testEngine   homepage: 'http://documentcloud.github.com/underscore/',
+silly testEngine   keywords: [ 'util', 'functional', 'server', 'client', 'browser' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Jeremy Ashkenas',
+silly testEngine      email: 'jeremy@documentcloud.org' },
+silly testEngine   contributors: [],
+silly testEngine   dependencies: {},
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/documentcloud/underscore.git' },
+silly testEngine   main: 'underscore.js',
+silly testEngine   version: '1.1.7',
+silly testEngine   _id: 'underscore@1.1.7',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/underscore/package.json
+verbose loadDefaults underscore@1.1.7
+silly testEngine { name: 'vows',
+silly testEngine   description: 'Asynchronous BDD & continuous integration for node.js',
+silly testEngine   url: 'http://vowsjs.org',
+silly testEngine   keywords: [ 'testing', 'spec', 'test', 'BDD' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Alexis Sellier',
+silly testEngine      email: 'self@cloudhead.net' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Charlie Robbins',
+silly testEngine        email: 'charlie.robbins@gmail.com' } ],
+silly testEngine   dependencies: { eyes: '>=0.1.6' },
+silly testEngine   main: './lib/vows',
+silly testEngine   bin: { vows: './bin/vows' },
+silly testEngine   directories: { test: './test', bin: './bin' },
+silly testEngine   version: '0.6.0',
+silly testEngine   scripts: { test: './bin/vows --spec' },
+silly testEngine   engines: { node: '>=0.2.6' },
+silly testEngine   _id: 'vows@0.6.0',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/vows/package.json
+verbose loadDefaults vows@0.6.0
+silly testEngine { name: 'xml2json',
+silly testEngine   version: '0.2.4',
+silly testEngine   author: { name: 'Andrew Turley' },
+silly testEngine   email: 'aturley@buglabs.net',
+silly testEngine   description: 'Converts xml to json and viceverza, using node-expat.',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/buglabs/node-xml2json.git' },
+silly testEngine   main: 'index',
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Camilo Aguilar',
+silly testEngine        email: 'camilo@buglabs.net' } ],
+silly testEngine   dependencies: { 'node-expat': '1.4.1' },
+silly testEngine   _id: 'xml2json@0.2.4',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/xml2json/package.json
+verbose loadDefaults xml2json@0.2.4
+verbose has wscript [ undefined,
+verbose has wscript   { file: '/Users/derek/Desktop/cards.ly/node_modules/bcrypt/package.json',
+verbose has wscript     contributors: false,
+verbose has wscript     serverjs: false,
+verbose has wscript     wscript: true } ]
+silly testEngine { name: 'bcrypt',
+silly testEngine   description: 'A bcrypt library for NodeJS.',
+silly testEngine   keywords: 
+silly testEngine    [ 'bcrypt',
+silly testEngine      'password',
+silly testEngine      'auth',
+silly testEngine      'authentication',
+silly testEngine      'encryption',
+silly testEngine      'crypt',
+silly testEngine      'crypto' ],
+silly testEngine   main: './bcrypt',
+silly testEngine   version: '0.4.1',
+silly testEngine   author: 
+silly testEngine    { name: 'Nick Campbell',
+silly testEngine      url: 'http://github.com/ncb000gt' },
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/ncb000gt/node.bcrypt.js.git' },
+silly testEngine   licenses: [ { type: 'MIT' } ],
+silly testEngine   bugs: { url: 'http://github.com/ncb000gt/node.bcrypt.js/issues' },
+silly testEngine   scripts: { install: 'make build', test: 'make test' },
+silly testEngine   devDependencies: { nodeunit: '>=0.5.4' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Antonio Salazar Cardozo',
+silly testEngine        email: 'savedfastcool@gmail.com',
+silly testEngine        url: 'https://github.com/Shadowfiend' },
+silly testEngine      { name: 'Van Nguyen',
+silly testEngine        email: 'the.gol.effect@gmail.com',
+silly testEngine        url: 'https://github.com/thegoleffect' },
+silly testEngine      { name: 'David Trejo',
+silly testEngine        email: 'david@dtrejo.com',
+silly testEngine        url: 'https://github.com/dtrejo' },
+silly testEngine      { name: 'Ben Glow',
+silly testEngine        email: 'glen.low@pixelglow.com',
+silly testEngine        url: 'https://github.com/pixelglow' },
+silly testEngine      { name: 'NewITFarmer.com',
+silly testEngine        url: 'https://github.com/newitfarmer' },
+silly testEngine      { name: 'Alfred Westerveld',
+silly testEngine        email: 'alfredwesterveld@gmail.com',
+silly testEngine        url: 'https://github.com/alfredwesterveld' },
+silly testEngine      { name: 'Vincent Côté-Roy',
+silly testEngine        email: 'vincentcr@gmail.com',
+silly testEngine        url: 'https://github.com/vincentcr' },
+silly testEngine      { name: 'Lloyd Hilaiel',
+silly testEngine        email: 'lloyd@hilaiel.com',
+silly testEngine        url: 'https://github.com/lloyd' },
+silly testEngine      { name: 'Roman Shtylman',
+silly testEngine        email: 'shtylman@gmail.com',
+silly testEngine        url: 'https://github.com/shtylman' },
+silly testEngine      { name: 'Vadim Graboys',
+silly testEngine        email: 'dimva13@gmail.com',
+silly testEngine        url: 'https://github.com/vadimg' },
+silly testEngine      { name: 'Ben Noorduis',
+silly testEngine        url: 'https://github.com/bnoordhuis' } ],
+silly testEngine   _id: 'bcrypt@0.4.1',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/bcrypt/package.json
+verbose loadDefaults bcrypt@0.4.1
+verbose has wscript [ undefined,
+verbose has wscript   { file: '/Users/derek/Desktop/cards.ly/node_modules/canvas/package.json',
+verbose has wscript     contributors: false,
+verbose has wscript     serverjs: false,
+verbose has wscript     wscript: true } ]
+silly testEngine { name: 'canvas',
+silly testEngine   description: 'Canvas graphics API backed by Cairo',
+silly testEngine   version: '0.8.2',
+silly testEngine   author: { name: 'TJ Holowaychuk', email: 'tj@learnboost.com' },
+silly testEngine   keywords: 
+silly testEngine    [ 'canvas',
+silly testEngine      'graphic',
+silly testEngine      'graphics',
+silly testEngine      'pixman',
+silly testEngine      'cairo',
+silly testEngine      'image',
+silly testEngine      'images' ],
+silly testEngine   homepage: 'https://github.com/learnboost/node-canvas',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/learnboost/node-canvas.git' },
+silly testEngine   scripts: { preinstall: 'node-waf configure build' },
+silly testEngine   devDependencies: { express: '2.3.7', expresso: '0.7.6', jade: '0.11.0' },
+silly testEngine   engines: { node: '>= 0.4.0 && < 0.7.0' },
+silly testEngine   main: './lib/canvas.js',
+silly testEngine   _id: 'canvas@0.8.2',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/canvas/package.json
+verbose loadDefaults canvas@0.8.2
+verbose from cache /Users/derek/Desktop/cards.ly/package.json
+verbose into /Users/derek/Desktop/cards.ly [ 'connect-assets' ]
+verbose cache add connect-assets@>=0.0.1
+verbose cache add [ 'connect-assets@>=0.0.1', null ]
+silly cache add: name, spec, args [ undefined,
+silly cache add: name, spec, args   'connect-assets@>=0.0.1',
+silly cache add: name, spec, args   [ 'connect-assets@>=0.0.1', null ] ]
+verbose parsed url { pathname: 'connect-assets@',
+verbose parsed url   href: 'connect-assets@' }
+silly cache add: name, spec, args [ 'connect-assets',
+silly cache add: name, spec, args   '>=0.0.1',
+silly cache add: name, spec, args   [ 'connect-assets', '>=0.0.1' ] ]
+verbose parsed url { pathname: '=0.0.1', href: '=0.0.1' }
+info addNamed [ 'connect-assets', '>=0.0.1' ]
+verbose addNamed [ null, '>=0.0.1' ]
+verbose GET connect-assets
+verbose raw, before any munging connect-assets
+verbose url resolving [ 'http://registry.npmjs.org/', './connect-assets' ]
+verbose url resolved http://registry.npmjs.org/connect-assets
+verbose etag "82ZEZHNTQ74GP8BSUKOT3MO6P"
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"50DOO3IU48M6D6WYR6GLY6RMD"',
+silly get cb     date: 'Thu, 29 Dec 2011 20:46:39 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '28319' } ]
+verbose GET connect-assets/2.1.6
+verbose raw, before any munging connect-assets/2.1.6
+verbose url resolving [ 'http://registry.npmjs.org/',
+verbose url resolving   './connect-assets/2.1.6' ]
+verbose url resolved http://registry.npmjs.org/connect-assets/2.1.6
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"50DOO3IU48M6D6WYR6GLY6RMD"',
+silly get cb     date: 'Thu, 29 Dec 2011 20:46:39 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '1055' } ]
+verbose mkdir (expected) error ENOENT, No such file or directory '/Users/derek/.npm/connect-assets/2.1.6'
+verbose mkdir done: /Users/derek/.npm/connect-assets/2.1.6 755
+verbose bin dist [ '0.4-ares1.7.4-ev4.4-openssl1.0.0e-v83.1.8.10-darwin-11.2.0',
+verbose bin dist   { shasum: '6c44c2775e0c0f04fb8b7617dcd3e3e9f48632bb',
+verbose bin dist     tarball: 'http://registry.npmjs.org/connect-assets/-/connect-assets-2.1.6.tgz' } ]
+verbose addRemoteTarball [ 'http://registry.npmjs.org/connect-assets/-/connect-assets-2.1.6.tgz',
+verbose addRemoteTarball   '6c44c2775e0c0f04fb8b7617dcd3e3e9f48632bb' ]
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754'
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264'
+verbose mkdir done: /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264 755
+info fetch http://registry.npmjs.org/connect-assets/-/connect-assets-2.1.6.tgz
+verbose fetch to /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/tmp.tgz
+silly updated sha bytes 30720
+info shasum 6c44c2775e0c0f04fb8b7617dcd3e3e9f48632bb
+info shasum /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/tmp.tgz
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents'
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm'
+verbose mkdir done: /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/tmp.tgz' ],
+silly spawning   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/Cakefile
+silly tar err x package/package.json
+silly tar err x package/README.mdown
+silly tar err x package/docs/assets.html
+silly tar err x package/docs/createHelpers.html
+silly tar err x package/docs/DependencyGraph.html
+silly tar err x package/docs/docco.css
+silly tar err x package/docs/Middleware.html
+silly tar err x package/docs/parseDirectives.html
+silly tar err x package/lib/assets.js
+silly tar err x package/src/assets.coffee
+silly tar err x package/test/AbsoluteIntegration.coffee
+silly tar err x package/test/BenchmarkDynamic.coffee
+silly tar err x package/test/BenchmarkStatic.coffee
+silly tar err x package/test/DevelopmentIntegration.coffee
+silly tar err x package/test/ProductionIntegration.coffee
+silly tar err x package/test/RemoteIntegration.coffee
+silly tar err x package/test/assets/css/button.styl
+silly tar err x package/test/assets/css/gradient.styl
+silly tar err x package/test/assets/css/mixins.styl
+silly tar err x package/test/assets/css/normalize.css
+silly tar err x package/test/assets/css/style.styl
+silly tar err x package/test/assets/js/a.coffee
+silly tar err x package/test/assets/js/b.coffee
+silly tar err x package/test/assets/js/c.coffee
+silly tar err x package/test/assets/js/chained-dependent.coffee
+silly tar err x package/test/assets/js/coffee-dependency.coffee
+silly tar err x package/test/assets/js/dependent.coffee
+silly tar err x package/test/assets/js/js-dependency.js
+silly tar err x package/test/assets/js/mindy.js
+silly tar err x package/test/assets/js/mork.coffee
+silly tar err x package/test/assets/js/narcissist.js
+silly tar err x package/test/assets/js/needs-evil.coffee
+silly tar err x package/test/assets/js/script.coffee
+silly tar err x package/test/assets/js/tree-dependent.coffee
+silly tar err x package/test/assets/js/addicts/codependent.coffee
+silly tar err x package/test/assets/js/addicts/enabler.js
+silly tar err x package/test/assets/js/more/annoying.1.2.3.js
+silly tar err x package/test/assets/js/starbucks/mocha.coffee
+silly tar err x package/test/assets/js/moon_units/alpha.coffee
+silly tar err x package/test/assets/js/moon_units/evil.coffee
+silly tar err x package/test/assets/js/moon_units/zappa.coffee
+silly tar err x package/test/assets/js/moon_units/austin/powers.js
+silly tar err x package/test/assets/js/moon_units/austin/texas.coffee
+silly tar err x package/test/assets/js/subdir/subdir-dependent.js
+silly tar err x package/test/assets/js/subdir/nested/hobbits.coffee
+silly tar exit 0
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/.gitignore
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/Cakefile
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/package.json
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/README.mdown
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/createHelpers.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/assets.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/DependencyGraph.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/docco.css
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/Middleware.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/docs/parseDirectives.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/src
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/src/assets.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/lib
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/lib/assets.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/AbsoluteIntegration.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/BenchmarkDynamic.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/BenchmarkStatic.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/DevelopmentIntegration.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/ProductionIntegration.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/RemoteIntegration.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css/button.styl
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css/gradient.styl
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css/mixins.styl
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css/normalize.css
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/css/style.styl
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/a.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/b.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/c.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/chained-dependent.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/coffee-dependency.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/dependent.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/js-dependency.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/mindy.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/mork.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/narcissist.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/needs-evil.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/script.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/tree-dependent.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/addicts
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/addicts/codependent.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/addicts/enabler.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/more
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/more/annoying.1.2.3.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/starbucks
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/starbucks/mocha.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/alpha.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/evil.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/zappa.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/austin
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/austin/powers.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/moon_units/austin/texas.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/subdir
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/subdir/subdir-dependent.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/subdir/nested
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package/test/assets/js/subdir/nested/hobbits.coffee
+verbose gunzed /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package
+verbose rm'ed /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package
+verbose renamed [ '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/___package.npm/package',
+verbose renamed   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package' ]
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'connect-assets',
+silly testEngine   description: 'A Rails-like asset pipeline for Connect',
+silly testEngine   version: '2.1.6',
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/connect-assets',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/connect-assets.git' },
+silly testEngine   main: 'lib/assets.js',
+silly testEngine   dependencies: 
+silly testEngine    { 'connect-file-cache': '0.2.4',
+silly testEngine      mime: '1.2.2',
+silly testEngine      snockets: '1.3.3',
+silly testEngine      underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { async: '0.1.14',
+silly testEngine      'coffee-script': '1.1.2',
+silly testEngine      connect: '1.6.4',
+silly testEngine      nib: '0.2.0',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      stylus: '0.19.0',
+silly testEngine      request: '2.1.1',
+silly testEngine      watchit: '>=0.0.1' },
+silly testEngine   _id: 'connect-assets@2.1.6',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   path: '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package' }
+verbose caching /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package/package.json
+verbose loadDefaults connect-assets@2.1.6
+verbose tarball contents [ 'package' ]
+verbose from cache /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package/package.json
+verbose pack /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package /Users/derek/.npm/connect-assets/2.1.6/package.tgz
+silly makeList /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents/package
+verbose mkdir'ed /Users/derek/.npm/connect-assets/2.1.6
+verbose tar about to write tar and gzip it.
+silly tar args [ '-czvf', '-', '-T', '-' ]
+silly spawning [ 'tar',
+silly spawning   [ '-czvf', '-', '-T', '-' ],
+silly spawning   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191599754-0.9145855605602264/contents' ]
+verbose mkdir (expected) error ENOENT, No such file or directory '/Users/derek/.npm/connect-assets/2.1.6/___package.npm'
+verbose mkdir done: /Users/derek/.npm/connect-assets/2.1.6/___package.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /Users/derek/.npm/connect-assets/2.1.6/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/Users/derek/.npm/connect-assets/2.1.6/package.tgz' ],
+silly spawning   '/Users/derek/.npm/connect-assets/2.1.6/___package.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/Cakefile
+silly tar err x package/package.json
+silly tar err x package/README.mdown
+silly tar err x package/docs/assets.html
+silly tar err x package/docs/createHelpers.html
+silly tar err x package/docs/docco.css
+silly tar err x package/docs/Middleware.html
+silly tar err x package/docs/DependencyGraph.html
+silly tar err x package/docs/parseDirectives.html
+silly tar err x package/lib/assets.js
+silly tar err x package/src/assets.coffee
+silly tar err x package/test/AbsoluteIntegration.coffee
+silly tar err x package/test/BenchmarkDynamic.coffee
+silly tar err x package/test/BenchmarkStatic.coffee
+silly tar err x package/test/DevelopmentIntegration.coffee
+silly tar err x package/test/ProductionIntegration.coffee
+silly tar err x package/test/RemoteIntegration.coffee
+silly tar err x package/test/assets/css/button.styl
+silly tar err x package/test/assets/css/gradient.styl
+silly tar err x package/test/assets/css/mixins.styl
+silly tar err x package/test/assets/css/normalize.css
+silly tar err x package/test/assets/css/style.styl
+silly tar err x package/test/assets/js/a.coffee
+silly tar err x package/test/assets/js/b.coffee
+silly tar err x package/test/assets/js/c.coffee
+silly tar err x package/test/assets/js/chained-dependent.coffee
+silly tar err x package/test/assets/js/coffee-dependency.coffee
+silly tar err x package/test/assets/js/dependent.coffee
+silly tar err x package/test/assets/js/js-dependency.js
+silly tar err x package/test/assets/js/mindy.js
+silly tar err x package/test/assets/js/mork.coffee
+silly tar err x package/test/assets/js/narcissist.js
+silly tar err x package/test/assets/js/needs-evil.coffee
+silly tar err x package/test/assets/js/script.coffee
+silly tar err x package/test/assets/js/tree-dependent.coffee
+silly tar err x package/test/assets/js/addicts/codependent.coffee
+silly tar err x package/test/assets/js/addicts/enabler.js
+silly tar err x package/test/assets/js/more/annoying.1.2.3.js
+silly tar err x package/test/assets/js/starbucks/mocha.coffee
+silly tar err x package/test/assets/js/subdir/subdir-dependent.js
+silly tar err x package/test/assets/js/subdir/nested/hobbits.coffee
+silly tar err x package/test/assets/js/moon_units/alpha.coffee
+silly tar err x package/test/assets/js/moon_units/evil.coffee
+silly tar err x package/test/assets/js/moon_units/zappa.coffee
+silly tar err x package/test/assets/js/moon_units/austin/powers.js
+silly tar err x package/test/assets/js/moon_units/austin/texas.coffee
+silly tar exit 0
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/.gitignore
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/Cakefile
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/package.json
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/README.mdown
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/assets.html
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/createHelpers.html
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/DependencyGraph.html
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/docco.css
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/Middleware.html
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/docs/parseDirectives.html
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/lib
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/lib/assets.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/src
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/src/assets.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/AbsoluteIntegration.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/BenchmarkDynamic.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/BenchmarkStatic.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/DevelopmentIntegration.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/ProductionIntegration.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/RemoteIntegration.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css/button.styl
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css/gradient.styl
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css/mixins.styl
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css/normalize.css
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/css/style.styl
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/a.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/b.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/c.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/chained-dependent.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/coffee-dependency.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/dependent.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/js-dependency.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/mindy.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/mork.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/narcissist.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/needs-evil.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/script.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/tree-dependent.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/addicts
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/addicts/codependent.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/addicts/enabler.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/more
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/more/annoying.1.2.3.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/starbucks
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/starbucks/mocha.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/alpha.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/evil.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/zappa.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/austin
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/austin/powers.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/moon_units/austin/texas.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/subdir
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/subdir/subdir-dependent.js
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/subdir/nested
+silly asyncMap in gTP /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package/test/assets/js/subdir/nested/hobbits.coffee
+verbose gunzed /Users/derek/.npm/connect-assets/2.1.6/___package.npm/package
+verbose rm'ed /Users/derek/.npm/connect-assets/2.1.6/package
+verbose renamed [ '/Users/derek/.npm/connect-assets/2.1.6/___package.npm/package',
+verbose renamed   '/Users/derek/.npm/connect-assets/2.1.6/package' ]
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'connect-assets',
+silly testEngine   description: 'A Rails-like asset pipeline for Connect',
+silly testEngine   version: '2.1.6',
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/connect-assets',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/connect-assets.git' },
+silly testEngine   main: 'lib/assets.js',
+silly testEngine   dependencies: 
+silly testEngine    { 'connect-file-cache': '0.2.4',
+silly testEngine      mime: '1.2.2',
+silly testEngine      snockets: '1.3.3',
+silly testEngine      underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { async: '0.1.14',
+silly testEngine      'coffee-script': '1.1.2',
+silly testEngine      connect: '1.6.4',
+silly testEngine      nib: '0.2.0',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      stylus: '0.19.0',
+silly testEngine      request: '2.1.1',
+silly testEngine      watchit: '>=0.0.1' },
+silly testEngine   _id: 'connect-assets@2.1.6',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   dist: { shasum: '2803841ca061c383316771676db365ddbf45d5a2' },
+silly testEngine   scripts: {} }
+verbose caching /Users/derek/.npm/connect-assets/2.1.6/package/package.json
+verbose loadDefaults connect-assets@2.1.6
+silly updated sha bytes 30720
+info shasum 2803841ca061c383316771676db365ddbf45d5a2
+info shasum /Users/derek/.npm/connect-assets/2.1.6/package.tgz
+verbose from cache /Users/derek/.npm/connect-assets/2.1.6/package/package.json
+verbose chmod /Users/derek/.npm/connect-assets/2.1.6/package.tgz 644
+verbose chown [ '/Users/derek/.npm/connect-assets/2.1.6/package.tgz',
+verbose chown   501,
+verbose chown   20 ]
+silly resolved [ { author: 
+silly resolved      { name: 'Trevor Burnham',
+silly resolved        url: 'http://trevorburnham.com' },
+silly resolved     name: 'connect-assets',
+silly resolved     description: 'A Rails-like asset pipeline for Connect',
+silly resolved     version: '2.1.6',
+silly resolved     homepage: 'http://github.com/TrevorBurnham/connect-assets',
+silly resolved     repository: 
+silly resolved      { type: 'git',
+silly resolved        url: 'git://github.com/TrevorBurnham/connect-assets.git' },
+silly resolved     main: 'lib/assets.js',
+silly resolved     dependencies: 
+silly resolved      { 'connect-file-cache': '0.2.4',
+silly resolved        mime: '1.2.2',
+silly resolved        snockets: '1.3.3',
+silly resolved        underscore: '1.1.7' },
+silly resolved     devDependencies: 
+silly resolved      { async: '0.1.14',
+silly resolved        'coffee-script': '1.1.2',
+silly resolved        connect: '1.6.4',
+silly resolved        nib: '0.2.0',
+silly resolved        nodeunit: '0.5.4',
+silly resolved        stylus: '0.19.0',
+silly resolved        request: '2.1.1',
+silly resolved        watchit: '>=0.0.1' },
+silly resolved     _id: 'connect-assets@2.1.6',
+silly resolved     engines: { node: '*' },
+silly resolved     _engineSupported: true,
+silly resolved     _npmVersion: '1.0.106',
+silly resolved     _nodeVersion: 'v0.4.7',
+silly resolved     _defaultsLoaded: true,
+silly resolved     dist: { shasum: '2803841ca061c383316771676db365ddbf45d5a2' },
+silly resolved     scripts: {} } ]
+info into /Users/derek/Desktop/cards.ly connect-assets@2.1.6
+info installOne connect-assets@2.1.6
+info unbuild /Users/derek/Desktop/cards.ly/node_modules/connect-assets
+verbose from cache /Users/derek/.npm/connect-assets/2.1.6/package/package.json
+verbose mkdir (expected) error ENOENT, No such file or directory '/Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm'
+verbose mkdir done: /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /Users/derek/Desktop/cards.ly/node_modules/connect-assets
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/Users/derek/.npm/connect-assets/2.1.6/package.tgz' ],
+silly spawning   '/Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/Cakefile
+silly tar err x package/package.json
+silly tar err x package/README.mdown
+silly tar err x package/docs/assets.html
+silly tar err x package/docs/createHelpers.html
+silly tar err x package/docs/docco.css
+silly tar err x package/docs/Middleware.html
+silly tar err x package/docs/DependencyGraph.html
+silly tar err x package/docs/parseDirectives.html
+silly tar err x package/lib/assets.js
+silly tar err x package/src/assets.coffee
+silly tar err x package/test/AbsoluteIntegration.coffee
+silly tar err x package/test/BenchmarkDynamic.coffee
+silly tar err x package/test/BenchmarkStatic.coffee
+silly tar err x package/test/DevelopmentIntegration.coffee
+silly tar err x package/test/ProductionIntegration.coffee
+silly tar err x package/test/RemoteIntegration.coffee
+silly tar err x package/test/assets/css/button.styl
+silly tar err x package/test/assets/css/gradient.styl
+silly tar err x package/test/assets/css/mixins.styl
+silly tar err x package/test/assets/css/normalize.css
+silly tar err x package/test/assets/css/style.styl
+silly tar err x package/test/assets/js/a.coffee
+silly tar err x package/test/assets/js/b.coffee
+silly tar err x package/test/assets/js/c.coffee
+silly tar err x package/test/assets/js/chained-dependent.coffee
+silly tar err x package/test/assets/js/coffee-dependency.coffee
+silly tar err x package/test/assets/js/dependent.coffee
+silly tar err x package/test/assets/js/js-dependency.js
+silly tar err x package/test/assets/js/mindy.js
+silly tar err x package/test/assets/js/mork.coffee
+silly tar err x package/test/assets/js/narcissist.js
+silly tar err x package/test/assets/js/needs-evil.coffee
+silly tar err x package/test/assets/js/script.coffee
+silly tar err x package/test/assets/js/tree-dependent.coffee
+silly tar err x package/test/assets/js/addicts/codependent.coffee
+silly tar err x package/test/assets/js/addicts/enabler.js
+silly tar err x package/test/assets/js/more/annoying.1.2.3.js
+silly tar err x package/test/assets/js/starbucks/mocha.coffee
+silly tar err x package/test/assets/js/subdir/subdir-dependent.js
+silly tar err x package/test/assets/js/subdir/nested/hobbits.coffee
+silly tar err x package/test/assets/js/moon_units/alpha.coffee
+silly tar err x package/test/assets/js/moon_units/evil.coffee
+silly tar err x package/test/assets/js/moon_units/zappa.coffee
+silly tar err x package/test/assets/js/moon_units/austin/powers.js
+silly tar err x package/test/assets/js/moon_units/austin/texas.coffee
+silly tar exit 0
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/.gitignore
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/Cakefile
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/package.json
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/README.mdown
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/assets.html
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/createHelpers.html
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/DependencyGraph.html
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/docco.css
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/Middleware.html
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/docs/parseDirectives.html
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/lib
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/lib/assets.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/src
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/src/assets.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/AbsoluteIntegration.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/BenchmarkDynamic.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/BenchmarkStatic.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/DevelopmentIntegration.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/ProductionIntegration.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/RemoteIntegration.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css/button.styl
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css/gradient.styl
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css/mixins.styl
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css/normalize.css
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/css/style.styl
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/a.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/b.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/c.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/chained-dependent.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/coffee-dependency.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/dependent.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/js-dependency.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/mindy.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/mork.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/narcissist.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/needs-evil.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/script.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/tree-dependent.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/addicts
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/addicts/codependent.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/addicts/enabler.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/more
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/more/annoying.1.2.3.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/starbucks
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/starbucks/mocha.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/alpha.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/evil.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/zappa.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/austin
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/austin/powers.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/moon_units/austin/texas.coffee
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/subdir
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/subdir/subdir-dependent.js
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/subdir/nested
+silly asyncMap in gTP /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package/test/assets/js/subdir/nested/hobbits.coffee
+verbose gunzed /Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package
+verbose rm'ed /Users/derek/Desktop/cards.ly/node_modules/connect-assets
+verbose renamed [ '/Users/derek/Desktop/cards.ly/node_modules/___connect-assets.npm/package',
+verbose renamed   '/Users/derek/Desktop/cards.ly/node_modules/connect-assets' ]
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'connect-assets',
+silly testEngine   description: 'A Rails-like asset pipeline for Connect',
+silly testEngine   version: '2.1.6',
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/connect-assets',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/connect-assets.git' },
+silly testEngine   main: 'lib/assets.js',
+silly testEngine   dependencies: 
+silly testEngine    { 'connect-file-cache': '0.2.4',
+silly testEngine      mime: '1.2.2',
+silly testEngine      snockets: '1.3.3',
+silly testEngine      underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { async: '0.1.14',
+silly testEngine      'coffee-script': '1.1.2',
+silly testEngine      connect: '1.6.4',
+silly testEngine      nib: '0.2.0',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      stylus: '0.19.0',
+silly testEngine      request: '2.1.1',
+silly testEngine      watchit: '>=0.0.1' },
+silly testEngine   _id: 'connect-assets@2.1.6',
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   scripts: {} }
+verbose caching /Users/derek/Desktop/cards.ly/node_modules/connect-assets/package.json
+verbose loadDefaults connect-assets@2.1.6
+info preinstall connect-assets@2.1.6
+verbose from cache /Users/derek/Desktop/cards.ly/node_modules/connect-assets/package.json
+verbose into /Users/derek/Desktop/cards.ly/node_modules/connect-assets [ 'connect-file-cache@0.2.4' ]
+verbose cache add connect-file-cache@0.2.4
+verbose cache add [ 'connect-file-cache@0.2.4', null ]
+silly cache add: name, spec, args [ undefined,
+silly cache add: name, spec, args   'connect-file-cache@0.2.4',
+silly cache add: name, spec, args   [ 'connect-file-cache@0.2.4', null ] ]
+verbose parsed url { pathname: 'connect-file-cache@0.2.4',
+verbose parsed url   href: 'connect-file-cache@0.2.4' }
+silly cache add: name, spec, args [ 'connect-file-cache',
+silly cache add: name, spec, args   '0.2.4',
+silly cache add: name, spec, args   [ 'connect-file-cache', '0.2.4' ] ]
+verbose parsed url { pathname: '0.2.4', href: '0.2.4' }
+info addNamed [ 'connect-file-cache', '0.2.4' ]
+verbose addNamed [ '0.2.4', '0.2.4' ]
+verbose GET connect-file-cache/0.2.4
+verbose raw, before any munging connect-file-cache/0.2.4
+verbose url resolving [ 'http://registry.npmjs.org/',
+verbose url resolving   './connect-file-cache/0.2.4' ]
+verbose url resolved http://registry.npmjs.org/connect-file-cache/0.2.4
+verbose etag "2R2KKDEKR0M8FL4QASJYW0DQR"
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"4EKG94XRCL1O794BACL0UTCJZ"',
+silly get cb     date: 'Thu, 29 Dec 2011 20:46:40 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '998' } ]
+verbose bin dist [ '0.4-ares1.7.4-ev4.4-openssl1.0.0e-v83.1.8.10-darwin-11.2.0',
+verbose bin dist   { shasum: '6d6afddde29314f2e5cb2c0725d487caadc75913',
+verbose bin dist     tarball: 'http://registry.npmjs.org/connect-file-cache/-/connect-file-cache-0.2.4.tgz' } ]
+verbose addRemoteTarball [ 'http://registry.npmjs.org/connect-file-cache/-/connect-file-cache-0.2.4.tgz',
+verbose addRemoteTarball   '6d6afddde29314f2e5cb2c0725d487caadc75913' ]
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435'
+verbose mkdir done: /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435 755
+info fetch http://registry.npmjs.org/connect-file-cache/-/connect-file-cache-0.2.4.tgz
+verbose fetch to /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/tmp.tgz
+silly updated sha bytes 20480
+info shasum 6d6afddde29314f2e5cb2c0725d487caadc75913
+info shasum /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/tmp.tgz
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents'
+verbose mkdir (expected) error ENOENT, No such file or directory '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm'
+verbose mkdir done: /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/tmp.tgz' ],
+silly spawning   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/Cakefile
+silly tar err x package/package.json
+silly tar err x package/README.mdown
+silly tar err x package/lib/cache.js
+silly tar err x package/docs/cache.html
+silly tar err x package/docs/docco.css
+silly tar err x package/src/cache.coffee
+silly tar err x package/test/integration.coffee
+silly tar err x package/test/unit.coffee
+silly tar err x package/test_fixtures/lorem.txt
+silly tar err x package/test_fixtures/popeye-zen.txt
+silly tar err x package/test_fixtures/raven-quoth.html
+silly tar exit 0
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/.gitignore
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/Cakefile
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/package.json
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/README.mdown
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/docs
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/docs/cache.html
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/docs/docco.css
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/lib
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/lib/cache.js
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/src
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/src/cache.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test/integration.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test/unit.coffee
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test_fixtures
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test_fixtures/lorem.txt
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test_fixtures/popeye-zen.txt
+silly asyncMap in gTP /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package/test_fixtures/raven-quoth.html
+verbose gunzed /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package
+verbose rm'ed /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package
+verbose renamed [ '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/___package.npm/package',
+verbose renamed   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package' ]
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'connect-file-cache',
+silly testEngine   description: 'A Connect middleware for mapping routes to memory',
+silly testEngine   version: '0.2.4',
+silly testEngine   engines: { node: '>=0.6.1' },
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/connect-file-cache',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/connect-file-cache.git' },
+silly testEngine   main: 'lib/cache.js',
+silly testEngine   dependencies: { mime: '1.2.2', underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'coffee-script': '1.1.2',
+silly testEngine      connect: '1.6.4',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      request: '2.1.1',
+silly testEngine      'watch-tree': '0.1.1' },
+silly testEngine   _id: 'connect-file-cache@0.2.4',
+silly testEngine   _engineSupported: false,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   path: '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package' }
+verbose caching /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package/package.json
+verbose loadDefaults connect-file-cache@0.2.4
+verbose tarball contents [ 'package' ]
+verbose from cache /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package/package.json
+verbose pack /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package /Users/derek/.npm/connect-file-cache/0.2.4/package.tgz
+silly makeList /var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents/package
+verbose mkdir'ed /Users/derek/.npm/connect-file-cache/0.2.4
+verbose tar about to write tar and gzip it.
+silly tar args [ '-czvf', '-', '-T', '-' ]
+silly spawning [ 'tar',
+silly spawning   [ '-czvf', '-', '-T', '-' ],
+silly spawning   '/var/folders/3h/m_jcpykn6vj65wfc_gfj7cgw0000gn/T/npm-1325191599754/1325191600493-0.046591660007834435/contents' ]
+verbose mkdir (expected) error ENOENT, No such file or directory '/Users/derek/.npm/connect-file-cache/0.2.4/___package.npm'
+verbose mkdir done: /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /Users/derek/.npm/connect-file-cache/0.2.4/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly spawning [ 'tar',
+silly spawning   [ '-zmvxpf',
+silly spawning     '/Users/derek/.npm/connect-file-cache/0.2.4/package.tgz' ],
+silly spawning   '/Users/derek/.npm/connect-file-cache/0.2.4/___package.npm' ]
+silly tar err x package/.gitignore
+silly tar err x package/Cakefile
+silly tar err x package/package.json
+silly tar err x package/README.mdown
+silly tar err x package/lib/cache.js
+silly tar err x package/docs/cache.html
+silly tar err x package/docs/docco.css
+silly tar err x package/src/cache.coffee
+silly tar err x package/test/integration.coffee
+silly tar err x package/test/unit.coffee
+silly tar err x package/test_fixtures/lorem.txt
+silly tar err x package/test_fixtures/popeye-zen.txt
+silly tar err x package/test_fixtures/raven-quoth.html
+silly tar exit 0
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/.gitignore
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/Cakefile
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/package.json
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/README.mdown
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/docs
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/docs/cache.html
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/docs/docco.css
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/lib
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/lib/cache.js
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/src
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/src/cache.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test/integration.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test/unit.coffee
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test_fixtures
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test_fixtures/lorem.txt
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test_fixtures/popeye-zen.txt
+silly asyncMap in gTP /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package/test_fixtures/raven-quoth.html
+verbose gunzed /Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package
+verbose rm'ed /Users/derek/.npm/connect-file-cache/0.2.4/package
+verbose renamed [ '/Users/derek/.npm/connect-file-cache/0.2.4/___package.npm/package',
+verbose renamed   '/Users/derek/.npm/connect-file-cache/0.2.4/package' ]
+silly testEngine { author: 
+silly testEngine    { name: 'Trevor Burnham',
+silly testEngine      url: 'http://trevorburnham.com' },
+silly testEngine   name: 'connect-file-cache',
+silly testEngine   description: 'A Connect middleware for mapping routes to memory',
+silly testEngine   version: '0.2.4',
+silly testEngine   engines: { node: '>=0.6.1' },
+silly testEngine   homepage: 'http://github.com/TrevorBurnham/connect-file-cache',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/TrevorBurnham/connect-file-cache.git' },
+silly testEngine   main: 'lib/cache.js',
+silly testEngine   dependencies: { mime: '1.2.2', underscore: '1.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'coffee-script': '1.1.2',
+silly testEngine      connect: '1.6.4',
+silly testEngine      nodeunit: '0.5.4',
+silly testEngine      request: '2.1.1',
+silly testEngine      'watch-tree': '0.1.1' },
+silly testEngine   _id: 'connect-file-cache@0.2.4',
+silly testEngine   _engineSupported: false,
+silly testEngine   _npmVersion: '1.0.106',
+silly testEngine   _nodeVersion: 'v0.4.7',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   dist: { shasum: '3db42fdd9236df89ba7b7c58097660164b8bb665' } }
+verbose caching /Users/derek/.npm/connect-file-cache/0.2.4/package/package.json
+verbose loadDefaults connect-file-cache@0.2.4
+silly updated sha bytes 20480
+info shasum 3db42fdd9236df89ba7b7c58097660164b8bb665
+info shasum /Users/derek/.npm/connect-file-cache/0.2.4/package.tgz
+verbose from cache /Users/derek/.npm/connect-file-cache/0.2.4/package/package.json
+verbose chmod /Users/derek/.npm/connect-file-cache/0.2.4/package.tgz 644
+verbose chown [ '/Users/derek/.npm/connect-file-cache/0.2.4/package.tgz',
+verbose chown   501,
+verbose chown   20 ]
+silly resolved [ { author: 
+silly resolved      { name: 'Trevor Burnham',
+silly resolved        url: 'http://trevorburnham.com' },
+silly resolved     name: 'connect-file-cache',
+silly resolved     description: 'A Connect middleware for mapping routes to memory',
+silly resolved     version: '0.2.4',
+silly resolved     engines: { node: '>=0.6.1' },
+silly resolved     homepage: 'http://github.com/TrevorBurnham/connect-file-cache',
+silly resolved     repository: 
+silly resolved      { type: 'git',
+silly resolved        url: 'git://github.com/TrevorBurnham/connect-file-cache.git' },
+silly resolved     main: 'lib/cache.js',
+silly resolved     dependencies: { mime: '1.2.2', underscore: '1.1.7' },
+silly resolved     devDependencies: 
+silly resolved      { 'coffee-script': '1.1.2',
+silly resolved        connect: '1.6.4',
+silly resolved        nodeunit: '0.5.4',
+silly resolved        request: '2.1.1',
+silly resolved        'watch-tree': '0.1.1' },
+silly resolved     _id: 'connect-file-cache@0.2.4',
+silly resolved     _engineSupported: false,
+silly resolved     _npmVersion: '1.0.106',
+silly resolved     _nodeVersion: 'v0.4.7',
+silly resolved     _defaultsLoaded: true,
+silly resolved     dist: { shasum: '3db42fdd9236df89ba7b7c58097660164b8bb665' } } ]
+info into /Users/derek/Desktop/cards.ly/node_modules/connect-assets connect-file-cache@0.2.4
+info installOne connect-file-cache@0.2.4
+verbose installOne cb connect-file-cache@0.2.4
+verbose about to build /Users/derek/Desktop/cards.ly/node_modules/connect-assets
+ERR! error installing connect-assets@2.1.6 Error: Unsupported
+ERR! error installing connect-assets@2.1.6     at checkEngine (/usr/local/lib/node_modules/npm/lib/install.js:493:14)
+ERR! error installing connect-assets@2.1.6     at Array.0 (/usr/local/lib/node_modules/npm/node_modules/slide/lib/bind-actor.js:15:8)
+ERR! error installing connect-assets@2.1.6     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:15:13)
+ERR! error installing connect-assets@2.1.6     at chain (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:20:4)
+ERR! error installing connect-assets@2.1.6     at installOne_ (/usr/local/lib/node_modules/npm/lib/install.js:470:3)
+ERR! error installing connect-assets@2.1.6     at installOne (/usr/local/lib/node_modules/npm/lib/install.js:411:3)
+ERR! error installing connect-assets@2.1.6     at /usr/local/lib/node_modules/npm/lib/install.js:347:9
+ERR! error installing connect-assets@2.1.6     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:54:35
+ERR! error installing connect-assets@2.1.6     at Array.forEach (native)
+ERR! error installing connect-assets@2.1.6     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:54:11
+info unbuild /Users/derek/Desktop/cards.ly/node_modules/connect-assets
+verbose from cache /Users/derek/Desktop/cards.ly/node_modules/connect-assets/package.json
+info preuninstall connect-assets@2.1.6
+info uninstall connect-assets@2.1.6
+verbose unbuild connect-assets@2.1.6 [ true,
+verbose unbuild connect-assets@2.1.6   '/Users/derek/Desktop/cards.ly/node_modules',
+verbose unbuild connect-assets@2.1.6   '/Users/derek/Desktop/cards.ly/node_modules' ]
+info postuninstall connect-assets@2.1.6
+verbose installOne cb connect-assets@2.1.6
+ERR! Unsupported
+ERR! Not compatible with your version of node/npm: connect-file-cache@0.2.4
+ERR! Required: {"node":">=0.6.1"}
+ERR! Actual:   {"npm":"1.0.106","node":"0.4.7"}
+ERR! 
+ERR! System Darwin 11.2.0
+ERR! command "node" "/usr/local/bin/npm" "install" "connect-assets"
+ERR! cwd /Users/derek/Desktop/cards.ly
+ERR! node -v v0.4.7
+ERR! npm -v 1.0.106
+ERR! code ENOTSUP
+verbose exit [ 1, true ]
