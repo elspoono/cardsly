@@ -8,16 +8,18 @@ include pull_down
           i.one Get
           em &nbsp;Alerts&nbsp;
           i.two from your ...
-        img(src='/images/googley_4.png')
+        img(src='/images/googley_6.png')
       .right
         h1.one
           .one QR Code
           .two Business
           .three Cards
         .mid
-          h4 Learn who's interested
-          p Leave a Cardsly business card, and when it is scanned you will get an email or text message.
-          p The unique card number in that message let's you know who scanned.
+          h4 Learn who scans
+          p When a card is scanned, you will get an e-mail or text message letting you know which card was scanned.
+          h4 Update Links
+          p You can change where they go, when they scan, any time you want.
+          
   .clear
   .row.home_designer
     .top
@@ -83,36 +85,35 @@ include pull_down
         img.text(src='/images/alert_small.png')
     .mid
       .left
-        .notify_form
-          .set_alerts
-            h2 Set Alerts
-            p Emails or Texts with details
-            .field.email
-              input(placeholder='my@email.com')
-              .toggle
-                .bg
-                  .option.active on
-                  .option off
-            .field.text
-              input(placeholder='555.555.5555')
-              .toggle
-                .bg
-                  .option on
-                  .option.active off
-          .set_links
-            h2 Set Links
-            p Where they go, when they scan
-            .link_editor
-              ul.socials
-                li.facebook F
-                li.twitter.shift t
-                li.linkedin l
-                li.google g
-              .links
-                .field
-                  .button +
-                  input(placeholder='mysite.com')
-                .link_items
+        .set_alerts
+          h2 Set Alerts
+          p Emails or Texts with details
+          .field.email
+            input(placeholder='my@email.com')
+            .toggle
+              .bg
+                .option.active on
+                .option off
+          .field.text
+            input(placeholder='555.555.5555')
+            .toggle
+              .bg
+                .option on
+                .option.active off
+        .set_links
+          h2 Set Links
+          p Where they go, when they scan
+          .link_editor
+            ul.socials
+              li.facebook F
+              li.twitter.shift t
+              li.linkedin l
+              li.google g
+            .links
+              .field
+                .button +
+                input(placeholder='mysite.com')
+              .link_items
       .clear
   .row
     .top

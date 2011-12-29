@@ -51,7 +51,7 @@ input,textarea,select,p
   width 100%
   top 40px
   left 0
-  height 760px
+  height 780px
   z-index -1
   overflow hidden
   .overlay
@@ -148,7 +148,7 @@ body
       line-height 90px
       color color_two
   p
-    margin 30px 0
+    margin 10px 0 35px 0
     line-height 36px
     font-size 18px
     em
@@ -193,7 +193,6 @@ body
 
 .row
   margin 120px 0
-  overflow hidden
   clear both
   .top
     h1.two
@@ -249,42 +248,24 @@ h1.two
     font-size 16px
 
 
-.notify_form,.shipping_form
-  color color_ten
-  width 280px
-  position relative
-  text-align center
-  h2
-    font-size 26px
-    margin 30px 0 0 0
-    padding 30px 0 0 0
-  p
-    margin 20px
-    font-size 16px
-  .field
-    overflow hidden
-  input,select
-    float left
-    width 120px
-    margin 15px 0 15px 15px
-  label
-    float left
-    line-height 40px
-    height 40px
+
+
+.set_alerts,.set_links
+  padding 30px 0
+  h2, p
     margin 15px
-.notify_form
-  box_shadow(0,color_two,8px)
-  background color_six
-  padding 0 350px 0 0
-  .set_alerts
-    position relative
-    left 5px
-  .set_links
-    position relative
-    left 300px
-    top -280px
-  .link_editor
-    overflow hidden
+.set_alerts
+  float left
+  gradient(lighten(color_six,0),darken(color_six,20))
+  box_shadow(0,color_two,10px)
+  .field input
+    float left
+    margin 15px 0 15px 15px
+  .toggle
+    float right
+    margin 15px
+.set_links
+  float right
   .socials
     float left
     width 115px
@@ -342,9 +323,6 @@ h1.two
         border_radius(20px)
         box_shadow(0,color_two,3px)
         float left
-  .toggle
-    float right
-    margin 15px
     
 .checkout_header
   margin 100px 0 20px 0
@@ -450,7 +428,7 @@ h1.two
 .card.editor
   .line,.qr,.img
     cursor pointer
-  box_shadow(0,color_two,8px)
+  box_shadow(0,color_two,5px)
   margin 15px 0 0 15px
 
 .preview_count
@@ -511,9 +489,11 @@ h1.two
       background-position -40px 0
   
 .themes
+  gradient(lighten(color_eight,10),darken(color_eight,10))
+  box_shadow(0,color_two,10px)
   width 470px
   z-index 250
-  height 510px
+  height 525px
   overflow auto
   .thumb
     margin 30px 0 0 15px
@@ -561,31 +541,6 @@ h1.two
     .bg_bg
       transform_matrix(.9,0.05,0.09,.2,-5,35)
 
-.home_designer
-  overflow visible
-  position relative
-  .controls
-    width 525px
-    .area
-      position relative
-      z-index 140
-      width 525px
-      height 125px
-      display none
-    .area.active
-      display block
-  .top
-    clear both
-  .ours_yours,.front_back
-    margin 15px
-  .ours_yours
-    float right
-    display none
-  .front_back
-    float left
-
-
-
 
 .shopping_cart
   float right
@@ -613,17 +568,33 @@ h1.two
 
 
 
-
-
-
-
+.home_designer
+  overflow visible
+  position relative
+  .controls
+    width 525px
+  .top
+    clear both
+  .ours_yours,.front_back
+    margin 15px 15px 30px 15px
+  .ours_yours
+    float right
+    display none
+  .front_back
+    float left
 .area
+  position relative
+  z-index 140
+  width 525px
+  height 95px
+  display none
+  margin 30px 0 0 0
   .line_value
-    margin 15px 0 0 15px
+    margin 0 0 0 15px
     float left
   .button.save
     float left
-    margin 15px 0 0 15px
+    margin 0 0 0 15px
     gradient(lighten(color_eight,10),darken(color_eight,10))
     border_radius(10px)
     box_shadow(0,color_two,5px)
@@ -633,10 +604,11 @@ h1.two
     height 40px
     font-size 26px
     cursor pointer
-
   .toggle,.font_families,.color_picker,.font_size
     float left
     margin 15px 0 15px 15px
+.area.active
+  display block
   
 .color_picker
   cursor pointer
