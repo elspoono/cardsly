@@ -832,6 +832,11 @@ $ ->
       #
       #
       #
+      #
+      #
+      #
+      #
+      #
       io_session.on 'load_urls', (urls) ->
         #
         $items = $link_items.find '.item'
@@ -1090,6 +1095,9 @@ $ ->
             #
           #
         else
+          #
+          active_theme_id = '4ec3fb7b3bf1fc0100000042'
+          #
           $quantity.first().make_active()
       #
     #
