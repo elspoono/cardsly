@@ -786,6 +786,8 @@ $ ->
     #
     #
     #
+    active_theme_id = '4ec3fb7b3bf1fc0100000042'
+    #
     #
     $all_card = $home_designer.find '.card'
     #
@@ -914,9 +916,6 @@ $ ->
       #
       #
       #
-      if not $thumbs
-        io_session.emit 'get_themes', true
-      #
       io_session.on 'load_theme', (theme) ->
         #
         #
@@ -986,7 +985,17 @@ $ ->
           #console.log id
         #
         #
-        $thumbs.eq(0).click()
+        for thumb in $thumbs
+          if thumb.id is active_theme_id
+            $thumb = $ thumb
+            #
+            # Activate that theme
+            $thumb.click()
+            #
+            # And scroll to it
+            $themes.scrollTo $thumb
+            #
+            #
       # ------------------------------------
       # End Thumbs
       # ---------
@@ -1096,9 +1105,13 @@ $ ->
           #
         else
           #
-          active_theme_id = '4ec3fb7b3bf1fc0100000042'
-          #
           $quantity.first().make_active()
+        #
+        #
+        #
+        #
+        if not $thumbs
+          io_session.emit 'get_themes', true
       #
     #
     #
