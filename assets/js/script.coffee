@@ -828,10 +828,12 @@ $ ->
         if help_visible
           $help_bg.hide()
           $help_show.show()
+          $help_overlays.removeClass 'active'
           help_visible = false
         else
           $help_bg.show()
           $help_show.hide()
+          $help_overlays.addClass 'active'
           help_visible = true
           
     #
