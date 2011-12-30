@@ -801,6 +801,15 @@ $ ->
     #
     #
     #
+    $design_now = $ '.design_now'
+    #
+    $design_now.click ->
+      $body.scrollTo $home_designer,
+        offset:
+          left: 0
+          top: -30
+        duration: 500
+      false
     #
     #
     #
@@ -1017,7 +1026,10 @@ $ ->
             $thumb.click()
             #
             # And scroll to it
-            $themes.scrollTo $thumb
+            $themes.scrollTo $thumb,
+              offset: 
+                left: 0
+                top: -20
             #
             #
       # ------------------------------------

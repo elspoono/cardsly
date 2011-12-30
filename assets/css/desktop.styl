@@ -52,7 +52,7 @@ input,textarea,select,p,label
   width 100%
   top 40px
   left 0
-  height 890px
+  height 970px
   z-index -1
   overflow hidden
   .overlay
@@ -128,7 +128,7 @@ body
           
 .hero
   overflow visible
-  margin 50px 0 0 0
+  margin 70px 0 0 0
   h3
     margin-bottom 15px
     height 101px
@@ -154,13 +154,19 @@ body
     em
       color color_six
   .bottom
-    margin-top 20px
+    margin-top 60px
     overflow hidden
-    .col
+    .col_one,.col_two,.col_three
       float left
       width 220px
       margin 0 60px
       text-align center
+    .col_one
+      margin 0 120px 0 0
+      text-align left
+    .col_three
+      margin 0 0 0 120px
+      text-align right
     img
       margin 0 auto
       display inline
@@ -179,8 +185,6 @@ body
   .left
     position absolute
     img
-      margin-top 79px
-      margin-left -50px
   .right
     float right
     text-align right
@@ -188,20 +192,31 @@ body
     font-family huge_text
     .one
       color color_six
-      font-size 180px
+      font-size 119px
       text-align right
     .two
       margin-top 5px
-      font-size 119px
+      font-size 110px
       color color_two
     .three
       color color_nine
-      font-size 188px
+      font-size 173px
       text-align right
     .four
-      text-align center
-      font-size 39px
-      margin-top 15px
+      .button
+        text-align center
+        font-family accent_text
+        margin 30px auto 0 auto
+        color color_three
+        gradient(lighten(color_six,0),darken(color_six,20))
+        border_radius(15px)
+        height 70px
+        line-height 70px
+        font-size 42px
+        width 275px
+        box_shadow(0,color_two,10px)
+        cursor pointer
+
 
 
 
