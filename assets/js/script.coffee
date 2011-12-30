@@ -793,7 +793,13 @@ $ ->
     #
     $card = $all_card.filter ':not(.preview_2)'
     #
-    c_o = $card.offset()
+    #
+    #
+    $editor = $all_card.filter '.editor'
+    $line_value = $home_designer.find '.line_value'
+    #
+    #
+    #
     #
     #
     #
@@ -868,6 +874,24 @@ $ ->
         $text_align.unbind('click').click ->
           $t_a = $ this
           $t_a.make_active()
+        #
+        #
+        $lines = $editor.find '.line'
+        #
+        new_active_line = ->
+          #
+          $active_line = $lines.filter '.active'
+          #
+          $line_value.val $active_line.html()
+        #
+        #
+        $lines.click ->
+          $t = $ this
+          $t.make_active()
+          new_active_line()
+        #
+        new_active_line()
+        #
       #
       #
       active_theme = {}

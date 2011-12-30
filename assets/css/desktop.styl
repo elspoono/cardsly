@@ -156,12 +156,21 @@ body
   .bottom
     margin-top 20px
     overflow hidden
-    .one,.two,.three
+    .col
       float left
       width 220px
       margin 0 60px
+      text-align center
+    img
+      margin 0 auto
+      display inline
+      line-height 153px
+    img.two
+      margin 16px auto 15px auto
+    img.three
+      margin 4px auto 5px auto
     h4
-      margin 180px 0 15px
+      margin 15px 0
       color color_six
       font-size 24px
     p
@@ -447,6 +456,9 @@ h1.two
 .card.editor
   .line,.qr,.img
     cursor pointer
+  .active
+    border 4px solid lighten(color_eight,20)
+    margin -4px
   box_shadow(0,color_two,5px)
   margin 15px 0 0 15px
 
