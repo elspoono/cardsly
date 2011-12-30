@@ -202,7 +202,57 @@ body
 
 
 .row
-  margin 120px 0
+  position relative
+  .help_overlay
+    position absolute
+    top 0
+    z-index 300
+    height 100%
+    width 1084px
+    margin 0 -30px
+    .dialog
+      position absolute
+      z-index 301
+      .text
+        color color_three
+        text_shadow(0,color_two,5px)
+        text-align center
+        margin-left 97px
+        margin-top 14px
+        font-size 70px
+        line-height 74px
+    .dialog.left
+      background url('/images/help_1.png')
+      width 329px
+      height 219px
+      top 180px
+      left 300px
+    .button_hide,.button_show
+      position absolute
+      z-index 301
+      right 30px
+      top 30px
+      color color_three
+      gradient(lighten(color_six,0),darken(color_six,20))
+      padding 0 30px
+      border_radius(14px)
+      height 56px
+      line-height 56px
+      font-size 28px
+      box_shadow(0,color_two,10px)
+      cursor pointer
+    .button_show
+      gradient(lighten(color_two,30),lighten(color_two,10))
+      display none
+    .bg
+      position absolute
+      z-index 300
+      background color_two
+      height 100%
+      width 100%
+      opacity(.5)
+  margin 60px 0
+  padding 30px 0
   clear both
   .top
     h1.two
