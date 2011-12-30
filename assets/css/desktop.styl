@@ -252,6 +252,10 @@ body
       height 100%
       width 100%
       opacity(.5)
+  .mid
+    box_shadow(0,color_two,10px)
+    alpha_bg(color_four,.3)
+    border_radius(10px)
   .help_overlay.active
     height 100%
   margin 60px 0
@@ -267,9 +271,6 @@ body
         margin 0 28px 0 0
     clear both
     overflow hidden
-  .mid
-    box_shadow(0,color_two,10px,inset)
-    background color_four
   .left
     float left
   .right
@@ -336,11 +337,6 @@ h1.two
   .toggle
     float right
     margin 0 0 0 14px
-.set_alerts
-  gradient(lighten(color_six,0),darken(color_six,20))
-  box_shadow(0,color_two,10px)
-  h2, p, label
-    color color_three
 .set_links
   .socials
     text-align center
@@ -505,7 +501,7 @@ h1.two
   .line,.qr,.img
     cursor pointer
   .active
-    border 4px solid lighten(color_eight,20)
+    border 4px solid color_six
     margin -4px
   box_shadow(0,color_two,5px)
   margin 14px 0 0 14px
@@ -568,8 +564,6 @@ h1.two
       background-position -40px 0
   
 .themes
-  gradient(lighten(color_eight,20),darken(color_eight,5))
-  box_shadow(0,color_two,10px)
   width 470px
   z-index 250
   height 525px
@@ -585,24 +579,17 @@ h1.two
     .bg,.fg,.bg_bg,.fg_bg
       transition()
       position absolute
+      box_shadow(0,color_two,5px)
     .bg
       z-index 200
       transform_matrix(.25,-0.33,0,1,100,-25)
     .fg
       z-index 201
       transform_matrix(.9,0.05,-0.01,1,0,0)
-    .fg_bg,.bg_bg
-      height 90px
-      width 158px
-      z-index 199
-      background color_two
-    .fg_bg
-      transform_matrix(.9,0.05,0.09,.2,-5,35)
-    .bg_bg
-      transform_matrix(.25,-0.33,.1,.1,95,15)
   .active
-    box_shadow(0,color_two,10px,inset)
-    background color_four
+    gradient(lighten(color_eight,20),darken(color_eight,5))
+    box_shadow(0,color_two,5px)
+    border_radius(20px)
   .hover
     opacity(1)
 .themes.back
@@ -669,6 +656,10 @@ h1.two
   .line_value
     margin 0 0 0 14px
     float left
+    color color_six
+    border 4px solid color_six
+    height 32px
+    line-height 32px
   .button.save
     float left
     margin 0 0 0 14px
