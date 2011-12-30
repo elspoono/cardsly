@@ -823,13 +823,20 @@ $ ->
     $help_overlays.each ->
       $h_o = $ this
       #
-      $h_o.click ->
+      $h_o.click (e) ->
         #
         if help_visible
           $help_bg.hide()
           $help_show.show()
           $help_overlays.removeClass 'active'
           help_visible = false
+          #
+          $e = $ e.target
+          if $e.closest('.row').hasClass 'home_designer'
+            setTimeout ->
+              $editor.find('.line:first').click()
+            , 0
+          #
         else
           $help_bg.show()
           $help_show.hide()
@@ -894,6 +901,15 @@ $ ->
       #
       #
       #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
       # ---------
       # Thumbs
       # ------------------------------------
@@ -913,13 +929,43 @@ $ ->
           #
           $active_line = $lines.filter '.active'
           #
-          $line_value.val $active_line.html()
+          if $active_line.length
+            #
+            $line_value.val $active_line.html()
+            setTimeout ->
+              $line_value.focus().select()
+            , 0
+            #
+            $areas.eq(0).make_active()
+          else
+            $areas.eq(0).removeClass 'active'
+
         #
         #
-        $lines.click ->
+        remove_focus_event = (e) ->
+          $t = $ e.target
+          unless $t.hasClass 'active'
+            $editor.find('.active').removeClass 'active'
+            $body.unbind 'click', remove_focus_event
+            new_active_line()
+        #
+        add_remove_focus_event = ->
+          $body.bind 'click', remove_focus_event
+
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        $lines.click (e) ->
           $t = $ this
           $t.make_active()
           new_active_line()
+          add_remove_focus_event()
         #
         new_active_line()
         #
