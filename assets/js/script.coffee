@@ -863,7 +863,6 @@ $ ->
     #
     #
     #
-    #
     $themes = $home_designer.find '.themes'
     $thumbs = undefined
     #
@@ -900,10 +899,7 @@ $ ->
             $link_items.append '<div class="item" url="'+url+'"><div class="url">'+short_url+'</div><div class="button">-</div></div>'
       #
       #
-      #
-      #
-      #
-      #
+   
       #
       #
       #
