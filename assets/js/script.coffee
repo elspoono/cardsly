@@ -1046,7 +1046,7 @@ $ ->
         #
         for theme,i in themes
           #
-          $new_thumb = $ '<div class="thumb"><div class="fg_bg" /><div class="bg_bg" /></div>'
+          $new_thumb = $ '<div class="thumb"></div>'
           $new_thumb.attr
             id: theme._id
           #
