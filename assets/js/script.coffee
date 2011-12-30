@@ -944,7 +944,9 @@ $ ->
         #
         remove_focus_event = (e) ->
           $t = $ e.target
-          unless $t.hasClass 'active'
+          $c = $t.closest('.controls').andSelf().filter('.controls')
+          $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
+          unless $c.length or $e.length
             $editor.find('.active').removeClass 'active'
             $body.unbind 'click', remove_focus_event
             new_active_line()
