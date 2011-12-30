@@ -14,6 +14,8 @@ color_nine = #447fb4
 
 color_ten = #000
 
+color_red = #FF0000
+
 
 size_one = 32px
 
@@ -33,7 +35,7 @@ input,textarea,select
   height 40px
   line-height 40px
   color color_seven
-  font-size 14px
+  font-size 16px
   padding 0 10px
   border 0
   margin 0
@@ -104,7 +106,7 @@ body
   line-height 40px
   z-index 200
   a
-    font-size 14px
+    font-size 16px
     color color_ten
     text-decoration none
   li
@@ -131,7 +133,7 @@ body
   margin 90px 0 0 0
   p
     line-height 36px
-    font-size 14px
+    font-size 16px
     em
       color color_six
   .bottom
@@ -183,7 +185,7 @@ body
         font-family accent_text
         margin 28px auto 0 auto
         color color_three
-        gradient(lighten(color_six,0),darken(color_six,20))
+        gradient(darken(color_red,10),darken(color_red,30))
         border_radius(14px)
         height 56px
         line-height 56px
@@ -306,7 +308,7 @@ h1.two
   .two
     color color_two
     line-height 48px
-    font-size 14px
+    font-size 16px
 
 
 
@@ -320,7 +322,7 @@ h1.two
   p
     width 250px
     line-height 28px
-    font-size 14px
+    font-size 16px
   overflow hidden
   .field
     float left
@@ -387,7 +389,7 @@ h1.two
         padding 0 10px
         height 20px
         line-height 20px
-        font-size 14px
+        font-size 16px
       .button
         height 20px
         width 20px
@@ -418,7 +420,7 @@ h1.two
     .full_address
       margin 14px
       text-align right
-      font-size 14px
+      font-size 16px
       line-height 20px
   
 .quantity
@@ -460,24 +462,24 @@ h1.two
       width 28px
     select
       width auto
-      font-size 14px
+      font-size 16px
     .cvc
       input
         width 40px
 .checkout
   margin 28px auto 120px auto
   color color_three
-  gradient(lighten(color_six,0),darken(color_six,20))
+  gradient(darken(color_red,10),darken(color_red,30))
   border_radius(14px)
-  height 70px
-  line-height 70px
-  font-size 56px
-  width 275px
+  height 56px
+  line-height 56px
+  font-size 28px
+  width 205px
   box_shadow(0,color_two,10px)
   img
     float left
     display block
-    margin 10px 20px 0 20px
+    margin 10px 14px 0 27px
   cursor pointer
 
 
@@ -516,7 +518,7 @@ h1.two
     float right
     color color_two
   .small
-    font-size 14px
+    font-size 16px
     line-height 56px
     margin 0 10px
   .large
@@ -646,6 +648,9 @@ h1.two
   position relative
   .controls
     width 525px
+    height 95px
+    margin 28px 0 0 0
+    overflow visible
   .top
     clear both
   .ours_yours,.front_back
@@ -659,16 +664,15 @@ h1.two
   position relative
   z-index 140
   width 525px
-  height 95px
   display none
-  margin 28px 0 0 0
+  margin 0
   .line_value
     margin 0 0 0 14px
     float left
   .button.save
     float left
     margin 0 0 0 14px
-    gradient(lighten(color_eight,10),darken(color_eight,10))
+    gradient(lighten(color_six,0),darken(color_six,20))
     border_radius(10px)
     box_shadow(0,color_two,5px)
     color color_three
@@ -679,7 +683,7 @@ h1.two
     cursor pointer
   .toggle,.font_families,.color_picker,.font_size
     float left
-    margin 14px 0 14px 14px
+    margin 14px 0 0 14px
 .area.active
   display block
   
@@ -738,7 +742,7 @@ h1.two
   .g,.t
     a
       font-family normal_text
-      font-size 14px
+      font-size 16px
   ul
     padding 14px 0
     float left
@@ -747,14 +751,14 @@ h1.two
     border-left 1px solid color_four
   a
     padding 5px 40px
-    font-size 14px
+    font-size 16px
     color lighten(color_ten,70)
     text-decoration none
     float left
   .f
     a
       font-family normal_text
-      font-size 14px
+      font-size 16px
     ul
       padding 14px 0
       float left
@@ -763,7 +767,7 @@ h1.two
       border-left 1px solid color_four
     a
       padding 5px 40px
-      font-size 14px
+      font-size 16px
       color lighten(color_ten,70)
       text-decoration none
       float left
