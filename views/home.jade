@@ -18,15 +18,17 @@
         .col_one
           img(src='/images/socialicons.png')
           h4 Hand them content
-          p Link QR codes to your websites, social networks or anything you want.
+          p Link your QR codes to your website, to your social network or to anything you want.
         .col_two
           img.two(src='/images/alerticons.png')
           h4 Learn who scans
-          p When a card is scanned, you will get an e-mail or text message letting you know which card was scanned.
+          p When a card is scanned, you will get an e-mail or text message telling you which card was hit.
         .col_three
           img.three(src='/images/clockicon.png')
           h4 Update Links
-          p You can change where they'll go when they scan. Edit anytime.
+          p New website? No problem. 
+            br 
+            | Edit any card, any time.
           
   .clear
   .row.home_designer
@@ -106,22 +108,27 @@
       .set_alerts
         .field
           h2 Set Alerts
-          p Enter an email address or phone number to recieve messages when your cards are scanned.
+        .clear
+        .field
+          p Enter an email address to recieve emails.
         .field.email
           .input
             input(placeholder='my@email.com')
             label E-mail Address
           .toggle
             .bg
-              .option Active
+              .option Emails
               .option.active off
+        .clear
+        .field
+          p Or, enter a phone number to receive text messages.
         .field.text
           .input
             input(placeholder='555.555.5555')
             label Phone Number
           .toggle
             .bg
-              .option Active
+              .option Texts
               .option.active off
       .set_links
         .field
