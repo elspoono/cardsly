@@ -816,8 +816,7 @@ $ ->
     #
     $rows = $ '.row'
     $help_overlays = $rows.find '.help_overlay'
-    $help_bg = $help_overlays.find '.bg'
-    $help_hide = $help_overlays.find '.button_hide'
+    $help_bg = $help_overlays.children()
     $help_show = $help_overlays.find '.button_show'
     #
     help_visible = true
@@ -829,12 +828,10 @@ $ ->
         if help_visible
           $help_bg.hide()
           $help_show.show()
-          $help_hide.hide()
           help_visible = false
         else
           $help_bg.show()
           $help_show.hide()
-          $help_hide.show()
           help_visible = true
           
     #
