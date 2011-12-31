@@ -9,12 +9,14 @@ color_six = #ce6d4e
 color_seven = #447fb4
 
 color_eight = #447fb4
+color_eight = lighten(color_eight,10)
+// color_eight = #1AABCF
 
 color_nine = #447fb4
 
-color_ten = #000
+color_ten = #333
 
-color_red = #FF0000
+color_red = #E93333
 
 
 size_one = 32px
@@ -28,42 +30,22 @@ body
   background url('/images/patterns/3_1.jpg') top center
   font-family accent_text
 
-input,h1,h2,textarea,select
+input,h1,h2,textarea,select,p,label
   font-family accent_text
-  color color_ten
+  color #000
+  font-size 20px
 input,textarea,select
   height 40px
   line-height 40px
   color color_seven
-  font-size 16px
   padding 0 10px
+  box_shadow(0,color_two,1px)
   border 0
   margin 0
 input,textarea,select,p,label
   font-family normal_text
 
 
-
-
-
-
-
-
-.overlay_container
-  position absolute
-  width 100%
-  top 40px
-  left 0
-  height 970px
-  z-index -1
-  overflow hidden
-  .overlay
-    position relative
-    width 120%
-    height 100%
-    margin-left -10%
-    background color_four
-    box_shadow(0,color_two,10px,inset)
 
 
 
@@ -78,6 +60,7 @@ body
   background color_three
   background #F9F9F9
   background url('/images/body_bg.png')
+  background color_four
 
 
 
@@ -99,6 +82,7 @@ body
 
 .navigation
   position absolute
+  border-bottom 1px solid color_two
   top 0
   left 0
   width 100%
@@ -106,7 +90,7 @@ body
   line-height 40px
   z-index 200
   a
-    font-size 16px
+    font-size 20px
     color color_ten
     text-decoration none
   li
@@ -132,10 +116,12 @@ body
   overflow visible
   margin 90px 0 0 0
   p
-    line-height 36px
-    font-size 16px
+    line-height 30px
+    font-size 20px
+    color color_two
     em
       color color_six
+    margin 0 0 56px 0
   .bottom
     margin-top 56px
     overflow hidden
@@ -149,15 +135,13 @@ body
       display inline
       line-height 153px
     img.two
-      margin 16px auto 16px auto
+      margin 18px auto 18px auto
     img.three
       margin 6px auto 6px auto
     h4
       margin 14px 0
-      color color_six
+      color color_eight
       font-size 28px
-    p
-      margin 0 0 14px 0
     text-align left
   .left
     position absolute
@@ -167,16 +151,15 @@ body
     text-align right
   h1.one
     font-family huge_text
+    color color_two
     .one
-      color color_six
+      color color_eight
       font-size 119px
       text-align right
     .two
       margin-top 5px
       font-size 110px
-      color color_two
     .three
-      color color_nine
       font-size 173px
       text-align right
     .four
@@ -185,13 +168,13 @@ body
         font-family accent_text
         margin 28px auto 0 auto
         color color_three
-        gradient(darken(color_red,10),darken(color_red,30))
+        background lighten(color_red,0)
         border_radius(14px)
+        box_shadow(0,color_two,10px)
         height 56px
         line-height 56px
         font-size 28px
         width 233px
-        box_shadow(0,color_two,10px)
         cursor pointer
         img
           float left
@@ -204,8 +187,10 @@ body
 
 
 .row
+  background color_two
   position relative
   .help_overlay
+    display none
     position absolute
     top 0
     z-index 300
@@ -252,18 +237,26 @@ body
       height 100%
       width 100%
       opacity(.5)
-  .mid
-    box_shadow(0,color_two,10px)
-    alpha_bg(color_four,.3)
-    border_radius(10px)
   .help_overlay.active
     height 100%
-  margin 60px 0
-  padding 30px 0
   clear both
+  .mid
+    background color_two
+    .center_column
+      background color_eight
+      border_radius(20px)
+      border 4px solid color_three
   .top
+    background url('/images/body_bg.png')
+    background color_four
+    background color_two
+    padding 90px 0 14px 0
     h1.two
       float left
+      .one
+        color color_three
+      .two
+        color darken(color_three,20)
     .images
       margin 10px 0 0 28px
       float left
@@ -302,14 +295,11 @@ body
 
 
 h1.two
-  color color_seven
   .one
-    color color_two
     font-size 56px
   .two
-    color color_two
     line-height 48px
-    font-size 16px
+    font-size 20px
 
 
 
@@ -320,10 +310,11 @@ h1.two
     margin 0 0 14px 0
   h2
     font-size 28px
+    color color_three
   p
     width 250px
     line-height 28px
-    font-size 16px
+    font-size 20px
   overflow hidden
   .field
     float left
@@ -351,9 +342,9 @@ h1.two
       height 40px
       width 40px
       color color_three
-      gradient(lighten(color_eight,10),darken(color_eight,10))
+      gradient(lighten(color_six,0),darken(color_six,20))
       border_radius(10px)
-      box_shadow(0,color_two,5px)
+      box_shadow(0,color_two,1px)
       float right
       margin 0 0 0 14px
     .shift
@@ -368,9 +359,9 @@ h1.two
       cursor pointer
       margin 0 14px 14px 0
       float left
-      gradient(lighten(color_eight,10),darken(color_eight,10))
+      gradient(lighten(color_six,0),darken(color_six,20))
       border_radius_right_only(10px)
-      box_shadow(0,color_two,5px)
+      box_shadow(0,color_two,1px)
       color color_three
       font-family huge_text
       line-height 40px
@@ -385,7 +376,7 @@ h1.two
         padding 0 10px
         height 20px
         line-height 20px
-        font-size 16px
+        font-size 20px
       .button
         height 20px
         width 20px
@@ -416,12 +407,11 @@ h1.two
     .full_address
       margin 14px
       text-align right
-      font-size 16px
+      font-size 20px
       line-height 20px
   
 .quantity
   color color_seven
-  margin 14px 0
   .qwords
     color color_ten
     font-size 50px
@@ -458,12 +448,12 @@ h1.two
       width 28px
     select
       width auto
-      font-size 16px
+      font-size 20px
     .cvc
       input
         width 40px
 .checkout
-  margin 28px auto 120px auto
+  margin 28px auto 0 auto
   color color_three
   gradient(darken(color_red,10),darken(color_red,30))
   border_radius(14px)
@@ -503,7 +493,7 @@ h1.two
   .active
     border 4px solid color_six
     margin -4px
-  box_shadow(0,color_two,5px)
+  box_shadow(0,color_two,1px)
   margin 14px 0 0 14px
 
 .preview_count
@@ -514,7 +504,7 @@ h1.two
     float right
     color color_two
   .small
-    font-size 16px
+    font-size 20px
     line-height 56px
     margin 0 10px
   .large
@@ -526,14 +516,14 @@ h1.two
 
 .toggle
   border_radius(20px)
-  box_shadow(0,color_two,5px)
+  box_shadow(0,color_two,1px)
   .bg
     border_radius(20px)
     overflow hidden
-    gradient(darken(color_eight,10),lighten(color_eight,10))
-    box_shadow(0,color_two,5px,inset)
+    gradient(darken(color_six,20),lighten(color_six,0))
+    box_shadow(0,color_two,10px,inset)
   .option
-    color lighten(color_eight,20)
+    color lighten(color_six,10)
     border_radius(20px)
     height 40px
     line-height 40px
@@ -554,8 +544,8 @@ h1.two
       background-position -40px -17px
   .active
     color color_three
-    gradient(lighten(color_eight,10),darken(color_eight,10))
-    box_shadow(0,color_two,5px)
+    gradient(lighten(color_six,0),darken(color_six,20))
+    box_shadow(0,color_two,10px)
     .img.left
       background-position 0 0
     .img.center
@@ -569,17 +559,17 @@ h1.two
   height 525px
   overflow auto
   .thumb
-    margin 28px 0 0 14px
     cursor pointer
     float left
     height 105px
     width 210px
     padding 56px 0 0 8px
     position relative
-    .bg,.fg,.bg_bg,.fg_bg
+    margin 4px
+    .bg,.fg
       transition()
       position absolute
-      box_shadow(0,color_two,5px)
+      box_shadow(0,color_two,1px)
     .bg
       z-index 200
       transform_matrix(.25,-0.33,0,1,100,-25)
@@ -587,9 +577,9 @@ h1.two
       z-index 201
       transform_matrix(.9,0.05,-0.01,1,0,0)
   .active
-    gradient(lighten(color_eight,20),darken(color_eight,5))
-    box_shadow(0,color_two,5px)
+    border 4px solid color_eight
     border_radius(20px)
+    margin 0
   .hover
     opacity(1)
 .themes.back
@@ -598,10 +588,6 @@ h1.two
       transform_matrix(.9,0.05,-0.01,1,0,0)
     .fg
       transform_matrix(.25,-0.33,0,1,100,-25)
-    .fg_bg
-      transform_matrix(.25,-0.33,.1,.1,95,15)
-    .bg_bg
-      transform_matrix(.9,0.05,0.09,.2,-5,35)
 
 
 .shopping_cart
@@ -609,19 +595,8 @@ h1.two
   margin 28px 14px 0 0
 
 
-.card_stack
-  position absolute
-  margin-left -21px
-  margin-top -16px
-  width 585px
 .card.preview
-  box_shadow(1px,color_ten,5px)
-  transform_matrix(1,-.01,.01,1,0,0)
-.card.preview_2
-  position absolute
-  box_shadow(0,color_ten,150px,inset)
-  transform_matrix(1,.01,-.01,1,0,0)
-
+  box_shadow(0,color_ten,10px)
 
 
 
@@ -685,7 +660,7 @@ h1.two
   height 40px
   width 52px
   .bg
-    gradient(darken(color_eight,10),lighten(color_eight,10))
+    gradient(darken(color_six,20),lighten(color_six,0))
     box_shadow(0,color_two,5px,inset)
     border_radius(10px)
     height 40px
@@ -701,7 +676,7 @@ h1.two
   .arrow_1,.arrow_2
     float right
     border-style solid
-    border-color lighten(color_eight,20) transparent lighten(color_eight,20) transparent
+    border-color lighten(color_six,10) transparent lighten(color_six,10) transparent
   .arrow_1
     border-width 0 3px 6px 3px
     margin 13px 6px 0 0
@@ -726,14 +701,14 @@ h1.two
 
 .footer
   width 100%
-  border-top 1px solid color_four
+  background color_two
   .center_column
     overflow hidden
     font-family normal_text
   .g,.t
     a
       font-family normal_text
-      font-size 16px
+      font-size 20px
   ul
     padding 14px 0
     float left
@@ -742,14 +717,14 @@ h1.two
     border-left 1px solid color_four
   a
     padding 5px 40px
-    font-size 16px
+    font-size 20px
     color lighten(color_ten,70)
     text-decoration none
     float left
   .f
     a
       font-family normal_text
-      font-size 16px
+      font-size 20px
     ul
       padding 14px 0
       float left
@@ -758,7 +733,7 @@ h1.two
       border-left 1px solid color_four
     a
       padding 5px 40px
-      font-size 16px
+      font-size 20px
       color lighten(color_ten,70)
       text-decoration none
       float left

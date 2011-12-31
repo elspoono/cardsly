@@ -1,5 +1,5 @@
-.center_column
-  .hero
+.hero
+  .center_column
     .super_top
     .top
       .left
@@ -31,20 +31,23 @@
             | Edit any card, any time.
           
   .clear
-  .row.home_designer
-    .help_overlay.active
+.row.home_designer
+  .help_overlay.active
+    .center_column
       .button_hide Hide Help
       .button_show Show Help
       .bg
       .dialog.left
         .text Click To Edit
-    .top
+  .top
+    .center_column
       h1.two
         .one Design Cards
         .two Customize colors and fonts
       .images
-        img(src='/images/paint_brush.png', width=80)
-    .mid
+        img(src='/images/icons/paint_brush.png')
+  .mid
+    .center_column
       .left
         .controls
           .areas
@@ -91,26 +94,21 @@
         .themes
       .bottom
       .clear
-  .row
-    .help_overlay.active
-      .button_hide Hide Help
-      .button_show Show Help
-      .bg
-      .dialog.left
-        .text Click To Edit
-    .top
+.row
+  .top
+    .center_column
       h1.two 
         .one Get Alerts
         .two Learn who scanned your cards
       .images
-        img.text(src='/images/alert_small.png')
-    .mid
+        img.text(src='/images/icons/alert_small.png')
+  .mid
+    .center_column
       .set_alerts
         .field
           h2 Set Alerts
-        .clear
-        .field
           p Enter an email address to recieve emails.
+          p Or, enter a phone number to receive text messages.
         .field.email
           .input
             input(placeholder='my@email.com')
@@ -119,9 +117,6 @@
             .bg
               .option Emails
               .option.active off
-        .clear
-        .field
-          p Or, enter a phone number to receive text messages.
         .field.text
           .input
             input(placeholder='555.555.5555')
@@ -148,26 +143,18 @@
               li.google g
           .link_items
       .clear
-  .row
-    .help_overlay.active
-      .button_hide Hide Help
-      .button_show Show Help
-      .bg
-      .dialog.left
-        .text Click To Edit
-    .top
+.row
+  .top
+    .center_column
       h1.two
         .one Cart
         .two Everything lookin' good?
       .images
-        img.shopping_cart(src='/images/shopping_cart.png')
-    .mid
+        img.shopping_cart(src='/images/icons/shopping_cart.png')
+  .mid
+    .center_column
       .left
-        
-        img.card_stack(src='/images/card_stack_alpha.png')
-        .card.preview_2
         .card.preview
-        img.paper(src='images/paper.png')
       .quantity
         .qwords Quantity
         .option(cards=100,cost=10)
@@ -195,21 +182,17 @@
             span.dollar $
             span 75
       .clear
-  .row
-    .help_overlay.active
-      .button_hide Hide Help
-      .button_show Show Help
-      .bg
-      .dialog.left
-        .text Click To Edit
-    .top
+.row
+  .top
+    .center_column
       h1.two
         .one Checkout
         .two The last step
       .images
-        img.truck(src='/images/truck.png')
-        img.credit_image(src='/images/credit_card.png')
-    .mid
+        img.truck(src='/images/icons/truck.png')
+        img.credit_image(src='/images/icons/credit_card.png')
+  .mid
+    .center_column
       .left
         h2 Shipping
         p Free via USPS priority mail
@@ -241,7 +224,8 @@
                 - for (var year = 2011; year<2032; year++)
                   option(value=year)=year
       .clear
-    .bottom
+  .bottom
+    .center_column
       .button.normal.checkout
         img(src='/images/lock_icon.png')
         | Purchase
