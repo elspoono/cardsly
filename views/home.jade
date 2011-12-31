@@ -193,16 +193,17 @@
         img.credit_image(src='/images/icons/credit_card.png')
   .mid
     .center_column
-      .left
+      .shipping
         h2 Shipping
         p Free via USPS priority mail
         .field
           input.street(placeholder='123 Main St.')
-          .map
           .full_address_container
             .full_address
           input.zip_code(placeholder='85022')
-      .right
+          .map
+            img(src='/images/samplemap.png')
+      .payment
         h2 Credit Card
         .billing
           .credit-card
