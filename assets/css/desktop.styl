@@ -9,6 +9,7 @@ color_six = #ce6d4e
 color_seven = #447fb4
 
 color_eight = #447fb4
+color_eight = lighten(color_eight,10)
 // color_eight = #1AABCF
 
 color_nine = #447fb4
@@ -249,9 +250,6 @@ body
       border_radius_left_only(4px)
       border_radius_right_only(60px)
       border 2px solid color_three
-      border none
-      border_radius(4px)
-      background darken(color_three,30)
   .top
     background url('/images/body_bg.png')
     background color_four
@@ -262,7 +260,7 @@ body
       .one
         color color_three
       .two
-        color darken(color_three,30)
+        color color_eight
     .images
       margin 10px 0 0 28px
       float left
@@ -317,7 +315,7 @@ h1.two
   h2
     font-size 56px
     line-height 38px
-    color color_eight
+    color color_three
   p,label
     font-size 20px
     line-height 28px
