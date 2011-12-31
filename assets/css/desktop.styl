@@ -9,8 +9,12 @@ color_six = #ce6d4e
 color_seven = #447fb4
 
 color_eight = #447fb4
-color_eight = lighten(color_eight,10)
+color_eight = lighten(color_eight,5)
 // color_eight = #1AABCF
+//color_eight = #64B6B1
+//color_eight = darken(color_eight,20)
+
+//color_eight = #72ad77
 
 color_nine = #447fb4
 
@@ -247,9 +251,8 @@ body
     background color_two
     .center_column
       background color_eight
-      border_radius_left_only(4px)
-      border_radius_right_only(60px)
-      border 2px solid color_three
+      border_radius(11px)
+      border 11px solid color_three
   .top
     background url('/images/body_bg.png')
     background color_four
@@ -604,7 +607,8 @@ h1.two
       z-index 201
       transform_matrix(.9,0.05,-0.01,1,0,0)
   .active
-    border 4px solid color_eight
+    background color_two
+    border 4px solid color_three
     border_radius(20px)
     margin 0
   .hover
