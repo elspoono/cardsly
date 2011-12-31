@@ -190,12 +190,59 @@ $.create_card_from_theme = (options) ->
     #
     #
     #
+    #
+    # ----------------------------------------------
+    # Images
+    # ----------------------------------------------
+    widthheight = settings.width+'x'+settings.height
+    widthheight = 'raw' if settings.width > 525
+    widthheight = '158x90' if settings.width < 158
+    widthheight = '525x300' if settings.width > 158 and settings.width < 525
+    #
+    theme_template.images = [
+      s3_id: widthheight+'/' + settings.theme.s3_id
+      h: 100
+      w: 100
+      x: 0
+      y: 0
+    ]
+    #
+    $imgs = $my_card.find '.img'
+    #
+    $imgs.hide()
+    #
+    for pos, i in theme_template.images
+      if $imgs.eq(i).length
+        $img = $imgs.eq(i)
+      else
+        $img = $ '<img class="img" />'
+        $img.appendTo $my_card
+      $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+pos.s3_id
+      $img.show().css
+        position: 'absolute'
+        top: pos.y/100 * settings.height
+        left: pos.x/100 * settings.width
+        width: (pos.w/100 * settings.width) + 'px'
+        height: (pos.h/100 * settings.height) + 'px'
+    #
+    # Set the card background
+    $my_card.css
+      background: '#FFF'
+      height: settings.height
+      width: settings.width
+    # ----------------------------------------------
+    # END Images
+    # ----------------------------------------------
+    #
+    #
+    #
     $lines = $my_card.find '.line'
     #
     #
     for pos,i in theme_template.lines
       if $lines.eq(i).length
         $li = $lines.eq(i)
+        #$li.html $.line_copy[i]
       else
         $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
         $li.appendTo $my_card
@@ -203,6 +250,9 @@ $.create_card_from_theme = (options) ->
     #
     #
     #
+    # ----------------------------------------------
+    # Hack For Back Side
+    # ----------------------------------------------
     if settings.side is 'back' and not $my_card.hasClass 'preview_2'
       #
       $lines.hide()
@@ -244,12 +294,12 @@ $.create_card_from_theme = (options) ->
           color: '#'+pos.color
       #
       #
+    # ----------------------------------------------
+    # END Hack For Back Side
+    # ----------------------------------------------
     #
     #
     #
-    # Set the card background
-    $my_card.css
-      background: '#FFF url(\'//d3eo3eito2cquu.cloudfront.net/'+settings.width+'x'+settings.height+'/' + settings.theme.s3_id + '\')'
   #
 #
 # another helper function to add it to a category
@@ -998,8 +1048,8 @@ $ ->
             #
             #
             $.create_card_from_theme
-              height: 300
-              width: 525
+              height: 200
+              width: 350
               theme: active_theme
               active_view: 0
               card: $all_card
@@ -1027,8 +1077,8 @@ $ ->
         unless $card.hasClass 'collapsed'
           #
           $.create_card_from_theme
-            height: 300
-            width: 525
+            height: 200
+            width: 350
             theme: theme
             active_view: 0
             card: $all_card
@@ -1055,12 +1105,12 @@ $ ->
             src: '/thumb/'+theme._id+''
           $new_thumb.append $fg_image
           #
-          #
+          ###
           $bg_image = $ '<img class="bg" />'
           $bg_image.attr
             src: '/thumb/'+theme._id+'/back'
           $new_thumb.append $bg_image
-          #
+          ###
           $themes.append $new_thumb
           #
         #

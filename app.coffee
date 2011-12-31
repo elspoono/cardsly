@@ -416,6 +416,16 @@ line_schema = new schema
   y: Number
 #
 #
+# Style Image Positions
+image_schema = new schema
+  order_id: Number
+  s3_id: String
+  h: Number
+  w: Number
+  x: Number
+  y: Number
+#
+#
 #
 pattern_schema = new schema
   s3_id: String
@@ -444,6 +454,7 @@ theme_template_schema = new schema
     x: Number
     y: Number
   lines: [line_schema]
+  images: [image_schema]
   color1: String
   color2: String
   s3_id: String
@@ -2687,10 +2698,9 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   #
   height = req.params.h*1
   width = req.params.w*1
-  widthheight = width+'x'+height
-  widthheight = 'raw' if width is 1680
-  widthheight = 'raw' if width is 1050
-  widthheight = '158x90' if width is 79
+  widthheight = 'raw' if settings.width > 525
+  widthheight = '158x90' if settings.width < 158
+  widthheight = '525x300' if settings.width > 158 and settings.width < 525
   #
   #
   url = 'cards.ly'

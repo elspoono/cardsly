@@ -48,53 +48,55 @@
         img(src='/images/icons/paint_brush.png')
   .mid
     .center_column
-      .left
-        .controls
-          .areas
-            .area
-              input.line_value(placeholder='Enter Text Here')
-              .button.save Save
-              .clear
-              - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-              select.font_families
-                -for font_family in font_families
-                  option(style='font-family:'+font_family+';')=font_family
-              select.font_size
-                -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
-                  option(value=size)=size
-              .toggle.text_align
-                .bg
-                  .option.active(align='left')
-                    .img.left
-                  .option(align='center')
-                    .img.center
-                  .option(align='right')
-                    .img.right
-              .color_picker
-                .bg
-                  .color
-                  .shader
-                  .arrow_container
-                    .arrow_1
-                    .arrow_2
-            .area
-            .area
+      .row_bg
+      .row_content
+        .left
+          .controls
+            .areas
+              .area
+                input.line_value(placeholder='Enter Text Here')
+                .button.save Save
+                .clear
+                - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+                select.font_families
+                  -for font_family in font_families
+                    option(style='font-family:'+font_family+';')=font_family
+                select.font_size
+                  -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
+                    option(value=size)=size
+                .toggle.text_align
+                  .bg
+                    .option.active(align='left')
+                      .img.left
+                    .option(align='center')
+                      .img.center
+                    .option(align='right')
+                      .img.right
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+              .area
+              .area
 
-        .card.editor
-        .toggle.ours_yours
-          .bg
-            .option.active Ours
-            .option Yours
-        .toggle.front_back
-          .bg
-            .option.active front
-            .option back
+          .card.editor
+          .toggle.ours_yours
+            .bg
+              .option.active Ours
+              .option Yours
+          .toggle.front_back
+            .bg
+              .option.active front
+              .option back
+          .clear
+        .right
+          .themes
+            img.shadow(src='/images/redshadow.png')
+        .bottom
         .clear
-      .right
-        .themes
-          img.shadow(src='/images/redshadow.png')
-      .bottom
-      .clear
 .row
   .top
     .center_column
@@ -105,44 +107,46 @@
         img.text(src='/images/icons/alert.png')
   .mid
     .center_column
-      .set_alerts
-        .field
-          h2 Set Alerts
-          p Enter an email address to recieve emails. Or, enter a phone number to receive text messages.
-        .field.email
-          .input
-            input(placeholder='my@email.com')
-            label E-mail Address
-          .toggle
-            .bg
-              .option Emails
-              .option.active off
-        .field.text
-          .input
-            input(placeholder='555.555.5555')
-            label Phone Number
-          .toggle
-            .bg
-              .option Texts
-              .option.active off
-      .set_links
-        .field
-          h2 Set Links
-          p Where they go, when they scan. Don't worry, you can update this anytime, even after we print the cards.
-        .field
-          .link_editor
-            .links
-              .input
-                input(placeholder='mysite.com')
-                label Website Address
-              .button +
-            ul.socials
-              li.facebook F
-              li.twitter.shift t
-              li.linkedin l
-              li.google g
-          .link_items
-      .clear
+      .row_bg
+      .row_content
+        .set_alerts
+          .field
+            h2 Set Alerts
+            p Enter an email address to recieve emails. Or, enter a phone number to receive text messages.
+          .field.email
+            .input
+              input(placeholder='my@email.com')
+              label E-mail Address
+            .toggle
+              .bg
+                .option Emails
+                .option.active off
+          .field.text
+            .input
+              input(placeholder='555.555.5555')
+              label Phone Number
+            .toggle
+              .bg
+                .option Texts
+                .option.active off
+        .set_links
+          .field
+            h2 Set Links
+            p Where they go, when they scan. Don't worry, you can update this anytime, even after we print the cards.
+          .field
+            .link_editor
+              .links
+                .input
+                  input(placeholder='mysite.com')
+                  label Website Address
+                .button +
+              ul.socials
+                li.facebook F
+                li.twitter.shift t
+                li.linkedin l
+                li.google g
+            .link_items
+        .clear
 .row
   .top
     .center_column
@@ -153,35 +157,37 @@
         img.shopping_cart(src='/images/icons/shopping_cart.png')
   .mid
     .center_column
-      .left
-        .card.preview
-      .quantity
-        .qwords Quantity
-        .option(cards=100,cost=10)
-          .label 100 cards
-          img(src='/images/100.png')
-          .value 
-            span.dollar $
-            span 10
-        .option(cards=250,cost=25)
-          .label 250 cards
-          img(src='/images/250.png')
-          .value 
-            span.dollar $
-            span 25
-        .option(cards=500,cost=35)
-          .label 500 cards
-          img(src='/images/500.png')
-          .value 
-            span.dollar $
-            span 35
-        .option(cards=1500,cost=75)
-          .label 1500 cards
-          img(src='/images/1500.png')
-          .value 
-            span.dollar $
-            span 75
-      .clear
+      .row_bg
+      .row_content
+        .left
+          .card.preview
+        .quantity
+          .qwords Quantity
+          .option(cards=100,cost=10)
+            .label 100 cards
+            img(src='/images/100.png')
+            .value 
+              span.dollar $
+              span 10
+          .option(cards=250,cost=25)
+            .label 250 cards
+            img(src='/images/250.png')
+            .value 
+              span.dollar $
+              span 25
+          .option(cards=500,cost=35)
+            .label 500 cards
+            img(src='/images/500.png')
+            .value 
+              span.dollar $
+              span 35
+          .option(cards=1500,cost=75)
+            .label 1500 cards
+            img(src='/images/1500.png')
+            .value 
+              span.dollar $
+              span 75
+        .clear
 .row
   .top
     .center_column
@@ -193,38 +199,40 @@
         img.credit_image(src='/images/icons/credit_card.png')
   .mid
     .center_column
-      .shipping
-        h2 Shipping
-        p Free via USPS priority mail
-        .field
-          input.street(placeholder='123 Main St.')
-          .full_address_container
-            .full_address
-          input.zip_code(placeholder='85022')
-          .map
-            img(src='/images/samplemap.png')
-      .payment
-        h2 Credit Card
-        .billing
-          .credit-card
-            .field
-              label cc #
-              input(placeholder='4111111111111111')
-          .cvc
-            .field
-              label cvc
-              input(placeholder='1234')
-          .expiration
-            .field
-              label Exp.
-              select.card_expiry_month(name='credit_card[expiry_month]')
-                - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-                - for (var i in months)
-                  option(value=(i*1)+1)=months[i]
-              select.card_expiry_year(name='credit_card[expiry_year]')
-                - for (var year = 2011; year<2032; year++)
-                  option(value=year)=year
-      .clear
+      .row_bg
+      .row_content
+        .shipping
+          h2 Shipping
+          p Free via USPS priority mail
+          .field
+            input.street(placeholder='123 Main St.')
+            .full_address_container
+              .full_address
+            input.zip_code(placeholder='85022')
+            .map
+              img(src='/images/samplemap.png')
+        .payment
+          h2 Credit Card
+          .billing
+            .credit-card
+              .field
+                label cc #
+                input(placeholder='4111111111111111')
+            .cvc
+              .field
+                label cvc
+                input(placeholder='1234')
+            .expiration
+              .field
+                label Exp.
+                select.card_expiry_month(name='credit_card[expiry_month]')
+                  - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+                  - for (var i in months)
+                    option(value=(i*1)+1)=months[i]
+                select.card_expiry_year(name='credit_card[expiry_year]')
+                  - for (var year = 2011; year<2032; year++)
+                    option(value=year)=year
+        .clear
   .bottom
     .center_column
       .button.normal.checkout
