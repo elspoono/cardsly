@@ -807,7 +807,7 @@ $ ->
       $body.scrollTo $home_designer,
         offset:
           left: 0
-          top: -30
+          top: 28
         duration: 500
       false
     #

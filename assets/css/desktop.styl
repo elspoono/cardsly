@@ -121,9 +121,11 @@ body
     color color_two
     em
       color color_six
-    margin 0 0 56px 0
+    margin 0 0 48px 0
   .bottom
     margin-top 56px
+    padding-top 34px
+    border-top 1px solid color_two
     overflow hidden
     .col_one,.col_two,.col_three
       float left
@@ -244,8 +246,9 @@ body
     background color_two
     .center_column
       background color_eight
-      border_radius(20px)
-      border 4px solid color_three
+      border_radius_left_only(4px)
+      border_radius_right_only(60px)
+      border 2px solid color_three
   .top
     background url('/images/body_bg.png')
     background color_four
@@ -256,7 +259,7 @@ body
       .one
         color color_three
       .two
-        color darken(color_three,20)
+        color color_eight
     .images
       margin 10px 0 0 28px
       float left
@@ -296,35 +299,36 @@ body
 
 h1.two
   .one
-    font-size 56px
+    font-size 96px
   .two
-    line-height 48px
     font-size 20px
+    line-height 28px
+    margin 0 0 14px 0
 
 
 
 
 .set_alerts,.set_links
-  padding 28px 0
-  h2, p
-    margin 0 0 14px 0
+  padding 56px 0 28px 0
   h2
-    font-size 28px
+    font-size 56px
+    line-height 38px
     color color_three
-  p
-    width 250px
-    line-height 28px
+  p,label
     font-size 20px
+    line-height 28px
+  p
+    margin 14px 0
+    width 320px
   overflow hidden
   .field
     float left
-    margin 14px 28px 14px 14px
+    margin 0 28px 14px 14px
   .input
     float left
     margin 0
     input,label
       display block
-      margin 0 0 10px 0
   .toggle
     float right
     margin 0 0 0 14px
@@ -342,7 +346,7 @@ h1.two
       height 40px
       width 40px
       color color_three
-      gradient(lighten(color_six,0),darken(color_six,20))
+      gradient(lighten(color_two,30),darken(color_two,0))
       border_radius(10px)
       box_shadow(0,color_two,1px)
       float right
@@ -359,7 +363,7 @@ h1.two
       cursor pointer
       margin 0 14px 14px 0
       float left
-      gradient(lighten(color_six,0),darken(color_six,20))
+      gradient(lighten(color_two,30),darken(color_two,0))
       border_radius_right_only(10px)
       box_shadow(0,color_two,1px)
       color color_three
@@ -520,10 +524,10 @@ h1.two
   .bg
     border_radius(20px)
     overflow hidden
-    gradient(darken(color_six,20),lighten(color_six,0))
+    gradient(darken(color_two,0),lighten(color_two,30))
     box_shadow(0,color_two,10px,inset)
   .option
-    color lighten(color_six,10)
+    color lighten(color_two,40)
     border_radius(20px)
     height 40px
     line-height 40px
@@ -544,7 +548,7 @@ h1.two
       background-position -40px -17px
   .active
     color color_three
-    gradient(lighten(color_six,0),darken(color_six,20))
+    gradient(lighten(color_two,30),darken(color_two,0))
     box_shadow(0,color_two,10px)
     .img.left
       background-position 0 0
