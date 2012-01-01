@@ -685,7 +685,7 @@ $ ->
     check_orient = ->
       if window.orientation is 0 or window.orientation is 180
         w = screen.width
-        $('meta[name=viewport]').attr 'content', 'width=525, initial-scale='+(w/525)+', user-scalable=no'
+        $('meta[name=viewport]').attr 'content', 'width=512, initial-scale='+(w/512)+', user-scalable=no'
       else
         h = screen.height
         $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale='+(h/1024)+', user-scalable=yes'
@@ -839,7 +839,7 @@ $ ->
     active_theme_id = '4ec3fb7b3bf1fc0100000042'
     #
     #
-    $all_card = $home_designer.find '.card'
+    $all_card = $ '.card'
     #
     $card = $all_card.filter ':not(.preview_2)'
     #
@@ -1027,39 +1027,32 @@ $ ->
         $f_b.make_active()
         #
         #
-        $thumbs.filter('.active').click()
+        #$thumbs.filter('.active').click()
         #
         side = $f_b.html()
         #
         #
-        $themes.removeClass 'front back'
-        $themes.addClass side
+        $fg = $thumbs.add($all_card).find '.fg'
+        $bg = $thumbs.add($all_card).find '.bg'
         #
         #
-        $card.addClass 'collapsed'
+        $first = $fg
+        $second = $bg
+        #
+        if side is 'front'
+          $first = $bg
+          $second = $fg
+        #
+        $first.addClass 'collapsed'
+        #
         #
         setTimeout ->
-          #
-          #
-          $card.addClass 'stop_animate'
-          $card.removeClass 'collapsed'
-          $card.addClass 'collapsed2'
+          $first.removeClass 'collapsed'
+          $first.addClass 'collapsed2'
+          $first.hide()
+          $second.show()
           setTimeout ->
-            #
-            #
-            $.create_card_from_theme
-              height: 200
-              width: 350
-              theme: active_theme
-              active_view: 0
-              card: $all_card
-              side: side
-            #
-            $card.removeClass 'stop_animate'
-            $card.removeClass 'collapsed2'
-            #
-            card_loaded()
-            #
+            $second.removeClass 'collapsed2'
           , 0
         , 500
       #
@@ -1074,18 +1067,43 @@ $ ->
         side = $front_back.filter('.active').html()
         #
         #
-        unless $card.hasClass 'collapsed'
+        $all_card.each ->
+          #
+          $this_card = $ this
+          #
+          $fg = $this_card.find '.fg'
+          if not $fg.length
+            $fg = $ '<div class="fg" />'
+            $fg.addClass 'collapsed2' if side is 'back'
+            $fg.hide() if side is 'back'
+            $this_card.append $fg
+          #
+          $bg = $this_card.find '.bg'
+          if not $bg.length
+            $bg = $ '<div class="bg" />'
+            $bg.addClass 'collapsed2' if side is 'front'
+            $bg.hide() if side is 'front'
+            $this_card.append $bg
+          #
           #
           $.create_card_from_theme
-            height: 200
-            width: 350
+            height: 210
+            width: 364
             theme: theme
             active_view: 0
-            card: $all_card
-            side: side
+            card: $fg
+            side: 'front'
           #
-          card_loaded()
-          #
+          $.create_card_from_theme
+            height: 210
+            width: 364
+            theme: theme
+            active_view: 0
+            card: $bg
+            side: 'back'
+        #
+        card_loaded()
+        #
         #
       #
       #
@@ -1105,12 +1123,13 @@ $ ->
             src: '/thumb/'+theme._id+''
           $new_thumb.append $fg_image
           #
-          ###
-          $bg_image = $ '<img class="bg" />'
+          #
+          $bg_image = $ '<img class="bg collapsed2" />'
+          $bg_image.hide()
           $bg_image.attr
             src: '/thumb/'+theme._id+'/back'
           $new_thumb.append $bg_image
-          ###
+          #
           $themes.append $new_thumb
           #
         #

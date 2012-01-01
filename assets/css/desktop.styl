@@ -33,10 +33,12 @@ body
   background color_four
   background url('/images/patterns/3_1.jpg') top center
   font-family accent_text
+  color color_two
+  font-size 20px
 
 input,h1,h2,textarea,select,p,label
   font-family accent_text
-  color #000
+  color color_two
   font-size 20px
 input,textarea,select
   height 40px
@@ -254,11 +256,12 @@ body
       .row_content
         position relative
         z-index 302
+        padding 67px 39px
       .row_bg
         position absolute
         z-index 301
         height 100%
-        width 100%
+        width 1002px
         background color_eight
         border_radius(11px)
         border 11px solid color_three
@@ -321,9 +324,9 @@ h1.two
 
 
 
-
+.set_alerts
+  margin-bottom 56px
 .set_alerts,.set_links
-  padding 56px 0 28px 0
   h2
     font-size 56px
     line-height 38px
@@ -337,7 +340,7 @@ h1.two
   overflow hidden
   .field
     float left
-    margin 0 28px 14px 14px
+    margin 0 56px 14px 0
   .input
     float left
     margin 0
@@ -429,9 +432,7 @@ h1.two
       line-height 20px
   
 .quantity
-  color color_seven
   .qwords
-    color color_ten
     font-size 50px
   .option
     cursor pointer
@@ -506,13 +507,14 @@ h1.two
 
 .card
   position relative
-  z-index 149
-  transition(500ms)
-.stop_animate
-  no_transition()
-.card.collapsed2
+  height 210px
+  width 364px
+  .fg,.bg
+    position absolute
+    transition(500ms)
+.collapsed2
   transform_matrix(.0001,-.0001,0,1,0,0)
-.card.collapsed
+.collapsed
   transform_matrix(.0001,.0001,0,1,0,0)
 
 
@@ -524,8 +526,6 @@ h1.two
   .active
     border 4px solid color_six
     margin -4px
-  box_shadow(0,color_two,1px)
-  margin 14px 0 0 14px
 
 .preview_count
   text-align right
@@ -543,6 +543,9 @@ h1.two
     line-height 56px
 
 
+.spacer
+  margin-top 14px
+  clear both
 
 
 .toggle
@@ -585,25 +588,39 @@ h1.two
       background-position -40px 0
   
 .themes
+  width 552px
   .shadow
     position absolute
   .thumb
-    cursor pointer
+    z-index 199
     float left
-    .fg
-      display block
-      width 94px
-      height 53px
+    position relative
+    display block
+    width 90px
+    height 51px
+    border 1px solid color_three
+    opacity(.3)
+    .fg,.bg
+      cursor pointer
+      transition(500ms)
+      width 100%
+      height 100%
+      position absolute
+  .active
+    z-index 200
+    width 146px
+    height 83px
+    margin -20px -32px
+    border 5px solid color_three
+    border_radius(5px)
+    opacity(1)
+  .hover
+    opacity(1)
 
 
 .shopping_cart
   float right
   margin 28px 14px 0 0
-
-
-.card.preview
-  box_shadow(0,color_ten,10px)
-
 
 
 
@@ -616,12 +633,7 @@ h1.two
   position relative
   .controls
     height 95px
-    margin 28px 0 0 0
     overflow visible
-  .top
-    clear both
-  .ours_yours,.front_back
-    margin 14px 14px 28px 14px
   .ours_yours
     float right
     display none
@@ -633,7 +645,6 @@ h1.two
   display none
   margin 0
   .line_value
-    margin 0 0 0 14px
     float left
     color color_six
     border 4px solid color_six
@@ -653,7 +664,9 @@ h1.two
     cursor pointer
   .toggle,.font_families,.color_picker,.font_size
     float left
-    margin 14px 0 0 14px
+    margin 0 0 0 14px
+  .font_families
+    margin-left 0
 .area.active
   display block
   
