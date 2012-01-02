@@ -240,16 +240,6 @@ $.create_card_from_theme = (options) ->
     $lines = $my_card.find '.line'
     #
     #
-    for pos,i in theme_template.lines
-      if $lines.eq(i).length
-        $li = $lines.eq(i)
-        #$li.html $.line_copy[i]
-      else
-        $li = $ '<div class="line">' + $.line_copy[i] + '</div>'
-        $li.appendTo $my_card
-    #
-    #
-    #
     #
     # ----------------------------------------------
     # Hack For Back Side
@@ -279,20 +269,60 @@ $.create_card_from_theme = (options) ->
       #
       $lines = $my_card.find '.line'
       #
-      #
-      for pos,i in theme_template.lines
-        $li = $lines.eq(i)
+      stylify_a_line = ($li, n_l, c_w, pos) ->
+        #
         #
         $li.show().css
           position: 'absolute'
           top: pos.y/100 * settings.height
-          left: pos.x/100 * settings.width
-          width: (pos.w/100 * settings.width) + 'px'
+          left: n_l
+          width: c_w
           fontSize: (pos.h/100 * settings.height) + 'px'
           lineHeight: (pos.h/100 * settings.height) + 'px'
           fontFamily: pos.font_family
           textAlign: pos.text_align
           color: '#'+pos.color
+        #
+        #
+        $li.css
+          width: 'auto'
+        #
+        n_w = $li.width()
+        if pos.text_align is 'right'
+          n_l = n_l + c_w - n_w
+        if pos.text_align is 'center'
+          n_l = n_l + (c_w - n_w)/2
+        #
+        #
+        $li.css
+          left: n_l
+          width: n_w
+      #
+      #
+      for pos,i in theme_template.lines
+        #
+        $li = $lines.eq(i)
+        n_l = pos.x/100 * settings.width
+        c_w = pos.w/100 * settings.width
+        #
+        #
+        do ($li, n_l, c_w, pos) ->
+          #
+          if not $li.length
+            $li = $ '<div class="line" />'
+            $li.appendTo $my_card
+            #
+            $li.html $.line_copy[i]
+            setTimeout ->
+              stylify_a_line($li, n_l, c_w, pos)
+            , 500
+            #
+          else
+            $li.html $.line_copy[i]
+            stylify_a_line $li, n_l, c_w, pos
+          #
+        #
+        #
       #
       #
     # ----------------------------------------------
@@ -879,7 +909,6 @@ $ ->
         if help_visible
           $help_bg.hide()
           $help_show.show()
-          console.log $help_show
           $help_overlays.removeClass 'active'
           help_visible = false
           #
@@ -970,10 +999,11 @@ $ ->
           $t_a = $ this
           $t_a.make_active()
         #
-        #
+        $images = $editor.find '.img'
+        $qr = $editor.find '.qr'
         $lines = $editor.find '.line'
         #
-        new_active_line = ->
+        new_active = ->
           #
           $active_line = $lines.filter '.active'
           #
@@ -987,6 +1017,22 @@ $ ->
             $areas.eq(0).make_active()
           else
             $areas.eq(0).removeClass 'active'
+          #
+          #
+          #
+          $active_qr = $qr.filter '.active'
+          #
+          if $active_qr.length
+            #
+            $areas.eq(1).make_active()
+            #
+          #
+          #
+          $active_image = $images.filter '.active'
+          #
+          if $active_image.length
+            #
+            $areas.eq(2).make_active()
 
         #
         #
@@ -997,7 +1043,7 @@ $ ->
           unless $c.length or $e.length
             $editor.find('.active').removeClass 'active'
             $body.unbind 'click', remove_focus_event
-            new_active_line()
+            new_active()
         #
         add_remove_focus_event = ->
           $body.bind 'click', remove_focus_event
@@ -1009,15 +1055,13 @@ $ ->
         #
         #
         #
-        #
-        #
-        $lines.click (e) ->
+        $lines.add($images).add($qr).click (e) ->
           $t = $ this
           $t.make_active()
-          new_active_line()
+          new_active()
           add_remove_focus_event()
         #
-        new_active_line()
+        new_active()
         #
       #
       #
