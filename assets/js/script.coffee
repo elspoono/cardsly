@@ -6,6 +6,7 @@
 #= require 'libs/jquery-ui-1.8.16.js'
 #= require 'libs/jquery.colorpicker.js'
 #= require 'libs/socket.io.js'
+#= require 'libs/jquery.lettering.js'
 
 
 ##################################################################
