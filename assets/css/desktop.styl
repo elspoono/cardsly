@@ -131,6 +131,7 @@ body
     margin-top 56px
     padding-top 34px
     border-top 1px solid color_two
+    border-bottom 1px solid color_two
     overflow hidden
     .col_one,.col_two,.col_three
       float left
@@ -220,7 +221,6 @@ body
 
 
 .row
-  background color_two
   position relative
   .help_overlay
     .center_column
@@ -283,7 +283,6 @@ body
     height 100%
   clear both
   .mid
-    background color_two
     .center_column
       position relative
       .row_content
@@ -295,20 +294,16 @@ body
         z-index 301
         height 100%
         width 1002px
-        background color_eight
-        border_radius(22px)
-        border 11px solid color_three
+        gradient(lighten(color_six,0),darken(color_six,20))
+        box_shadow(0,color_two,10px)
   .top
-    background url('/images/body_bg.png')
-    background color_four
-    background color_two
     padding 112px 0 14px 0
     h1.two
       float left
       .one
-        color color_three
+        color color_eight
       .two
-        color lighten(color_two,30)
+        color color_two
     .images
       margin 10px 0 0 28px
       float left
@@ -324,7 +319,8 @@ body
     clear both
     padding-bottom 58px
 
-
+.help_overlay
+  display none
 
 
 
