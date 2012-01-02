@@ -1133,16 +1133,16 @@ $ ->
           #
           #
           $.create_card_from_theme
-            height: 261
-            width: 456
+            height: 300
+            width: 525
             theme: theme
             active_view: 0
             card: $fg
             side: 'front'
           #
           $.create_card_from_theme
-            height: 261
-            width: 456
+            height: 300
+            width: 525
             theme: theme
             active_view: 0
             card: $bg

@@ -70,61 +70,61 @@
     .center_column
       .row_bg
       .row_content
-        .controls
-          .areas
-            .area
-              input.line_value(placeholder='Enter Text Here')
-              .button.save Save
-              .clear
-              .spacer
-              - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
-              select.font_families
-                -for font_family in font_families
-                  option(style='font-family:'+font_family+';')=font_family
-              select.font_size
-                -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
-                  option(value=size)=size
-              .toggle.text_align
-                .bg
-                  .option.active(align='left')
-                    .img.left
-                  .option(align='center')
-                    .img.center
-                  .option(align='right')
-                    .img.right
-              .color_picker
-                .bg
-                  .color
-                  .shader
-                  .arrow_container
-                    .arrow_1
-                    .arrow_2
-            .area
-              .toggle
-                .bg
-                  .option.active(align='left')
-                    .img.left
-                  .option(align='center')
-                    .img.center
-                  .option(align='right')
-                    .img.right
-              .color_picker
-                .bg
-                  .color
-                  .shader
-                  .arrow_container
-                    .arrow_1
-                    .arrow_2
-              .color_picker
-                .bg
-                  .color
-                  .shader
-                  .arrow_container
-                    .arrow_1
-                    .arrow_2
-            .area
-        .spacer
         .left
+          .controls
+            .areas
+              .area
+                input.line_value(placeholder='Enter Text Here')
+                .button.save Save
+                .clear
+                .spacer
+                - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+                select.font_families
+                  -for font_family in font_families
+                    option(style='font-family:'+font_family+';')=font_family
+                select.font_size
+                  -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
+                    option(value=size)=size
+                .toggle.text_align
+                  .bg
+                    .option.active(align='left')
+                      .img.left
+                    .option(align='center')
+                      .img.center
+                    .option(align='right')
+                      .img.right
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+              .area
+                .toggle
+                  .bg
+                    .option.active(align='left')
+                      .img.left
+                    .option(align='center')
+                      .img.center
+                    .option(align='right')
+                      .img.right
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+              .area
+          .spacer
           .card.editor
           .spacer
           .toggle.ours_yours
@@ -135,7 +135,6 @@
             .bg
               .option.active front
               .option back
-          .clear
         .right
           .themes
         .clear
