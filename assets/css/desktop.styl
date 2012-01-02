@@ -357,7 +357,7 @@ h1.two
 
 
 
-.set_alerts
+.alerts
   margin-bottom 56px
 .set_alerts,.set_links
   h2
@@ -440,30 +440,8 @@ h1.two
         box_shadow(0,color_two,3px)
         float left
     
-.checkout_header
-  margin 100px 0 20px 0
-.shipping_form
-  box_shadow(0,color_two,10px,inset)
-  background color_four
-  .street,.zip_code
-    width 90px
-  .map
-    float right
-    margin 14px 14px 56px 14px
-    text-align center
-    line-height 110px
-    width 125px
-    height 110px
-  .full_address_container
-    position absolute
-    z-index 150
-    width 100%
-    margin 120px 0 0 0
-    .full_address
-      margin 14px
-      text-align right
-      font-size 20px
-      line-height 20px
+
+  
   
 .quantity
   .qwords
@@ -495,33 +473,19 @@ h1.two
       font-size 28px
   overflow hidden
   
-.billing
-  float right
-  label
-    width 28px
-  select
-    width auto
-    font-size 16px
-  .credit-card
-    padding 10px
-  .expiration
-    padding 10px
-  .cvc
-    padding 10px
-    input
-      width 40px
-  .card_expiry_year
-    width 50px
-  .billing
-    label
-      width 28px
-    select
-      width auto
-      font-size 20px
-    .cvc
-      input
-        width 40px
+
 .checkout
+  .field
+    float left
+  .shipping
+    .map
+      padding 10px 10px 10px 0
+  .billing
+    padding 0 40px
+    .input
+      padding 10px
+ 
+.purchase
   margin 28px auto 0 auto
   color color_three
   background color_red

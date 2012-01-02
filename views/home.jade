@@ -267,25 +267,25 @@
     .center_column
       .row_bg
       .row_content
-        .shipping
-          h2 Shipping
-          p Free via USPS priority mail
-          .field
-            input.street(placeholder='123 Main St.')
+        .checkout
+          .shipping.field
+            h2 Shipping
+            p Free via USPS priority mail
             .full_address_container
               .full_address
-            input.zip_code(placeholder='85022')
-            .map
-              img(src='/images/samplemap.png')
-        .payment
-          h2 Credit Card
-          .billing
+                input.street(placeholder='123 Main St.')
+                
+                input.zip_code(placeholder='85022')
+              .map
+                img(src='/images/samplemap.png')
+          .billing.field
+            h2 Credit Card
             .credit-card
-              .field
+              .field.input
                 label cc #
                 input(placeholder='4111111111111111')
             .cvc
-              .field
+              .field.input
                 label cvc
                 input(placeholder='1234')
             .expiration
@@ -301,6 +301,6 @@
         .clear
   .bottom
     .center_column
-      .button.normal.checkout
+      .button.normal.purchase
         img(src='/images/lock_icon.png')
         | Purchase
