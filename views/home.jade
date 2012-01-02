@@ -219,33 +219,66 @@
       .row_bg
       .row_content
         .left
+          .quantity_form
+            h2 Quantity
+            .spacer
+            .option(cards=50,cost=10)
+              .label 50 cards
+              .img
+                img(src='/images/icons/100.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 10
+            .option(cards=100,cost=15)
+              .label 100 cards
+              .img
+                img(src='/images/icons/100.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 15
+            .option(cards=250,cost=25)
+              .label 250 cards
+              .img
+                img(src='/images/icons/250.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 25
+            .option(cards=500,cost=40)
+              .label 500 cards
+              .img
+                img(src='/images/icons/500.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 40
+            .option(cards=1000,cost=60)
+              .label 1000 cards
+              .img
+                img(src='/images/icons/1500.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 60
+            .option(cards=2000,cost=100)
+              .label 2000 cards
+              .img
+                img(src='/images/icons/1500.png')
+              .value 
+                span.dollar
+                  span.char1 s
+                  span.char2 i
+                span 100
+        .right
+          h2 Preview
           .card.preview
-        .quantity
-          .qwords Quantity
-          .option(cards=100,cost=10)
-            .label 100 cards
-            img(src='/images/icons/100.png')
-            .value 
-              span.dollar $
-              span 10
-          .option(cards=250,cost=25)
-            .label 250 cards
-            img(src='/images/icons/250.png')
-            .value 
-              span.dollar $
-              span 25
-          .option(cards=500,cost=35)
-            .label 500 cards
-            img(src='/images/icons/500.png')
-            .value 
-              span.dollar $
-              span 35
-          .option(cards=1500,cost=75)
-            .label 1500 cards
-            img(src='/images/icons/1500.png')
-            .value 
-              span.dollar $
-              span 75
         .clear
 .row
   .help_overlay.active

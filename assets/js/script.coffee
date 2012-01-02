@@ -1219,13 +1219,11 @@ $ ->
       #
       #
       #
-      $shipping_form = $ '.shipping_form'
-      #
       #
       # -------
       # Quantity
       # -------
-      $quantity = $shipping_form.find '.quantity .option'
+      $quantity = $ '.quantity_form .option'
       #
       $preview_count = $ '.preview_count'
       #
@@ -1251,14 +1249,15 @@ $ ->
       #
       #
       #
+      $checkout_form = $ '.checkout'
       #
       # --------------
       # Address Search
       # --------------
-      $street = $shipping_form.find '.street'
-      $map = $shipping_form.find '.map'
-      $zip_code = $shipping_form.find '.zip_code'
-      $full_address = $shipping_form.find '.full_address'
+      $street = $checkout_form.find '.street'
+      $map = $checkout_form.find '.map'
+      $zip_code = $checkout_form.find '.zip_code'
+      $full_address = $checkout_form.find '.full_address'
       #
       check_address_timer = 0
       maybe_check_address = ->

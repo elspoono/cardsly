@@ -359,7 +359,7 @@ h1.two
 
 .alerts
   margin-bottom 56px
-.set_alerts,.set_links
+.row
   h2
     font-size 56px
     line-height 38px
@@ -368,6 +368,7 @@ h1.two
   p,label
     font-size 20px
     line-height 28px
+.set_alerts,.set_links
   p
     margin-top -4px
     width 280px
@@ -443,34 +444,39 @@ h1.two
 
   
   
-.quantity
-  .qwords
-    font-size 50px
+.quantity_form
+  width 421px
   .option
+    padding 10px 0
+    opacity(.5)
     cursor pointer
     float left
     text-align center
-    width 114px
-    height 128px
-    margin 14px 0 28px 14px
+    width 126px
+    height 147px
     border_radius(14px)
+    margin 14px 14px 0 0
   .active
+    opacity(1)
     background color_three
-    border 4px solid color_seven
-    margin 11px -4px 26px 11px
   img
+    display block
     margin 5px auto 0 auto
+  .img
+    height 67px
 
   .value
-    margin 0 0 0 25px
+    font-size 56px
     span
-      float left
-      display block
-      font-size 56px
+      vertical-align middle
     .dollar
-      font-family huge_text
-      font-style italic
-      font-size 28px
+      font-size 32px
+      line-height 56px
+    .char1
+      margin-right -12px
+    .char2
+      margin-right 4px
+      font-size 38px
   overflow hidden
   
 
@@ -524,6 +530,10 @@ h1.two
   .active
     border 4px solid color_six
     margin -4px
+
+
+.card.preview
+  margin-top 28px
 
 .preview_count
   text-align right
@@ -739,7 +749,7 @@ body
         color color_three
       .two
         color color_eight
-.set_alerts,.set_links
+.row
   h2
     color color_three
 
