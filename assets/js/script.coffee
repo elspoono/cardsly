@@ -867,7 +867,7 @@ $ ->
     #
     $rows = $ '.row'
     $help_overlays = $rows.find '.help_overlay'
-    $help_bg = $help_overlays.children()
+    $help_bg = $help_overlays.find '.button_hide, .bg, .dialog'
     $help_show = $help_overlays.find '.button_show'
     #
     help_visible = true
@@ -879,6 +879,7 @@ $ ->
         if help_visible
           $help_bg.hide()
           $help_show.show()
+          console.log $help_show
           $help_overlays.removeClass 'active'
           help_visible = false
           #

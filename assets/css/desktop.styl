@@ -224,13 +224,15 @@ body
   background color_two
   position relative
   .help_overlay
-    display none
+    .center_column
+      position relative
+      height 100%
     position absolute
     top 0
-    z-index 300
+    left 0
+    z-index 1500
     height 0
-    width 1084px
-    margin 0 -30px
+    width 100%
     .dialog
       position absolute
       z-index 301
@@ -239,19 +241,23 @@ body
         text-align center
         margin-left 90px
         margin-top 33px
-        font-size 49px
-        line-height 63px
+        font-size 56px
+        line-height 62px
     .dialog.left
       background url('/images/help_2.png')
       width 349px
       height 242px
-      top 195px
-      left 300px
+      top 300px
+      left 200px
+    .dialog.one
+      left 295px
+      top 268px
+    
     .button_hide,.button_show
       position absolute
       z-index 301
-      right 30px
-      top 30px
+      right 0
+      top 128px
       color color_three
       gradient(lighten(color_six,0),darken(color_six,20))
       padding 0 30px
@@ -259,10 +265,11 @@ body
       height 56px
       line-height 56px
       font-size 28px
-      box_shadow(0,color_two,10px)
+      box_shadow(0,color_two,15px)
       cursor pointer
     .button_show
       gradient(lighten(color_two,30),lighten(color_two,10))
+      z-index 300
       display none
     .bg
       position absolute
@@ -270,7 +277,9 @@ body
       background color_two
       height 100%
       width 100%
-      opacity(.5)
+      top 0
+      left 0
+      opacity(.7)
   .help_overlay.active
     height 100%
   clear both
