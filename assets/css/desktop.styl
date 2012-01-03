@@ -204,7 +204,8 @@ body
         color color_three
         background lighten(color_red,0)
         border_radius(14px)
-        box_shadow(0,color_two,10px)
+        box_shadow(0,lighten(color_two,30),14px)
+        border 4px solid color_three
         height 56px
         line-height 56px
         font-size 28px
@@ -272,7 +273,7 @@ body
       height 56px
       line-height 56px
       font-size 28px
-      box_shadow(0,color_two,15px)
+      box_shadow(0,color_two,14px)
       cursor pointer
     .button_show
       gradient(lighten(color_two,30),lighten(color_two,10))
@@ -325,7 +326,7 @@ body
     float right
   .bottom
     clear both
-    padding-bottom 58px
+    padding-bottom 168px
 
 
 
@@ -452,13 +453,15 @@ h1.two
     cursor pointer
     float left
     text-align center
-    width 126px
+    width 118px
     height 147px
     border_radius(14px)
     margin 14px 14px 0 0
+    border 4px solid transparent
   .active
     opacity(1)
     background color_three
+    border 4px solid color_two
   img
     display block
     margin 5px auto 0 auto
@@ -495,7 +498,8 @@ h1.two
   margin 28px auto 0 auto
   color color_three
   background color_red
-  border 1px solid color_three
+  border 4px solid color_three
+  box_shadow(0,color_two,14px)
   border_radius(14px)
   height 56px
   line-height 56px
@@ -723,6 +727,8 @@ h1.two
     top 100px
   
 
+.home_designer
+  border-top 4px solid color_two
 
 .navigation
   alpha_bg(color_two,.3)
@@ -730,14 +736,14 @@ h1.two
   a
     color color_three
 .row
-  alpha_bg(color_two,.3)
+  alpha_bg(color_two,.4)
   .mid
     .center_column
       .row_bg
         box_shadow(0,color_two,0)
         border 4px solid color_two
         border_radius(4px)
-        border_radius_right_only(60px)
+        border_radius_right_only(67px)
         background url('/images/body_bg.png')
   .top
     h1.two
@@ -762,8 +768,8 @@ h1.two
 
 .footer
   width 100%
-  padding 200px 0 58px
-  background darken(color_two,5)
+  padding 58px 0
+  background color_two
   .center_column
     overflow hidden
     font-family normal_text
@@ -778,7 +784,7 @@ h1.two
   a
     padding 5px 40px
     font-size 20px
-    color lighten(color_ten,70)
+    color color_three
     text-decoration none
     float left
   .f
@@ -793,12 +799,11 @@ h1.two
     a
       padding 5px 40px
       font-size 20px
-      color lighten(color_ten,70)
       text-decoration none
       float left
 
   .hover
     a
-      color color_seven
+      color color_eight
   .at
     font-family normal_text
