@@ -403,8 +403,8 @@ mongo_user = mongoose.model 'users', user_schema
 #
 #
 #
-#
-# Style Field Positions
+# ---------------------------------------------
+# These are old and for backwards compatibility
 line_schema = new schema
   order_id: Number
   color: String
@@ -414,16 +414,21 @@ line_schema = new schema
   w: Number
   x: Number
   y: Number
-#
-#
-# Style Image Positions
-image_schema = new schema
-  order_id: Number
+theme_template_schema = new schema
+  qr:
+    color1: String
+    color2: String
+    color2_alpha: Number
+    style: String
+    h: Number
+    w: Number
+    x: Number
+    y: Number
+  lines: [line_schema]
+  color1: String
+  color2: String
   s3_id: String
-  h: Number
-  w: Number
-  x: Number
-  y: Number
+# ---------------------------------------------
 #
 #
 #
@@ -442,33 +447,28 @@ mongo_pattern = mongoose.model 'patterns', pattern_schema
 #
 #
 #
-# Themes
-theme_template_schema = new schema
-  qr:
-    color1: String
-    color2: String
-    color2_alpha: Number
-    style: String
-    h: Number
-    w: Number
-    x: Number
-    y: Number
-  lines: [line_schema]
-  images: [image_schema]
-  color1: String
-  color2: String
+# Style All Items
+item_schema = new schema
+  type: String # ['qr','line','image','solid']
+  order_id: Number
   s3_id: String
+  color: String
+  color_2: String
+  color_2_opacity: Number
+  qr_style: String
+  font_family: String
+  text_align: String
+  side: Number
+  h: Number
+  w: Number
+  x: Number
+  y: Number
 #
 #
-#
-# Groups of Themes
+# Themes
 theme_schema = new schema
   user_id: String
-  category: String
-  theme_templates: [theme_template_schema]
-  color1: String
-  color2: String
-  s3_id: String
+  items: [item_schema]
   cache:
     front: Boolean
     back: Boolean
@@ -481,6 +481,17 @@ theme_schema = new schema
   active:
     type: Boolean
     default: true
+  #
+  #
+  #
+  # ---------------------------------------------
+  # These are old and for backwards compatibility
+  theme_templates: [theme_template_schema]
+  category: String
+  color1: String
+  color2: String
+  s3_id: String
+  # ---------------------------------------------
 
 mongo_theme = mongoose.model 'themes', theme_schema
 #
