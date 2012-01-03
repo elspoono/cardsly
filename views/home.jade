@@ -162,41 +162,37 @@
             h2 Set Alerts
           .clear
           .field
-            p Enter an email address to recieve emails. Or, enter a phone number to receive text messages.
+            p Enter your email here. Turn automatic alerts on or off at anytime.
           .field.email
             .input
               input(placeholder='my@email.com')
               label E-mail Address
             .toggle
               .bg
-                .option Emails
-                .option.active off
-          .field.text
-            .input
-              input(placeholder='555.555.5555')
-              label Phone Number
-            .toggle
-              .bg
-                .option Texts
-                .option.active off
+                .option.active Off
+                .option Active
+        .clear
+        .spacer
         .set_links
           .field
             h2 Set Links
           .clear
           .field
-            p Where they go, when they scan. Don't worry, you can update this anytime, even after we print the cards.
+            p Where they go, when they scan. No worries - this can be updated anytime.
           .field
             .link_editor
+              .input
+                ul.socials
+                  li.facebook F
+                  li.twitter.shift t
+                  li.linkedin l
+                  li.google g
+                label Connect social
               .links
                 .input
                   input(placeholder='mysite.com')
-                  label Website Address
+                  label Or type website address
                 .button +
-              ul.socials
-                li.facebook F
-                li.twitter.shift t
-                li.linkedin l
-                li.google g
             .link_items
         .clear
 .row
