@@ -26,6 +26,7 @@
     , "oauth": ">=0.0.1"
     , "dnode": ">=0.0.1"
     , "socket.io": ">=0.0.1"
+    , "twilio" : ">=0.0.1"
     , "canvas": "https://github.com/elspoono/node-canvas-heroku/tarball/master"
   },
   "devDependencies": {
