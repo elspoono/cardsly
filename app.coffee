@@ -2633,6 +2633,11 @@ app.get '/make-me-admin', secured_page, (req, res) ->
 app.get '/about', (req, res) ->
   res.render 'about'
     req: req
+
+# Learn More Page
+app.get '/learn-more', (req, res) ->
+  res.render 'learn_more'
+    req: req
 #
 #
 #
