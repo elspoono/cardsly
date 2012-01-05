@@ -716,7 +716,7 @@ $ ->
     check_orient = ->
       if window.orientation is 0 or window.orientation is 180
         w = screen.width
-        $('meta[name=viewport]').attr 'content', 'width=512, initial-scale='+(w/512)+', user-scalable=no'
+        $('meta[name=viewport]').attr 'content', 'width=569, initial-scale='+(w/569)+', user-scalable=no'
       else
         h = screen.height
         $('meta[name=viewport]').attr 'content', 'width=1024, initial-scale='+(h/1024)+', user-scalable=yes'
