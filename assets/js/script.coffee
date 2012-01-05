@@ -1073,34 +1073,41 @@ $ ->
         $f_b.make_active()
         #
         #
-        #$thumbs.filter('.active').click()
-        #
-        side = $f_b.html()
-        #
-        #
-        $fg = $thumbs.add($all_card).find '.fg'
-        $bg = $thumbs.add($all_card).find '.bg'
-        #
-        #
-        $first = $fg
-        $second = $bg
-        #
-        if side is 'front'
-          $first = $bg
-          $second = $fg
-        #
-        $first.addClass 'collapsed'
-        #
-        #
         setTimeout ->
-          $first.removeClass 'collapsed'
-          $first.addClass 'collapsed2'
-          $first.hide()
-          $second.show()
+          #
+          #
+          #$thumbs.filter('.active').click()
+          #
+          side = $f_b.html()
+          #
+          #
+          $fg = $thumbs.add($all_card).find '.fg'
+          $bg = $thumbs.add($all_card).find '.bg'
+          #
+          #
+          $first = $fg
+          $second = $bg
+          #
+          if side is 'front'
+            $first = $bg
+            $second = $fg
+          #
+          $first.addClass 'collapsed'
+          #
+          #
           setTimeout ->
-            $second.removeClass 'collapsed2'
-          , 0
-        , 500
+            $first.removeClass 'collapsed'
+            $first.addClass 'collapsed2'
+            $first.hide()
+            $second.show()
+            setTimeout ->
+              $second.removeClass 'collapsed2'
+            , 0
+          , 500
+          #
+          #
+          #
+        ,0
       #
       #
       #
