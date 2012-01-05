@@ -223,10 +223,23 @@ body
 
 
 
-
+.row_content
+  position relative
+  z-index 302
+  padding 64px 36px
+.row_bg
+  position absolute
+  z-index 301
+  height 100%
+  width 1016px
+  border 4px solid color_two
+  border_radius(4px)
+  border_radius_right_only(64px)
+  background url('/images/body_bg.png')
 
 .row
   position relative
+  alpha_bg(color_two,.4)
   .help_overlay
     .center_column
       position relative
@@ -298,23 +311,12 @@ body
   .mid
     .center_column
       position relative
-      .row_content
-        position relative
-        z-index 302
-        padding 67px 39px
-      .row_bg
-        position absolute
-        z-index 301
-        height 100%
-        width 100%
-        background color_four
-        box_shadow(0,color_two,10px,inset)
   .top
     padding 112px 0 14px 0
     h1.two
       float left
       .one
-        color color_eight
+        color color_two
       .two
         color color_two
     .images
@@ -362,6 +364,242 @@ h1.two
 
 
 
+.card
+  position relative
+  height 300px
+  width 525px
+  .fg,.bg
+    position absolute
+    transition(500ms)
+  .collapsed2
+    transform_matrix(.0001,-.0001,0,1,0,0)
+  .collapsed
+    transform_matrix(.0001,.0001,0,1,0,0)
+
+
+
+
+.card.editor
+  .line,.qr,.img
+    cursor pointer
+  .active
+    border 4px solid color_six
+    margin -4px
+
+
+.card.preview
+  margin-top 28px
+
+.preview_count
+  text-align right
+  height 56px
+  margin 28px 0
+  .small,.large
+    float right
+    color color_two
+  .small
+    font-size 20px
+    line-height 56px
+    margin 0 10px
+  .large
+    font-size 56px
+    line-height 56px
+
+
+.spacer
+  margin-top 14px
+  clear both
+
+
+.toggle
+  border_radius(20px)
+  box_shadow(0,color_two,1px)
+  .bg
+    border_radius(20px)
+    overflow hidden
+    gradient(darken(color_two,0),lighten(color_two,30))
+    box_shadow(0,color_two,10px,inset)
+  .option
+    font-family normal_text
+    color lighten(color_two,40)
+    border_radius(20px)
+    height 40px
+    line-height 40px
+    padding 0 10px
+    float left
+    cursor pointer
+    .img
+      display block
+      margin-top 11px
+      height 17px
+      width 20px
+      background url('/images/align_sprite.png')
+    .img.left
+      background-position 0 -17px
+    .img.center
+      background-position -20px -17px
+    .img.right
+      background-position -40px -17px
+  .active
+    color color_three
+    gradient(lighten(color_two,30),darken(color_two,0))
+    box_shadow(0,color_two,10px)
+    .img.left
+      background-position 0 0
+    .img.center
+      background-position -20px 0
+    .img.right
+      background-position -40px 0
+  
+.themes
+  width 390px
+  .shadow
+    position absolute
+  .thumb
+    z-index 199
+    float left
+    position relative
+    display block
+    width 76px
+    height 43px
+    border 1px solid color_three
+    opacity(.3)
+    .fg,.bg
+      cursor pointer
+      width 100%
+      height 100%
+      position absolute
+  .active
+    z-index 200
+    width 118px
+    height 67px
+    margin -12px -21px
+    opacity(1)
+  .hover
+    opacity(1)
+
+
+.shopping_cart
+  float right
+  margin 28px 14px 0 0
+
+
+
+
+
+
+.home_designer
+  overflow visible
+  position relative
+  .controls
+    height 95px
+    overflow visible
+  .ours_yours
+    float right
+    display none
+  .front_back
+    float left
+  .button
+    gradient(lighten(color_two,30),darken(color_two,0))
+    box_shadow(0,color_two,5px)
+    border_radius(10px)
+    height 32px
+    padding 4px 8px
+    line-height 40px
+    float left
+    color color_three
+    font-family normal_text
+    img
+      display inline
+      margin-right 4px
+.area
+  position relative
+  z-index 140
+  display none
+  margin 0
+  .line_value
+    float left
+    color color_six
+    border 4px solid color_six
+    height 32px
+    line-height 32px
+  .button.save
+    font-family normal_text
+    float left
+    margin 0 0 0 14px
+    gradient(lighten(color_six,0),darken(color_six,20))
+    border_radius(10px)
+    box_shadow(0,color_two,5px)
+    color color_three
+    padding 0 14px
+    line-height 38px
+    height 40px
+    font-size 28px
+    cursor pointer
+  .toggle,.font_families,.color_picker,.font_size
+    float left
+    margin 0 0 0 14px
+  .font_families
+    margin-left 0
+.area.active
+  display block
+.below_card
+  .below_right
+    float right
+    .button
+      margin-left 14px
+  
+.color_picker
+  cursor pointer
+  box_shadow(0,color_two,5px)
+  border_radius(10px)
+  height 40px
+  width 52px
+  .bg
+    gradient(darken(color_two,0),lighten(color_two,30))
+    box_shadow(0,color_two,10px,inset)
+    color lighten(color_two,40)
+    border_radius(10px)
+    height 40px
+    width 52px
+  .color
+    margin 5px 0 0 5px
+    height 28px
+    width 28px
+    background color_three
+    box_shadow(0,color_two,5px)
+    border_radius(8px)
+    float left
+  .arrow_1,.arrow_2
+    float right
+    border-style solid
+    border-color lighten(color_two,40) transparent lighten(color_two,40) transparent
+  .arrow_1
+    border-width 0 3px 6px 3px
+    margin 13px 6px 0 0
+  .arrow_2
+    border-width 6px 3px 0 3px
+    margin 3px 6px 0 0
+
+.paper
+  z-index 14
+  opacity(.20)
+
+.about
+  h1
+    font-family huge_text
+    font-size 70px
+  h2
+    font-familyaccent_text
+    font-size 30px
+  .company
+    padding 100px 0 0 0
+  .us
+    float left
+    padding 80px 20px 10px 20px
+
+
+
 .alerts
   margin-bottom 56px
 .row
@@ -374,10 +612,14 @@ h1.two
     font-size 20px
     line-height 28px
 .set_alerts,.set_links
+  float left
+  position relative
+  .row_bg
+    width 100%
   p
     margin-top -4px
     width 280px
-  overflow hidden
+    margin-bottom 28px
   .field
     float left
     margin 0 56px 14px 0
@@ -485,6 +727,13 @@ h1.two
       margin-right 4px
       font-size 38px
   overflow hidden
+
+.checkbox
+  float right
+  margin-top 14px
+  input
+    height inherit
+    margin-right 14px
   
 
 .checkout
@@ -517,243 +766,6 @@ h1.two
 
 
 
-.card
-  position relative
-  height 300px
-  width 525px
-  .fg,.bg
-    position absolute
-    transition(500ms)
-.collapsed2
-  transform_matrix(.0001,-.0001,0,1,0,0)
-.collapsed
-  transform_matrix(.0001,.0001,0,1,0,0)
-
-
-
-
-.card.editor
-  .line,.qr,.img
-    cursor pointer
-  .active
-    border 4px solid color_six
-    margin -4px
-
-
-.card.preview
-  margin-top 28px
-
-.preview_count
-  text-align right
-  height 56px
-  margin 28px 0
-  .small,.large
-    float right
-    color color_two
-  .small
-    font-size 20px
-    line-height 56px
-    margin 0 10px
-  .large
-    font-size 56px
-    line-height 56px
-
-
-.spacer
-  margin-top 14px
-  clear both
-
-
-.toggle
-  border_radius(20px)
-  box_shadow(0,color_two,1px)
-  .bg
-    border_radius(20px)
-    overflow hidden
-    gradient(darken(color_two,0),lighten(color_two,30))
-    box_shadow(0,color_two,10px,inset)
-  .option
-    font-family normal_text
-    color lighten(color_two,40)
-    border_radius(20px)
-    height 40px
-    line-height 40px
-    padding 0 10px
-    float left
-    cursor pointer
-    .img
-      display block
-      margin-top 11px
-      height 17px
-      width 20px
-      background url('/images/align_sprite.png')
-    .img.left
-      background-position 0 -17px
-    .img.center
-      background-position -20px -17px
-    .img.right
-      background-position -40px -17px
-  .active
-    color color_three
-    gradient(lighten(color_two,30),darken(color_two,0))
-    box_shadow(0,color_two,10px)
-    .img.left
-      background-position 0 0
-    .img.center
-      background-position -20px 0
-    .img.right
-      background-position -40px 0
-  
-.themes
-  width 390px
-  .shadow
-    position absolute
-  .thumb
-    z-index 199
-    float left
-    position relative
-    display block
-    width 76px
-    height 43px
-    border 1px solid color_three
-    opacity(.3)
-    .fg,.bg
-      cursor pointer
-      transition(500ms)
-      width 100%
-      height 100%
-      position absolute
-  .active
-    z-index 200
-    width 118px
-    height 67px
-    margin -12px -21px
-    opacity(1)
-  .hover
-    opacity(1)
-
-
-.shopping_cart
-  float right
-  margin 28px 14px 0 0
-
-
-
-.button
-  gradient(lighten(color_two,30),darken(color_two,0))
-  box_shadow(0,color_two,5px)
-  border_radius(10px)
-  height 32px
-  padding 4px 8px
-  line-height 40px
-  float left
-  color color_three
-  font-family normal_text
-  img
-    display inline
-    margin-right 4px
-
-
-
-.home_designer
-  overflow visible
-  position relative
-  .controls
-    height 95px
-    overflow visible
-  .ours_yours
-    float right
-    display none
-  .front_back
-    float left
-.area
-  position relative
-  z-index 140
-  display none
-  margin 0
-  .line_value
-    float left
-    color color_six
-    border 4px solid color_six
-    height 32px
-    line-height 32px
-  .button.save
-    font-family normal_text
-    float left
-    margin 0 0 0 14px
-    gradient(lighten(color_six,0),darken(color_six,20))
-    border_radius(10px)
-    box_shadow(0,color_two,5px)
-    color color_three
-    padding 0 14px
-    line-height 38px
-    height 40px
-    font-size 28px
-    cursor pointer
-  .toggle,.font_families,.color_picker,.font_size
-    float left
-    margin 0 0 0 14px
-  .font_families
-    margin-left 0
-.area.active
-  display block
-.below_card
-  .below_right
-    float right
-    .button
-      margin-left 14px
-  
-.color_picker
-  cursor pointer
-  box_shadow(0,color_two,5px)
-  border_radius(10px)
-  height 40px
-  width 52px
-  .bg
-    gradient(darken(color_two,0),lighten(color_two,30))
-    box_shadow(0,color_two,10px,inset)
-    color lighten(color_two,40)
-    border_radius(10px)
-    height 40px
-    width 52px
-  .color
-    margin 5px 0 0 5px
-    height 28px
-    width 28px
-    background color_three
-    box_shadow(0,color_two,5px)
-    border_radius(8px)
-    float left
-  .arrow_1,.arrow_2
-    float right
-    border-style solid
-    border-color lighten(color_two,40) transparent lighten(color_two,40) transparent
-  .arrow_1
-    border-width 0 3px 6px 3px
-    margin 13px 6px 0 0
-  .arrow_2
-    border-width 6px 3px 0 3px
-    margin 3px 6px 0 0
-
-.paper
-  z-index 14
-  opacity(.20)
-
-.about
-  h1
-    font-family huge_text
-    font-size 70px
-  h2
-    font-familyaccent_text
-    font-size 30px
-  .company
-    padding 100px 0 0 0
-  .us
-    float left
-    padding 80px 20px 10px 20px
-
-
-
 .learn_more
   h1
     font-size 80px
@@ -774,29 +786,8 @@ h1.two
   background color_two
   a
     color color_three
-.row
-  alpha_bg(color_two,.4)
-  .mid
-    .center_column
-      .row_bg
-        box_shadow(0,color_two,0)
-        border 4px solid color_two
-        border_radius(4px)
-        border_radius_right_only(67px)
-        background url('/images/body_bg.png')
-  .top
-    h1.two
-      .one
-        color color_two
-.row.alert_row
-  .mid_spacer
-    margin-top 39px
-  .mid
-    .center_column
-      .row_bg 
-        width 870px
-      .row_content
-        padding 39px 39px 25px 39px
+.mid_spacer
+  margin-top 39px
 .hero
   .bottom
     border-top 4px solid color_two
