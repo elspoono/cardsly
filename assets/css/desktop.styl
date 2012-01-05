@@ -500,23 +500,28 @@ h1.two
   .front_back
     float left
   .button
+    cursor pointer
     gradient(lighten(color_two,30),darken(color_two,0))
     box_shadow(0,color_two,5px)
     border_radius(10px)
     height 32px
     padding 4px 8px
-    line-height 40px
+    line-height 32px
     float left
     color color_three
     font-family normal_text
     img
-      display inline
+      display block
+      float left
       margin-right 4px
 .area
   position relative
   z-index 140
   display none
   margin 0
+  .upload_form
+    position absolute
+    visibility hidden
   .line_value
     float left
     color color_six
