@@ -938,7 +938,12 @@ $ ->
     #
     #
     #
+    $upload_button = $home_designer.find '.upload_button'
+    $upload_form = $home_designer.find '.upload_form'
+    $upload_input = $upload_form.find 'input[type=file]'
     #
+    $upload_button.click -> $upload_input.click()
+    $upload_input.change -> $upload_form.submit()
     #
     #
     #
@@ -1026,6 +1031,8 @@ $ ->
             #
             $areas.eq(1).make_active()
             #
+          else
+            $areas.eq(1).removeClass 'active'
           #
           #
           $active_image = $images.filter '.active'
@@ -1033,6 +1040,8 @@ $ ->
           if $active_image.length
             #
             $areas.eq(2).make_active()
+          else
+            $areas.eq(2).removeClass 'active'
 
         #
         #
