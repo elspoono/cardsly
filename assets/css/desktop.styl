@@ -223,7 +223,19 @@ body
 
 
 
-
+.row_content
+  position relative
+  z-index 302
+  padding 64px 36px
+.row_bg
+  position absolute
+  z-index 301
+  height 100%
+  width 1016px
+  border 4px solid color_two
+  border_radius(4px)
+  border_radius_right_only(64px)
+  background url('/images/body_bg.png')
 
 .row
   position relative
@@ -299,19 +311,6 @@ body
   .mid
     .center_column
       position relative
-      .row_content
-        position relative
-        z-index 302
-        padding 64px 36px
-      .row_bg
-        position absolute
-        z-index 301
-        height 100%
-        width 1016px
-        border 4px solid color_two
-        border_radius(4px)
-        border_radius_right_only(64px)
-        background url('/images/body_bg.png')
   .top
     padding 112px 0 14px 0
     h1.two
@@ -362,170 +361,6 @@ h1.two
     font-size 20px
     line-height 28px
     margin 0 0 14px 0
-
-
-
-.alerts
-  margin-bottom 56px
-.row
-  h2
-    font-size 56px
-    line-height 38px
-    color color_eight
-    margin-bottom 14px
-  p,label
-    font-size 20px
-    line-height 28px
-.set_alerts,.set_links
-  float left
-  position relative
-  p
-    margin-top -4px
-    width 280px
-    margin-bottom 28px
-  .field
-    float left
-    margin 0 56px 14px 0
-  .input
-    float left
-    margin 0
-    input,label
-      display block
-  .toggle
-    float right
-    margin 0 0 0 14px
-.set_links
-  .socials
-    text-align center
-    float left
-    overflow visible
-    padding 0 14px 0 0
-    li
-      cursor pointer
-      font-family JustVector
-      font-size 28px
-      line-height 40px
-      height 40px
-      width 40px
-      color color_three
-      gradient(lighten(color_two,30),darken(color_two,0))
-      border_radius(10px)
-      box_shadow(0,color_two,1px)
-      float right
-      margin 0 14px 0 0
-    .shift
-      line-height 50px
-  .links
-    float left
-    margin 0 0
-    input
-      width 200px
-    .button
-      text-align center
-      cursor pointer
-      margin 0 14px 14px 0
-      float left
-      gradient(lighten(color_two,30),darken(color_two,0))
-      border_radius_right_only(10px)
-      box_shadow(0,color_two,1px)
-      color color_three
-      font-family huge_text
-      line-height 40px
-      height 40px
-      width 25px
-    .item
-      .url
-        margin 14px 0 0 0
-        float left
-        text-align right
-        width 95px
-        padding 0 10px
-        height 20px
-        line-height 20px
-        font-size 20px
-      .button
-        height 20px
-        width 20px
-        line-height 20px
-        border_radius(20px)
-        box_shadow(0,color_two,3px)
-        float left
-    
-
-  
-  
-.quantity_form
-  width 421px
-  .option
-    padding 10px 0
-    opacity(.5)
-    cursor pointer
-    float left
-    text-align center
-    width 118px
-    height 147px
-    border_radius(14px)
-    margin 14px 14px 0 0
-    border 4px solid transparent
-  .active
-    opacity(1)
-    background color_three
-    border 4px solid color_two
-  img
-    display block
-    margin 5px auto 0 auto
-  .img
-    height 67px
-
-  .value
-    font-size 56px
-    span
-      vertical-align middle
-    .dollar
-      font-size 32px
-      line-height 56px
-    .char1
-      margin-right -12px
-    .char2
-      margin-right 4px
-      font-size 38px
-  overflow hidden
-
-.checkbox
-  float right
-  margin-top 14px
-  input
-    height inherit
-    margin-right 14px
-  
-
-.checkout
-  .field
-    float left
-  .shipping
-    .map
-      padding 10px 10px 10px 0
-  .billing
-    padding 0 40px
-    .input
-      padding 10px
- 
-.purchase
-  margin 28px auto 0 auto
-  color color_three
-  background color_red
-  border 4px solid color_three
-  box_shadow(0,color_two,14px)
-  border_radius(14px)
-  height 56px
-  line-height 56px
-  font-size 28px
-  width 205px
-  img
-    float left
-    display block
-    margin 10px 14px 0 27px
-  cursor pointer
 
 
 
@@ -760,6 +595,172 @@ h1.two
   .information
     position relative
     top 100px
+
+
+
+.alerts
+  margin-bottom 56px
+.row
+  h2
+    font-size 56px
+    line-height 38px
+    color color_eight
+    margin-bottom 14px
+  p,label
+    font-size 20px
+    line-height 28px
+.set_alerts,.set_links
+  float left
+  position relative
+  .row_bg
+    width 100%
+  p
+    margin-top -4px
+    width 280px
+    margin-bottom 28px
+  .field
+    float left
+    margin 0 56px 14px 0
+  .input
+    float left
+    margin 0
+    input,label
+      display block
+  .toggle
+    float right
+    margin 0 0 0 14px
+.set_links
+  .socials
+    text-align center
+    float left
+    overflow visible
+    padding 0 14px 0 0
+    li
+      cursor pointer
+      font-family JustVector
+      font-size 28px
+      line-height 40px
+      height 40px
+      width 40px
+      color color_three
+      gradient(lighten(color_two,30),darken(color_two,0))
+      border_radius(10px)
+      box_shadow(0,color_two,1px)
+      float right
+      margin 0 14px 0 0
+    .shift
+      line-height 50px
+  .links
+    float left
+    margin 0 0
+    input
+      width 200px
+    .button
+      text-align center
+      cursor pointer
+      margin 0 14px 14px 0
+      float left
+      gradient(lighten(color_two,30),darken(color_two,0))
+      border_radius_right_only(10px)
+      box_shadow(0,color_two,1px)
+      color color_three
+      font-family huge_text
+      line-height 40px
+      height 40px
+      width 25px
+    .item
+      .url
+        margin 14px 0 0 0
+        float left
+        text-align right
+        width 95px
+        padding 0 10px
+        height 20px
+        line-height 20px
+        font-size 20px
+      .button
+        height 20px
+        width 20px
+        line-height 20px
+        border_radius(20px)
+        box_shadow(0,color_two,3px)
+        float left
+    
+
+  
+  
+.quantity_form
+  width 421px
+  .option
+    padding 10px 0
+    opacity(.5)
+    cursor pointer
+    float left
+    text-align center
+    width 118px
+    height 147px
+    border_radius(14px)
+    margin 14px 14px 0 0
+    border 4px solid transparent
+  .active
+    opacity(1)
+    background color_three
+    border 4px solid color_two
+  img
+    display block
+    margin 5px auto 0 auto
+  .img
+    height 67px
+
+  .value
+    font-size 56px
+    span
+      vertical-align middle
+    .dollar
+      font-size 32px
+      line-height 56px
+    .char1
+      margin-right -12px
+    .char2
+      margin-right 4px
+      font-size 38px
+  overflow hidden
+
+.checkbox
+  float right
+  margin-top 14px
+  input
+    height inherit
+    margin-right 14px
+  
+
+.checkout
+  .field
+    float left
+  .shipping
+    .map
+      padding 10px 10px 10px 0
+  .billing
+    padding 0 40px
+    .input
+      padding 10px
+ 
+.purchase
+  margin 28px auto 0 auto
+  color color_three
+  background color_red
+  border 4px solid color_three
+  box_shadow(0,color_two,14px)
+  border_radius(14px)
+  height 56px
+  line-height 56px
+  font-size 28px
+  width 205px
+  img
+    float left
+    display block
+    margin 10px 14px 0 27px
+  cursor pointer
 
 
 
