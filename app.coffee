@@ -53,6 +53,8 @@ knox = require 'knox'
 util = require 'util'
 fs = require 'fs'
 app = module.exports = express.createServer()
+#twilio_client = require 'twilio/client'
+#client = new twilio_client('AC7251c3043947408cb835e2643c1f518a','cfb4d275158cba5a1ff206c4df6d6c52',hostname,opts)
 #
 # Image Magick for graphic editing
 im = require 'imagemagick'
@@ -2633,6 +2635,12 @@ app.get '/make-me-admin', secured_page, (req, res) ->
 app.get '/about', (req, res) ->
   res.render 'about'
     req: req
+
+# Privacy Policy
+app.get '/privacy', (req, res) ->
+  res.render 'privacy'
+    req: req
+
 
 # Learn More Page
 app.get '/learn-more', (req, res) ->
