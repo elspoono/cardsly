@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "private": false,
   "dependencies": {
-    "express": ">= 2.5.1",
+    "express": ">= 2.5.4",
     "jade": ">= 0.0.1",
     "stylus": ">= 0.13.9",
     "coffee-script": ">= 1.1.2"

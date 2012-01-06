@@ -1410,11 +1410,9 @@ app.post '/up', (req, res) ->
     log_err err
     res.send '<script>parent.window.$.s3_result(false);</script>'
   #
-  console.log req.form
-  console.log 2
   #
   # Find the file we just created
-  path = req.body.image.path
+  path = req.files.image.path
   #
   #
   # Identify it's filname
