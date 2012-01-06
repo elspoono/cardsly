@@ -1786,19 +1786,19 @@ render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
           for line,i in theme_template.lines
             h = Math.round(line.h/100*height)
             x = line.x/100*width
-            y = line.y/100*height
+            y = (line.y+line.h*.85)/100*height
             w = line.w/100*width
             ctx.fillStyle = hex_to_rgba line.color
             ctx.font = h + 'px "' + line.font_family + '"'
             this_line_copy = line_copy[i].replace(/&nbsp;/g, ' ').replace(/\n/g, '')
             if line.text_align is 'left'
-              ctx.fillText this_line_copy, x, y+h
+              ctx.fillText this_line_copy, x, y
             else
-              measure = ctx.measureText this_line_copy, x, y+h
+              measure = ctx.measureText this_line_copy, x, y
               if line.text_align is 'right'
-                ctx.fillText this_line_copy, x+w-measure.width, y+h
+                ctx.fillText this_line_copy, x+w-measure.width, y
               if line.text_align is 'center'
-                ctx.fillText this_line_copy, x+(w-measure.width)/2, y+h
+                ctx.fillText this_line_copy, x+(w-measure.width)/2, y
             #
           #
           canvas.toBuffer (err, bg_buff) ->
@@ -2692,18 +2692,18 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
                 for line,i in theme_template.lines
                   h = Math.round(line.h/100*height)
                   x = line.x/100*width
-                  y = line.y/100*height
+                  y = (line.y+line.h*.85)/100*height
                   w = line.w/100*width
                   ctx.fillStyle = hex_to_rgba line.color
                   ctx.font = h + 'px "' + line.font_family + '"'
                   if line.text_align is 'left'
-                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                    ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y
                   else
-                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                    measure = ctx.measureText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y
                     if line.text_align is 'right'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
+                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y
                     if line.text_align is 'center'
-                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
+                      ctx.fillText order.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y
 
 
 
