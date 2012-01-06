@@ -335,11 +335,10 @@
             p Free via USPS priority mail
             .full_address_container
               .full_address
-                input.street(placeholder='123 Main St.')
-                
-                input.zip_code(placeholder='85022')
+                input.street(placeholder='123 Main St.').field
+                br
+                input.zip_code(placeholder='85022').field
               .map
-                img(src='/images/samplemap.png')
           .billing.field
             h2 Credit Card
             .credit-card
