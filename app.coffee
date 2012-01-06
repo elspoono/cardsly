@@ -901,6 +901,7 @@ app.configure ->
     h1: '<span>Get notified! with QR code business cards</span>'
     #
     #
+  #delete express.bodyParser.parse['multipart/form-data']
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
