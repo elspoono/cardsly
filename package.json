@@ -7,7 +7,7 @@
     "jade": ">= 0.0.1",
     "stylus": ">= 0.13.9",
     "coffee-script": ">= 1.1.2"
-    , "connect": ">= 0.0.1"
+    , "connect": ">= 1.8.5"
     , "connect-redis": ">= 0.0.1"
     , "redis": ">= 0.0.1"
     , "mongoose": ">= 0.0.1"
