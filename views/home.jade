@@ -327,37 +327,37 @@
   .mid
     .center_column
       .row_bg
-      .row_content
-        .checkout
-          .shipping.field
-            h2 Shipping
-            p Free via USPS priority mail
-            .full_address_container
-              .full_address
-                input.street(placeholder='123 Main St.').field
-                br
-                input.zip_code(placeholder='85022').field
-              .map
-          .billing.field
-            h2 Credit Card
-            .credit-card
-              .field.input
-                label cc #
-                input(placeholder='4111111111111111')
-            .cvc
-              .field.input
-                label cvc
-                input(placeholder='1234')
-            .expiration
-              .field
-                label Exp.
-                select.card_expiry_month(name='credit_card[expiry_month]')
-                  - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-                  - for (var i in months)
-                    option(value=(i*1)+1)=months[i]
-                select.card_expiry_year(name='credit_card[expiry_year]')
-                  - for (var year = 2011; year<2032; year++)
-                    option(value=year)=year
+      .row_content.checkout
+        .left
+          h2 Shipping
+          p Free via USPS priority mail
+          .field.input
+            label Address
+            input.street(placeholder='123 Main St.')
+          .field.input
+            label Zip Code
+            input.zip_code(placeholder='85022')
+          .map
+          .full_address_container
+            .full_address
+        .right
+          h2 Credit Card
+          p Visa, Amex, Mastercard or Discover
+          .field.input
+            label cc #
+            input.credit-card(placeholder='4111111111111111')
+          .field.input
+            label cvc
+            input.cvc(placeholder='1234')
+          .field
+            label Exp.
+            select.card_expiry_month(name='credit_card[expiry_month]')
+              - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+              - for (var i in months)
+                option(value=(i*1)+1)=months[i]
+            select.card_expiry_year(name='credit_card[expiry_year]')
+              - for (var year = 2011; year<2032; year++)
+                option(value=year)=year
         .clear
   .bottom
     .center_column

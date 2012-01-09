@@ -1243,10 +1243,6 @@ $ ->
     #
     #
     #
-    #
-    $street.keyup maybe_check_address
-    $zip_code.keyup maybe_check_address
-    #
     load_map = (map) ->
       $new_img = $ '<img />'
       if map.full_address
@@ -1263,11 +1259,12 @@ $ ->
     #
     check_address_timer = 0
     maybe_check_address = ->
-      $map.html 'Waiting'
+      $map.html 'Waiting for input ...'
+      $full_address.html ''
       clearTimeout check_address_timer
       check_address_timer = setTimeout ->
         #
-        $map.html 'Searching ...'
+        $map.html 'Searching now ...'
         #
         # 
         $.ajax
@@ -1282,6 +1279,8 @@ $ ->
         #
       , 1000
     #
+    $street.keyup maybe_check_address
+    $zip_code.keyup maybe_check_address
     #
     # ----------------
     # END Address
