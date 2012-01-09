@@ -974,20 +974,6 @@ if redis_options.pass
 redis_logins_sub.on 'error', log_err
 
 
-save_session = (o) ->
-  #
-  #
-  #
-  session_store.get unescape(o.sid), (err, saved_session) ->
-    #
-    if not saved_session.order_form
-      saved_session.order_form = {}
-    #
-    _.extend saved_session.order_form, o.new_values
-    #
-    session_store.set unescape(o.sid), saved_session, maybe_log_err
-
-
 io.configure () ->
   io.set 'transports', ['xhr-polling']
   #io.set 'store', io_store
@@ -1011,113 +997,6 @@ io.configure () ->
 #
 #
 redis_logins_sub.subscribe 'logins'
-#
-#
-#
-#
-io_session = io.of('/order_form').on 'connection', (socket) ->
-  hs = socket.handshake
-  if hs.session and hs.sid
-    socket.emit 'load_order_form', hs.session.order_form
-    #
-    #
-    #
-    #
-    socket.on 'save_order_form', (new_values) ->
-      #
-      #
-      save_session
-        sid: hs.sid
-        new_values: new_values
-      #
-      #
-    #
-    #
-    redis_logins_sub.on 'message', (pattern, key) ->
-      session_store.get unescape(hs.sid), (err, session) ->
-        if session and session.auth and session.auth.userId is key
-          mongo_user.findById key, (err, user) ->
-            socket.emit 'load_urls', user.profile_urls
-    #
-    #
-    socket.on 'search_address', (new_values) ->
-      #
-      #
-      #
-      #
-      geo.geocoder geo.google, new_values.street+' '+new_values.zip_code, false, (full_address, latitude, longitude, details) ->
-        #
-        #
-        _.extend new_values, 
-          full_address: full_address
-          latitude: latitude
-          longitude: longitude
-        #
-        socket.emit 'load_map', new_values
-        # 
-        #
-        save_session
-          sid: hs.sid
-          new_values: new_values
-        #
-      #
-      #
-    #
-    #
-    #
-    #
-    #
-    # ----------
-    # Themes
-    # -----------------------------------
-    socket.on 'get_themes', ->
-      #
-      user_to_find = null
-      #
-      #
-      #
-      #
-      #
-      ###
-      if req.user and req.user._id
-        user_to_find = 
-          $in: [null,req.user._id]
-      #
-      else if req.sessionID
-        user_to_find = 
-          $in: [null,req.sessionID]
-      ###
-      #
-      #
-      mongo_theme.find
-        active: true
-        user_id: user_to_find
-      , (err, themes) ->
-        if err
-          log_err err
-        else
-          themes = _(themes).sortBy (theme) ->
-            if theme.user_id then '0' else theme.category + theme.date_added
-          themes.reverse()
-          socket.emit 'load_themes', themes
-      #
-      #
-    socket.on 'get_theme', (theme_id) ->
-      #
-      #
-      #
-      #
-      mongo_theme.findById theme_id, (err, theme) ->
-        if err
-          log_err err
-        else
-          socket.emit 'load_theme', theme
-      #
-      #
-    # -----------------------------------
-    # END Themes
-    # ----------
-#
 #
 #
 redis_visits_sub.subscribe 'visits'
@@ -1175,19 +1054,6 @@ mongo_url_redirect.findOne
     log_err err if err
 
 
-###
-
-dnode = require 'dnode'
-
-server = dnode
-  get_history : (url, next) ->
-    console.log this
-    next url
-
-
-
-
-###
 
 
 
@@ -1398,6 +1264,124 @@ create_urls = (options, next) ->
 #
 #
 #
+# Generic Ajax Error Handling
+check_no_err_ajax = (err, res) ->
+  if err
+    log_err err
+    res.send
+      err: err
+  !err
+#
+#
+#
+#
+#
+#
+#
+#
+#
+hex_to_rgba = (h) ->
+  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
+  hex = cut_hex h
+  r = parseInt hex.substring(0,2), 16
+  g = parseInt hex.substring(2,4), 16
+  b = parseInt hex.substring(4,6), 16
+  a = hex.substring(6,8)
+  if a
+    a = (parseInt a, 16) / 255
+  else
+    a = 1
+  if a is 1
+    'rgb('+r+','+g+','+b+')'
+  else
+    'rgba('+r+','+g+','+b+','+a+')'
+#
+#
+#
+save_session = (o) ->
+  #
+  # Default it Out First
+  if not o.req.session.order_form
+    o.req.session.order_form = {}
+  #
+  # Then loop through and add all values
+  for new_key,new_value of o.new_values
+    o.req.session.order_form[new_key] = new_value
+  #
+  #
+#
+#
+app.post '/save-order-form', (req, res) ->
+  #
+  #
+  save_session
+    req: req
+    new_values: req.body
+  #
+  res.send
+    success: true
+  #
+#
+#
+app.post '/search-address', (req, res) ->
+  #
+  #
+  #
+  #
+  geo.geocoder geo.google, req.body.street+' '+req.body.zip_code, false, (full_address, latitude, longitude, details) ->
+    #
+    new_values = 
+      street: req.body.street
+      zip_code: req.body.zip_code
+      full_address: full_address
+      latitude: latitude
+      longitude: longitude
+    #
+    save_session
+      req: req
+      new_values: new_values
+    #
+    res.send new_values
+    #
+    #
+#
+#
+#
+#
+# ----------
+# Themes
+# -----------------------------------
+app.post '/get-themes', (req, res) ->
+  #
+  user_to_find = null
+  #
+  if req.user and req.user._id
+    user_to_find = 
+      $in: [null,req.user._id]
+  else if req.sessionID
+    user_to_find = 
+      $in: [null,req.sessionID]
+  #
+  #
+  mongo_theme.find
+    active: true
+    user_id: user_to_find
+  , (err, themes) ->
+    if check_no_err_ajax err, res
+      themes = _(themes).sortBy (theme) ->
+        if theme.user_id then '0' else theme.category + theme.date_added
+      themes.reverse()
+      res.send
+        themes: themes
+#
+#
+app.post '/get-theme', (req, res) ->
+  #
+  mongo_theme.findById req.body.theme_id, (err, theme) ->
+    if check_no_err_ajax err, res
+      res.send
+        theme: theme
+#
 #
 #
 # Form request for multipart form uploading image
@@ -1472,41 +1456,6 @@ app.post '/up', (req, res) ->
       #
 #
 #
-#
-#
-#
-#
-# Generic Ajax Error Handling
-check_no_err_ajax = (err, res) ->
-  if err
-    log_err err
-    res.send
-      err: err
-  !err
-#
-#
-#
-#
-#
-#
-#
-#
-#
-hex_to_rgba = (h) ->
-  cut_hex = (h) -> if h.charAt(0)=="#" then h.substring(1,7) else h
-  hex = cut_hex h
-  r = parseInt hex.substring(0,2), 16
-  g = parseInt hex.substring(2,4), 16
-  b = parseInt hex.substring(4,6), 16
-  a = hex.substring(6,8)
-  if a
-    a = (parseInt a, 16) / 255
-  else
-    a = 1
-  if a is 1
-    'rgb('+r+','+g+','+b+')'
-  else
-    'rgba('+r+','+g+','+b+','+a+')'
 #
 #
 #

@@ -958,380 +958,359 @@ $ ->
     #
     #
     #
-    io_session = io.connect('/order_form')
-    io_session.on 'connect', () ->
+    # ---------
+    # Thumbs
+    # ------------------------------------
+    #
+    $text_align = $home_designer.find '.text_align .option'
+    #
+    card_loaded = ->
       #
+      $text_align.unbind('click').click ->
+        $t_a = $ this
+        $t_a.make_active()
       #
+      $images = $editor.find '.img'
+      $qr = $editor.find '.qr'
+      $lines = $editor.find '.line'
       #
-      #
-      #
-      #
-      #
-      #
-      io_session.on 'load_urls', (urls) ->
+      new_active = ->
         #
-        $items = $link_items.find '.item'
+        $active_line = $lines.filter '.active'
         #
-        for url in urls
-          found = false
-          $items.each ->
-            $i = $ this
-            if $i.attr('url') is url
-              found = true
-          if not found
-            short_url = url.replace /http:\/\//, ''
-            if short_url.length > 17
-              short_url = short_url.substr(0, 15)+'...'
-            $link_items.append '<div class="item" url="'+url+'"><div class="url">'+short_url+'</div><div class="button">-</div></div>'
-      #
-      #
-   
-      #
-      #
-      #
-      #
-      #
-      #
-      # ---------
-      # Thumbs
-      # ------------------------------------
-      #
-      $text_align = $home_designer.find '.text_align .option'
-      #
-      card_loaded = ->
+        if $active_line.length
+          #
+          $line_value.val $active_line.html()
+          setTimeout ->
+            $line_value.focus().select()
+          , 0
+          #
+          $areas.eq(0).make_active()
+        else
+          $areas.eq(0).removeClass 'active'
         #
-        $text_align.unbind('click').click ->
-          $t_a = $ this
-          $t_a.make_active()
         #
-        $images = $editor.find '.img'
-        $qr = $editor.find '.qr'
-        $lines = $editor.find '.line'
         #
-        new_active = ->
+        $active_qr = $qr.filter '.active'
+        #
+        if $active_qr.length
           #
-          $active_line = $lines.filter '.active'
+          $areas.eq(1).make_active()
           #
-          if $active_line.length
-            #
-            $line_value.val $active_line.html()
-            setTimeout ->
-              $line_value.focus().select()
-            , 0
-            #
-            $areas.eq(0).make_active()
-          else
-            $areas.eq(0).removeClass 'active'
+        else
+          $areas.eq(1).removeClass 'active'
+        #
+        #
+        $active_image = $images.filter '.active'
+        #
+        if $active_image.length
           #
-          #
-          #
-          $active_qr = $qr.filter '.active'
-          #
-          if $active_qr.length
-            #
-            $areas.eq(1).make_active()
-            #
-          else
-            $areas.eq(1).removeClass 'active'
-          #
-          #
-          $active_image = $images.filter '.active'
-          #
-          if $active_image.length
-            #
-            $areas.eq(2).make_active()
-          else
-            $areas.eq(2).removeClass 'active'
+          $areas.eq(2).make_active()
+        else
+          $areas.eq(2).removeClass 'active'
 
-        #
-        #
-        remove_focus_event = (e) ->
-          $t = $ e.target
-          $c = $t.closest('.controls').andSelf().filter('.controls')
-          $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
-          unless $c.length or $e.length
-            $editor.find('.active').removeClass 'active'
-            $body.unbind 'click', remove_focus_event
-            new_active()
-        #
-        add_remove_focus_event = ->
-          $body.bind 'click', remove_focus_event
-
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        $lines.add($images).add($qr).click (e) ->
-          $t = $ this
-          $t.make_active()
+      #
+      #
+      remove_focus_event = (e) ->
+        $t = $ e.target
+        $c = $t.closest('.controls').andSelf().filter('.controls')
+        $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
+        unless $c.length or $e.length
+          $editor.find('.active').removeClass 'active'
+          $body.unbind 'click', remove_focus_event
           new_active()
-          add_remove_focus_event()
-        #
+      #
+      add_remove_focus_event = ->
+        $body.bind 'click', remove_focus_event
+
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      $lines.add($images).add($qr).click (e) ->
+        $t = $ this
+        $t.make_active()
         new_active()
+        add_remove_focus_event()
+      #
+      new_active()
+      #
+    #
+    #
+    active_theme = {}
+    #
+    $front_back = $home_designer.find '.front_back .option'
+    $front_back.click ->
+      $f_b = $ this
+      $f_b.make_active()
+      #
+      #
+      setTimeout ->
         #
-      #
-      #
-      active_theme = {}
-      #
-      $front_back = $home_designer.find '.front_back .option'
-      $front_back.click ->
-        $f_b = $ this
-        $f_b.make_active()
+        #
+        #$thumbs.filter('.active').click()
+        #
+        side = $f_b.html()
+        #
+        #
+        $fg = $thumbs.add($all_card).find '.fg'
+        $bg = $thumbs.add($all_card).find '.bg'
+        #
+        #
+        $first = $fg
+        $second = $bg
+        #
+        if side is 'front'
+          $first = $bg
+          $second = $fg
+        #
+        $first.addClass 'collapsed'
         #
         #
         setTimeout ->
-          #
-          #
-          #$thumbs.filter('.active').click()
-          #
-          side = $f_b.html()
-          #
-          #
-          $fg = $thumbs.add($all_card).find '.fg'
-          $bg = $thumbs.add($all_card).find '.bg'
-          #
-          #
-          $first = $fg
-          $second = $bg
-          #
-          if side is 'front'
-            $first = $bg
-            $second = $fg
-          #
-          $first.addClass 'collapsed'
-          #
-          #
+          $first.removeClass 'collapsed'
+          $first.addClass 'collapsed2'
+          $first.hide()
+          $second.show()
           setTimeout ->
-            $first.removeClass 'collapsed'
-            $first.addClass 'collapsed2'
-            $first.hide()
-            $second.show()
-            setTimeout ->
-              $second.removeClass 'collapsed2'
-            , 0
-          , 500
-          #
-          #
-          #
-        ,0
-      #
-      #
-      #
-      io_session.on 'load_theme', (theme) ->
+            $second.removeClass 'collapsed2'
+          , 0
+        , 500
         #
         #
-        active_theme = theme
         #
-        #
-        side = $front_back.filter('.active').html()
-        #
-        #
-        $all_card.each ->
+      ,0
+    #
+    #
+    #
+    #
+    #
+    #
+    get_themes = ->
+      $.ajax
+        url: '/get-themes'
+        success: (results) ->
           #
-          $this_card = $ this
-          #
-          $fg = $this_card.find '.fg'
-          if not $fg.length
-            $fg = $ '<div class="fg" />'
-            $fg.addClass 'collapsed2' if side is 'back'
-            $fg.hide() if side is 'back'
-            $this_card.append $fg
-          #
-          $bg = $this_card.find '.bg'
-          if not $bg.length
-            $bg = $ '<div class="bg" />'
-            $bg.addClass 'collapsed2' if side is 'front'
-            $bg.hide() if side is 'front'
-            $this_card.append $bg
-          #
-          #
-          $.create_card_from_theme
-            height: 300
-            width: 525
-            theme: theme
-            active_view: 0
-            card: $fg
-            side: 'front'
-          #
-          $.create_card_from_theme
-            height: 300
-            width: 525
-            theme: theme
-            active_view: 0
-            card: $bg
-            side: 'back'
-        #
-        card_loaded()
-        #
-        #
-      #
-      #
-      #
-      #
-      io_session.on 'load_themes', (themes) ->
-        #
-        #
-        for theme,i in themes
-          #
-          $new_thumb = $ '<div class="thumb"></div>'
-          $new_thumb.attr
-            id: theme._id
-          #
-          $fg_image = $ '<img class="fg" />'
-          $fg_image.attr
-            src: '/thumb/'+theme._id+''
-          $new_thumb.append $fg_image
-          #
-          #
-          $bg_image = $ '<img class="bg collapsed2" />'
-          $bg_image.hide()
-          $bg_image.attr
-            src: '/thumb/'+theme._id+'/back'
-          $new_thumb.append $bg_image
-          #
-          $themes.append $new_thumb
-          #
-        #
-        $thumbs = $themes.find '.thumb'
-        #
-        $thumbs.hover ->
-          $(this).addClass 'hover'
-        , ->
-          $(this).removeClass 'hover'
-        #
-        $thumbs.click ->
-          #
-          $thumb = $ this
-          id = $thumb.attr 'id'
-          #
-          $thumb.make_active()
-          #
-          io_session.emit 'get_theme', $thumb.attr('id')
-          #
-          #
-          #console.log id
-        #
-        #
-        for thumb in $thumbs
-          if thumb.id is active_theme_id
-            $thumb = $ thumb
+          for theme,i in results.themes
             #
-            # Activate that theme
-            $thumb.click()
+            $new_thumb = $ '<div class="thumb"></div>'
+            $new_thumb.attr
+              id: theme._id
             #
-            # And scroll to it
-            $themes.scrollTo $thumb,
-              offset: 
-                left: 0
-                top: -20
+            $fg_image = $ '<img class="fg" />'
+            $fg_image.attr
+              src: '/thumb/'+theme._id+''
+            $new_thumb.append $fg_image
             #
             #
-      # ------------------------------------
-      # End Thumbs
-      # ---------
+            $bg_image = $ '<img class="bg collapsed2" />'
+            $bg_image.hide()
+            $bg_image.attr
+              src: '/thumb/'+theme._id+'/back'
+            $new_thumb.append $bg_image
+            #
+            $themes.append $new_thumb
+            #
+          #
+          $thumbs = $themes.find '.thumb'
+          #
+          $thumbs.hover ->
+            $(this).addClass 'hover'
+          , ->
+            $(this).removeClass 'hover'
+          #
+          $thumbs.click ->
+            #
+            $thumb = $ this
+            id = $thumb.attr 'id'
+            #
+            $thumb.make_active()
+            #
+            $.ajax
+              url: '/get-theme'
+              data: JSON.stringify
+                theme_id: $thumb.attr('id')
+              success: (results) ->
+                #
+                active_theme = results.theme
+                #
+                #
+                side = $front_back.filter('.active').html()
+                #
+                #
+                $all_card.each ->
+                  #
+                  $this_card = $ this
+                  #
+                  $fg = $this_card.find '.fg'
+                  if not $fg.length
+                    $fg = $ '<div class="fg" />'
+                    $fg.addClass 'collapsed2' if side is 'back'
+                    $fg.hide() if side is 'back'
+                    $this_card.append $fg
+                  #
+                  $bg = $this_card.find '.bg'
+                  if not $bg.length
+                    $bg = $ '<div class="bg" />'
+                    $bg.addClass 'collapsed2' if side is 'front'
+                    $bg.hide() if side is 'front'
+                    $this_card.append $bg
+                  #
+                  #
+                  $.create_card_from_theme
+                    height: 300
+                    width: 525
+                    theme: theme
+                    active_view: 0
+                    card: $fg
+                    side: 'front'
+                  #
+                  $.create_card_from_theme
+                    height: 300
+                    width: 525
+                    theme: theme
+                    active_view: 0
+                    card: $bg
+                    side: 'back'
+                #
+                card_loaded()
+            #
+            #
+            #console.log id
+          #
+          #
+          for thumb in $thumbs
+            if thumb.id is active_theme_id
+              $thumb = $ thumb
+              #
+              # Activate that theme
+              $thumb.click()
+              #
+              # And scroll to it
+              $themes.scrollTo $thumb,
+                offset: 
+                  left: 0
+                  top: -20
+              #
+              #
+    #
+    #
+    #
+    # -------
+    # Quantity
+    # -------
+    $quantity = $ '.quantity_form .option'
+    #
+    $preview_count = $ '.preview_count'
+    #
+    $quantity.click ->
+      $q = $ this
       #
       #
+      $preview_count.html '<div class="large">'+$q.attr('cards')+'</div><div class="small">x</div>'
       #
+      # Make this guy active
+      $q.make_active()
       #
-      # -------
-      # Quantity
-      # -------
-      $quantity = $ '.quantity_form .option'
-      #
-      $preview_count = $ '.preview_count'
-      #
-      $quantity.click ->
-        $q = $ this
-        #
-        #
-        $preview_count.html '<div class="large">'+$q.attr('cards')+'</div><div class="small">x</div>'
-        #
-        # Make this guy active
-        $q.make_active()
-        #
-        # And save it
-        io_session.emit 'save_order_form',
+      # And save it
+      $.ajax
+        url: '/save-order-form'
+        data: JSON.stringify
           cards: $q.attr 'cards'
           cost: $q.attr 'cost'
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    $checkout_form = $ '.checkout'
+    #
+    # --------------
+    # Address Search
+    # --------------
+    #
+    $street = $checkout_form.find '.street'
+    $map = $checkout_form.find '.map'
+    $zip_code = $checkout_form.find '.zip_code'
+    $full_address = $checkout_form.find '.full_address'
+    #
+    #
+    #
+    #
+    $street.keyup maybe_check_address
+    $zip_code.keyup maybe_check_address
+    #
+    load_map = (map) ->
+      $new_img = $ '<img />'
+      if map.full_address
+        coordinates = map.latitude+','+map.longitude
+        $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
+        $full_address.html map.full_address.replace /,/, '<br>'
+      else
+        $new_img.attr 'src', null
       #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      $checkout_form = $ '.checkout'
-      #
-      # --------------
-      # Address Search
-      # --------------
-      $street = $checkout_form.find '.street'
-      $map = $checkout_form.find '.map'
-      $zip_code = $checkout_form.find '.zip_code'
-      $full_address = $checkout_form.find '.full_address'
-      #
-      check_address_timer = 0
-      maybe_check_address = ->
-        $map.html 'Waiting'
-        clearTimeout check_address_timer
-        check_address_timer = setTimeout ->
-          #
-          $map.html 'Searching ...'
-          #
-          # 
-          io_session.emit 'search_address',
+      $map.html ''
+      $map.append $new_img
+    #
+    #
+    #
+    check_address_timer = 0
+    maybe_check_address = ->
+      $map.html 'Waiting'
+      clearTimeout check_address_timer
+      check_address_timer = setTimeout ->
+        #
+        $map.html 'Searching ...'
+        #
+        # 
+        $.ajax
+          url: '/search-address'
+          data: JSON.stringify
             street: $street.val()
             zip_code: $zip_code.val()
-          #
-          #
-        , 1000
-      #
-      $street.keyup maybe_check_address
-      $zip_code.keyup maybe_check_address
-      #
-      load_map = (map) ->
-        $new_img = $ '<img />'
-        if map.full_address
-          coordinates = map.latitude+','+map.longitude
-          $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
-          $full_address.html map.full_address.replace /,/, '<br>'
-        else
-          $new_img.attr 'src', null
+          success: (results) ->
+            if results.latitude
+              load_map results
         #
-        $map.html ''
-        $map.append $new_img
-      #
-      io_session.on 'load_map', load_map
-      #
-      # ----------------
-      # END Address
-      # ----------------
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      io_session.on 'load_order_form', (order_form) ->
-        if order_form
-          $a_q = $quantity.filter('[cards='+order_form.cards+']')
+        #
+      , 1000
+    #
+    #
+    # ----------------
+    # END Address
+    # ----------------
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    $.ajax
+      url: '/get-session'
+      success: (results) ->
+        #
+        if results.session and results.session.order_form
+          o_f = results.session.order_form
+          $a_q = $quantity.filter('[cards='+o_f.cards+']')
           $a_q.make_active()
           $preview_count.html '<div class="large">'+$a_q.attr('cards')+'</div><div class="small">x</div>'
           #
           #
-          if order_form.full_address
-            load_map order_form
+          if o_f.full_address
+            load_map o_f
             #
-            $street.val order_form.street
-            $zip_code.val order_form.zip_code
+            $street.val o_f.street
+            $zip_code.val o_f.zip_code
             #
             #
           #
@@ -1343,51 +1322,34 @@ $ ->
         #
         #
         if not $thumbs
-          io_session.emit 'get_themes', true
-      #
+          get_themes()
     #
     #
     #
     #
     #
     #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  ###
-  DNode.connect (remote) ->
-    remote.get_history 'log_home', (result) ->
-      console.log result
-  ###
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
   #
   #
   #
