@@ -187,7 +187,7 @@
             p Enter your email here. Turn automatic alerts on or off at anytime.
           .field.email
             .input
-              input(placeholder='my@email.com')
+              input.required(placeholder='my@email.com')
               label E-mail Address
             .toggle
               .bg
@@ -218,7 +218,7 @@
                 label Connect social
               .links
                 .input
-                  input(placeholder='mysite.com')
+                  input.required(placeholder='mysite.com')
                   label Or type website address
                 .button +
             .link_items
@@ -305,9 +305,6 @@
         .right
           h2 Approval
           .card.preview
-          .checkbox
-            input(type='checkbox',id='okay') 
-            label(for='okay') Looks good, I approve
         .clear
 .row
   .help_overlay.active
@@ -333,10 +330,10 @@
           p Free via USPS priority mail
           .field.input
             label Address
-            input.street(placeholder='123 Main St.')
+            input.required.street(placeholder='123 Main St.')
           .field.input
             label Zip Code
-            input.zip_code(placeholder='85022')
+            input.required.zip_code(placeholder='85022')
           .map
           .full_address_container
             .full_address
@@ -345,10 +342,10 @@
           p Visa, Amex, Mastercard or Discover
           .field.input
             label cc #
-            input.credit-card(placeholder='4111111111111111')
+            input.required.credit-card(placeholder='4111111111111111')
           .field.input
             label cvc
-            input.cvc(placeholder='1234')
+            input.required.cvc(placeholder='1234')
           .field
             label Exp.
             select.card_expiry_month(name='credit_card[expiry_month]')
