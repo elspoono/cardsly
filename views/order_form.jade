@@ -199,16 +199,6 @@ if req.session && req.session.help_hidden
             )
             label(for='shipping_method_1') FREE USPS Priority Mail
               .subtitle 1-3 days
-          li
-            input(
-              type='radio'
-              name='shipping_method'
-              value='25'
-              checked= (shipping_method==25 ? 'checked' : false)
-              id='shipping_method_2'
-            )
-            label(for='shipping_method_2') USPS Express Mail for $25
-              .subtitle overnight
         ul.text_fields.shipping.righter
           li
             label Address
