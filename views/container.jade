@@ -13,23 +13,20 @@
 .clear
 .footer
   .center_column
-    ul
-      li
+    .col_one
+      .top
         a(href='/about') About
-      li
+      .bottom
+        a(href='mailto:help@cards.ly') help@cards.ly
+    .col_two
+      a(href='http://fb.com/cardsly')
+        img(src='/images/facebooklink.png')
+      a(href='https://plus.google.com/101327189030192478503/posts')
+        img(src='/images/googlelink.png')
+      a(href='http://twitter.com/cardsly')
+        img(src='/images/twitterlink.png')
+    .col_three
+      .top
         a(href='http://blog.cards.ly') Blog
-    ul
-      li.f
-        a(href='http://fb.com/cardsly') f
-      li.g
-        a(href='https://plus.google.com/101327189030192478503/posts') g+
-      li.t
-        a(href='http://twitter.com/cardsly') t
-    ul
-      li.email
-        a(href='mailto:help@cards.ly')
-          span help
-          span.at @
-          span cards.ly
-      li.phone
+      .bottom
         a(href='tel://4804288000') 480.428.8000
