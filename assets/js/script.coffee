@@ -1132,10 +1132,11 @@ $ ->
             $.ajax
               url: '/get-theme'
               data: JSON.stringify
-                theme_id: $thumb.attr('id')
+                theme_id: id
               success: (results) ->
+                theme = results.theme
                 #
-                active_theme = results.theme
+                active_theme = theme
                 #
                 #
                 side = $front_back.filter('.active').html()
