@@ -45,12 +45,11 @@ input,h1,h2,textarea,select,p,label
   color color_two
   font-size 20px
 input,textarea,select
-  height 40px
-  line-height 40px
+  border 2px solid color_ten
+  height 36px
+  line-height 36px
   color color_seven
   padding 0 10px
-  box_shadow(0,color_two,1px)
-  border 0
   margin 0
 input,textarea,select,p,label
   font-family normal_text
@@ -76,10 +75,6 @@ body
 
 
 
-input.required
-  border 2px solid color_ten
-  height 36px
-  line-height 36px
 .symbol
   display inline
   color color_ten
@@ -441,6 +436,7 @@ h1.two
     box_shadow(0,color_two,10px,inset)
   .option
     font-family normal_text
+    font-size 20px
     color lighten(color_two,40)
     border_radius(20px)
     height 40px
@@ -652,10 +648,10 @@ h1.two
     margin 0 56px 14px 0
   .input
     float left
-    margin 0
-  .toggle
-    float right
     margin 0 0 0 14px
+  .toggle
+    float left
+    margin 0 28px 0 14px
 .set_links
   .socials
     text-align center
@@ -679,7 +675,7 @@ h1.two
       line-height 50px
   .links
     float left
-    margin 0 0
+    margin 0 0 0 28px
     input
       width 200px
     .button

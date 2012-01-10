@@ -1047,7 +1047,7 @@ $ ->
         #
         #$thumbs.filter('.active').click()
         #
-        side = $f_b.html()
+        side = $f_b.html().toLowerCase()
         #
         #
         $fg = $thumbs.add($all_card).find '.fg'
@@ -1133,7 +1133,7 @@ $ ->
                 active_theme = theme
                 #
                 #
-                side = $front_back.filter('.active').html()
+                side = $front_back.filter('.active').html().toLowerCase()
                 #
                 #
                 $all_card.each ->

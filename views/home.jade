@@ -88,8 +88,8 @@
             .below_left
               .toggle.front_back
                 .bg
-                  .option.active front
-                  .option back
+                  .option.active Front
+                  .option Back
             .below_right
               .button.add_image
                 img(src='/images/icons/camera.png',style='margin-top:3px')
@@ -187,17 +187,27 @@
           .clear
           .field
             p Enter your email here. Turn automatic alerts on or off at anytime.
+            p Text messages also available.
           .field
-            .input
-              .symbol *
-              input.email.required(placeholder='my@email.com')
-              .clear
-              .symbol &nbsp;
-              label E-mail Address
             .toggle
               .bg
+                .option On
                 .option.active Off
-                .option Active
+            .input
+              input.email.required(placeholder='my@email.com')
+              .symbol *
+              .clear
+              label E-mail Address
+            .clear
+            .mid_spacer
+            .toggle
+              .bg
+                .option On
+                .option.active Off
+            .input
+              input.phone(placeholder='(555) 555 - 5555')
+              .clear
+              label Phone Number
       .clear
     .clear
   .clear
@@ -224,12 +234,10 @@
                 label Connect social
               .links
                 .input
-                  .symbol *
                   input.set_link.required(placeholder='mysite.com')
+                  .symbol *
                   .clear
-                  .symbol &nbsp;
                   label Or type website address
-                .button +
             .link_items
       .clear
     .clear
