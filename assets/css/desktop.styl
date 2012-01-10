@@ -18,6 +18,8 @@ color_eight = lighten(color_eight,5)
 
 //color_eight = #72ad77
 
+color_green = #53be63
+
 color_nine = #447fb4
 
 color_ten = #333
@@ -77,7 +79,18 @@ body
 input.required
   border 2px solid color_six
   height 36px
-
+  line-height 36px
+.symbol
+  display inline
+  color color_six
+  font-family normal_text
+  padding 0 14px
+  font-size 28px
+  
+input.required.filled_in
+  border 2px solid color_green
+.symbol.filled_in
+  color color_green
 
 
 
