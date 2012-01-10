@@ -1012,7 +1012,16 @@ $ ->
             unless $line_value.length
               $line_value = $ '<input class="line_value" />'
               $home_designer.find('.line_values').append $line_value
-              $line_value.after '<div class="symbol">*</div><div class="clear" />'
+              $line_value.after '<div class="symbol">*</div><div class="button save">Save</div><div class="clear" />'
+            #
+            $save_button = $line_value.next().next()
+            #
+            $save_button.hide()
+            #
+            $line_value.unbind('focus').focus ->
+              $save_button.show()
+            $line_value.unbind('blur').blur ->
+              $save_button.hide()
             #
             $line_value.val $active_line.html()
             #
