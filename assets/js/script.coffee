@@ -950,6 +950,11 @@ $ ->
     #
     $text_align = $home_designer.find '.text_align .option'
     #
+    max_t = $editor.height()-20
+    min_t = 10
+    min_l = 10
+    max_l = $editor.width()-20
+    #
     card_loaded = ->
       #
       $text_align.unbind('click').click ->
@@ -1022,12 +1027,21 @@ $ ->
               x_2 = e_2.pageX
               y_2 = e_2.pageY
               #
-              $active_line.css
-                left: position.left - (x - x_2)
-                top: position.top - (y - y_2)
+              n_l = position.left - (x - x_2)
+              n_t = position.top - (y - y_2)
               #
-              $body.one 'mouseup', ->
-                $body.unbind 'mousemove', move_event
+              n_l = min_l if n_l < min_l
+              n_t = min_t if n_t < min_t
+              #
+              $active_line.css
+                left: n_l
+                top: n_t
+              #
+              e_2.preventDefault()
+            #
+            #
+            $body.one 'mouseup', ->
+              $body.unbind 'mousemove', move_event
             #
             $body.unbind('mousemove').mousemove move_event
 
