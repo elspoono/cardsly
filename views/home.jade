@@ -194,7 +194,7 @@
                 .option On
                 .option.active Off
             .input
-              input.email.required(placeholder='my@email.com')
+              input.email.required(placeholder='my@email.com',pattern='.+@.+\\..+')
               .symbol *
               .clear
               label E-mail Address
@@ -205,7 +205,7 @@
                 .option On
                 .option.active Off
             .input
-              input.phone(placeholder='(555) 555 - 5555')
+              input.phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
               .clear
               label Phone Number
       .clear
@@ -234,7 +234,7 @@
                 label Connect social
               .links
                 .input
-                  input.set_link.required(placeholder='mysite.com')
+                  input.set_link.required(placeholder='mysite.com',pattern='.+\\..+')
                   .symbol *
                   .clear
                   label Or type website address
@@ -347,12 +347,12 @@
           p Free via USPS priority mail
           .field.input
             label Address
-            input.required.filled_in.street(placeholder='123 Main St.')
-            .symbol.filled_in ✓
+            input.required.street(placeholder='123 Main St.',pattern='.{4,}')
+            .symbol *
           .field.input
             label Zip Code
-            input.required.typing.zip_code(placeholder='85022')
-            .symbol.typing *
+            input.required.zip_code(placeholder='85022',pattern='.{5,}')
+            .symbol *
           .map
           .full_address_container
             .full_address
@@ -361,11 +361,11 @@
           p Visa, Amex, Mastercard or Discover
           .field.input
             label cc #
-            input.required.credit-card(placeholder='4111111111111111')
+            input.required.credit-card(placeholder='4111111111111111',pattern='[0-9]{15,}')
             .symbol *
           .field.input
             label cvc
-            input.required.cvc(placeholder='1234')
+            input.required.cvc(placeholder='1234',pattern='[0-9]{3,}')
             .symbol *
           .field
             label Exp.

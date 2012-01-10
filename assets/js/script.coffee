@@ -1322,12 +1322,63 @@ $ ->
     #
     #
     #
+    $required = $ '.required'
+    $optional = $ '.optional'
+    $prev_t = $ ''
+    #
+    $required.add($optional).each (i) ->
+      $t = $ this
+      do ($t,$prev_t) ->
+        $s = $t.next('.symbol')
+        $a = $t.add $s
+        #
+        pattern = $t.attr('pattern')
+        reg_ex = new RegExp pattern
+        #
+        $t.keyup (e) ->
+          #
+          val = $t.val()
+          #
+          if val.match reg_ex
+            $a.removeClass 'typing'
+            $a.addClass 'filled_in'
+            $s.html '✓'
+          else
+            $a.removeClass 'filled_in'
+            $s.html '*'
+        #
+        $t.blur ->
+          if not $t.hasClass 'optional'
+            val = $t.val()
+            if not val.match reg_ex
+              $a.addClass 'typing'
+              $a.removeClass 'filled_in'
+              $s.html '*'
+            #
+          $prev_t.blur()
+          #
+      $prev_t = $t
     #
     #
     #
     #
     #
     #
+    $purchase_button = $ '.purchase'
+    $purchase_button.click ->
+      $required.last().blur()
+      $errored = $required.filter('.typing')
+      #
+      if $errored.length
+        $body.scrollTo $errored.first(),
+          offset:
+            left: 0
+            top: -28
+          duration: 500
+        setTimeout ->
+          $errored.fadeOut(200).fadeIn(200).fadeOut(200).fadeIn().fadeOut(200).fadeIn(200)
+        , 500
+
     #
     #
     #
