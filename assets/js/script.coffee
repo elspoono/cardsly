@@ -1400,6 +1400,8 @@ $ ->
     # -------
     $quantity = $ '.quantity_form .option'
     #
+    $total_price = $ '.total_price'
+    #
     $preview_count = $ '.preview_count'
     #
     $quantity.click ->
@@ -1417,6 +1419,8 @@ $ ->
         data: JSON.stringify
           cards: $q.attr 'cards'
           cost: $q.attr 'cost'
+      #
+      $total_price.html $q.attr 'cost'
     #
     #
     #
@@ -1443,7 +1447,7 @@ $ ->
       $new_img = $ '<img />'
       if map.full_address
         coordinates = map.latitude+','+map.longitude
-        $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=125x110&sensor=false'
+        $new_img.attr 'src', '//maps.googleapis.com/maps/api/staticmap?center='+coordinates+'&markers=color:red%7Clabel:V%7C'+coordinates+'&zoom=13&size=350x110&sensor=false'
         $full_address.html map.full_address.replace /,/, '<br>'
       else
         $new_img.attr 'src', null
@@ -1499,6 +1503,8 @@ $ ->
           $a_q = $quantity.filter('[cards='+o_f.cards+']')
           $a_q.make_active()
           $preview_count.html '<div class="large">'+$a_q.attr('cards')+'</div><div class="small">x</div>'
+          #
+          $total_price.html o_f.cost
           #
           #
           if o_f.full_address
