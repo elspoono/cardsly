@@ -349,11 +349,11 @@
           p Free via USPS priority mail
           .field.input
             label Address
-            input.required.street(placeholder='123 Main St.',pattern='.{4,}')
+            input.required.street(placeholder='123 Main St.',pattern='.{4,}',size='40')
             .symbol *
           .field.input
             label Zip Code
-            input.required.zip_code(placeholder='85022',pattern='.{5,}')
+            input.required.zip_code(placeholder='85022',pattern='.{5,},',size='7')
             .symbol *
           .map
           .full_address_container
@@ -363,11 +363,11 @@
           p Visa, Amex, Mastercard or Discover
           .field.input
             label cc #
-            input.required.credit-card(placeholder='4111111111111111',pattern='[0-9]{15,}')
+            input.required.credit-card(placeholder='4111111111111111',pattern='[0-9]{15,}',size='20')
             .symbol *
           .field.input
             label cvc
-            input.required.cvc(placeholder='1234',pattern='[0-9]{3,}')
+            input.required.cvc(placeholder='123',pattern='[0-9]{3,}',size='4')
             .symbol *
           .field
             label Exp.
