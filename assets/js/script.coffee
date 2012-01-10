@@ -283,6 +283,23 @@ $.create_card_from_theme = (options) ->
           textAlign: pos.text_align
           color: '#'+pos.color
         #
+        if $li.is ':visible'
+          #
+          t_a = pos.text_align
+          #
+          $li.css
+            width: 'auto'
+          #
+          n_w = $li.width()
+          if t_a is 'right'
+            n_l = n_l + c_w - n_w
+          if t_a is 'center'
+            n_l = n_l + (c_w - n_w)/2
+          #
+          $li.css
+            left: n_l
+            width: n_w
+      #
       #
       #
       for pos,i in theme_template.lines
@@ -294,18 +311,21 @@ $.create_card_from_theme = (options) ->
         #
         do ($li, n_l, c_w, pos) ->
           #
-          if not $li.length
-            $li = $ '<div class="line" />'
-            $li.appendTo $my_card
-            #
-            $li.html $.line_copy[i]
-            setTimeout ->
-              stylify_a_line($li, n_l, c_w, pos)
-            , 500
-            #
+          if $.line_copy[i]
+            if not $li.length
+              $li = $ '<div class="line" />'
+              $li.appendTo $my_card
+              #
+              $li.html $.line_copy[i]
+              setTimeout ->
+                stylify_a_line($li, n_l, c_w, pos)
+              , 500
+              #
+            else
+              $li.html $.line_copy[i]
+              stylify_a_line $li, n_l, c_w, pos
           else
-            $li.html $.line_copy[i]
-            stylify_a_line $li, n_l, c_w, pos
+            $li.remove()
           #
         #
         #
@@ -950,53 +970,6 @@ $ ->
     #
     $text_align = $home_designer.find '.text_align .option'
     #
-    max_t = $editor.outerHeight()-10
-    min_t = 10
-    min_l = 10
-    max_l = $editor.outerWidth()-10
-    #
-    $editor.mousedown (e) ->
-      #
-      x = e.pageX
-      y = e.pageY
-      e.preventDefault()
-      #
-      #
-      # Position variables for starting out
-      $active_line = $editor.find '.active'
-      position = $active_line.position()
-      width = $active_line.width()
-      height = $active_line.height()
-      #
-      # Event to update position
-      $active_line.unbind('mousedown').mousedown (e) ->
-        #
-        #
-        move_event = (e_2) ->
-          x_2 = e_2.pageX
-          y_2 = e_2.pageY
-          #
-          n_l = position.left - (x - x_2)
-          n_t = position.top - (y - y_2)
-          #
-          n_l = min_l if n_l < min_l
-          n_t = min_t if n_t < min_t
-          #
-          n_l = max_l-width if n_l+width > max_l
-          n_t = max_t-height if n_t+height > max_t
-          #
-          $active_line.css
-            left: n_l
-            top: n_t
-          #
-          e_2.preventDefault()
-        #
-        #
-        $body.one 'mouseup', ->
-          $body.unbind 'mousemove', move_event
-        #
-        $body.unbind('mousemove').mousemove move_event
-    #
     #
     card_loaded = ->
       #
@@ -1008,51 +981,58 @@ $ ->
       $qr = $editor.find '.qr'
       $lines = $editor.find '.line'
       #
-      new_active = ->
+      new_active = (o) ->
         #
-        $active_line = $lines.filter '.active'
+        o = {} if not o
+        #
+        $active_lines = $lines.filter '.active'
         $active_qr = $qr.filter '.active'
         $active_image = $images.filter '.active'
         #
         #
-        if $active_line.length
-          #
-          $line_value.val $active_line.html()
-          setTimeout ->
-            $line_value.focus().select()
-          , 0
-          #
+        if $active_lines.length
+          if o.do_focus
+            setTimeout ->
+              $line_value.focus().select()
+            , 0
           #
           #
-          # Shorten the line width to fit the text
-          shorten_this_line = ->
-            c_w = $active_line.width()
-            n_l = parseInt $active_line.css 'left'
-            t_a = $active_line.css 'text-align'
+          $active_lines.each ->
+            $active_line = $ this
             #
-            $active_line.css
-              width: 'auto'
             #
-            n_w = $active_line.width()
-            if t_a is 'right'
-              n_l = n_l + c_w - n_w
-            if t_a is 'center'
-              n_l = n_l + (c_w - n_w)/2
+            $line_value.val $active_line.html()
             #
-            $active_line.css
-              left: n_l
-              width: n_w
-          #
-          shorten_this_line()
-          #
-          #
-          # Event to update content
-          $line_value.unbind('keyup').keyup ->
-            val = $line_value.val()
-            $active_line.html val
-            shorten_this_line()
-          #
-          #
+            #
+            #
+            # Shorten the line width to fit the text
+            shorten_this_line = ->
+              c_w = $active_line.width()
+              n_l = parseInt $active_line.css 'left'
+              t_a = $active_line.css 'text-align'
+              #
+              $active_line.css
+                width: 'auto'
+              #
+              n_w = $active_line.width()
+              if t_a is 'right'
+                n_l = n_l + c_w - n_w
+              if t_a is 'center'
+                n_l = n_l + (c_w - n_w)/2
+              #
+              $active_line.css
+                left: n_l
+                width: n_w
+            #
+            #
+            #
+            # Event to update content
+            $line_value.unbind('keyup').keyup ->
+              val = $line_value.val()
+              $active_line.html val
+              shorten_this_line()
+            #
+            #
           #
           #
           $areas.eq(0).make_active()
@@ -1069,7 +1049,6 @@ $ ->
           #
           $areas.eq(3).make_active()
           #
-
       #
       #
       remove_focus_event = (e) ->
@@ -1090,12 +1069,165 @@ $ ->
       #
       #
       #
+      max_t = $editor.outerHeight()
+      min_t = 0
+      min_l = 0
+      max_l = $editor.outerWidth()
+      #
+      $home_designer.unbind().mousedown (e) ->
+        #
+        editor_offset = $editor.offset()
+        #
+        x = e.pageX
+        y = e.pageY
+        #
+        l = x - editor_offset.left
+        t = y - editor_offset.top
+        #
+        e.preventDefault()
+        #
+        $active_lines = $editor.find '.active'
+        #
+        $possible_lines = $editor.find('.line, .qr, .img').filter ':visible'
+        #
+        #
+        $usable_lines = $ ''
+        #
+        $possible_lines.each (i) ->
+          $possible_line = $ this
+          #
+          #
+          position = $possible_line.position()
+          width = $possible_line.width()
+          height = $possible_line.height()
+          #
+          unless l < position.left+width and l > position.left and t < position.top+height and t > position.top
+            #
+            $usable_lines = $usable_lines.add $possible_line
+            #
+          #
+        #
+        #
+        #
+        # Position variables for starting out
+        found_line = false
+        #
+        $active_lines.each ->
+          $active_line = $ this
+          #
+          #
+          position = $active_line.position()
+          width = $active_line.width()
+          height = $active_line.height()
+          $active_line.data 'position', position
+          #
+          if l < position.left+width and l > position.left and t < position.top+height and t > position.top
+            #
+            found_line = true
+            #
+            #
+          #
+        #
+        if found_line
+          #
+          #
+          move_event = (e_2) ->
+            $active_lines.each ->
+              $active_line = $ this
+              #
+              #
+              position = $active_line.data 'position'
+              width = $active_line.width()
+              height = $active_line.height()
+              x_2 = e_2.pageX
+              y_2 = e_2.pageY
+              #
+              n_l = position.left - (x - x_2)
+              n_t = position.top - (y - y_2)
+              #
+              n_l = min_l if n_l < min_l
+              n_t = min_t if n_t < min_t
+              #
+              n_l = max_l-width if n_l+width > max_l
+              n_t = max_t-height if n_t+height > max_t
+              #
+              $active_line.css
+                left: n_l
+                top: n_t
+              #
+            e_2.preventDefault()
+          #
+          #
+          $body.one 'mouseup', (e_3) ->
+            e_3.preventDefault()
+            $body.unbind 'mousemove', move_event
+          #
+          $body.unbind('mousemove').mousemove move_event
+          #
+        else
+          #
+          $highlight_box = $ '<div class="highlight_box" />'
+          $editor.append $highlight_box
+          #
+          $highlight_box.hide().css
+            left: -4
+            top: -4
+            width: 0
+            height: 0
+          #
+          move_event = (e_2) ->
+            x_2 = e_2.pageX
+            y_2 = e_2.pageY
+            #
+            n_l = l - (x - x_2)
+            n_t = t - (y - y_2)
+            #
+            n_l = min_l if n_l < min_l
+            n_t = min_t if n_t < min_t
+            #
+            n_l = max_l if n_l > max_l
+            n_t = max_t if n_t > max_t
+            #
+            e_2.preventDefault()
+            #
+            final = 
+              left: if l < n_l then l else n_l
+              top: if t < n_t then t else n_t
+              height: Math.abs(n_t-t)
+              width: Math.abs(n_l-l)
+            #
+            within = (x1,y1,x2,y2) -> x1 < final.left+final.width and x2 > final.left and y1 < final.top+final.height and y2 > final.top
+            #
+            $usable_lines.each ->
+              $possible = $ this
+              pos = $possible.position()
+              w = $possible.width()
+              h = $possible.height()
+              if within pos.left,pos.top,pos.left+w,pos.top+h
+                $possible.addClass 'active'
+              else
+                $possible.removeClass 'active'
+            #
+            new_active()
+            #
+            $highlight_box.show().css final
+          #
+          #
+          $body.one 'mouseup', (e_3) ->
+            e_3.preventDefault()
+            $body.unbind 'mousemove', move_event
+            $highlight_box.remove()
+            add_remove_focus_event()
+          #
+          $body.unbind('mousemove').mousemove move_event
+      #
       #
       $lines.add($images).add($qr).click (e) ->
         $t = $ this
         $t.make_active()
         setTimeout ->
-          new_active()
+          new_active
+            do_focus: true
         , 0
         add_remove_focus_event()
       #
