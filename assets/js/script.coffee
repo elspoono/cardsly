@@ -775,6 +775,9 @@ $ ->
   #
   ctrl_pressed = false
   shift_pressed = false
+  $window.blur ->
+    shift_pressed = false
+    ctrl_pressed = false
   #
   $body = $ document
   $body.keydown (e) ->
@@ -883,7 +886,6 @@ $ ->
     #
     #
     $editor = $all_card.filter '.editor'
-    $line_value = $home_designer.find '.line_value'
     #
     #
     #
@@ -989,17 +991,28 @@ $ ->
         $active_qr = $qr.filter '.active'
         $active_image = $images.filter '.active'
         #
+        $line_values = $home_designer.find '.line_values'
+        $line_values.children().remove()
+        $line_values = $ ''
+        #
         #
         if $active_lines.length
+          ###
           if o.do_focus
             setTimeout ->
-              $line_value.focus().select()
+              $home_designer.find('.line_value:last').focus().select()
             , 0
+          ###
           #
-          #
-          $active_lines.each ->
+          $active_lines.each (i) ->
             $active_line = $ this
             #
+            $line_value = $line_values.eq i
+            #
+            unless $line_value.length
+              $line_value = $ '<input class="line_value" />'
+              $home_designer.find('.line_values').append $line_value
+              $line_value.after '<div class="symbol">*</div><div class="clear" />'
             #
             $line_value.val $active_line.html()
             #
@@ -1031,6 +1044,19 @@ $ ->
               val = $line_value.val()
               $active_line.html val
               shorten_this_line()
+              #
+              #
+              $s = $line_value.next()
+              $a = $line_value.add $s
+              #
+              if val isnt ''
+                $a.removeClass 'typing'
+                $a.addClass 'filled_in'
+                $s.html '✓'
+              else
+                $a.removeClass 'filled_in'
+                $s.html '*'
+              #
             #
             #
           #
@@ -1084,7 +1110,9 @@ $ ->
         l = x - editor_offset.left
         t = y - editor_offset.top
         #
-        e.preventDefault()
+        $target = $ e.target
+        unless $target.is 'input,select'
+          e.preventDefault()
         #
         $active_lines = $editor.find '.active'
         #
@@ -1121,7 +1149,7 @@ $ ->
           height = $active_line.height()
           $active_line.data 'position', position
           #
-          if l < position.left+width and l > position.left and t < position.top+height and t > position.top
+          if l < position.left+width and l > position.left and t < position.top+height and t > position.top and width isnt max_l and height isnt max_t
             #
             found_line = true
             #
@@ -1176,17 +1204,15 @@ $ ->
             height: 0
           #
           move_event = (e_2) ->
+            #
+            $active_lines.removeClass 'active'
+            #
             x_2 = e_2.pageX
             y_2 = e_2.pageY
             #
             n_l = l - (x - x_2)
             n_t = t - (y - y_2)
             #
-            n_l = min_l if n_l < min_l
-            n_t = min_t if n_t < min_t
-            #
-            n_l = max_l if n_l > max_l
-            n_t = max_t if n_t > max_t
             #
             e_2.preventDefault()
             #
@@ -1224,7 +1250,10 @@ $ ->
       #
       $lines.add($images).add($qr).click (e) ->
         $t = $ this
-        $t.make_active()
+        unless shift_pressed or ctrl_pressed
+          $t.make_active()
+        else
+          $t.toggleClass 'active'
         setTimeout ->
           new_active
             do_focus: true
