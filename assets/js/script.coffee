@@ -998,10 +998,39 @@ $ ->
           shorten_this_line()
           #
           #
-          $line_value.unbind().keyup ->
+          # Event to update content
+          $line_value.unbind('keyup').keyup ->
             val = $line_value.val()
             $active_line.html val
             shorten_this_line()
+          #
+          #
+          #
+          # Position variables for starting out
+          position = $active_line.position()
+          #
+          #
+          #
+          # Event to update position
+          $active_line.unbind('mousedown').mousedown (e) ->
+            x = e.pageX
+            y = e.pageY
+            #
+            e.preventDefault()
+            #
+            move_event = (e_2) ->
+              x_2 = e_2.pageX
+              y_2 = e_2.pageY
+              #
+              $active_line.css
+                left: position.left - (x - x_2)
+                top: position.top - (y - y_2)
+              #
+              $body.one 'mouseup', ->
+                $body.unbind 'mousemove', move_event
+            #
+            $body.unbind('mousemove').mousemove move_event
+
           #
           #
           $areas.eq(0).make_active()
