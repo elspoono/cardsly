@@ -1306,6 +1306,9 @@ $ ->
             $street.val o_f.street
             $zip_code.val o_f.zip_code
             #
+            $street.keyup()
+            $zip_code.keyup()
+            #
             #
           #
         else
