@@ -2125,11 +2125,13 @@ app.post '/confirm-purchase', (req, res, next) ->
           log_err err
           res.send
             err: charge.error.message
-        else if not charge.paid
+        else if !charge.paid and to_charge_amount isnt 0
           console.log 'ERR: stripe charge resulted in not paid for some reason.'
           res.send
             err: 'Charge resulted in not paid for some reason.'
         else
+          if to_charge_amount is 0
+            charge.paid = true
           res.send
             order_id: new_order._id
             charge: charge
@@ -2186,6 +2188,10 @@ app.post '/validate-coupon', (req, res, next) ->
   #
   #
   if req.body.coupon_code and req.body.coupon_code is 'ferdur120'
+    req.session.discount = 10
+    res.send
+      discount: 10
+  else if req.body.coupon_code and req.body.coupon_code is 'forusonly'
     req.session.discount = 10
     res.send
       discount: 10
