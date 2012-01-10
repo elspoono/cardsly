@@ -349,11 +349,11 @@
           p Free via USPS priority mail
           .field.input
             label Address
-            input.required.street(placeholder='123 Main St.',pattern='.{4,}',size='40')
+            input.required.street(placeholder='123 Main St.',pattern='.{4,}')
             .symbol *
           .field.input
             label Zip Code
-            input.required.zip_code(placeholder='85022',pattern='.{5,},',size='7')
+            input.required.zip_code(placeholder='85022',pattern='.{5,}')
             .symbol *
           .map
           .full_address_container
@@ -362,15 +362,15 @@
           h2 Credit Card
           p Visa, Amex, Mastercard or Discover
           .field.input
-            label cc #
-            input.required.credit-card(placeholder='4111111111111111',pattern='[0-9]{15,}',size='20')
+            label Card #
+            input.required.credit-card(placeholder='4111111111111111',pattern='[0-9]{15,}')
             .symbol *
           .field.input
-            label cvc
-            input.required.cvc(placeholder='123',pattern='[0-9]{3,}',size='4')
+            label CVC
+            input.required.cvc(placeholder='123',pattern='[0-9]{3,}')
             .symbol *
           .field
-            label Exp.
+            label Expires
             select.card_expiry_month(name='credit_card[expiry_month]')
               - months = ['January','February','March','April','May','June','July','August','September','October','November','December']
               - for (var i in months)
@@ -378,6 +378,12 @@
             select.card_expiry_year(name='credit_card[expiry_year]')
               - for (var year = 2011; year<2032; year++)
                 option(value=year)=year
+          .clear
+          .spaceer
+          .field.total 
+            label Total 
+            | $
+            span.total_price
         .clear
   .bottom
     .center_column
