@@ -1086,7 +1086,9 @@ $ ->
       $lines.add($images).add($qr).click (e) ->
         $t = $ this
         $t.make_active()
-        new_active()
+        setTimeout ->
+          new_active()
+        , 0
         add_remove_focus_event()
       #
       new_active()
