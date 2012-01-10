@@ -77,12 +77,12 @@ body
 
 
 input.required
-  border 2px solid color_six
+  border 2px solid color_ten
   height 36px
   line-height 36px
 .symbol
   display inline
-  color color_six
+  color color_ten
   font-family normal_text
   padding 0 14px
   font-size 28px
@@ -91,6 +91,11 @@ input.required.filled_in
   border 2px solid color_green
 .symbol.filled_in
   color color_green
+  
+input.required.typing
+  border 2px solid color_red
+.symbol.typing
+  color color_red
 
 
 
@@ -558,6 +563,8 @@ h1.two
   .toggle,.font_families,.color_picker,.font_size
     float left
     margin 0 0 0 14px
+  .toggle
+    margin-left 0
   .font_families
     margin-left 0
 .area.active
@@ -646,8 +653,6 @@ h1.two
   .input
     float left
     margin 0
-    input,label
-      display block
   .toggle
     float right
     margin 0 0 0 14px

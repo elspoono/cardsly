@@ -82,11 +82,37 @@
       .row_bg
       .row_content
         .left
+          .card.editor
+          .spacer
+          .below_card
+            .below_left
+              .toggle.front_back
+                .bg
+                  .option.active front
+                  .option back
+            .below_right
+              .button.add_image
+                img(src='/images/icons/camera.png',style='margin-top:3px')
+                | +
+              .button.alpha_image
+                img(src='/images/icons/alpha.png',style='margin-top:6px')
+                | +
+        .right
           .controls
             .areas
               .area
                 input.line_value(placeholder='Enter Text Here')
                 .button.save save
+                .clear
+                .spacer
+                .toggle.text_align
+                  .bg
+                    .option.active(align='left')
+                      .img.left
+                    .option(align='center')
+                      .img.center
+                    .option(align='right')
+                      .img.right
                 .clear
                 .spacer
                 - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
@@ -96,14 +122,6 @@
                 select.font_size
                   -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
                     option(value=size)=size
-                .toggle.text_align
-                  .bg
-                    .option.active(align='left')
-                      .img.left
-                    .option(align='center')
-                      .img.center
-                    .option(align='right')
-                      .img.right
                 .color_picker
                   .bg
                     .color
@@ -141,24 +159,8 @@
                 .button.upload_button
                   img(src='/images/icons/upload.png', style='margin-top:5px')
                   | Upload
-          .spacer
-          .card.editor
-          .spacer
-          .below_card
-            .below_left
-              .toggle.front_back
-                .bg
-                  .option.active front
-                  .option back
-            .below_right
-              .button.add_image
-                img(src='/images/icons/camera.png',style='margin-top:3px')
-                | +
-              .button.alpha_image
-                img(src='/images/icons/alpha.png',style='margin-top:6px')
-                | +
-        .right
-          .themes
+              .area.active
+                .themes
         .clear
 .row.alert_row
   .help_overlay.active
@@ -187,8 +189,10 @@
             p Enter your email here. Turn automatic alerts on or off at anytime.
           .field
             .input
-              input.email.required(placeholder='my@email.com')
               .symbol *
+              input.email.required(placeholder='my@email.com')
+              .clear
+              .symbol &nbsp;
               label E-mail Address
             .toggle
               .bg
@@ -216,11 +220,14 @@
                   li.twitter.shift t
                   li.linkedin l
                   li.google g
+                .clear
                 label Connect social
               .links
                 .input
-                  input.set_link.required(placeholder='mysite.com')
                   .symbol *
+                  input.set_link.required(placeholder='mysite.com')
+                  .clear
+                  .symbol &nbsp;
                   label Or type website address
                 .button +
             .link_items
@@ -336,8 +343,8 @@
             .symbol.filled_in ✓
           .field.input
             label Zip Code
-            input.required.zip_code(placeholder='85022')
-            .symbol *
+            input.required.typing.zip_code(placeholder='85022')
+            .symbol.typing *
           .map
           .full_address_container
             .full_address

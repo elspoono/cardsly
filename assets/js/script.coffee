@@ -977,6 +977,9 @@ $ ->
       new_active = ->
         #
         $active_line = $lines.filter '.active'
+        $active_qr = $qr.filter '.active'
+        $active_image = $images.filter '.active'
+        #
         #
         if $active_line.length
           #
@@ -986,28 +989,19 @@ $ ->
           , 0
           #
           $areas.eq(0).make_active()
-        else
-          $areas.eq(0).removeClass 'active'
-        #
-        #
-        #
-        $active_qr = $qr.filter '.active'
-        #
-        if $active_qr.length
+          #
+        else if $active_qr.length
           #
           $areas.eq(1).make_active()
           #
-        else
-          $areas.eq(1).removeClass 'active'
-        #
-        #
-        $active_image = $images.filter '.active'
-        #
-        if $active_image.length
+        else if $active_image.length
           #
           $areas.eq(2).make_active()
+          #
         else
-          $areas.eq(2).removeClass 'active'
+          #
+          $areas.eq(3).make_active()
+          #
 
       #
       #
