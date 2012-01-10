@@ -950,10 +950,53 @@ $ ->
     #
     $text_align = $home_designer.find '.text_align .option'
     #
-    max_t = $editor.height()-20
+    max_t = $editor.outerHeight()-10
     min_t = 10
     min_l = 10
-    max_l = $editor.width()-20
+    max_l = $editor.outerWidth()-10
+    #
+    $editor.mousedown (e) ->
+      #
+      x = e.pageX
+      y = e.pageY
+      e.preventDefault()
+      #
+      #
+      # Position variables for starting out
+      $active_line = $editor.find '.active'
+      position = $active_line.position()
+      width = $active_line.width()
+      height = $active_line.height()
+      #
+      # Event to update position
+      $active_line.unbind('mousedown').mousedown (e) ->
+        #
+        #
+        move_event = (e_2) ->
+          x_2 = e_2.pageX
+          y_2 = e_2.pageY
+          #
+          n_l = position.left - (x - x_2)
+          n_t = position.top - (y - y_2)
+          #
+          n_l = min_l if n_l < min_l
+          n_t = min_t if n_t < min_t
+          #
+          n_l = max_l-width if n_l+width > max_l
+          n_t = max_t-height if n_t+height > max_t
+          #
+          $active_line.css
+            left: n_l
+            top: n_t
+          #
+          e_2.preventDefault()
+        #
+        #
+        $body.one 'mouseup', ->
+          $body.unbind 'mousemove', move_event
+        #
+        $body.unbind('mousemove').mousemove move_event
+    #
     #
     card_loaded = ->
       #
@@ -1010,41 +1053,6 @@ $ ->
             shorten_this_line()
           #
           #
-          #
-          # Position variables for starting out
-          position = $active_line.position()
-          #
-          #
-          #
-          # Event to update position
-          $active_line.unbind('mousedown').mousedown (e) ->
-            x = e.pageX
-            y = e.pageY
-            #
-            e.preventDefault()
-            #
-            move_event = (e_2) ->
-              x_2 = e_2.pageX
-              y_2 = e_2.pageY
-              #
-              n_l = position.left - (x - x_2)
-              n_t = position.top - (y - y_2)
-              #
-              n_l = min_l if n_l < min_l
-              n_t = min_t if n_t < min_t
-              #
-              $active_line.css
-                left: n_l
-                top: n_t
-              #
-              e_2.preventDefault()
-            #
-            #
-            $body.one 'mouseup', ->
-              $body.unbind 'mousemove', move_event
-            #
-            $body.unbind('mousemove').mousemove move_event
-
           #
           #
           $areas.eq(0).make_active()
