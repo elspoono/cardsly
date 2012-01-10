@@ -283,20 +283,6 @@ $.create_card_from_theme = (options) ->
           textAlign: pos.text_align
           color: '#'+pos.color
         #
-        #
-        $li.css
-          width: 'auto'
-        #
-        n_w = $li.width()
-        if pos.text_align is 'right'
-          n_l = n_l + c_w - n_w
-        if pos.text_align is 'center'
-          n_l = n_l + (c_w - n_w)/2
-        #
-        #
-        $li.css
-          left: n_l
-          width: n_w
       #
       #
       for pos,i in theme_template.lines
@@ -987,6 +973,36 @@ $ ->
           setTimeout ->
             $line_value.focus().select()
           , 0
+          #
+          #
+          #
+          # Shorten the line width to fit the text
+          shorten_this_line = ->
+            c_w = $active_line.width()
+            n_l = parseInt $active_line.css 'left'
+            t_a = $active_line.css 'text-align'
+            #
+            $active_line.css
+              width: 'auto'
+            #
+            n_w = $active_line.width()
+            if t_a is 'right'
+              n_l = n_l + c_w - n_w
+            if t_a is 'center'
+              n_l = n_l + (c_w - n_w)/2
+            #
+            $active_line.css
+              left: n_l
+              width: n_w
+          #
+          shorten_this_line()
+          #
+          #
+          $line_value.unbind().keyup ->
+            val = $line_value.val()
+            $active_line.html val
+            shorten_this_line()
+          #
           #
           $areas.eq(0).make_active()
           #
