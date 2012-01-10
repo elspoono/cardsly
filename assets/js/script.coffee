@@ -1348,12 +1348,13 @@ $ ->
             $s.html '✓'
           else
             $a.removeClass 'filled_in'
-            $s.html '*'
+            unless $t.hasClass 'optional'
+              $s.html '*'
         #
         $t.blur ->
-          if not $t.hasClass 'optional'
+          unless $t.hasClass 'optional'
             val = $t.val()
-            if not val.match reg_ex
+            unless val.match reg_ex
               $a.addClass 'typing'
               $a.removeClass 'filled_in'
               $s.html '*'
