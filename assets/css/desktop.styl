@@ -42,13 +42,17 @@ input,textarea,select
   color color_blue
   padding 0 10px
   margin 0
+select
+  height 60px
+  line-height 60px
 input,textarea,select,p,label
   font-family normal_text
 
 
 a
   color color_blue
-  text-decoration underline
+  text-decoration none
+  border-bottom 2px solid color_blue
   font-family normal_text
 
 
@@ -143,7 +147,7 @@ input.typing
   a
     font-size 20px
     color color_black
-    text-decoration none
+    border-bottom none
   li
     float left
     margin 0 0 0 28px
@@ -471,7 +475,7 @@ h1.two
 
 .toggle
   border_radius(20px)
-  box_shadow(0,color_black,1px)
+  box_shadow(0,color_black,2px)
   .bg
     border_radius(20px)
     overflow hidden
@@ -552,8 +556,10 @@ h1.two
 .home_designer
   overflow visible
   position relative
+  height 856px
+  .above_controls
+    display none
   .controls
-    height 405px
     width 390px
   .big_spacer
     margin-top 84px
@@ -565,8 +571,8 @@ h1.two
     float left
   .button
     cursor pointer
+    box_shadow(0,color_black,2px)
     gradient(lighten(color_black,30),darken(color_black,0))
-    box_shadow(0,color_black,5px)
     border_radius(10px)
     height 32px
     padding 4px 8px
@@ -597,11 +603,10 @@ h1.two
     margin 0 0 0 14px
     gradient(lighten(color_black,30),darken(color_black,0))
     border_radius(10px)
-    box_shadow(0,color_black,5px)
     color color_white
     padding 0 14px
-    line-height 38px
-    height 40px
+    line-height 60px
+    height 60px
     cursor pointer
   .toggle,.font_families,.color_picker,.font_size
     float left
@@ -613,27 +618,20 @@ h1.two
 .area.active
   display block
 .below_card
+  .button
+    margin-left 14px
   .below_right
     float right
-    .button
-      margin-left 14px
   
 .color_picker
   cursor pointer
-  box_shadow(0,color_black,5px)
   border_radius(10px)
-  height 40px
+  height 60px
   width 52px
-  .bg
-    gradient(darken(color_black,0),lighten(color_black,30))
-    box_shadow(0,color_black,10px,inset)
-    color lighten(color_black,40)
-    border_radius(10px)
-    height 40px
-    width 52px
+  gradient(darken(color_black,0),lighten(color_black,30))
   .color
     margin 5px 0 0 5px
-    height 28px
+    height 48px
     width 28px
     background color_white
     box_shadow(0,color_black,5px)
@@ -645,7 +643,7 @@ h1.two
     border-color lighten(color_black,40) transparent lighten(color_black,40) transparent
   .arrow_1
     border-width 0 3px 6px 3px
-    margin 13px 6px 0 0
+    margin 23px 6px 0 0
   .arrow_2
     border-width 6px 3px 0 3px
     margin 3px 6px 0 0
@@ -910,8 +908,8 @@ h1.two
     font-family normal_text
   a
     font-size 20px
-    color color_white
-    text-decoration none
+    color darken(color_white,20)
+    border-bottom none
     img
       border 0
   .col_one,.col_two,.col_three

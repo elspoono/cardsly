@@ -964,6 +964,10 @@ $ ->
     #
     $link_items = $notify_form.find '.link_items'
     #
+    $above_controls = $areas.find '.above_controls'
+    #
+    $font_families = $areas.find '.font_families'
+    $font_size = $areas.find '.font_size'
     #
     #
     # ---------
@@ -995,14 +999,9 @@ $ ->
         $line_values.children().remove()
         $line_values = $ ''
         #
+        $above_controls.show()
         #
         if $active_lines.length
-          ###
-          if o.do_focus
-            setTimeout ->
-              $home_designer.find('.line_value:last').focus().select()
-            , 0
-          ###
           #
           $active_lines.each (i) ->
             $active_line = $ this
@@ -1012,16 +1011,15 @@ $ ->
             unless $line_value.length
               $line_value = $ '<input class="line_value" />'
               $home_designer.find('.line_values').append $line_value
-              $line_value.after '<div class="symbol">*</div><div class="button save">Save</div><div class="clear" />'
+              $line_value.after '<div class="button save">Save</div><div class="clear" />'
             #
-            $save_button = $line_value.next().next()
+            $save_button = $line_value.next()
             #
             $save_button.hide()
             #
             $line_value.unbind('focus').focus ->
+              $home_designer.find('.save.button').hide()
               $save_button.show()
-            $line_value.unbind('blur').blur ->
-              $save_button.hide()
             #
             $save_button.click -> $body.click()
             #
@@ -1057,19 +1055,22 @@ $ ->
               shorten_this_line()
               #
               #
-              $s = $line_value.next()
-              $a = $line_value.add $s
-              #
-              if val isnt ''
-                $a.removeClass 'typing'
-                $a.addClass 'filled_in'
-                $s.html '✓'
-              else
-                $a.removeClass 'filled_in'
-                $s.html '*'
               #
             #
             #
+          #
+          if o.do_focus
+            setTimeout ->
+              $home_designer.find('.line_value:first').focus().select()
+            , 0
+          #
+          #
+          #
+          #
+          $font_families.unbind 'change'
+          #
+          #
+          #
           #
           #
           $areas.eq(0).make_active()
@@ -1085,6 +1086,7 @@ $ ->
         else
           #
           $areas.eq(3).make_active()
+          $above_controls.hide()
           #
       #
       #
@@ -1253,6 +1255,8 @@ $ ->
             $body.unbind 'mousemove', move_event
             $highlight_box.remove()
             add_remove_focus_event()
+            new_active
+              do_focus: true
           #
           $body.unbind('mousemove').mousemove move_event
       #
