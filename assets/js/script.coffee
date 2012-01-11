@@ -979,10 +979,6 @@ $ ->
     #
     card_loaded = ->
       #
-      $text_align.unbind('click').click ->
-        $t_a = $ this
-        $t_a.make_active()
-      #
       $images = $editor.find '.img'
       $qr = $editor.find '.qr'
       $lines = $editor.find '.line'
@@ -1116,6 +1112,21 @@ $ ->
           #
           #
           #
+          text_align = $active_lines.css('text-align')
+          #
+          $text_align.unbind('click')
+          $text_align.filter('[align='+text_align+']').make_active()
+          $text_align.click ->
+            $t_a = $ this
+            $t_a.make_active()
+            #
+            $active_lines.css
+              'text-align': $t_a.attr 'align'
+              'width': max_l
+              'left': min_l
+              #
+            #
+            shorten_all_lines()
           #
           #
           $areas.eq(0).make_active()
