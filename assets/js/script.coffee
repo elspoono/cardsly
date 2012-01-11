@@ -1023,6 +1023,8 @@ $ ->
             $line_value.unbind('blur').blur ->
               $save_button.hide()
             #
+            $save_button.click -> $body.click()
+            #
             $line_value.val $active_line.html()
             #
             #
@@ -1109,7 +1111,7 @@ $ ->
       min_l = 0
       max_l = $editor.outerWidth()
       #
-      $home_designer.unbind().mousedown (e) ->
+      $editor.unbind().mousedown (e) ->
         #
         editor_offset = $editor.offset()
         #
@@ -1119,9 +1121,7 @@ $ ->
         l = x - editor_offset.left
         t = y - editor_offset.top
         #
-        $target = $ e.target
-        unless $target.is 'input,select'
-          e.preventDefault()
+        e.preventDefault()
         #
         $active_lines = $editor.find '.active'
         #
