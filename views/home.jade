@@ -44,14 +44,14 @@
             br
             | Link anywhere.
           p
-            a(href='/learn-more#Social') Learn More
+            a(href='/learn-more#Social') Learn More >
         .col_two
           img.two(src='/images/alerticons.png')
           h4 Learn who scans
           p When scanned, get an e-mail or text message telling you which card was hit.
           .learn
           p
-            a(href='/learn-more#Alerts') Learn More
+            a(href='/learn-more#Alerts') Learn More >
         .col_three
           img.three(src='/images/clockicon.png')
           h4 Update links anytime
@@ -59,7 +59,7 @@
             br
             | Edit any card, or all of them, anytime.
           p
-            a(href='/learn-more#Update') Learn More
+            a(href='/learn-more#Update') Learn More >
           
   .clear
 .row.home_designer
@@ -117,13 +117,6 @@
                 select.font_size
                   -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
                     option(value=size)=size
-                .color_picker
-                  .bg
-                    .color
-                    .shader
-                    .arrow_container
-                      .arrow_1
-                      .arrow_2
                 .clear
                 .spacer
                 .toggle.text_align
@@ -134,6 +127,13 @@
                       .img.center
                     .option(align='right')
                       .img.right
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
               .area
                 .toggle
                   .bg

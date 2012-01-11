@@ -1161,6 +1161,7 @@ $ ->
       #
       #
       #
+      currently_moving = false
       #
       #
       #
@@ -1227,6 +1228,9 @@ $ ->
           #
           #
           move_event = (e_2) ->
+            #
+            currently_moving = true
+            #
             $active_lines.each ->
               $active_line = $ this
               #
@@ -1254,6 +1258,9 @@ $ ->
           #
           #
           $body.one 'mouseup', (e_3) ->
+            #
+            currently_moving = false
+            #
             e_3.preventDefault()
             $body.unbind 'mousemove', move_event
           #
@@ -1271,6 +1278,9 @@ $ ->
             height: 0
           #
           move_event = (e_2) ->
+            #
+            currently_moving = true
+            #
             #
             $active_lines.removeClass 'active'
             #
@@ -1307,6 +1317,9 @@ $ ->
           #
           #
           $body.one 'mouseup', (e_3) ->
+            #
+            currently_moving = false
+            #
             e_3.preventDefault()
             $body.unbind 'mousemove', move_event
             $highlight_box.remove()
