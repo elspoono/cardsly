@@ -964,7 +964,7 @@ $ ->
     #
     $link_items = $notify_form.find '.link_items'
     #
-    $above_controls = $areas.find '.above_controls'
+    $above_controls = $home_designer.find '.above_controls'
     #
     $font_families = $areas.find '.font_families'
     $font_size = $areas.find '.font_size'
