@@ -627,29 +627,38 @@ h1.two
   
 .color_picker
   cursor pointer
+  height 38px
+  width 40px
+  border 2px solid color_black
   border_radius(10px)
-  height 40px
-  width 52px
-  gradient(darken(color_black,0),lighten(color_black,30))
-  .color
-    margin 5px 0 0 5px
-    height 28px
-    width 28px
-    background color_white
-    box_shadow(0,color_black,5px)
-    border_radius(8px)
-    float left
-  .arrow_1,.arrow_2
-    float right
-    border-style solid
-    border-color lighten(color_black,40) transparent lighten(color_black,40) transparent
+  box_shadow(0,color_black,2px)
+  position relative
   .arrow_1
-    border-width 0 3px 6px 3px
-    margin 13px 6px 0 0
+    position absolute
+    background color_black
+    height 20px
+    width 20px
+    top 25px
+    left 28px
+    border_radius(10px)
+    box_shadow(0,color_black,2px)
   .arrow_2
-    border-width 6px 3px 0 3px
-    margin 3px 6px 0 0
-
+    border-style solid
+    border-color color_white transparent transparent transparent
+    border-width 6px 4px 0 4px
+    position absolute
+    left 34px
+    top 33px
+.color-window-guy
+  .button
+    height 40px
+    line-height 40px
+    border_radius(10px)
+    gradient(lighten(color_black,30),darken(color_black,0))
+    color color_white
+    box_shadow(0,color_two,5px)
+    text-align center
+    cursor pointer
 .paper
   z-index 14
   opacity(.20)

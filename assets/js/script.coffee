@@ -184,14 +184,6 @@ $.create_card_from_theme = (options) ->
     #
     #
     #
-    $my_qr = $my_card.find('.qr')
-    if not $my_qr.length
-      $my_qr = $ '<img class="qr" /></div>'
-      $my_card.append $my_qr
-    #
-    #
-    #
-    #
     # ----------------------------------------------
     # Images
     # ----------------------------------------------
@@ -234,6 +226,14 @@ $.create_card_from_theme = (options) ->
     # ----------------------------------------------
     # END Images
     # ----------------------------------------------
+    #
+    #
+    $my_qr = $my_card.find('.qr')
+    if not $my_qr.length
+      $my_qr = $ '<img class="qr" /></div>'
+      $my_card.append $my_qr
+    #
+    #
     #
     #
     #
@@ -923,7 +923,8 @@ $ ->
           $e = $ e.target
           if $e.closest('.row').hasClass 'home_designer'
             setTimeout ->
-              $editor.find('.line:first').click()
+              $editor.find('.line:first').addClass 'active'
+              new_active()
             , 0
           #
         else
@@ -976,6 +977,7 @@ $ ->
     #
     $text_align = $home_designer.find '.text_align .option'
     #
+    new_active = -> {}
     #
     card_loaded = ->
       #
@@ -1091,10 +1093,6 @@ $ ->
             #
             #
           #
-          if o.do_focus
-            setTimeout ->
-              $home_designer.find('.line_value:first').focus().select()
-            , 0
           #
           #
           #
@@ -1129,6 +1127,48 @@ $ ->
             shorten_all_lines()
           #
           #
+          #
+          #
+          font_size = Math.round $active_lines.height()
+          #
+          $font_size.unbind('change')
+          #
+          found_size = false
+          $font_size.find('option').each ->
+            unless found_size
+              $option = $ this
+              #
+              if $option.val()*1 is font_size*1
+                $option.attr 'selected', 'selected'
+                found_size = true
+              #
+              if $option.val()*1 > font_size*1
+                $new_option = $ '<option value="'+font_size+'">'+font_size+'</option>'
+                $option.before $new_option
+                $new_option.attr 'selected', 'selected'
+                found_size = true
+          #
+          $font_size.change ->
+            size_px = $font_size.val() + 'px'
+            $active_lines.css
+              'height': size_px
+              'font-size': size_px
+              'line-height': size_px
+            #
+            shorten_all_lines()
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
+          #
           $areas.eq(0).make_active()
           #
         else if $active_qr.length
@@ -1144,13 +1184,149 @@ $ ->
           $areas.eq(3).make_active()
           $above_controls.hide()
           #
+        #
+        #
+        #
+        #
+        #
+        #
+        $color_pickers = $home_designer.find '.color_picker:visible'
+        #
+        $color_pickers.each ->
+          $color_picker = $ this
+          #
+          #
+          #
+          if $active_lines.length
+            $color_picker.css
+              background: $active_lines.css 'color'
+          #
+          #
+          if $color_picker.hasClass 'color_1'
+            $color_picker.css
+              background: '#' + active_theme.theme_templates[active_view].qr.color1
+          #
+          if $color_picker.hasClass 'color_2'
+            $color_picker.css
+              background: '#' + active_theme.theme_templates[active_view].qr.color2
+          #
+          #
+          #
+          #
+          $color_picker.click (e) ->
+            $color_window = $ '<div class="color-window-guy" />'
+            $color_button = $ '<div class="button normal small">Save</div>'
+            $color_window.colorpicker
+              color: $color_picker.css 'background-color'
+              rgb: false
+              onSelect: (new_color) ->
+                #
+                #
+                #
+                $color_picker.css
+                  background: new_color
+                #
+                #
+                #
+                if $color_picker.hasClass('color_1') or $color_picker.hasClass('color_2')
+                  #
+                  #
+                  #
+                  new_color = new_color.replace /#/, ''
+                  new_color = new_color.substr 0,6
+                  #
+                  #
+                  #
+                  if $color_picker.hasClass 'color_1' 
+                    active_theme.theme_templates[active_view].qr.color1 = new_color
+                  if $color_picker.hasClass 'color_2' 
+                    active_theme.theme_templates[active_view].qr.color2 = new_color
+                  #
+                  #
+                  #
+                  theme_template = active_theme.theme_templates[active_view]
+                  #
+                  #
+                  #
+                  # Calculate the alpha
+                  alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
+                  #
+                  #
+                  # Default the style
+                  if not theme_template.qr.style
+                    theme_template.qr.style = 'round'
+                  #
+                  $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
+                  #
+                  #
+                #
+                $active_lines.each ->
+                  $a = $ this
+                  $a.css
+                    'color': new_color
+                  #index = $a.prevAll().length
+                  #active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
+            #
+            $(document.body).append $color_window
+            #
+            $color_window.append $color_button
+            #
+            #
+            #
+            $color_window.css
+              position: 'absolute'
+              zIndex: 2000
+            #
+            #
+            cp_o = $color_picker.offset()
+            n_t = cp_o.top - $color_window.outerHeight() + $color_picker.outerHeight() + 4
+            n_l = cp_o.left - 4
+            n_r = null
+            if n_l+$color_window.outerWidth() > $(window).width()
+              n_l = null
+              n_r = 0
+            if n_t < $body.scrollTop()
+              n_t = $body.scrollTop()
+            $color_window.css
+              top: n_t
+              left: n_l
+              right: n_r
+            $color_button.css
+              position: 'absolute'
+              width: 80
+              bottom: 34
+              right: 14
+            #
+            #
+            #
+            body_click_event = (e) ->
+              $t = $ e.target
+              $to_check = $t.closest('.color-window-guy').add $t
+              unless $to_check[0] is $color_window[0] and $t[0] isnt $color_button[0]
+                $color_window.remove()
+              else
+                $body.one 'click', body_click_event
+            e.preventDefault()
+            setTimeout ->
+              $body.one 'click', body_click_event
+              $modes = $color_window.find '.ui-colorpicker-mode'
+            , 0
+          #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
       #
       #
       remove_focus_event = (e) ->
         $t = $ e.target
         $c = $t.closest('.controls').andSelf().filter('.controls')
         $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
-        unless $c.length or $e.length
+        $w = $t.closest('.color-window-guy').andSelf().filter('.color-window-guy')
+        unless $c.length or $e.length or $w.length
           $editor.find('.active').removeClass 'active'
           $body.unbind 'click', remove_focus_event
           new_active()
@@ -1161,7 +1337,6 @@ $ ->
       #
       #
       #
-      currently_moving = false
       #
       #
       #
@@ -1182,12 +1357,15 @@ $ ->
         #
         e.preventDefault()
         #
+        did_move_mouse = false
+        #
         $active_lines = $editor.find '.active'
-        #
         $possible_lines = $editor.find('.line, .qr, .img').filter ':visible'
-        #
-        #
         $usable_lines = $ ''
+        $clicked_lines = $ ''
+        #
+        #
+        #
         #
         $possible_lines.each (i) ->
           $possible_line = $ this
@@ -1200,6 +1378,10 @@ $ ->
           unless l < position.left+width and l > position.left and t < position.top+height and t > position.top
             #
             $usable_lines = $usable_lines.add $possible_line
+            #
+          else
+            #
+            $clicked_lines = $clicked_lines.add $possible_line
             #
           #
         #
@@ -1228,9 +1410,6 @@ $ ->
           #
           #
           move_event = (e_2) ->
-            #
-            currently_moving = true
-            #
             $active_lines.each ->
               $active_line = $ this
               #
@@ -1258,9 +1437,6 @@ $ ->
           #
           #
           $body.one 'mouseup', (e_3) ->
-            #
-            currently_moving = false
-            #
             e_3.preventDefault()
             $body.unbind 'mousemove', move_event
           #
@@ -1279,8 +1455,7 @@ $ ->
           #
           move_event = (e_2) ->
             #
-            currently_moving = true
-            #
+            did_move_mouse = true
             #
             $active_lines.removeClass 'active'
             #
@@ -1317,30 +1492,21 @@ $ ->
           #
           #
           $body.one 'mouseup', (e_3) ->
-            #
-            currently_moving = false
-            #
             e_3.preventDefault()
+            unless did_move_mouse
+              unless shift_pressed or ctrl_pressed
+                $clicked_lines.make_active()
+              else
+                $clicked_lines.last().toggleClass 'active'
+              new_active()
             $body.unbind 'mousemove', move_event
             $highlight_box.remove()
             add_remove_focus_event()
-            new_active
-              do_focus: true
+            setTimeout ->
+              $home_designer.find('.line_value:first').focus().select()
+            , 0
           #
           $body.unbind('mousemove').mousemove move_event
-      #
-      #
-      $lines.add($images).add($qr).click (e) ->
-        $t = $ this
-        unless shift_pressed or ctrl_pressed
-          $t.make_active()
-        else
-          $t.toggleClass 'active'
-        setTimeout ->
-          new_active
-            do_focus: true
-        , 0
-        add_remove_focus_event()
       #
       new_active()
       #
