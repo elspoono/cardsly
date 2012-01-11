@@ -88,6 +88,42 @@ input.typing
 
 
 
+// Modal Backgrounds
+.modal
+  z-index 1500
+  gradient(color_white,color_black)
+  opacity(.7)
+  height 100%
+  width 100%
+  position absolute
+  top 0
+  left 0
+.close
+  font-size 1em
+  padding 4px 30px
+  background color_black
+  color color_white
+  position absolute
+  top 0
+  left 0
+  z-index 1501
+  cursor pointer
+  border_radius_top_only(8px)
+.window
+  z-index 1501
+  background url('/images/body_bg.png')
+  border 4px solid color_black
+  border_radius_except_top_right(8px)
+  color $c_light
+  padding 30px
+  position absolute
+  top 0
+  left 0
+  overflow hidden
+  .button
+    margin-left 15px
+    width auto
+    margin-top 30px
 
 .center_column
   width 1024px
