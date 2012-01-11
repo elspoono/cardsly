@@ -2449,7 +2449,7 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
 #
 #
 #
-###
+#
 if app.settings.env is 'production'
   app.get '*', (req,res,next) ->
     headers = req.headers
@@ -2459,7 +2459,7 @@ if app.settings.env is 'production'
       , 302
     else
       next()
-###
+#
 #
 #
 #
