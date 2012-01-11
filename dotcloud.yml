@@ -1,0 +1,8 @@
+www:
+  type: nodejs
+data:
+  type: mongodb
+data:
+  type: redis
+mailer:
+  type: smtp
