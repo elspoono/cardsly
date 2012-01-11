@@ -1001,7 +1001,43 @@ $ ->
         #
         $above_controls.show()
         #
+        #
+        #
+        #
+        #
+        #
+        #
         if $active_lines.length
+          #
+          #
+          #
+          #
+          #
+          shorten_all_lines = ->
+            $active_lines.each (i) ->
+              $active_line = $ this
+              #
+              # Shorten the line width to fit the text
+              c_w = $active_line.width()
+              n_l = parseInt $active_line.css 'left'
+              t_a = $active_line.css 'text-align'
+              #
+              $active_line.css
+                width: 'auto'
+              #
+              n_w = $active_line.width()
+              if t_a is 'right'
+                n_l = n_l + c_w - n_w
+              if t_a is 'center'
+                n_l = n_l + (c_w - n_w)/2
+              #
+              $active_line.css
+                left: n_l
+                width: n_w
+              #
+            #
+          #
+          #
           #
           $active_lines.each (i) ->
             $active_line = $ this
@@ -1066,8 +1102,17 @@ $ ->
           #
           #
           #
+          font_family = $active_lines.css('font-family').replace /'/g, ''
           #
           $font_families.unbind 'change'
+          $font_families.find('option').each ->
+            $option = $ this
+            if $option.val().toLowerCase() is font_family.toLowerCase()
+              $option.attr 'selected', 'selected'
+          $font_families.bind 'change', ->
+            $active_lines.css
+              'font-family': $font_families.val()
+            shorten_all_lines()
           #
           #
           #
