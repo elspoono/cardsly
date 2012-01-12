@@ -992,7 +992,7 @@ $ ->
         #
         #
         #
-        $editor.find('.close_button').remove()
+        $editor.find('.close_button,.resize_button').remove()
         #
         $active_lines.add($active_image).each (i) ->
           $active_line = $ this
@@ -1017,6 +1017,10 @@ $ ->
           #
           $active_line.data '$close_button', $close_button
           #
+        #
+        #
+        $active_image.add($active_qr).each (i) ->
+          $active_line = $ this
           #
           # Resize Button
           $resize_button = $ '<div class="resize_button">></div>'
@@ -1489,7 +1493,7 @@ $ ->
               if $resize_button
                 #
                 left = n_l + width - 8
-                top = n_t - 12
+                top = n_t + height - 8
                 #
                 $resize_button.css
                   top: top
