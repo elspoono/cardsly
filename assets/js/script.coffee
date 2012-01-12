@@ -150,14 +150,12 @@ $.create_card_from_theme = (options) ->
     theme: null
     active_view: 0
     card: null
-    side: 'front'
+    side: 0
   #
   if options
     $.extend settings, options
   
   #
-  # Set Constants
-  theme_template = settings.theme.theme_templates[settings.active_view] or settings.theme.theme_templates[0]
   #
   #
   # Prep the Card
@@ -181,8 +179,40 @@ $.create_card_from_theme = (options) ->
     #
     #
     $my_card.data 'theme', settings.theme
+    theme = settings.theme
     #
-    #
+    stylify_a_line = ($li, n_l, c_w, pos) ->
+      #
+      #
+      $li.show().css
+        position: 'absolute'
+        top: pos.y/100 * settings.height
+        left: n_l
+        width: c_w
+        height: (pos.h/100 * settings.height) + 'px'
+        fontSize: (pos.h/100 * settings.height) + 'px'
+        lineHeight: (pos.h/100 * settings.height) + 'px'
+        fontFamily: pos.font_family
+        textAlign: pos.text_align
+        whiteSpace: 'nowrap'
+        color: '#'+pos.color
+      #
+      if $li.is ':visible'
+        #
+        t_a = pos.text_align
+        #
+        $li.css
+          width: 'auto'
+        #
+        n_w = $li.width()
+        if t_a is 'right'
+          n_l = n_l + c_w - n_w
+        if t_a is 'center'
+          n_l = n_l + (c_w - n_w)/2
+        #
+        $li.css
+          left: n_l
+          width: n_w
     #
     # ----------------------------------------------
     # Images
@@ -192,31 +222,90 @@ $.create_card_from_theme = (options) ->
     widthheight = '158x90' if settings.width < 158
     widthheight = '525x300' if settings.width > 158 and settings.width < 525
     #
-    theme_template.images = [
-      s3_id: widthheight+'/' + settings.theme.s3_id
-      h: 100
-      w: 100
-      x: 0
-      y: 0
-    ]
     #
     $imgs = $my_card.find '.img'
+    $lines = $my_card.find '.line'
+    #
+    #
     #
     $imgs.hide()
+    img_i = 0
+    line_i = 0
     #
-    for pos, i in theme_template.images
-      if $imgs.eq(i).length
-        $img = $imgs.eq(i)
-      else
-        $img = $ '<img class="img" />'
-        $img.appendTo $my_card
-      $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+pos.s3_id
-      $img.show().css
-        position: 'absolute'
-        top: pos.y/100 * settings.height
-        left: pos.x/100 * settings.width
-        width: (pos.w/100 * settings.width) + 'px'
-        height: (pos.h/100 * settings.height) + 'px'
+    #
+    for item in theme.items
+      #
+      if settings.side is item.side
+        #
+        if item.type is 'image'
+          if $imgs.eq(img_i).length
+            $img = $imgs.eq(img_i)
+          else
+            $img = $ '<img class="img" />'
+            $img.appendTo $my_card
+          $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
+          $img.show().css
+            position: 'absolute'
+            top: item.y/100 * settings.height
+            left: item.x/100 * settings.width
+            width: (item.w/100 * settings.width) + 'px'
+            height: (item.h/100 * settings.height) + 'px'
+          #
+          img_i++
+        #
+        #
+        #
+        if item.type is 'qr'
+          #
+          $my_qr = $my_card.find('.qr')
+          if not $my_qr.length
+            $my_qr = $ '<img class="qr" /></div>'
+            $my_card.append $my_qr
+          #
+          alpha = Math.round(item.color_2_alpha * 255).toString 16
+          #
+          $my_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+(item.style or 'round')+''
+          #
+          $my_qr.show().css
+            height: item.h/100 * settings.height
+            width: item.w/100 * settings.width
+            position: 'absolute'
+            top: item.y/100 * settings.height
+            left: item.x/100 * settings.width
+          #
+          #
+        #
+        #
+        #
+        #
+        #
+        #
+        if item.type is 'line'
+          $li = $lines.eq line_i
+          n_l = item.x/100 * settings.width
+          c_w = item.w/100 * settings.width
+          #
+          #
+          do ($li, n_l, c_w, item, line_i) ->
+            #
+            if $.line_copy[line_i]
+              if not $li.length
+                $li = $ '<div class="line" />'
+                $li.appendTo $my_card
+                #
+                $li.html $.line_copy[line_i]
+                setTimeout ->
+                  stylify_a_line($li, n_l, c_w, item)
+                , 500
+                #
+              else
+                $li.html $.line_copy[line_i]
+                stylify_a_line $li, n_l, c_w, item
+            else
+              $li.remove()
+            #
+          #
+          line_i++
     #
     # Set the card background
     $my_card.css
@@ -228,114 +317,7 @@ $.create_card_from_theme = (options) ->
     # ----------------------------------------------
     #
     #
-    $my_qr = $my_card.find('.qr')
-    if not $my_qr.length
-      $my_qr = $ '<img class="qr" /></div>'
-      $my_card.append $my_qr
     #
-    #
-    #
-    #
-    #
-    $lines = $my_card.find '.line'
-    #
-    #
-    #
-    # ----------------------------------------------
-    # Hack For Back Side
-    # ----------------------------------------------
-    if settings.side is 'back' and not $my_card.hasClass 'preview_2'
-      #
-      $lines.hide()
-      #
-      $my_qr.hide()
-      #
-    else
-      # Calculate the alpha
-      alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-      #
-      #
-      $my_qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+(theme_template.qr.style or 'round')+''
-      #
-      $my_qr.show().css
-        height: theme_template.qr.h/100 * settings.height
-        width: theme_template.qr.w/100 * settings.width
-        position: 'absolute'
-        top: theme_template.qr.y/100 * settings.height
-        left: theme_template.qr.x/100 * settings.width
-        zIndex: 200
-      #
-      #
-      #
-      $lines = $my_card.find '.line'
-      #
-      stylify_a_line = ($li, n_l, c_w, pos) ->
-        #
-        #
-        $li.show().css
-          position: 'absolute'
-          top: pos.y/100 * settings.height
-          left: n_l
-          width: c_w
-          height: (pos.h/100 * settings.height) + 'px'
-          fontSize: (pos.h/100 * settings.height) + 'px'
-          lineHeight: (pos.h/100 * settings.height) + 'px'
-          fontFamily: pos.font_family
-          textAlign: pos.text_align
-          whiteSpace: 'nowrap'
-          color: '#'+pos.color
-        #
-        if $li.is ':visible'
-          #
-          t_a = pos.text_align
-          #
-          $li.css
-            width: 'auto'
-          #
-          n_w = $li.width()
-          if t_a is 'right'
-            n_l = n_l + c_w - n_w
-          if t_a is 'center'
-            n_l = n_l + (c_w - n_w)/2
-          #
-          $li.css
-            left: n_l
-            width: n_w
-      #
-      #
-      #
-      for pos,i in theme_template.lines
-        #
-        $li = $lines.eq(i)
-        n_l = pos.x/100 * settings.width
-        c_w = pos.w/100 * settings.width
-        #
-        #
-        do ($li, n_l, c_w, pos) ->
-          #
-          if $.line_copy[i]
-            if not $li.length
-              $li = $ '<div class="line" />'
-              $li.appendTo $my_card
-              #
-              $li.html $.line_copy[i]
-              setTimeout ->
-                stylify_a_line($li, n_l, c_w, pos)
-              , 500
-              #
-            else
-              $li.html $.line_copy[i]
-              stylify_a_line $li, n_l, c_w, pos
-          else
-            $li.remove()
-          #
-        #
-        #
-      #
-      #
-    # ----------------------------------------------
-    # END Hack For Back Side
-    # ----------------------------------------------
     #
     #
     #
@@ -1641,7 +1623,7 @@ $ ->
                     theme: theme
                     active_view: 0
                     card: $fg
-                    side: 'front'
+                    side: 0
                   #
                   $.create_card_from_theme
                     height: 300
@@ -1649,7 +1631,7 @@ $ ->
                     theme: theme
                     active_view: 0
                     card: $bg
-                    side: 'back'
+                    side: 1
                 #
                 card_loaded()
             #
