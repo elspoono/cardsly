@@ -928,17 +928,9 @@ $ ->
     #
     #
     #
-    #
-    #
-    #
-    #
     $upload_button = $home_designer.find '.upload_button'
     $upload_form = $home_designer.find '.upload_form'
     $upload_input = $upload_form.find 'input[type=file]'
-    #
-    $upload_button.click -> $upload_input.click()
-    $upload_input.change -> $upload_form.submit()
-    #
     #
     #
     #
@@ -979,11 +971,11 @@ $ ->
     #
     card_loaded = ->
       #
-      $images = $editor.find '.img'
-      $qr = $editor.find '.qr'
-      $lines = $editor.find '.line'
-      #
       new_active = (o) ->
+        #
+        $images = $editor.find '.img'
+        $qr = $editor.find '.qr'
+        $lines = $editor.find '.line'
         #
         o = {} if not o
         #
@@ -1000,11 +992,55 @@ $ ->
         #
         #
         #
+        $editor.find('.close_button').remove()
+        #
+        $active_lines.add($active_image).each (i) ->
+          $active_line = $ this
+          #
+          #
+          # Close Button
+          $close_button = $ '<div class="close_button">x</div>'
+          $editor.append $close_button
+          top = parseInt $active_line.css 'top'
+          left = parseInt $active_line.css 'left'
+          #
+          left = left + $active_line.width() - 8
+          top = top - 12
+          #
+          $close_button.css
+            top: top
+            left: left
+          #
+          $close_button.click ->
+            $close_button.remove()
+            $active_line.remove()
+          #
+          $active_line.data '$close_button', $close_button
+          #
+          #
+          # Resize Button
+          $resize_button = $ '<div class="resize_button">></div>'
+          $editor.append $resize_button
+          top = parseInt $active_line.css 'top'
+          left = parseInt $active_line.css 'left'
+          #
+          left = left + $active_line.width() - 8
+          top = top + $active_line.height() - 8
+          #
+          $resize_button.css
+            top: top
+            left: left
+          #
+          $resize_button.click ->
+            $resize_button.remove()
+            $active_line.remove()
+          #
+          $active_line.data '$resize_button', $resize_button
+        #
         #
         #
         #
         if $active_lines.length
-          #
           #
           #
           #
@@ -1177,6 +1213,23 @@ $ ->
           #
           $areas.eq(2).make_active()
           #
+          #
+          $upload_button.unbind('click').click -> $upload_input.click()
+          $upload_input.unbind('change').change -> 
+            #
+            $.load_loading {}, (loading_close) ->
+              $upload_form.submit()
+              $.s3_result = (response) ->
+                loading_close()
+                if response and response.s3_id
+                  $active_image.attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
+                  $active_image.width response.width / 2
+                  $active_image.height response.height / 2
+            #
+          #
+          #
+          #
+          #
         else
           #
           $areas.eq(3).make_active()
@@ -1339,7 +1392,11 @@ $ ->
         l = x - editor_offset.left
         t = y - editor_offset.top
         #
-        e.preventDefault()
+        $target = $ e.target
+        unless $target.hasClass 'close_button'
+          e.preventDefault()
+        else
+          return
         #
         did_move_mouse = false
         #
@@ -1383,7 +1440,7 @@ $ ->
           height = $active_line.height()
           $active_line.data 'position', position
           #
-          if l < position.left+width and l > position.left and t < position.top+height and t > position.top and width isnt max_l and height isnt max_t
+          if l < position.left+width and l > position.left and t < position.top+height and t > position.top and (width isnt max_l or  height isnt max_t)
             #
             found_line = true
             #
@@ -1416,6 +1473,27 @@ $ ->
               $active_line.css
                 left: n_l
                 top: n_t
+              #
+              $close_button = $active_line.data '$close_button' 
+              if $close_button
+                #
+                left = n_l + width - 8
+                top = n_t - 12
+                #
+                $close_button.css
+                  top: top
+                  left: left
+              #
+              #
+              $resize_button = $active_line.data '$resize_button' 
+              if $resize_button
+                #
+                left = n_l + width - 8
+                top = n_t - 12
+                #
+                $resize_button.css
+                  top: top
+                  left: left
               #
             e_2.preventDefault()
           #

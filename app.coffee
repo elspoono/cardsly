@@ -53,8 +53,12 @@ knox = require 'knox'
 util = require 'util'
 fs = require 'fs'
 app = module.exports = express.createServer()
-#twilio_client = require 'twilio/client'
-#client = new twilio_client('AC7251c3043947408cb835e2643c1f518a','cfb4d275158cba5a1ff206c4df6d6c52',hostname,opts)
+#
+#
+twilio_client = require('twilio').RestClient
+client = new twilio_client('AC7251c3043947408cb835e2643c1f518a','cfb4d275158cba5a1ff206c4df6d6c52')
+
+
 #
 # Image Magick for graphic editing
 im = require 'imagemagick'
@@ -1484,10 +1488,19 @@ app.post '/up', (req, res) ->
           #
           #
           #
-          canvas = new node_canvas(width,height)
-          ctx = canvas.getContext '2d'
           #
-          ctx.drawImage img, 0, 0, width, height
+          potential_width = img.width * height / img.height
+          potential_height = height
+          #
+          if potential_width > width
+            #
+            potential_width = width
+            potential_height = img.height * width / img.width
+          #
+          #
+          canvas = new node_canvas(potential_width,potential_height)
+          ctx = canvas.getContext '2d'
+          ctx.drawImage img, 0, 0, potential_width, potential_height
           #
           #
           canvas.toBuffer (err, canvas_buff) ->
@@ -1499,7 +1512,7 @@ app.post '/up', (req, res) ->
               'Content-Type' : 'image/png'
             knoxReq.on 'response', (awsRes) ->
               if awsRes.statusCode != 200
-                console.log 'ERR', awsRes
+                s3_fail awsRes
               if width is 525
                 res.send '<script>parent.window.$.s3_result({s3_id:\''+s3_id+'\',width:'+img.width+',height:'+img.height+'});</script>'
             knoxReq.end canvas_buff
@@ -2297,6 +2310,13 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                     , (err, data) ->
                       if err
                         log_err err
+                    #
+                    #
+                    #
+                    ###
+                    TODO 
+                    client.sendSms '4847722735', '4805445590', 'TESTING MOFO'
+                    ###
 #
 #
 #
