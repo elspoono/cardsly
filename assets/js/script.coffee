@@ -677,6 +677,36 @@ $ ->
         #
         #
         # DO MORE HERE
+        $.load_loading {}, (loading_close) ->
+          $.ajax
+            url: '/get-user'
+            success: (response) ->
+              loading_close()
+              if response.err
+                $.load_alert
+                  content: response.err
+              else
+                #
+                new_url = false
+                for url in response.user.profile_urls
+                  $('.set_link').val url
+                  new_url = url
+                #
+                content = '<p>Connected. Login again anytime using that same button.</p>'
+                if new_url
+                  content += '<p>&nbsp;</p><p>Your cardsly cards now link to:</p><p><a href="'+new_url+'">'+new_url+'</a></p><p>You may change this at anytime.</p>'
+                #
+                $.load_alert
+                  width: 500
+                  height: 400
+                  content: content
+
+              #
+              #
+            error: (err) ->
+              loading_close()
+              $.load_alert
+                content: 'Our apologies. A server error occurred.'
         #
         #
         #
@@ -969,6 +999,29 @@ $ ->
       $body.bind 'click', remove_focus_event
     new_active = -> {}
     #
+    #
+    move_my_buttons = (n_l,n_w,n_t,n_h,$active_line) ->
+      $close_button = $active_line.data '$close_button' 
+      if $close_button
+        #
+        left = n_l + n_w - 8
+        top = n_t - 12
+        #
+        $close_button.css
+          top: top
+          left: left
+      #
+      #
+      $resize_button = $active_line.data '$resize_button' 
+      if $resize_button
+        #
+        left = n_l + n_w - 8
+        top = n_t + n_h - 8
+        #
+        $resize_button.css
+          top: top
+          left: left
+    #
     card_loaded = ->
       #
       new_active = (o) ->
@@ -1051,50 +1104,52 @@ $ ->
             position = $active_line.data 'position'
             width = $active_line.width()
             height = $active_line.height()
+            n_l = parseInt $active_line.css 'left'
+            n_t = parseInt $active_line.css 'top'
+            #
+            max_h = max_t - n_t
+            max_w = max_l - n_l
             #
             move_event = (e_2) ->
               x_2 = e_2.pageX
               y_2 = e_2.pageY
-              console.log x_2, y_2
+              #
+              moved_x = x - x_2
+              moved_y = y - y_2
+              #
+              to_change = moved_y
+              #
+              n_h = height - to_change
+              n_w = n_h * width / height
+              #
+              #
+              #
+              if n_h > max_h
+                n_h = max_h
+                n_w = max_h * width / height
+              #
+              #
+              if n_w > max_w
+                n_w = max_w
+                n_h = max_w * height / width
+              #
               #
               ###
-              #
-              n_w = width - (x - x_2)
-              n_t = position.top - (y - y_2)
-              #
               n_l = min_l if n_l < min_l
               n_t = min_t if n_t < min_t
               #
               n_l = max_l-width if n_l+width > max_l
               n_t = max_t-height if n_t+height > max_t
+              ###
+              #
               #
               $active_line.css
-                left: n_l
-                top: n_t
+                width: n_w
+                height: n_h
               #
-              $close_button = $active_line.data '$close_button' 
-              if $close_button
-                #
-                left = n_l + width - 8
-                top = n_t - 12
-                #
-                $close_button.css
-                  top: top
-                  left: left
-              #
-              #
-              $resize_button = $active_line.data '$resize_button' 
-              if $resize_button
-                #
-                left = n_l + width - 8
-                top = n_t + height - 8
-                #
-                $resize_button.css
-                  top: top
-                  left: left
+              move_my_buttons n_l, n_w, n_t, n_h, $active_line
               #
               e_2.preventDefault()
-              ###
             #
             #
             $body.one 'mouseup', (e_3) ->
@@ -1119,7 +1174,9 @@ $ ->
               #
               # Shorten the line width to fit the text
               c_w = $active_line.width()
+              c_h = $active_line.height()
               n_l = parseInt $active_line.css 'left'
+              n_t = parseInt $active_line.css 'top'
               t_a = $active_line.css 'text-align'
               #
               $active_line.css
@@ -1135,6 +1192,7 @@ $ ->
                 left: n_l
                 width: n_w
               #
+              move_my_buttons n_l, n_w, n_t, c_h, $active_line
             #
           #
           #
@@ -1167,6 +1225,8 @@ $ ->
             shorten_this_line = ->
               c_w = $active_line.width()
               n_l = parseInt $active_line.css 'left'
+              c_h = $active_line.height()
+              n_t = parseInt $active_line.css 'top'
               t_a = $active_line.css 'text-align'
               #
               $active_line.css
@@ -1181,6 +1241,8 @@ $ ->
               $active_line.css
                 left: n_l
                 width: n_w
+              #
+              move_my_buttons n_l, n_w, n_t, c_h, $active_line
             #
             #
             #
@@ -1461,10 +1523,9 @@ $ ->
         t = y - editor_offset.top
         #
         $target = $ e.target
-        if $target.hasClass 'close_button' or $target.hasClass 'resize_button' or $target.parent().hasClass 'resize_button'
+        if $target.hasClass('close_button') or $target.hasClass('resize_button') or $target.parent().hasClass('resize_button')
           return
         else
-          console.log $target
           e.preventDefault()
         #
         did_move_mouse = false
@@ -1543,26 +1604,8 @@ $ ->
                 left: n_l
                 top: n_t
               #
-              $close_button = $active_line.data '$close_button' 
-              if $close_button
-                #
-                left = n_l + width - 8
-                top = n_t - 12
-                #
-                $close_button.css
-                  top: top
-                  left: left
               #
-              #
-              $resize_button = $active_line.data '$resize_button' 
-              if $resize_button
-                #
-                left = n_l + width - 8
-                top = n_t + height - 8
-                #
-                $resize_button.css
-                  top: top
-                  left: left
+              move_my_buttons n_l, width, n_t, height, $active_line
               #
             e_2.preventDefault()
           #
