@@ -277,6 +277,7 @@ $.create_card_from_theme = (options) ->
           top: pos.y/100 * settings.height
           left: n_l
           width: c_w
+          height: (pos.h/100 * settings.height) + 'px'
           fontSize: (pos.h/100 * settings.height) + 'px'
           lineHeight: (pos.h/100 * settings.height) + 'px'
           fontFamily: pos.font_family
