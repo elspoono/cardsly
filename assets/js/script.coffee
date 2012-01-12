@@ -1206,7 +1206,7 @@ $ ->
         #
         $color_pickers = $home_designer.find '.color_picker:visible'
         #
-        $color_pickers.each ->
+        $color_pickers.each (i) ->
           $color_picker = $ this
           #
           #
@@ -1215,15 +1215,15 @@ $ ->
             $color_picker.css
               background: $active_lines.css 'color'
           #
-          #
-          if $color_picker.hasClass 'color_1'
-            $color_picker.css
-              background: '#' + active_theme.theme_templates[active_view].qr.color1
-          #
-          if $color_picker.hasClass 'color_2'
-            $color_picker.css
-              background: '#' + active_theme.theme_templates[active_view].qr.color2
-          #
+          ###
+          if $active_qr.length
+            if i is 0
+              $color_picker.css
+                background: '#' + active_theme.theme_templates[active_view].qr.color1
+            if i is 1
+              $color_picker.css
+                background: '#' + active_theme.theme_templates[active_view].qr.color2
+          ###
           #
           #
           #

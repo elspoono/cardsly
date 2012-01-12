@@ -89,16 +89,15 @@
                 .bg
                   .option.active Front
                   .option Back
-            .below_right
               .button.add_image
                 img(src='/images/icons/camera.png',style='margin-top:3px')
                 | +
               .button.alpha_image
                 img(src='/images/icons/alpha.png',style='margin-top:6px')
                 | +
+            .below_right
               .button.show_themes
-                span Select Style
-                img(src='/images/icons/paint_brush.png')
+                span Cards >
           .clear
         .right
           .controls
@@ -381,7 +380,7 @@
               - for (var i in months)
                 option(value=(i*1)+1)=months[i]
             select.card_expiry_year(name='credit_card[expiry_year]')
-              - for (var year = 2011; year<2032; year++)
+              - for (var year = 2012; year<2032; year++)
                 option(value=year)=year
           .field
             label &nbsp;
