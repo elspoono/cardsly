@@ -925,6 +925,7 @@ $ ->
             setTimeout ->
               $editor.find('.line:first').addClass 'active'
               new_active()
+              add_remove_focus_event()
             , 0
           #
         else
@@ -965,7 +966,7 @@ $ ->
     #
     $link_items = $notify_form.find '.link_items'
     #
-    $above_controls = $home_designer.find '.above_controls'
+    $show_themes = $home_designer.find '.show_themes'
     #
     $font_families = $areas.find '.font_families'
     $font_size = $areas.find '.font_size'
@@ -977,6 +978,19 @@ $ ->
     #
     $text_align = $home_designer.find '.text_align .option'
     #
+    #
+    remove_focus_event = (e) ->
+      $t = $ e.target
+      $c = $t.closest('.controls').andSelf().filter('.controls')
+      $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
+      $w = $t.closest('.color-window-guy').andSelf().filter('.color-window-guy')
+      unless $c.length or $e.length or $w.length
+        $editor.find('.active').removeClass 'active'
+        $body.unbind 'click', remove_focus_event
+        new_active()
+    #
+    add_remove_focus_event = ->
+      $body.bind 'click', remove_focus_event
     new_active = -> {}
     #
     card_loaded = ->
@@ -997,7 +1011,7 @@ $ ->
         $line_values.children().remove()
         $line_values = $ ''
         #
-        $above_controls.show()
+        $show_themes.show()
         #
         #
         #
@@ -1182,7 +1196,7 @@ $ ->
         else
           #
           $areas.eq(3).make_active()
-          $above_controls.hide()
+          $show_themes.hide()
           #
         #
         #
@@ -1320,20 +1334,6 @@ $ ->
         #
         #
       #
-      #
-      remove_focus_event = (e) ->
-        $t = $ e.target
-        $c = $t.closest('.controls').andSelf().filter('.controls')
-        $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
-        $w = $t.closest('.color-window-guy').andSelf().filter('.color-window-guy')
-        unless $c.length or $e.length or $w.length
-          $editor.find('.active').removeClass 'active'
-          $body.unbind 'click', remove_focus_event
-          new_active()
-      #
-      add_remove_focus_event = ->
-        $body.bind 'click', remove_focus_event
-
       #
       #
       #
