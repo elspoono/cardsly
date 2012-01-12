@@ -501,16 +501,66 @@ mongo_theme = mongoose.model 'themes', theme_schema
 #
 
 mongo_theme.find
-  s3_id: null
-  theme_templates:
-    '$elemMatch':
-      s3_id:
-        '$exists': true
+  active: true
 , (err, themes) ->
   for theme in themes
-    if theme.theme_templates[0].s3_id
-      theme.s3_id = theme.theme_templates[0].s3_id
-      theme.save()
+    order_id = 0
+    theme.items = []
+
+    # Backgrounds
+    theme.items.push
+      type: 'image'
+      order_id: order_id
+      s3_id: theme.s3_id
+      side: 0
+      x: 0
+      y: 0
+      h: 100
+      w: 100
+    order_id++
+    theme.items.push
+      type: 'image'
+      order_id: order_id
+      s3_id: theme.s3_id
+      side: 1
+      x: 0
+      y: 0
+      h: 100
+      w: 100
+    #
+
+    # QR
+    order_id++
+    theme.items.push
+      type: 'qr'
+      order_id: order_id
+      side: 0
+      qr_style: theme.theme_templates[0].qr.style
+      x: theme.theme_templates[0].qr.x
+      y: theme.theme_templates[0].qr.y
+      h: theme.theme_templates[0].qr.h
+      w: theme.theme_templates[0].qr.w
+      color: theme.theme_templates[0].qr.color_1
+      color_2: theme.theme_templates[0].qr.color_2
+      color_2_opacity: theme.theme_templates[0].qr.color_2_alpha
+
+    # Lines
+    for line in theme.theme_templates[0].lines
+      order_id++
+      theme.items.push
+        type: 'line'
+        order_id: order_id
+        side: 0
+        x: line.x
+        y: line.y
+        h: line.h
+        w: line.w
+        text_align: line.text_align
+        color: line.color
+        font_family: line.font_family
+
+    # Log
+    theme.save()
 
 
 
