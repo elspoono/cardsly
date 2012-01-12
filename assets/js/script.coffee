@@ -1246,11 +1246,15 @@ $ ->
             #
             #
             #
+            key_timer = 0
             # Event to update content
             $line_value.unbind('keyup').keyup ->
-              val = $line_value.val()
-              $active_line.html val
-              shorten_this_line()
+              clearTimeout key_timer
+              key_timer = setTimeout ->
+                val = $line_value.val()
+                $active_line.html val
+                shorten_this_line()
+              , 100
               #
               #
               #
