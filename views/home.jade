@@ -100,7 +100,8 @@
         .right
           .above_controls
             .button.show_themes
-              | &lArr;  Cards
+              img(src='/images/icons/paint_brush.png', height=20, style='margin-top:5px;')
+              | Select Style
             .clear
             .mid_spacer
           .controls
@@ -133,6 +134,7 @@
                     .arrow_container
                       .arrow_1
                       .arrow_2
+                .clear
               .area
                 .toggle
                   .bg
@@ -156,6 +158,7 @@
                     .arrow_container
                       .arrow_1
                       .arrow_2
+                .clear
               .area
                 form(action='/up',target='hidden_frame',enctype='multipart/form-data',method='POST').upload_form
                   input(type='file',name='image')
@@ -163,8 +166,10 @@
                 .button.upload_button
                   img(src='/images/icons/upload.png', style='margin-top:5px')
                   | Upload
+                .clear
               .area.active
                 .themes
+                .clear
         .clear
 .row.alert_row
   .help_overlay.active

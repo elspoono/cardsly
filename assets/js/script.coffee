@@ -1213,7 +1213,7 @@ $ ->
           #
           #
           #
-          $color_picker.click (e) ->
+          $color_picker.unbind('click').click (e) ->
             $color_window = $ '<div class="color-window-guy" />'
             $color_button = $ '<div class="button normal small">Save</div>'
             $color_window.colorpicker
