@@ -2638,10 +2638,11 @@ app.get '/about', (req, res) ->
   res.render 'about'
     req: req
 
-# Privacy Policy
-app.get '/privacy', (req, res) ->
-  res.render 'privacy'
+# Cards Page
+app.get '/cards', (req, res) ->
+  res.render 'cards'
     req: req
+
 
 
 # Learn More Page
