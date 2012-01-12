@@ -1023,7 +1023,7 @@ $ ->
           $active_line = $ this
           #
           # Resize Button
-          $resize_button = $ '<div class="resize_button">></div>'
+          $resize_button = $ '<div class="resize_button"><img src="/images/arrow2.png"></div>'
           $editor.append $resize_button
           top = parseInt $active_line.css 'top'
           left = parseInt $active_line.css 'left'
@@ -1035,9 +1035,73 @@ $ ->
             top: top
             left: left
           #
-          $resize_button.click ->
-            $resize_button.remove()
-            $active_line.remove()
+          $resize_button.mousedown (e) ->
+            #
+            e.preventDefault()
+            #
+            editor_offset = $editor.offset()
+            #
+            x = e.pageX
+            y = e.pageY
+            #
+            l = x - editor_offset.left
+            t = y - editor_offset.top
+            #
+            #
+            position = $active_line.data 'position'
+            width = $active_line.width()
+            height = $active_line.height()
+            #
+            move_event = (e_2) ->
+              x_2 = e_2.pageX
+              y_2 = e_2.pageY
+              console.log x_2, y_2
+              #
+              ###
+              #
+              n_w = width - (x - x_2)
+              n_t = position.top - (y - y_2)
+              #
+              n_l = min_l if n_l < min_l
+              n_t = min_t if n_t < min_t
+              #
+              n_l = max_l-width if n_l+width > max_l
+              n_t = max_t-height if n_t+height > max_t
+              #
+              $active_line.css
+                left: n_l
+                top: n_t
+              #
+              $close_button = $active_line.data '$close_button' 
+              if $close_button
+                #
+                left = n_l + width - 8
+                top = n_t - 12
+                #
+                $close_button.css
+                  top: top
+                  left: left
+              #
+              #
+              $resize_button = $active_line.data '$resize_button' 
+              if $resize_button
+                #
+                left = n_l + width - 8
+                top = n_t + height - 8
+                #
+                $resize_button.css
+                  top: top
+                  left: left
+              #
+              e_2.preventDefault()
+              ###
+            #
+            #
+            $body.one 'mouseup', (e_3) ->
+              e_3.preventDefault()
+              $body.unbind 'mousemove', move_event
+            #
+            $body.unbind('mousemove').mousemove move_event
           #
           $active_line.data '$resize_button', $resize_button
         #
@@ -1397,10 +1461,11 @@ $ ->
         t = y - editor_offset.top
         #
         $target = $ e.target
-        unless $target.hasClass 'close_button'
-          e.preventDefault()
-        else
+        if $target.hasClass 'close_button' or $target.hasClass 'resize_button' or $target.parent().hasClass 'resize_button'
           return
+        else
+          console.log $target
+          e.preventDefault()
         #
         did_move_mouse = false
         #
