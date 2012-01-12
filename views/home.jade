@@ -191,29 +191,29 @@
             h2 Enter Email
           .clear
           .field
-            p Enter your email here. Turn automatic alerts on or off at anytime.
-            p Text messages also available.
+            p Enter your email here.
+            p Phone number optional.
+            p Turn automatic alerts on or off at anytime.
           .field
-            .toggle
-              .bg
-                .option On
-                .option.active Off
             .input
+              label E-mail
               input.email.required(placeholder='my@email.com',pattern='.+@.+\\..+')
               .symbol *
-              .clear
-              label E-mail Address
             .clear
-            .mid_spacer
-            .toggle
-              .bg
-                .option On
-                .option.active Off
+            .spacer
             .input
+              label Phone
               input.phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
               .symbol
-              .clear
-              label Phone Number
+            .clear
+            .spacer
+            .input
+              label Alerts
+              .toggle
+                .bg
+                  .option.active Off
+                  .option Emails
+                  .option Texts
       .clear
     .clear
   .clear
@@ -227,23 +227,23 @@
             h2 Set Links
           .clear
           .field
-            p Where they go, when they scan. No worries - this can be updated anytime.
+            p Login to google, linkedin, twitter, or facebook to connect it to cardsly. 
+            p Or type in a url.
           .field
             .link_editor
               .input
+                label Login
                 ul.socials
                   li.facebook F
                   li.twitter.shift t
                   li.linkedin l
                   li.google g
-                .clear
-                label Connect social
-              .links
-                .input
-                  input.set_link.required(placeholder='mysite.com',pattern='.+\\..+')
-                  .symbol *
-                  .clear
-                  label Or type website address
+              .clear
+              .mid_spacer
+              .input
+                label Website
+                input.set_link.required(placeholder='mysite.com',pattern='.+\\..+')
+                .symbol *
             .link_items
       .clear
     .clear
