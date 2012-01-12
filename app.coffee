@@ -505,10 +505,10 @@ mongo_theme.find
 , (err, themes) ->
   for theme in themes
     order_id = 0
-    theme.items = []
+    items = []
 
     # Backgrounds
-    theme.items.push
+    items.push
       type: 'image'
       order_id: order_id
       s3_id: theme.s3_id
@@ -518,7 +518,7 @@ mongo_theme.find
       h: 100
       w: 100
     order_id++
-    theme.items.push
+    items.push
       type: 'image'
       order_id: order_id
       s3_id: theme.s3_id
@@ -531,7 +531,7 @@ mongo_theme.find
 
     # QR
     order_id++
-    theme.items.push
+    items.push
       type: 'qr'
       order_id: order_id
       side: 0
@@ -547,7 +547,7 @@ mongo_theme.find
     # Lines
     for line in theme.theme_templates[0].lines
       order_id++
-      theme.items.push
+      items.push
         type: 'line'
         order_id: order_id
         side: 0
@@ -559,8 +559,12 @@ mongo_theme.find
         color: line.color
         font_family: line.font_family
 
+    # Set it
+    theme.items = items
+
     # Log
-    theme.save()
+    theme.save (err) ->
+      console.log err if err
 
 
 
