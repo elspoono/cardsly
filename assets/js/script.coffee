@@ -282,6 +282,7 @@ $.create_card_from_theme = (options) ->
           lineHeight: (pos.h/100 * settings.height) + 'px'
           fontFamily: pos.font_family
           textAlign: pos.text_align
+          whiteSpace: 'nowrap'
           color: '#'+pos.color
         #
         if $li.is ':visible'
