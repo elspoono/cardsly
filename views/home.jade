@@ -135,14 +135,17 @@
                       .arrow_2
                 .clear
               .area
-                .toggle
+                p Foreground
+                .clear
+                .spacer
+                .toggle.qr_style
                   .bg
-                    .option.active(align='left')
-                      .img.left
-                    .option(align='center')
-                      .img.center
-                    .option(align='right')
-                      .img.right
+                    .option(qr_style='square')
+                      .img.square
+                    .option.active(qr_style='round')
+                      .img.round
+                    .option(qr_style='circle')
+                      .img.circle
                 .color_picker
                   .bg
                     .color
@@ -150,6 +153,14 @@
                     .arrow_container
                       .arrow_1
                       .arrow_2
+                .clear
+                .mid_spacer
+                p Background
+                .clear
+                .spacer
+                select.color_2_opacity
+                  -for(size=0;size<=100;size++)
+                    option(value=size)=size
                 .color_picker
                   .bg
                     .color

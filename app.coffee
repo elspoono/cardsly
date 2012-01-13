@@ -544,9 +544,9 @@ mongo_theme.find
       y: theme.theme_templates[0].qr.y
       h: theme.theme_templates[0].qr.h
       w: theme.theme_templates[0].qr.w
-      color: theme.theme_templates[0].qr.color_1
-      color_2: theme.theme_templates[0].qr.color_2
-      color_2_opacity: theme.theme_templates[0].qr.color_2_alpha
+      color: theme.theme_templates[0].qr.color1
+      color_2: theme.theme_templates[0].qr.color2
+      color_2_opacity: theme.theme_templates[0].qr.color2_alpha
 
     # Lines
     for line in theme.theme_templates[0].lines
@@ -587,21 +587,17 @@ order_schema = new schema
   order_number: String
   user_id: String
   theme_id: String
-  active_view: Number
   status: String
-  status_history: [status_schema]
-  quantity: Number
-  shipping_method: Number
-  tracking_number: String
   values: [String]
   address: String
   city: String
   full_address: String
-  amount: Number
+  quantity: Number # number of cards
+  amount: Number # cost of order
   email: String
-  shipping_email: String
-  confirm_email: String
-  s3_id: String
+  url: String # url they entered for website
+  phone: String # phone number they entered
+  alerts: String # selected alert option
   charge:
     id: String
     paid: Boolean
@@ -615,6 +611,16 @@ order_schema = new schema
   date_added:
     type: Date
     default: Date.now
+  #
+  # Deprecated
+  active_view: Number
+  status_history: [status_schema]
+  shipping_method: Number
+  tracking_number: String
+  shipping_email: String
+  confirm_email: String
+  s3_id: String
+  #
 #
 mongo_order = mongoose.model 'orders', order_schema
 #
@@ -1462,6 +1468,7 @@ app.post '/up', (req, res) ->
   #
   s3_id = random_url()+random_url()+random_url()+'.png'
   #
+  #console.log path
   #
   # Resize it with ImageMagick
   im.convert [
@@ -1473,14 +1480,14 @@ app.post '/up', (req, res) ->
       s3_fail err
     else
       #
-      console.log 3
+      #console.log 3
       #
       buff = new Buffer rawImg, 'binary'
       img = new node_canvas.Image
       img.src = buff
       #
       #
-      console.log img.width, img.height
+      #console.log img.width, img.height
       #
       #
       #

@@ -262,7 +262,7 @@ $.create_card_from_theme = (options) ->
             $my_qr = $ '<img class="qr" /></div>'
             $my_card.append $my_qr
           #
-          alpha = Math.round(item.color_2_alpha * 255).toString 16
+          alpha = Math.round(item.color_2_opacity * 255).toString 16
           #
           $my_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+(item.style or 'round')+''
           #
@@ -995,6 +995,13 @@ $ ->
     #
     $upload_button.unbind('click').click -> $upload_input.click()
     re_bind_change_event = ->
+      #
+      $new_upload_input = $ '<input type="file" name="image" />'
+      #
+      $upload_input.replaceWith $new_upload_input
+      #
+      $upload_input = $new_upload_input
+      #
       $upload_input.unbind('change').change -> 
         #
         $.load_loading {}, (loading_close) ->
@@ -1007,11 +1014,11 @@ $ ->
               $active_image.width response.width / 2
               $active_image.height response.height / 2
               new_active()
-              #
-              re_bind_change_event()
             else
               $.load_alert
                 content: '<p>I\'m sorry, I had trouble processing that specific image.</p>'
+            #
+            re_bind_change_event()
         #
     re_bind_change_event()
     #
@@ -1035,6 +1042,10 @@ $ ->
     # ------------------------------------
     #
     $text_align = $home_designer.find '.text_align .option'
+    #
+    $qr_style = $home_designer.find '.qr_style .option'
+    #
+    $color_2_opacity = $home_designer.find '.color_2_opacity'
     #
     #
     remove_focus_event = (e) ->
@@ -1396,6 +1407,63 @@ $ ->
           #
           $areas.eq(1).make_active()
           #
+          #
+          #
+          qr_style = 'round'
+          for item in active_theme.items
+            if item.type is 'qr'
+              qr_style = item.style
+          #
+          #
+          $qr_style.unbind('click')
+          $qr_style.filter('[qr_style='+qr_style+']').make_active()
+          $qr_style.click ->
+            $q_s = $ this
+            $q_s.make_active()
+            #
+            #
+            for item,item_i in active_theme.items
+              if item.type is 'qr'
+                #
+                active_theme.items[item_i].qr_style = $q_s.attr 'qr_style'
+                #
+                alpha = Math.round(item.color_2_opacity * 255).toString 16
+                #
+                $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+$q_s.attr 'qr_style'+''
+          #
+          #
+          #
+          #
+          color_2_opacity = 0
+          for item in active_theme.items
+            if item.type is 'qr'
+              color_2_opacity = item.color_2_opacity
+          #
+          $color_2_opacity.unbind('change')
+          #
+          $color_2_opacity.find('option').each ->
+            $option = $ this
+            #
+            if $option.val()*1 is Math.round(color_2_opacity*100)
+              $option.attr 'selected', 'selected'
+          #
+          $color_2_opacity.change ->
+            color_2_opacity = $color_2_opacity.val()/100
+            #
+            for item,item_i in active_theme.items
+              if item.type is 'qr'
+                #
+                active_theme.items[item_i].color_2_opacity = color_2_opacity
+                #
+                alpha = Math.round(color_2_opacity * 255).toString 16
+                #
+                $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+item.qr_style+''
+            #
+          #
+          #
+          #
+          #
+          #
         else if $active_image.length
           #
           $areas.eq(2).make_active()
@@ -1413,7 +1481,6 @@ $ ->
         #
         #
         #
-        #
         $color_pickers = $home_designer.find '.color_picker:visible'
         #
         $color_pickers.each (i) ->
@@ -1425,15 +1492,18 @@ $ ->
             $color_picker.css
               background: $active_lines.css 'color'
           #
-          ###
+          #
           if $active_qr.length
-            if i is 0
-              $color_picker.css
-                background: '#' + active_theme.theme_templates[active_view].qr.color1
-            if i is 1
-              $color_picker.css
-                background: '#' + active_theme.theme_templates[active_view].qr.color2
-          ###
+            #
+            for item in active_theme.items
+              if item.type is 'qr'
+                if i is 0
+                  $color_picker.css
+                    background: '#' + item.color
+                if i is 1
+                  $color_picker.css
+                    background: '#' + item.color_2
+          #
           #
           #
           #
@@ -1452,7 +1522,7 @@ $ ->
                 #
                 #
                 #
-                if $color_picker.hasClass('color_1') or $color_picker.hasClass('color_2')
+                if $active_qr.length
                   #
                   #
                   #
@@ -1461,27 +1531,29 @@ $ ->
                   #
                   #
                   #
-                  if $color_picker.hasClass 'color_1' 
-                    active_theme.theme_templates[active_view].qr.color1 = new_color
-                  if $color_picker.hasClass 'color_2' 
-                    active_theme.theme_templates[active_view].qr.color2 = new_color
                   #
                   #
                   #
-                  theme_template = active_theme.theme_templates[active_view]
                   #
                   #
-                  #
-                  # Calculate the alpha
-                  alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                  #
-                  #
-                  # Default the style
-                  if not theme_template.qr.style
-                    theme_template.qr.style = 'round'
-                  #
-                  $qr.attr 'src', '/qr/'+theme_template.qr.color1+'/'+theme_template.qr.color2+alpha+'/'+theme_template.qr.style+''
-                  #
+                  for item,item_i in active_theme.items
+                    if item.type is 'qr'
+                      if i is 0
+                        active_theme.items[item_i].color = new_color
+                        item.color = new_color
+                      if i is 1
+                        active_theme.items[item_i].color_2 = new_color
+                        item.color_2 = new_color
+                      #
+                      # Calculate the alpha
+                      alpha = Math.round(item.color_2_opacity * 255).toString 16
+                      #
+                      #
+                      #
+                      #
+                      #
+                      $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+item.qr_style+''
+                      #
                   #
                 #
                 $active_lines.each ->
