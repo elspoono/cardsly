@@ -1570,6 +1570,14 @@ $ ->
             #
           #
         #
+        last_z_index = 0
+        $clicked_line = $ ''
+        $clicked_lines.each ->
+          $this_clicked_line = $ this
+          z = $this_clicked_line.css 'z-index'
+          if z > last_z_index
+            $clicked_line = $this_clicked_line
+            last_z_index = z
         #
         #
         # Position variables for starting out
@@ -1683,9 +1691,10 @@ $ ->
             e_3.preventDefault()
             unless did_move_mouse
               unless shift_pressed or ctrl_pressed
-                $clicked_lines.make_active()
+                $active_lines.removeClass 'active'
+                $clicked_line.make_active()
               else
-                $clicked_lines.last().toggleClass 'active'
+                $clicked_line.toggleClass 'active'
               new_active()
             $body.unbind 'mousemove', move_event
             $highlight_box.remove()
@@ -1722,6 +1731,33 @@ $ ->
         #
         new_active()
         add_remove_focus_event()
+        #
+      , 0
+    #
+    $add_line = $home_designer.find '.add_line'
+    $add_line.click ->
+      #
+      setTimeout ->
+        #
+        $line = $ '<div class="line active" />'
+        #
+        $editor.find('.bg:visible,.fg:visible').append $line
+        #
+        # find last visible line
+        #
+        # use it's ^ stuff for css
+        $line.css
+          left: 0
+          top: 0
+          width: 150
+          height: 100
+          position: 'absolute'
+        #
+        new_active()
+        add_remove_focus_event()
+        #
+        # focus
+        #
         #
       , 0
     #
