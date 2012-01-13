@@ -1053,6 +1053,17 @@ $ ->
     $color_2_opacity = $home_designer.find '.color_2_opacity'
     #
     #
+    #
+    theme_modified_timer = 0
+    theme_modified = ->
+      clearTimeout theme_modified_timer
+      theme_modified_timer = setTimeout ->
+        console.log active_theme
+      , 1000
+    #
+    #
+    #
+    #
     remove_focus_event = (e) ->
       $t = $ e.target
       $c = $t.closest('.controls').andSelf().filter('.controls')
@@ -1238,6 +1249,12 @@ $ ->
           #
           #
           shorten_all_lines = ->
+            #
+            #
+            #
+            #
+            #
+            #
             $active_lines.each (i) ->
               $active_line = $ this
               #
@@ -1262,6 +1279,12 @@ $ ->
                 width: n_w
               #
               move_my_buttons n_l, n_w, n_t, c_h, $active_line
+              #
+              #
+              #
+              theme_modified()
+            #
+            #
             #
           #
           maybe_save_timer = 0
@@ -1447,6 +1470,8 @@ $ ->
                 alpha = Math.round(item.color_2_opacity * 255).toString 16
                 #
                 $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+$q_s.attr 'qr_style'+''
+                #
+                theme_modified()
           #
           #
           #
@@ -1475,6 +1500,8 @@ $ ->
                 alpha = Math.round(color_2_opacity * 255).toString 16
                 #
                 $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+item.qr_style+''
+                #
+                theme_modified()
             #
           #
           #
@@ -1570,6 +1597,12 @@ $ ->
                       #
                       #
                       $active_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+item.qr_style+''
+                      #
+                      #
+                      #
+                      #
+                      theme_modified()
+                      #
                       #
                   #
                 #
@@ -1945,7 +1978,7 @@ $ ->
         #
         $front_back.each ->
           $f_b = $ this
-          if $f_b.html().toLowerCase is side
+          if $f_b.html().toLowerCase() is side
             $f_b.make_active()
         #
         #
@@ -2293,6 +2326,7 @@ $ ->
             $o_a = $ this
             if $o_a.html().toLowerCase() is order.alerts
               $o_a.make_active()
+        #
         #
         #
         #
