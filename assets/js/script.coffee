@@ -686,7 +686,7 @@ $ ->
                 #
                 new_url = false
                 for url in response.user.profile_urls
-                  $('.set_link').val url
+                  $('.set_link').val(url).keyup()
                   new_url = url
                 #
                 content = '<p>Connected. Login again anytime using that same button.</p>'
@@ -920,7 +920,7 @@ $ ->
     #
     #
     #
-    active_theme_id = '4ec3fb7b3bf1fc0100000042'
+    order.active_theme_id = '4ec3fb7b3bf1fc0100000042'
     #
     #
     $all_card = $ '.card'
@@ -1264,6 +1264,17 @@ $ ->
               move_my_buttons n_l, n_w, n_t, c_h, $active_line
             #
           #
+          maybe_save_timer = 0
+          maybe_save_values = ->
+            clearTimeout maybe_save_timer
+            maybe_save_timer = setTimeout ->
+              order.values = $lines.map ->
+                this.innerHTML
+              .get()
+              $.ajax
+                url: '/save-order'
+                data: JSON.stringify order
+            , 3000
           #
           #
           $active_lines.each (i) ->
@@ -1323,6 +1334,7 @@ $ ->
                 val = $line_value.val()
                 $active_line.html val
                 shorten_this_line()
+                maybe_save_values()
               , 100
               #
               #
@@ -2008,6 +2020,7 @@ $ ->
             $thumb = $ this
             id = $thumb.attr 'id'
             #
+            #
             $thumb.make_active()
             #
             $.ajax
@@ -2059,13 +2072,22 @@ $ ->
                     side: 1
                 #
                 card_loaded()
+                #
+                #
+                #
+                order.active_theme_id = id
+                #
+                # And save it
+                $.ajax
+                  url: '/save-order'
+                  data: JSON.stringify order
             #
             #
             #console.log id
           #
           #
           for thumb in $thumbs
-            if thumb.id is active_theme_id
+            if thumb.id is order.active_theme_id
               $thumb = $ thumb
               #
               # Activate that theme
@@ -2078,6 +2100,49 @@ $ ->
                   top: -20
               #
               #
+    #
+    #
+    #
+    #
+    #
+    # -------
+    # Email (and phone)
+    # -------
+    #
+    $order_email = $ '.order_email'
+    order_email_timer = 0
+    $order_email.keyup ->
+      clearTimeout order_email_timer
+      order_email_timer = setTimeout ->
+        order.email = $order_email.val()
+        $.ajax
+          url: '/save-order'
+          data: JSON.stringify order
+      , 3000
+    #
+    $order_phone = $ '.order_phone'
+    order_phone_timer = 0
+    $order_phone.keyup ->
+      clearTimeout order_phone_timer
+      order_phone_timer = setTimeout ->
+        order.phone = $order_phone.val()
+        $.ajax
+          url: '/save-order'
+          data: JSON.stringify order
+      , 3000
+    #
+    $order_alerts = $ '.order_alerts .option'
+    $order_alerts.click ->
+      $o_a = $ this
+      $o_a.make_active()
+      #
+      #
+      order.alerts = $o_a.html().toLowerCase()
+      $.ajax
+        url: '/save-order'
+        data: JSON.stringify order
+    #
+    #
     #
     #
     #
@@ -2111,6 +2176,22 @@ $ ->
     #
     #
     #
+    #
+    #
+    # -------
+    # URL
+    # -------
+    #
+    $set_link = $ '.set_link'
+    order_link_timer = 0
+    $set_link.keyup ->
+      clearTimeout order_link_timer
+      order_link_timer = setTimeout ->
+        order.url = $set_link.val()
+        $.ajax
+          url: '/save-order'
+          data: JSON.stringify order
+      , 3000
     #
     #
     #
@@ -2189,9 +2270,6 @@ $ ->
           #
           order = results.session.order
           #
-        else
-          #
-          order = {}
         #
         if order.quantity
           $a_q = $quantity.filter('[cards='+order.quantity+']')
@@ -2199,7 +2277,31 @@ $ ->
         else
           $quantity.first().click()
         #
-
+        #
+        #
+        if order.values
+          $.line_copy = order.values
+        #
+        if order.email
+          $order_email.val order.email
+        #
+        if order.phone
+          $order_phone.val order.phone
+        #
+        if order.alerts
+          $order_alerts.each ->
+            $o_a = $ this
+            if $o_a.html().toLowerCase() is order.alerts
+              $o_a.make_active()
+        #
+        #
+        #
+        if order.url
+          $set_link.val order.url
+        #
+        #
+        #
+        #
         #
         if order.full_address
           load_map order

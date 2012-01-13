@@ -1381,10 +1381,7 @@ save_session = (o) ->
 #
 app.post '/save-order', (req, res) ->
   #
-  #
-  save_session
-    req: req
-    order: req.body
+  req.session.order = req.body
   #
   res.send
     success: true

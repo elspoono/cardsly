@@ -211,19 +211,19 @@
           .field
             .input
               label E-mail
-              input.email.required(placeholder='my@email.com',pattern='.+@.+\\..+')
+              input.order_email.required(placeholder='my@email.com',pattern='.+@.+\\..+')
               .symbol *
             .clear
             .spacer
             .input
               label Phone
-              input.phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
+              input.order_phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
               .symbol
             .clear
             .spacer
             .input
               label Alerts
-              .toggle
+              .toggle.order_alerts
                 .bg
                   .option.active Off
                   .option Emails
