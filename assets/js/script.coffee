@@ -1692,6 +1692,26 @@ $ ->
     #
     active_theme = {}
     #
+    $add_image = $home_designer.find '.add_image'
+    $add_image.click ->
+      #
+      setTimeout ->
+        #
+        $image = $ '<image class="img active" />'
+        #
+        $editor.find('.bg:visible,.fg:visible').append $image
+        #
+        $image.css
+          left: 200
+          top: 100
+          width: 325
+          height: 200
+          position: 'absolute'
+        #
+        new_active()
+        add_remove_focus_event()
+      , 0
+    #
     $front_back = $home_designer.find '.front_back .option'
     $front_back.click ->
       $f_b = $ this
