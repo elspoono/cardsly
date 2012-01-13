@@ -76,6 +76,9 @@
         .two Customize colors and fonts
       .images
         img(src='/images/icons/paint_brush_333333.png')
+  form(action='/up',target='hidden_frame',enctype='multipart/form-data',method='POST').upload_form
+    input(type='file',name='image')
+    iframe(name='hidden_frame')
   .mid
     .center_column
       .row_bg
@@ -156,9 +159,6 @@
                       .arrow_2
                 .clear
               .area
-                form(action='/up',target='hidden_frame',enctype='multipart/form-data',method='POST').upload_form
-                  input(type='file',name='image')
-                  iframe(name='hidden_frame')
                 p Use 1050px X 600px for best quality
                 .clear
                 .spacer

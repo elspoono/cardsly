@@ -964,6 +964,29 @@ $ ->
     #
     #
     #
+    $upload_button.unbind('click').click -> $upload_input.click()
+    re_bind_change_event = ->
+      $upload_input.unbind('change').change -> 
+        #
+        $.load_loading {}, (loading_close) ->
+          $upload_form.submit()
+          $.s3_result = (response) ->
+            loading_close()
+            if response and response.s3_id
+              $active_image = $editor.find '.active.img'
+              $active_image.attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
+              $active_image.width response.width / 2
+              $active_image.height response.height / 2
+              new_active()
+              #
+              re_bind_change_event()
+            else
+              $.load_alert
+                content: '<p>I\'m sorry, I had trouble processing that specific image.</p>'
+        #
+    re_bind_change_event()
+    #
+    #
     #
     $themes = $home_designer.find '.themes'
     $thumbs = undefined
@@ -990,7 +1013,8 @@ $ ->
       $c = $t.closest('.controls').andSelf().filter('.controls')
       $e = $t.closest('.card.editor').andSelf().filter('.card.editor')
       $w = $t.closest('.color-window-guy').andSelf().filter('.color-window-guy')
-      unless $c.length or $e.length or $w.length
+      $u = $t.closest('.upload_form')
+      unless $c.length or $e.length or $w.length or $u.length
         $editor.find('.active').removeClass 'active'
         $body.unbind 'click', remove_focus_event
         new_active()
@@ -1348,21 +1372,6 @@ $ ->
           $areas.eq(2).make_active()
           #
           #
-          $upload_button.unbind('click').click -> $upload_input.click()
-          $upload_input.unbind('change').change -> 
-            #
-            $.load_loading {}, (loading_close) ->
-              $upload_form.submit()
-              $.s3_result = (response) ->
-                loading_close()
-                if response and response.s3_id
-                  $active_image.attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
-                  $active_image.width response.width / 2
-                  $active_image.height response.height / 2
-                  new_active()
-            #
-          #
-          #
           #
           #
         else
@@ -1696,6 +1705,8 @@ $ ->
     $add_image = $home_designer.find '.add_image'
     $add_image.click ->
       #
+      $upload_input.click()
+      #
       setTimeout ->
         #
         $image = $ '<image class="img active" />'
@@ -1711,6 +1722,7 @@ $ ->
         #
         new_active()
         add_remove_focus_event()
+        #
       , 0
     #
     $front_back = $home_designer.find '.front_back .option'
