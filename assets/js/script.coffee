@@ -1359,6 +1359,7 @@ $ ->
                   $active_image.attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
                   $active_image.width response.width / 2
                   $active_image.height response.height / 2
+                  new_active()
             #
           #
           #
@@ -1702,10 +1703,10 @@ $ ->
         $editor.find('.bg:visible,.fg:visible').append $image
         #
         $image.css
-          left: 200
-          top: 100
-          width: 325
-          height: 200
+          left: 0
+          top: 0
+          width: 150
+          height: 100
           position: 'absolute'
         #
         new_active()
