@@ -477,9 +477,7 @@ item_schema = new schema
 theme_schema = new schema
   user_id: String
   items: [item_schema]
-  cache:
-    front: Boolean
-    back: Boolean
+  cache: [Boolean]
   date_updated:
     type: Date
     default: Date.now
@@ -508,6 +506,8 @@ mongo_theme = mongoose.model 'themes', theme_schema
 
 mongo_theme.find
   active: true
+  s3_id:
+    '$exists': true
 , (err, themes) ->
   for theme in themes
     order_id = 0
@@ -2259,137 +2259,142 @@ check_no_err = (err, res) ->
 #
 app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
-  # Prep the string to search for
-  search_string = req.url.replace /[^a-z0-9]/ig, ''
   #
-  #
-  #
-  mongo_url_redirect.find
-    url_string: search_string
-  , (err, url_redirects) ->
-    if err
-      log_err err
-      next()
-    else if not url_redirects.length
-      next()
-    else
-      #
-      # Go ahead and redirect them now
-      res.send '',
-        'Location' : url_redirects[0].redirect_to
-      , 302
-      #
-      #
-      #
-      #
-      ip = req.socket.remoteAddress
-      if req.headers['x-real-ip']
-        ip = req.headers['x-real-ip']
-      if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
-        ip = '72.222.222.120'
+  if !req or !req.url
+    next()
+  else
+    #
+    # Prep the string to search for
+    search_string = req.url.replace /[^a-z0-9]/ig, ''
+    #
+    #
+    #
+    mongo_url_redirect.find
+      url_string: search_string
+    , (err, url_redirects) ->
+      if err
+        log_err err
+        next()
+      else if not url_redirects.length
+        next()
+      else
+        #
+        # Go ahead and redirect them now
+        res.send '',
+          'Location' : url_redirects[0].redirect_to
+        , 302
+        #
+        #
+        #
+        #
+        ip = req.socket.remoteAddress
+        if req.headers['x-real-ip']
+          ip = req.headers['x-real-ip']
+        if ip.match /(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/
+          ip = '72.222.222.120'
 
-      
-      http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, response, body) ->
-        if err or response.statusCode isnt 200
-          log_err err
-        else
-          result = body.split /\|/
-          #
-          #
-          visit = new mongo_visit
-          visit.url_string = search_string
-          visit.ip_address = ip
-          visit.user_agent = req.headers['user-agent']
-          visit.details =
-            city: result[0]
-            state: result[1]
-            country: result[2]
-            provider: result[3]
-            lat: result[4]
-            long: result[5]
-            iso: result[6]
-          visit.save (err, saved_visit) ->
-            log_err err if err
-          #
-          #
-          #
-          #
-          redis_pub.publish 'visits', search_string
-          #
-          #
-          #
-          # And in the mean time ...
-          # Let's log a hit
-          mongo_url_group.find
-            'urls.url_string': search_string
-          , (err, url_groups) ->
-            if err
-              log_err err
-            else if not url_groups.length
-              console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
-            else
-              url_group = url_groups[0]
-              found_url = null
-              for url in url_group.urls
-                if url.url_string is search_string
-                  if not url.visits
-                    url.visits = 0
-                  url.visits++
-                  url.last_updated = new Date()
-                  found_url = url
-              url_group.save (err, saved_url_group) ->
-                log_err err if err
-              #
-              #
-              #
-              #
-              if found_url
+        
+        http_request 'http://api.geoio.com/q.php?key=CFyhyWQCmB9ZukG8&qt=geoip&d=pipe&q='+ip, (err, response, body) ->
+          if err or response.statusCode isnt 200
+            log_err err
+          else
+            result = body.split /\|/
+            #
+            #
+            visit = new mongo_visit
+            visit.url_string = search_string
+            visit.ip_address = ip
+            visit.user_agent = req.headers['user-agent']
+            visit.details =
+              city: result[0]
+              state: result[1]
+              country: result[2]
+              provider: result[3]
+              lat: result[4]
+              long: result[5]
+              iso: result[6]
+            visit.save (err, saved_visit) ->
+              log_err err if err
+            #
+            #
+            #
+            #
+            redis_pub.publish 'visits', search_string
+            #
+            #
+            #
+            # And in the mean time ...
+            # Let's log a hit
+            mongo_url_group.find
+              'urls.url_string': search_string
+            , (err, url_groups) ->
+              if err
+                log_err err
+              else if not url_groups.length
+                console.log 'ERR: redirect was found - URL_GROUP WAS NOT'
+              else
+                url_group = url_groups[0]
+                found_url = null
+                for url in url_group.urls
+                  if url.url_string is search_string
+                    if not url.visits
+                      url.visits = 0
+                    url.visits++
+                    url.last_updated = new Date()
+                    found_url = url
+                url_group.save (err, saved_url_group) ->
+                  log_err err if err
                 #
-                console.log url_group.user_id
                 #
-                # Find the user to send them an email
-                mongo_user.findById url_group.user_id, (err, found_user) ->
+                #
+                #
+                if found_url
                   #
-                  console.log found_user.email
+                  console.log url_group.user_id
                   #
-                  if found_user.email
+                  # Find the user to send them an email
+                  mongo_user.findById url_group.user_id, (err, found_user) ->
                     #
+                    console.log found_user.email
                     #
-                    ordinal = (in_number) ->
-                      decimal = in_number %10
-                      suffix = 'th'
-                      suffix = 'st' if decimal is 1
-                      suffix = 'nd' if decimal is 2
-                      suffix = 'rd' if decimal is 3
-                      in_number+suffix
-                    #
-                    #
-                    # Send it!
-                    nodemailer.send_mail
-                      sender: '"Cards.ly" <help@cards.ly>'
-                      to: found_user.email
-                      subject: 'Card #'+found_url.card_number+' was just scanned!'
-                      html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+by_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
-                    , (err, data) ->
-                      if err
-                        log_err err
-                    #
-                    #
-                    #
-                    ###
-                    TODO 
-                    client.sendSms '4847722735', '4805445590', 'TESTING MOFO'
-                    ###
+                    if found_user.email
+                      #
+                      #
+                      ordinal = (in_number) ->
+                        decimal = in_number %10
+                        suffix = 'th'
+                        suffix = 'st' if decimal is 1
+                        suffix = 'nd' if decimal is 2
+                        suffix = 'rd' if decimal is 3
+                        in_number+suffix
+                      #
+                      #
+                      # Send it!
+                      nodemailer.send_mail
+                        sender: '"Cards.ly" <help@cards.ly>'
+                        to: found_user.email
+                        subject: 'Card #'+found_url.card_number+' was just scanned!'
+                        html: '<p>Card #'+found_url.card_number+' was just scanned for the '+ordinal(found_url.visits)+' time '+by_an_in(visit)+'.</p><p>Check out your full dashboard at <a href="http://cards.ly">cards.ly</a></p>'
+                      , (err, data) ->
+                        if err
+                          log_err err
+                      #
+                      #
+                      #
+                      ###
+                      TODO 
+                      client.sendSms '4847722735', '4805445590', 'TESTING MOFO'
+                      ###
 #
 #
 #
 default_line_copy = [
-  'John Stamos'
-  'Uncle Jesse'
-  'Monkey.com'
-  '123-456-7890'
-  ''
-  ''
+  'Harold Crick'
+  '123 Fiction St'
+  'Phoenix, AZ 85204'
+  '555-555-5545'
+  'email@gmail.com'
+  '@numberman'
   ''
   ''
   ''
@@ -2469,14 +2474,13 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
 #
 render_image = (o) ->
   #
-  o.side = 'front' unless o.side
+  o.side = 0 unless o.side
   #
   mongo_theme.findById o.theme_id, (err, theme) ->
-    theme_template = theme.theme_templates[o.active_view]
-    #z
+    #
     imagedata = ''
     #
-    if o.thumb_cache and theme.cache and ((theme.cache.front and o.side is 'front') or (theme.cache.back and o.side is 'back'))
+    if o.thumb_cache and theme.cache and ((theme.cache[0] and o.side is 0) or (theme.cache[1] and o.side is 1))
       #
       #
       o.res.send '',
@@ -2486,100 +2490,162 @@ render_image = (o) ->
       #
     else
       #
-      request = http.get
-        host: 'd3eo3eito2cquu.cloudfront.net'
-        port: 80
-        path: '/'+o.widthheight+'/'+theme.s3_id
-      , (response) ->
+      #
+      #
+      canvas = new node_canvas(o.width,o.height)
+      ctx = canvas.getContext '2d'
+      #
+      need_to_wait_on = 0
+      #
+      check_if_done = ->
+        #
+        if need_to_wait_on is 0
           #
-          response.setEncoding 'binary'
           #
-          response.on 'data', (chunk) ->
-            imagedata += chunk
-          response.on 'end', ->
-            if response.statusCode is 200
-              buff = new Buffer imagedata, 'binary'
-
-
-              canvas = new node_canvas(o.width,o.height)
-              ctx = canvas.getContext '2d'
-
-              img = new node_canvas.Image
-              img.src = buff
-              ctx.drawImage img, 0, 0, o.width, o.height
-              
-              save_image = ->
+          for item, i in theme.items
+            do (item) ->
+              if item.side*1 is o.side*1
+                h = Math.round(item.h/100*o.height)
+                x = item.x/100*o.width
+                y = item.y/100*o.height
+                w = item.w/100*o.width
                 #
-                #
-                canvas.toBuffer (err, buff) ->
-                  o.res.send buff,
-                    'Content-Type': 'image/png'
-                  , 200
+                if item.type is 'image'
                   #
                   #
+                  if item.s3_id
+                    #
+                    ctx.drawImage item.img, item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
+          #
+          for item, i in theme.items
+            do (item) ->
+              if item.side*1 is o.side*1
+                h = Math.round(item.h/100*o.height)
+                x = item.x/100*o.width
+                y = item.y/100*o.height
+                w = item.w/100*o.width
+                #
+                if item.type is 'qr'
                   #
-                  if o.thumb_cache
-                    # Send that new file to Amazon to be saved!
-                    knoxReq = knoxClient.put '/thumb_cache/'+o.side+'/'+theme._id,
-                      'Content-Length': buff.length
-                      'Content-Type' : 'image/png'
-                    knoxReq.on 'response', (awsRes) ->
-                      if awsRes.statusCode != 200
-                        console.log 'ERR', awsRes
-                      else
-                        theme.cache = {} unless theme.cache
-                        theme.cache[o.side] = true
-                        theme.save maybe_log_err
-                    knoxReq.end buff
-              #
-              #
-              if o.side and o.side is 'back'
+                  ctx.drawImage item.qr_img, item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
+          #
+          line_i = 0
+          #
+          for item, i in theme.items
+            do (item) ->
+              if item.side*1 is o.side*1
+                h = Math.round(item.h/100*o.height)
+                x = item.x/100*o.width
+                y = item.y/100*o.height
+                w = item.w/100*o.width
                 #
-                save_image()
-                #
-              else
-                #
-                #
-                for line,i in theme_template.lines
-                  h = Math.round(line.h/100*o.height)
-                  x = line.x/100*o.width
-                  y = line.y/100*o.height
-                  w = line.w/100*o.width
-                  ctx.fillStyle = hex_to_rgba line.color
-                  ctx.font = h + 'px "' + line.font_family + '"'
-                  if line.text_align is 'left'
-                    ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
+                if item.type is 'line'
+                  #
+                  ctx.fillStyle = hex_to_rgba item.color
+                  ctx.font = h + 'px "' + item.font_family + '"'
+                  #
+                  this_line_copy =  o.values[line_i] or ''
+                  this_line_copy = this_line_copy.replace(/&nbsp;/g, ' ').replace(/\n/g, '')
+                  #
+                  if item.text_align is 'left'
+                    ctx.fillText this_line_copy, x, y+h
                   else
-                    measure = ctx.measureText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x, y+h
-                    if line.text_align is 'right'
-                      ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+w-measure.width, y+h
-                    if line.text_align is 'center'
-                      ctx.fillText o.values[i].replace(/&nbsp;/g, ' ').replace(/\n/g, ''), x+(w-measure.width)/2, y+h
-                #
-                #
-                #
-                #
-                #
-                alpha = Math.round(theme_template.qr.color2_alpha * 255).toString 16
-                #
-                qr_canvas = qr_code.draw_qr
-                  node_canvas: node_canvas
-                  style: 'round'
-                  url: o.url
-                  hex: theme_template.qr.color1
-                  hex_2: theme_template.qr.color2+alpha
-                #
-                #
-                #
-                qr_canvas.toBuffer (err, qr_buff) ->
-                  qr_img = new node_canvas.Image
-                  qr_img.src = qr_buff
+                    measure = ctx.measureText this_line_copy, x, y+h
+                    if item.text_align is 'right'
+                      ctx.fillText this_line_copy, x+w-measure.width, y+h
+                    if item.text_align is 'center'
+                      ctx.fillText this_line_copy, x+(w-measure.width)/2, y+h
                   #
                   #
-                  ctx.drawImage qr_img, theme_template.qr.x/100*o.width,theme_template.qr.y/100*o.height, theme_template.qr.w/100*o.width, theme_template.qr.h/100*o.height
-                  #
-                  #
-                  save_image()
+                #
+              #
+              #
+              if item.type is 'line'
+                line_i++
+          #
+          #
+          #
+          canvas.toBuffer (err, buff) ->
+            o.res.send buff,
+              'Content-Type': 'image/png'
+            , 200
+            #
+            #
+            #
+            if o.thumb_cache
+              # Send that new file to Amazon to be saved!
+              knoxReq = knoxClient.put '/thumb_cache/'+o.side+'/'+theme._id,
+                'Content-Length': buff.length
+                'Content-Type' : 'image/png'
+              knoxReq.on 'response', (awsRes) ->
+                if awsRes.statusCode != 200
+                  console.log 'ERR', awsRes
+                else
+                  theme.cache = [false,false] unless theme.cache
+                  theme.cache[o.side] = true
+                  theme.save maybe_log_err
+              knoxReq.end buff
+      #
+      #
+      for item, i in theme.items
+        #
+        do (item) ->
+          #
+          if item.side*1 is o.side*1
+            #
+            if item.type is 'qr'
+              #
+              #
+              alpha = Math.round(item.color_2_opacity * 255).toString 16
+              #
+              qr_canvas = qr_code.draw_qr
+                node_canvas: node_canvas
+                style: item.qr_style
+                url: o.url
+                hex: item.color
+                hex_2: item.color_2+alpha
+              #
+              need_to_wait_on++
+              #
+              qr_canvas.toBuffer (err, qr_buff) ->
+                qr_img = new node_canvas.Image
+                qr_img.src = qr_buff
+                #
+                item.qr_img = qr_img
+                #
+                need_to_wait_on--
+                #
+                check_if_done()
+            #
+            #
+            if item.type is 'image'
+              #
+              #
+              if item.s3_id
+                #
+                need_to_wait_on++
+                #
+                request = http.get
+                  host: 'd3eo3eito2cquu.cloudfront.net'
+                  port: 80
+                  path: '/'+o.widthheight+'/'+item.s3_id
+                , (response) ->
+                    #
+                    response.setEncoding 'binary'
+                    #
+                    response.on 'data', (chunk) ->
+                      imagedata += chunk
+                    response.on 'end', ->
+                      if response.statusCode is 200
+                        buff = new Buffer imagedata, 'binary'
+                        img = new node_canvas.Image
+                        img.src = buff
+                        #
+                        item.img = img
+                        #
+                        need_to_wait_on--
+                        #
+                        check_if_done()
 #
 #
 #
@@ -2800,6 +2866,26 @@ app.get '/thumb/:theme_id/:side?', (req, res, next) ->
     active_view: 0
     theme_id: req.params.theme_id
     side: req.params.side
+    url: url
+#
+#
+#
+app.get '/test/:theme_id', (req, res, next) ->
+  #
+  #
+  url = '1'
+  parts = req.url.split '?'
+  if parts.length > 1
+    url = unescape req.url.replace /^[^\?]*\?/i, ''
+  #
+  render_image
+    res: res
+    widthheight: 'raw'
+    width: 1050
+    height: 600
+    values: default_line_copy
+    theme_id: req.params.theme_id
+    side: 0
     url: url
 #
 #
