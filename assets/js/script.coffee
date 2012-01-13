@@ -833,46 +833,50 @@ $ ->
     #
     # Up and Down
     if k is 38 or k is 40 or k is 37 or k is 39
-      # Also, allow backspace to delete stuff in the editor
-      $active_items = $editor.find '.active'
-      $active_items.each ->
-        e.preventDefault()
-        $active_item = $ this
-        #
-        #
-        position = $active_item.position()
-        width = $active_item.width()
-        height = $active_item.height()
-        #
-        n_l = position.left
-        n_t = position.top
-        #
-        to_shift = 2
-        #
-        to_shift = 10 if shift_pressed
-        #
-        if k is 38
-          n_t = n_t - to_shift
-        if k is 40
-          n_t = n_t + to_shift
-        if k is 37
-          n_l = n_l - to_shift
-        if k is 39
-          n_l = n_l + to_shift
-        #
-        n_l = min_l if n_l < min_l
-        n_t = min_t if n_t < min_t
-        #
-        n_l = max_l-width if n_l+width > max_l
-        n_t = max_t-height if n_t+height > max_t
-        #
-        $active_item.css
-          left: n_l
-          top: n_t
-        #
-        #
-        move_my_buttons n_l, width, n_t, height, $active_item
-    #
+      $t = $ e.target
+      #if not $t.closest('input').andSelf().filter('input').length
+      if not $t.closest('textarea').andSelf().filter('textarea').length
+        if not $t.closest('select').andSelf().filter('select').length
+          # Also, allow backspace to delete stuff in the editor
+          $active_items = $editor.find '.active'
+          $active_items.each ->
+            e.preventDefault()
+            $active_item = $ this
+            #
+            #
+            position = $active_item.position()
+            width = $active_item.width()
+            height = $active_item.height()
+            #
+            n_l = position.left
+            n_t = position.top
+            #
+            to_shift = 2
+            #
+            to_shift = 10 if shift_pressed
+            #
+            if k is 38
+              n_t = n_t - to_shift
+            if k is 40
+              n_t = n_t + to_shift
+            if k is 37
+              n_l = n_l - to_shift
+            if k is 39
+              n_l = n_l + to_shift
+            #
+            n_l = min_l if n_l < min_l
+            n_t = min_t if n_t < min_t
+            #
+            n_l = max_l-width if n_l+width > max_l
+            n_t = max_t-height if n_t+height > max_t
+            #
+            $active_item.css
+              left: n_l
+              top: n_t
+            #
+            #
+            move_my_buttons n_l, width, n_t, height, $active_item
+          #
     #
     #
     #
@@ -912,6 +916,7 @@ $ ->
   if $home_designer.length
     #
     #
+    order = {}
     #
     #
     #
@@ -1913,7 +1918,7 @@ $ ->
         #
       , 0
     #
-    $front_back = $home_designer.find '.front_back .option'
+    $front_back = $ '.front_back .option'
     $front_back.click ->
       $f_b = $ this
       $f_b.make_active()
@@ -1925,6 +1930,11 @@ $ ->
         #$thumbs.filter('.active').click()
         #
         side = $f_b.html().toLowerCase()
+        #
+        $front_back.each ->
+          $f_b = $ this
+          if $f_b.html().toLowerCase is side
+            $f_b.make_active()
         #
         #
         $fg = $thumbs.add($all_card).find '.fg'
@@ -2089,12 +2099,13 @@ $ ->
       # Make this guy active
       $q.make_active()
       #
+      order.amount = $q.attr 'cost'
+      order.quantity = $q.attr 'cards'
+      #
       # And save it
       $.ajax
-        url: '/save-order-form'
-        data: JSON.stringify
-          cards: $q.attr 'cards'
-          cost: $q.attr 'cost'
+        url: '/save-order'
+        data: JSON.stringify order
       #
       $total_price.html $q.attr 'cost'
     #
@@ -2174,29 +2185,33 @@ $ ->
       url: '/get-session'
       success: (results) ->
         #
-        if results.session and results.session.order_form
-          o_f = results.session.order_form
-          $a_q = $quantity.filter('[cards='+o_f.cards+']')
-          $a_q.make_active()
-          $preview_count.html '<div class="large">'+$a_q.attr('cards')+'</div><div class="small">x</div>'
+        if results.session and results.session.order
           #
-          $total_price.html o_f.cost
-          #
-          #
-          if o_f.full_address
-            load_map o_f
-            #
-            $street.val o_f.street
-            $zip_code.val o_f.zip_code
-            #
-            $street.keyup()
-            $zip_code.keyup()
-            #
-            #
+          order = results.session.order
           #
         else
           #
-          $quantity.first().make_active()
+          order = {}
+        #
+        if order.quantity
+          $a_q = $quantity.filter('[cards='+order.quantity+']')
+          $a_q.click()
+        else
+          $quantity.first().click()
+        #
+
+        #
+        if order.full_address
+          load_map order
+          #
+          $street.val order.address
+          $zip_code.val order.city
+          #
+          #$street.keyup()
+          #$zip_code.keyup()
+          #
+          #
+        #
         #
         #
         #

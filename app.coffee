@@ -343,6 +343,8 @@ DATABASE MODELING
 # user schema Definition
 user_schema = new schema
   email: String
+  phone: String
+  alerts: String
   password_encrypted: String
   role: String
   name: String
@@ -592,6 +594,8 @@ order_schema = new schema
   address: String
   city: String
   full_address: String
+  latitude: String
+  longitude: String
   quantity: Number # number of cards
   amount: Number # cost of order
   email: String
@@ -1375,12 +1379,12 @@ save_session = (o) ->
   #
 #
 #
-app.post '/save-order-form', (req, res) ->
+app.post '/save-order', (req, res) ->
   #
   #
   save_session
     req: req
-    new_values: req.body
+    order: req.body
   #
   res.send
     success: true
@@ -1394,18 +1398,16 @@ app.post '/search-address', (req, res) ->
   #
   geo.geocoder geo.google, req.body.street+' '+req.body.zip_code, false, (full_address, latitude, longitude, details) ->
     #
-    new_values = 
-      street: req.body.street
-      zip_code: req.body.zip_code
-      full_address: full_address
-      latitude: latitude
-      longitude: longitude
+    req.session.order = {} if not req.session.order
     #
-    save_session
-      req: req
-      new_values: new_values
     #
-    res.send new_values
+    req.session.order.address = req.body.street
+    req.session.order.city = req.body.zip_code
+    req.session.order.full_address = full_address
+    req.session.order.latitude = latitude
+    req.session.order.longitude = longitude
+    #
+    res.send req.session.order
     #
     #
 #
