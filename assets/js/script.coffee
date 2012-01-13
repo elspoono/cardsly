@@ -1062,9 +1062,10 @@ $ ->
     get_hex_color = (in_color) ->
       if in_color.match /rgb/
         digits = in_color.match /(.*?)rgb\((\d+), (\d+), (\d+)\)/
-        in_color = rgb_to_hex digits[0], digits[1], digits[2]
-      in_color
-        
+        in_color = rgb_to_hex digits[2], digits[3], digits[4]
+      #
+      #
+      in_color.replace /#/, ''
     #
     rgb_to_hex = (r, g, b) -> to_hex(r)+to_hex(g)+to_hex(b)
     to_hex = (n) ->
@@ -1161,7 +1162,6 @@ $ ->
           delete active_theme.items[i]._id
         #
         #
-
         #
         #
         $ours_yours.show()
@@ -1193,7 +1193,7 @@ $ ->
               $bg_image = $ '<img class="bg collapsed2" />'
               $bg_image.hide()
               $bg_image.attr
-                src: '/thumb/'+theme._id+'/back'
+                src: '/thumb/'+theme._id+'/1'
               $new_thumb.append $bg_image
               #
               #
@@ -2191,7 +2191,7 @@ $ ->
             $bg_image = $ '<img class="bg collapsed2" />'
             $bg_image.hide()
             $bg_image.attr
-              src: '/thumb/'+theme._id+'/back'
+              src: '/thumb/'+theme._id+'/1'
             $new_thumb.append $bg_image
             #
             $themes.append $new_thumb
