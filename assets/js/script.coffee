@@ -50,12 +50,12 @@ else
 #
 #
 $.line_copy = [
-  'John Stamos'
-  'Uncle Jesse'
-  'Monkey.com'
-  '123-456-7890'
-  ''
-  ''
+  'Harold Crick'
+  '123 Fiction St'
+  'Phoenix, AZ 85204'
+  '555-555-5545'
+  'email@gmail.com'
+  '@numberman'
   ''
   ''
   ''
@@ -288,21 +288,18 @@ $.create_card_from_theme = (options) ->
           #
           do ($li, n_l, c_w, item, line_i) ->
             #
-            if $.line_copy[line_i]
-              if not $li.length
-                $li = $ '<div class="line" />'
-                $li.appendTo $my_card
-                #
-                $li.html $.line_copy[line_i]
-                setTimeout ->
-                  stylify_a_line($li, n_l, c_w, item)
-                , 500
-                #
-              else
-                $li.html $.line_copy[line_i]
-                stylify_a_line $li, n_l, c_w, item
+            if not $li.length
+              $li = $ '<div class="line" />'
+              $li.appendTo $my_card
+              #
+              $li.html $.line_copy[line_i]
+              setTimeout ->
+                stylify_a_line($li, n_l, c_w, item)
+              , 500
+              #
             else
-              $li.remove()
+              #$li.html $.line_copy[line_i]
+              stylify_a_line $li, n_l, c_w, item
             #
           #
           line_i++
@@ -1768,11 +1765,23 @@ $ ->
       setTimeout ->
         #
         # find last visible line
-        $last_line = $editor.find('.line:visible').last()
+        $last_line = $ ''
+        last_top = 0
+        last_left = 0
+        $editor.find('.line:visible').each ->
+          $t = $ this
+          this_top = parseInt $t.css('top')
+          this_left = parseInt $t.css('left')
+          if this_top > last_top or (this_top is last_top and this_left > last_left)
+            $last_line = $t 
+            last_top = this_top
+            last_left = this_left
+
         #
         n_l = parseInt $last_line.css 'left'
         n_t = parseInt $last_line.css 'top'
-        h = $last_line.height()
+        c_h = $last_line.height()
+        c_w = $last_line.width()
         #
         #
         $active_line = $ '<div class="line active" />'
@@ -1781,11 +1790,15 @@ $ ->
         #
         $active_line.html('New line')
         #
-        n_t = n_t + h + 10
-        my_max_t = max_t - h
-        n_t = 0 if n_t > my_max_t
-        c_w = $last_line.width()
+        n_t = n_t + c_h + 10
+        my_max_t = max_t - c_h
+        if n_t > my_max_t
+          n_t = my_max_t
+          n_l = n_l + c_w
         t_a = $last_line.css 'text-align'
+        my_max_l = max_l - c_w
+        if n_l > my_max_l
+          n_l = my_max_l
         #
         # Use last line for css
         $active_line.css
@@ -1793,9 +1806,9 @@ $ ->
           left: n_l
           top: n_t
           width: c_w
-          height: h
-          'font-size': h+'px'
-          'line-height': h+'px'
+          height: c_h
+          'font-size': c_h+'px'
+          'line-height': c_h+'px'
           'font-family': $last_line.css 'font-family'
           'text-align': t_a
         #
@@ -1816,7 +1829,7 @@ $ ->
           left: n_l
           width: n_w
         #
-        move_my_buttons n_l, n_w, n_t, h, $active_line
+        move_my_buttons n_l, n_w, n_t, c_h, $active_line
         #
         #
         #
