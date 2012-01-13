@@ -1739,24 +1739,64 @@ $ ->
       #
       setTimeout ->
         #
-        $line = $ '<div class="line active" />'
-        #
-        $editor.find('.bg:visible,.fg:visible').append $line
-        #
         # find last visible line
+        $last_line = $editor.find('.line:visible').last()
         #
-        # use it's ^ stuff for css
-        $line.css
-          left: 0
-          top: 0
-          width: 150
-          height: 100
+        n_l = parseInt $last_line.css 'left'
+        n_t = parseInt $last_line.css 'top'
+        h = $last_line.height()
+        #
+        #
+        $active_line = $ '<div class="line active" />'
+        #
+        $editor.find('.bg:visible,.fg:visible').append $active_line
+        #
+        $active_line.html('New line')
+        #
+        max_t = $editor.outerHeight()
+        n_t = n_t + h + 10
+        my_max_t = max_t - h
+        n_t = 0 if n_t > my_max_t
+        c_w = $last_line.width()
+        t_a = $last_line.css 'text-align'
+        #
+        # Use last line for css
+        $active_line.css
           position: 'absolute'
+          left: n_l
+          top: n_t
+          width: c_w
+          height: h
+          'font-size': h+'px'
+          'line-height': h+'px'
+          'font-family': $last_line.css 'font-family'
+          'text-align': t_a
         #
         new_active()
         add_remove_focus_event()
         #
+        #
+        $active_line.css
+          width: 'auto'
+        #
+        n_w = $active_line.width()
+        if t_a is 'right'
+          n_l = n_l + c_w - n_w
+        if t_a is 'center'
+          n_l = n_l + (c_w - n_w)/2
+        #
+        $active_line.css
+          left: n_l
+          width: n_w
+        #
+        move_my_buttons n_l, n_w, n_t, h, $active_line
+        #
+        #
+        #
         # focus
+        setTimeout ->
+          $home_designer.find('.line_value:first').focus().select()
+        , 0
         #
         #
       , 0
