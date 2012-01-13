@@ -14,19 +14,19 @@
       li
         .login
           a(href='/login') Login
-          .drop_down
-            .input
-              ul.socials
-                li.facebook F
-                li.twitter.shift t
-                li.linkedin l
-                li.google g
-              .item
-                label E-mail
-                input.email(placeholder='my@email.com',pattern='.+@.+\\..+')
-              .item
-                label Password
-                input.password(type='password')
+          .dropdown
+            ul.socials
+              li.facebook F
+              li.twitter.shift t
+              li.linkedin l
+              li.google g
+            .clear
+            .item.push
+              label E-mail  
+              input.email(placeholder='my@email.com',pattern='.+@.+\\..+')
+            .item
+              label Password  
+              input.password(type='password')
 != body
 
 
