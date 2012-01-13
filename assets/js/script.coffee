@@ -850,9 +850,9 @@ $ ->
         n_l = position.left
         n_t = position.top
         #
-        to_shift = 5
+        to_shift = 2
         #
-        to_shift = 1 if shift_pressed or ctrl_pressed
+        to_shift = 10 if shift_pressed
         #
         if k is 38
           n_t = n_t - to_shift
