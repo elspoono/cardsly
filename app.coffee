@@ -457,7 +457,7 @@ mongo_pattern = mongoose.model 'patterns', pattern_schema
 #
 # Style All Items
 item_schema = new schema
-  type: String # ['qr','line','image','solid']
+  type: String # ['qr','line','image']
   order_id: Number
   s3_id: String
   color: String
@@ -466,7 +466,7 @@ item_schema = new schema
   qr_style: String
   font_family: String
   text_align: String
-  side: Number
+  side: Number # 0 for front, 1 for back
   h: Number
   w: Number
   x: Number
@@ -1386,6 +1386,63 @@ app.post '/save-order', (req, res) ->
   res.send
     success: true
   #
+#
+#
+#
+#
+# AJAX request for saving theme
+app.post '/save-theme', (req, res) ->
+  #
+  theme = req.body
+  #
+  #
+  # If we're updating do this
+  if theme._id
+    mongo_theme.findById theme._id, (err, found_theme) ->
+      if check_no_err_ajax err, res
+        found_theme.date_updated = new Date()
+        if typeof(theme.active) is 'boolean'
+          found_theme.active = theme.active
+        #
+        # Push the new template in
+        found_theme.items = theme.items
+        #
+        #
+        found_theme.save (err,theme_saved) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+              theme: theme_saved
+  #
+  #
+  #
+  # This indicates we are creating a new one, nothing to update
+  else
+    #
+    #
+    #
+    new_theme = new mongo_theme
+    if typeof(theme.active) is 'boolean'
+      new_theme.active = theme.active
+    # Push the new template in
+    new_theme.items = theme.items
+    #
+    #
+    #
+    #
+    #
+    #
+    new_theme.save (err,theme_saved) ->
+      if check_no_err_ajax err, res
+        res.send
+          success: true
+          theme: theme_saved
+#
+#
+#
+#
+#
+#
 #
 #
 app.post '/search-address', (req, res) ->
