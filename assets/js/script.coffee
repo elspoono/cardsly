@@ -1052,14 +1052,166 @@ $ ->
     #
     $color_2_opacity = $home_designer.find '.color_2_opacity'
     #
+    $ours_yours = $home_designer.find '.ours_yours'
+    #
+    $my_themes = $home_designer.find '.my_themes'
     #
     #
     theme_modified_timer = 0
+    #
+    get_hex_color = (in_color) ->
+      if in_color.match /rgb/
+        digits = in_color.match /(.*?)rgb\((\d+), (\d+), (\d+)\)/
+        in_color = rgb_to_hex digits[0], digits[1], digits[2]
+      in_color
+        
+    #
+    rgb_to_hex = (r, g, b) -> to_hex(r)+to_hex(g)+to_hex(b)
+    to_hex = (n) ->
+      n = parseInt n, 10
+      if isNaN n 
+        return '00'
+      n = Math.max 0, Math.min n, 255
+      "0123456789ABCDEF".charAt((n-n%16)/16)+ "0123456789ABCDEF".charAt(n%16)
+    #
+    actually_save_active_theme = ->
+      clearTimeout theme_modified_timer
+      #
+      #
+      $visible_items = $editor.find '.fg :visible, .bg :visible'
+      #
+      side = 0
+      if $front_back.filter('.active').html().toLowerCase() is 'back'
+        side = 1
+      #
+      #
+      #
+      active_theme.items = _(active_theme.items).filter (item) -> item.side isnt side
+      #
+      #
+      #
+      #
+      $visible_items.each ->
+        $visible_item = $ this
+        #
+        my_l = parseInt $visible_item.css 'left'
+        my_t = parseInt $visible_item.css 'top'
+        my_h = $visible_item.height()
+        my_w =$visible_item.width()
+        #
+        item =
+          side: side
+          x: (my_l / max_l) * 100
+          y: (my_t / max_t) * 100
+          h: (my_h / max_t) * 100
+          w: (my_w / max_l) * 100
+        #
+        #
+        if $visible_item.hasClass 'qr'
+          item.type = 'qr'
+          src = $visible_item.attr 'src'
+          attributes = src.split /\//
+          attributes = _(attributes).compact()
+          #
+          item.color = attributes[1]
+          item.style = attributes[3]
+          #
+          item.color_2 = attributes[2].substr 0, 6
+          #
+          item.color_2_opacity = parseInt(attributes[2].substr(6,2),16)/255
+          #
+          #
+          #
+          #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        if $visible_item.hasClass 'img'
+          item.type = 'image'
+          src = $visible_item.attr 'src'
+          item.s3_id = src.replace /.*\//g, ''
+        #
+        if $visible_item.hasClass 'line'
+          item.type = 'line'
+          item.color = get_hex_color $visible_item.css 'color'
+          item.font_family = $visible_item.css 'font-family'
+          item.text_align = $visible_item.css 'text-align'
+        #
+        #
+        active_theme.items.push item
+        #
+      #
+      #
+      console.log active_theme
+      #
+      if active_theme.user_id
+        #
+        console.log active_theme
+        #
+      else
+        #
+        active_theme._id = ''
+        delete active_theme._id
+        for item, i in active_theme.items
+          delete active_theme.items[i]._id
+        #
+        #
+
+        #
+        #
+        $ours_yours.show()
+        #
+        $.ajax
+          url: '/save-theme'
+          data: JSON.stringify active_theme
+          success: (result) ->
+            #
+            #
+            if result.theme
+              #
+              #
+              active_theme._id = result.theme._id
+              #
+              theme = result.theme
+              #
+              #
+              $new_thumb = $ '<div class="thumb"></div>'
+              $new_thumb.attr
+                id: theme._id
+              #
+              $fg_image = $ '<img class="fg" />'
+              $fg_image.attr
+                src: '/thumb/'+theme._id+''
+              $new_thumb.append $fg_image
+              #
+              #
+              $bg_image = $ '<img class="bg collapsed2" />'
+              $bg_image.hide()
+              $bg_image.attr
+                src: '/thumb/'+theme._id+'/back'
+              $new_thumb.append $bg_image
+              #
+              #
+              $my_themes.append $new_thumb
+              #
+              $new_thumb.make_active()
+              #
+      #
+      #
+      #
+      #
+      # Do the actual save of the theme.
+    #
     theme_modified = ->
       clearTimeout theme_modified_timer
       theme_modified_timer = setTimeout ->
-        console.log active_theme
-      , 1000
+        actually_save_active_theme()
+      , 3000
     #
     #
     #
@@ -1101,6 +1253,8 @@ $ ->
         $resize_button.css
           top: top
           left: left
+      #
+      theme_modified()
     #
     card_loaded = ->
       #
@@ -1281,8 +1435,6 @@ $ ->
               move_my_buttons n_l, n_w, n_t, c_h, $active_line
               #
               #
-              #
-              theme_modified()
             #
             #
             #
@@ -1589,6 +1741,10 @@ $ ->
                         active_theme.items[item_i].color_2 = new_color
                         item.color_2 = new_color
                       #
+                      #
+                      console.log active_theme, active_theme.items[item_i], item_i
+                      #
+                      #
                       # Calculate the alpha
                       alpha = Math.round(item.color_2_opacity * 255).toString 16
                       #
@@ -1610,8 +1766,7 @@ $ ->
                   $a = $ this
                   $a.css
                     'color': new_color
-                  #index = $a.prevAll().length
-                  #active_theme.theme_templates[active_view].lines[index].color = new_color.replace /#/, ''
+                  
             #
             $(document.body).append $color_window
             #
@@ -1968,6 +2123,7 @@ $ ->
       $f_b = $ this
       $f_b.make_active()
       #
+      actually_save_active_theme()
       #
       setTimeout ->
         #
