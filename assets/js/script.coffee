@@ -804,6 +804,14 @@ $ ->
       if not $t.closest('input').andSelf().filter('input').length
         if not $t.closest('textarea').andSelf().filter('textarea').length
           e.preventDefault()
+          #
+          # Also, allow backspace to delete stuff in the editor
+          $active_items = $editor.find '.active'
+          $active_items.each ->
+            $active_item = $ this
+            $close_button = $active_item.data '$close_button'
+            if $close_button and $close_button.length
+              $close_button.click()
     #
     # Modify the amount we shift when the shift key is pressed
     if k is 16
@@ -827,27 +835,47 @@ $ ->
     #
     #
     # Up and Down
-    if k is 38 or k is 40
-      $active_dropdown = $dropdown.filter '.active'
-      if $active_dropdown.length
-        $active_option = $active_dropdown.find '.active'
+    if k is 38 or k is 40 or k is 37 or k is 39
+      # Also, allow backspace to delete stuff in the editor
+      $active_items = $editor.find '.active'
+      $active_items.each ->
         e.preventDefault()
-        if k is 38
-          $new_option = $active_option.prev()
-        if k is 40
-          $new_option = $active_option.next()
+        $active_item = $ this
         #
-        if $new_option.length
-          #
-          $new_option.make_active()
-          #
-          $active_dropdown.find('.bg_scroll').scrollTo $new_option
+        #
+        position = $active_item.position()
+        width = $active_item.width()
+        height = $active_item.height()
+        #
+        n_l = position.left
+        n_t = position.top
+        #
+        to_shift = 5
+        #
+        to_shift = 1 if shift_pressed or ctrl_pressed
+        #
+        if k is 38
+          n_t = n_t - to_shift
+        if k is 40
+          n_t = n_t + to_shift
+        if k is 37
+          n_l = n_l - to_shift
+        if k is 39
+          n_l = n_l + to_shift
+        #
+        n_l = min_l if n_l < min_l
+        n_t = min_t if n_t < min_t
+        #
+        n_l = max_l-width if n_l+width > max_l
+        n_t = max_t-height if n_t+height > max_t
+        #
+        $active_item.css
+          left: n_l
+          top: n_t
+        #
+        #
+        move_my_buttons n_l, width, n_t, height, $active_item
     #
-    if k is 37 or k is 39 or k is 13 or k is 9 or k is 32
-      $active_dropdown = $dropdown.filter '.active'
-      if $active_dropdown.length
-        e.preventDefault()
-        $body.click()
     #
     #
     #
@@ -901,6 +929,10 @@ $ ->
     #
     $editor = $all_card.filter '.editor'
     #
+    max_t = $editor.outerHeight()
+    min_t = 0
+    min_l = 0
+    max_l = $editor.outerWidth()
     #
     #
     #
@@ -1521,10 +1553,6 @@ $ ->
       #
       #
       #
-      max_t = $editor.outerHeight()
-      min_t = 0
-      min_l = 0
-      max_l = $editor.outerWidth()
       #
       $editor.unbind().mousedown (e) ->
         #
@@ -1753,7 +1781,6 @@ $ ->
         #
         $active_line.html('New line')
         #
-        max_t = $editor.outerHeight()
         n_t = n_t + h + 10
         my_max_t = max_t - h
         n_t = 0 if n_t > my_max_t
