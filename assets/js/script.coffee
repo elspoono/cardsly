@@ -890,7 +890,39 @@ $ ->
   #
   #
   #
+  ##################################################################
   #
+  # Dropdown Menu
+  #
+  #
+  #
+  # TODO  - FIX BUG BECAUSE THIS USES $a !!!!!!
+  #
+
+  $login = $ '.login'
+  $dropdown = $login.find '.dropdown'
+  $body = $(document)
+  close_menu = (e) ->
+    $t = $ e.target
+    if $t.closest('login').length
+      $login = $t.closest('li').find 'a'
+    else
+      $login.removeClass 'click'
+      $dropdown.slideUp(150)
+      $account.one 'click', expand_menu
+      $body.unbind 'click', close_menu
+    false
+  expand_menu = ->
+    $dropdown.slideDown(150)
+    $login.addClass 'click'
+    $body.bind 'click', close_menu
+    false
+  $login.one 'click', expand_menu
+  #
+  #
+  # END MENU
+  #
+  #################################################################
   #
   #
   #
