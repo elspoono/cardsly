@@ -1427,6 +1427,10 @@ app.post '/save-theme', (req, res) ->
     # Push the new template in
     new_theme.items = theme.items
     #
+    new_theme.user_id = req.sessionID
+    if req.user and req.user._id
+      new_theme.user_id = req.user._id
+    #
     #
     #
     #

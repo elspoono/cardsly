@@ -1175,7 +1175,7 @@ $ ->
             if result.theme
               #
               #
-              active_theme._id = result.theme._id
+              active_theme = result.theme
               #
               theme = result.theme
               #
@@ -1199,7 +1199,9 @@ $ ->
               #
               $my_themes.append $new_thumb
               #
-              $new_thumb.make_active()
+              $themes.find('.thumb').removeClass 'active'
+              $new_thumb.addClass 'active'
+              #
               #
       #
       #
@@ -2194,7 +2196,14 @@ $ ->
               src: '/thumb/'+theme._id+'/1'
             $new_thumb.append $bg_image
             #
-            $themes.append $new_thumb
+            #
+            if theme.user_id
+              $ours_yours.show()
+              $my_themes.prepend $new_thumb
+            else
+              #
+              $themes.append $new_thumb
+            #
             #
           #
           $thumbs = $themes.find '.thumb'
@@ -2204,13 +2213,14 @@ $ ->
           , ->
             $(this).removeClass 'hover'
           #
-          $thumbs.click ->
+          $thumbs.live 'click', ->
             #
             $thumb = $ this
             id = $thumb.attr 'id'
             #
             #
-            $thumb.make_active()
+            $themes.find('.thumb').removeClass 'active'
+            $thumb.addClass 'active'
             #
             $.ajax
               url: '/get-theme'
