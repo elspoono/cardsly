@@ -1184,7 +1184,16 @@ $ ->
       #
       if active_theme.user_id
         #
-        console.log active_theme
+        $.ajax
+          url: '/save-theme'
+          data: JSON.stringify active_theme
+          success: (result) ->
+            #
+            #
+            if result.theme
+              #
+              #
+              active_theme = result.theme
         #
       else
         #
@@ -1192,8 +1201,6 @@ $ ->
         delete active_theme._id
         for item, i in active_theme.items
           delete active_theme.items[i]._id
-        #
-        #
         #
         #
         $ours_yours.show()
