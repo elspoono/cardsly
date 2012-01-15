@@ -7,6 +7,7 @@
 #= require 'libs/jquery.colorpicker.js'
 #= require 'libs/socket.io.js'
 #= require 'libs/jquery.lettering.js'
+#= require 'libs/luhn.js'
 
 
 ##################################################################
@@ -2455,7 +2456,7 @@ $ ->
       # Make this guy active
       $q.make_active()
       #
-      order.amount = $q.attr 'cost'
+      order.amount = $q.attr('cost') - discount
       order.quantity = $q.attr 'cards'
       #
       # And save it
@@ -2464,11 +2465,10 @@ $ ->
         data: JSON.stringify order
       #
       #
-      total_price = order.amount - discount
       #
       #
       #
-      $total_price.html total_price
+      $total_price.html order.amount
     #
     #
     #
@@ -2639,7 +2639,12 @@ $ ->
           #
           val = $t.val()
           #
-          if val.match reg_ex
+          truth_expression = val.match reg_ex
+          #
+          if $t.hasClass 'credit_card'
+            truth_expression = val.luhn_check()
+          #
+          if truth_expression
             $a.removeClass 'typing'
             $a.addClass 'filled_in'
             $s.html '✓'
@@ -2662,6 +2667,11 @@ $ ->
     #
     #
     #
+    if env is 'development'
+      Stripe.setPublishableKey 'pk_ZHhE88sM8emp5BxCIk6AU1ZFParvw'
+    else
+      Stripe.setPublishableKey 'pk_5U8jx27dPrrPsm6tKE6jnMLygBqYg'
+    #
     #
     #
     #
@@ -2683,83 +2693,84 @@ $ ->
         #
         #
         #
-        #
-        $.ajax
-          url: '/validate-purchase'
-          success: (result) ->
-            if result.error
-              loading_close()
-              $.load_alert
-                content: result.error
-            else if result.success
-              #
-              # Set up a default
-              token = false
-              #
-              # This gets called after we either get a token
-              # OR we already have a payment maybe
-              load_final = ->
-                $.ajax
-                  url: '/confirm-purchase'
-                  data: JSON.stringify
-                    token: token
-                    email: $('.email_to_send input').val()
-                  success: (result) ->
-                    console.log result
-                    if result.err
-                      loading_close()
-                      $.load_alert
-                        content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
-                    else
+        $.load_loading {}, (loading_close) ->
+          #
+          $.ajax
+            url: '/validate-purchase'
+            success: (result) ->
+              if result.error
+                loading_close()
+                $.load_alert
+                  content: result.error
+              else if result.success
+                #
+                # Set up a default
+                token = false
+                #
+                # This gets called after we either get a token
+                # OR we already have a payment maybe
+                load_final = ->
+                  $.ajax
+                    url: '/confirm-purchase'
+                    data: JSON.stringify
+                      token: token
+                      email: $('.email_to_send input').val()
+                    success: (result) ->
                       console.log result
-                      if result.charge.paid
-                        document.location.href = '/cards/thank-you'
-                      else
+                      if result.err
                         loading_close()
                         $.load_alert
-                          content: 'Our apoligies, something went wrong, please try again later'
-                        
-                  error: ->
-                    loading_close()
-                    $.load_alert
-                      content: 'Our apoligies, something went wrong, please try again later'
-              #
-              #
-              # See if they filled a card in
-              if $('.card_number').val() and $('.cvv').val()
+                          content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
+                      else
+                        console.log result
+                        if result.charge.paid
+                          document.location.href = '/cards/thank-you'
+                        else
+                          loading_close()
+                          $.load_alert
+                            content: 'Our apoligies, something went wrong, please try again later'
+                          
+                    error: ->
+                      loading_close()
+                      $.load_alert
+                        content: 'Our apoligies, something went wrong, please try again later'
                 #
-                # Create a token based on the card number perhaps
-                Stripe.createToken
-                    number: $('.card_number').val()
-                    cvc: $('.cvv').val()
-                    exp_month: $('.card_expiry_month').val()
-                    exp_year: $('.card_expiry_year').val()
-                , amount, (status, response) ->
-                  console.log status, response
-                  if status is 200
-                    token = response.id
-                    load_final()
-                  else
-                    loading_close()
-                    $.load_alert
-                      content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
-              #
-              #
-              else if $('.existing_payment:visible').length
-                load_final()
-              #
-              #
+                #
+                # See if they filled a card in
+                if $('.credit_card').val() and $('.cvc').val()
+                  #
+                  # Create a token based on the card number perhaps
+                  Stripe.createToken
+                      number: $('.credit_card').val()
+                      cvc: $('.cvc').val()
+                      exp_month: $('.card_expiry_month').val()
+                      exp_year: $('.card_expiry_year').val()
+                  , order.amount, (status, response) ->
+                    console.log status, response
+                    if status is 200
+                      token = response.id
+                      load_final()
+                    else
+                      loading_close()
+                      $.load_alert
+                        content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
+                #
+                #
+                else if $('.existing_payment:visible').length
+                  load_final()
+                #
+                #
+                else
+                  $.load_alert
+                    content: 'Please enter a credit card'
               else
+                loading_close()
                 $.load_alert
-                  content: 'Please enter a credit card'
-            else
+                  content: 'Our apoligies, something went wrong, please try again later'
+            error: ->
               loading_close()
               $.load_alert
-                content: 'Our apoligies, something went wrong, please try again later'
-          error: ->
-            loading_close()
-            $.load_alert
-              content: 'Our apoligies, somethieng went wrong, please try again later'
+                content: 'Our apoligies, somethieng went wrong, please try again later'
     #
     #
     #

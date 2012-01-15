@@ -343,10 +343,15 @@ DATABASE MODELING
 # user schema Definition
 user_schema = new schema
   email: String
-  phone: String
+  #
   alerts: String
+  #
+  password_token: String
+  password_token_generated: Date
   password_encrypted: String
+  #
   role: String
+  #
   name: String
   title: String
   phone: String
@@ -354,12 +359,14 @@ user_schema = new schema
   fax: String
   address: String
   address_2: String
+  #
   twitter_url: String
   facebook_url: String
   linkedin_url: String
   profile_urls: [String]
   profile_image_urls: [String]
   profile_image_url: String
+  #
   stripe:
     id: String
     active_card:
@@ -389,15 +396,15 @@ user_schema.static 'authenticate', (email, password, next) ->
     mongo_user.findOne
       email: email
       active:true
-    , (err,founduser) ->
+    , (err,found_user) ->
       if err
         next 'Database Error'
       else
-        if founduser
-          if !founduser.password_encrypted
+        if found_user
+          if !found_user.password_encrypted
             next 'That email address is currently registered with a social account.<p>Please try logging in with a social network such as facebook or twitter.'
-          else if compareEncrypted password, founduser.password_encrypted
-            next null, founduser
+          else if compareEncrypted password, found_user.password_encrypted
+            next null, found_user
           else
             next 'Password incorrect for that email address.'
         else
@@ -593,6 +600,7 @@ order_schema = new schema
   values: [String]
   address: String
   city: String
+  coupon_code: String
   full_address: String
   latitude: String
   longitude: String
@@ -684,11 +692,6 @@ mongo_url_redirect = mongoose.model 'url_redirects', url_redirect_schema
 #
 #
 #
-#
-#
-# Password Reset
-password_reset = new schema
-  password_reset: Date
 #
 #
 #
@@ -1267,7 +1270,7 @@ random_url = () ->
 
 USAGE
 
-create_new_url 'http://url-I-want-to-redirect-to.com', (err, new_url) ->
+create_url 'http://url-I-want-to-redirect-to.com', (err, new_url) ->
   console.log 'Now http://cards.ly/' + new_url.url_string + ' will redirect there.'
 
 ###
@@ -1640,10 +1643,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
   console.log 'REDIRECT TO: ', redirect_to
   #
   #
-  volume = 100
-  volume = 250 if order.quantity*1 is 25
-  volume = 500 if order.quantity*1 is 35
-  volume = 1500 if order.quantity*1 is 70
+  volume = order.quantity
   #
   #
   volume = passed_volume*1 if passed_volume
@@ -1972,63 +1972,240 @@ else
   stripe = require('./assets/js/libs/stripe.js') 'SXiUQj37CG6bszZQrkxKZVmQI7bZgLpW'
 #
 #
-check_for_stripe_token = (req, res, next) ->
+app.post '/validate-coupon', (req, res, next) ->
   #
-  # If they passed in a token, create a customer
-  if req.body.token
-    stripe.customers.create
-      card: req.body.token
-      email: req.user.email or null
-      description: req.user.name or req.user.email or req.user.id
-    , (err, customer) ->
-      if err
-        log_err err
+  apply_discount = (discount) ->
+    #
+    req.session.order = {} if not req.session.order
+    #
+    req.session.order.coupon_code req.body.coupon_code
+    #
+    res.send
+      discount: discount
+  #
+  #
+  #
+  #
+  # For customer number one
+  if req.body.coupon_code and req.body.coupon_code is 'ferdur120'
+    apply_discount 10
+  #
+  # For us
+  else if req.body.coupon_code and req.body.coupon_code is 'forusonly'
+    apply_discount 10
+  #
+  else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
+    res.send
+      error: 'Discount code not found.'
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
+#
+#
+#
+app.post '/validate-purchase', (req, res, next) ->
+  #
+  #
+  #
+  if not req.session.order
+    res.send
+      error: 'Please design your card'
+  else if not req.session.order.email
+    res.send
+      error: 'Please enter an e-mail address'
+  else if not req.session.order.full_address
+    res.send
+      error: 'Please enter a shipping address'
+  else if not req.session.order.url
+    res.send
+      error: 'Please enter a url'
+  else
+    #
+    #
+    #
+    ###
+    TODO
+    
+    - SAVE THEIR INFO HERE
+
+    ###
+    #
+    #
+    #
+    res.send
+      success: true
+    ###
+    res.send
+      error: 'Im sorry this page isnt active yet'
+    ###
+#
+app.post '/send-password', (req, res, next) ->
+  #
+  mongo_user.find
+    email: req.body.email
+  , (err, found_user) ->
+    if check_no_err_ajax err, res
+      #
+      if found_user
+        #
+        generate_password_token found_user
+        #
         res.send
-          err: customer.error.message
+          success: true
       else
         #
-        #console.log 'CUSTOMER: ', customer
+        res.send
+          err: 'No user found for that e-mail address.'
+#
+generate_password_token = (for_user) ->
+  #
+  characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split()
+  n_l = characters.length-1
+  #
+  psuedo = ''
+  for i in [0..15]
+    psuedo += characters[Math.round(mrg.generate_real()*n_l)]
+  #
+  #
+  for_user.password_token = psuedo
+  for_user.password_token_generated = new Date()
+  #
+  for_user.save(err, saved_user) -> log_err err if err
+  #
+  #
+  password_link = short_domain + psuedo
+  #
+  #
+  # Send the user an email
+  if new_order.email
+    nodemailer.send_mail
+      sender: 'help@cards.ly'
+      to: for_user.email
+      subject: 'Cardsly password link'
+      html: '<p>Please use this link to login to cardsly and set your password:</p><p><a href="'+password_link+'">'+password_link+'</a></p><p>This link will expire in 24 hours.</p>'
+    , (err, data) ->
+      if err
+        log_err err
+#
+#
+app.post '/confirm-purchase', (req, res, next) ->
+  if req.user
+    next()
+  else
+    # Create a user
+    user = new mongo_user
+    user.email = req.body.email
+    user.save (err, saved_user) ->
+      if check_no_err_ajax err, res
         #
-        # Save the payment token to the user
-        req.user.stripe = customer
-        req.user.stripe.active_card.card_type = customer.active_card.type
-        #console.log req.user.stripe
-        req.user.save (err, user_saved) ->
+        # Generate an email with a login link
+        generate_password_token saved_user
+        #
+        #
+        # Log that user in
+        req.user = saved_user
+        req.session.auth = 
+          userId: saved_user._id
+        #
+        #
+        # Then pass them forward
+        next()
+, (req, res, next) ->
+  #
+  #
+  order = new mongo_order
+  order.user_id = req.user._id
+  order.theme_id = req.session.order.active_theme_id
+  order.status = 'Pending'
+  #
+  order.quantity = req.session.order.quantity
+  order.values = req.session.order.values
+  #
+  order.address = req.session.order.address
+  order.city = req.session.order.city
+  order.full_address = req.session.order.full_address
+  #
+  order.coupon_code = req.session.order.coupon_code
+  order.amount = req.session.order.amount * 1
+  #
+  order.email = req.session.order.email
+  order.phone = req.session.order.phone
+  order.url = req.session.order.url
+  #
+  #
+  #
+  order.save (err, new_order) ->
+    if check_no_err_ajax err, res
+      req.order = new_order
+      #
+      #
+      # If they passed in a token, create a customer
+      if req.body.token
+        stripe.customers.create
+          card: req.body.token
+          email: req.order.email or null
+          description: ''+req.order._id
+        , (err, customer) ->
           if err
             log_err err
-        #
-        #
+            res.send
+              err: customer.error.message
+          else
+            #
+            #console.log 'CUSTOMER: ', customer
+            #
+            # Save the payment token to the user
+            req.user.stripe = customer
+            req.user.stripe.active_card.card_type = customer.active_card.type
+            #console.log req.user.stripe
+            req.user.save (err, user_saved) ->
+              if err
+                log_err err
+            #
+            #
+            next()
+      #
+      #
+      #
+      # Otherwise, make sure they have an existing stripe
+      else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
         next()
-  #
-  #
-  #
-  # Otherwise, make sure they have an existing stripe
-  else if req.user.stripe and req.user.stripe.active_card and req.user.stripe.id
-    next()
-  #
-  #
-  #
-  # Otherwise, we got problems
-  else
-    res.send
-      err: 'No Payment Data Received'
-#
-#
-charge_stripe_token = (req, res, next) ->
+      #
+      #
+      #
+      # Otherwise, we got problems
+      else
+        res.send
+          err: 'No Payment Data Received'
+      #
+      #
+, (req, res, next) ->
   #
   new_order = req.order
   #
-  to_charge_amount = new_order.amount*1
-
-  if req.session.discount
-    to_charge_amount = to_charge_amount - req.session.discount*100
+  to_charge_amount = new_order.amount*100
+  #
+  #console.log to_charge_amount
   #
   # Attempt a charge
   stripe.charges.create
     currency: 'usd'
     amount: to_charge_amount
     customer: req.user.stripe.id
-    description: req.user.name + ', ' + req.user.email + ', ' + new_order._id
+    description: ''+req.order._id
   , (err, charge) ->
     #
     #
@@ -2062,11 +2239,13 @@ charge_stripe_token = (req, res, next) ->
           log_err err
           res.send
             err: charge.error.message
-        else if not charge.paid
+        else if !charge.paid and to_charge_amount isnt 0
           console.log 'ERR: stripe charge resulted in not paid for some reason.'
           res.send
             err: 'Charge resulted in not paid for some reason.'
         else
+          if to_charge_amount is 0
+            charge.paid = true
           res.send
             order_id: new_order._id
             charge: charge
@@ -2089,9 +2268,12 @@ charge_stripe_token = (req, res, next) ->
           #
           # Send Confirmation Email
           #####
+          #
           # Prep the Email Message
+          #
           total_paid = to_charge_amount/100
-          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+volume+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
+          #
+          message = '<p>' + (req.user.name or req.user.email) + ',</p><p>We\'ve received your order and are processing it now.</p><p>Here are the details of your order: </p> <p><b>Order ID: </b>'+new_order.order_number+'</p></p> <p><b>Amount of Cards: </b>'+new_order.quantity+'</p></p> <p><b>Total Paid: </b>$'+total_paid+'</p><p> Please don\'t hesitate to let us know if you have any questions at any time. <p>Reply to this email, call us at 480.428.8000, or reach <a href="http://twitter.com/cardsly">us</a> on <a href="http://facebook.com/cardsly">any</a> <a href="https://plus.google.com/101327189030192478503/posts">social network</a>. </p>'
           #
           # Send the user an email
           if new_order.email
@@ -2116,73 +2298,44 @@ charge_stripe_token = (req, res, next) ->
 #
 #
 #
-app.post '/validate-coupon', (req, res, next) ->
-  #
-  #
-  #
-  if req.body.coupon_code and req.body.coupon_code is 'ferdur120'
-    req.session.discount = 10
-    res.send
-      discount: 10
-  else if req.body.coupon_code and req.body.coupon_code is 'forusonly'
-    req.session.discount = 10
-    res.send
-      discount: 10
-  else
-    #
-    #
-    #
-    ###
-    TODO
-    
-    - SAVE THEIR INFO HERE
-
-    ###
-    #
-    #
-    #
-    res.send
-      error: 'Discount code not found.'
-    ###
-    res.send
-      error: 'Im sorry this page isnt active yet'
-    ###
 #
 #
 #
-app.post '/validate-purchase', (req, res, next) ->
-  #
-  #
-  #
-  if not req.session.order
-    if not req.session.order.email
+#
+#
+#
+#
+#
+#
+# Normal Login
+app.post '/login', (req, res, next) ->
+  mongo_user.authenticate req.body.email, req.body.password, (err, user) ->
+    if err || !user
       res.send
-        error: 'Please enter an e-mail address'
-    else if not req.session.order.full_address
-      res.send
-        error: 'Please enter a shipping address'
-    else if not req.session.order.url
-      res.send
-        error: 'Please enter a url'
+        err: err
     else
-      #
-      #
-      #
-      ###
-      TODO
-      
-      - SAVE THEIR INFO HERE
-
-      ###
-      #
-      #
-      #
+      req.session.auth = 
+        userId: user._id
       res.send
         success: true
-      ###
-      res.send
-        error: 'Im sorry this page isnt active yet'
-      ###
+      #
+      #
+      #
+      if req.sessionID
+        #
+        #
+        mongo_theme.find
+          active: true
+          user_id: req.sessionID
+        , (err, themes) ->
+          if not err
+            for theme in themes
+              theme.user_id = user._id
+              console.log theme
+              theme.save()
+#
+#
+#
 #
 #
 #
@@ -2796,7 +2949,7 @@ app.get '/about', (req, res) ->
     req: req
 
 # Cards Page
-app.get '/cards', (req, res) ->
+app.get '/cards/:page_type?', (req, res) ->
   res.render 'cards'
     req: req
 
@@ -2809,23 +2962,6 @@ app.get '/learn-more', (req, res) ->
 #
 #
 #
-
-# Forgot Password
-app.get '/forgot-password', (req, res) ->
-  res.render 'forgot_password'
-    req: req
-    scripts:[
-      'forgot'
-    ]
-    
-# Password Reset
-app.get '/reset-password/:password_reset_id', (req, res) ->
-  res.render 'reset_password'
-    req: req
-    scripts:[
-      'reset_password'
-    ]
-
 
 # Redirect for Kickstarter campagin
 app.get '/fundourprinter', (req, res, next) ->
