@@ -2154,37 +2154,35 @@ app.post '/validate-purchase', (req, res, next) ->
   #
   #
   #
-  if not req.user
-    res.send
-      error: 'Please sign in'
-  else if not req.session.saved_address
-    res.send
-      error: 'Please enter shipping info'
-  else if not req.session.saved_address.full_address
-    res.send
-      error: 'Please check the address'
-  else if req.session.saved_form.values[0] is "1) John Stamos"
-    res.send
-      error: 'Hey Uncle Jesse, is that you?'
-  else
-    #
-    #
-    #
-    ###
-    TODO
-    
-    - SAVE THEIR INFO HERE
+  if not req.session.order
+    if not req.session.order.email
+      res.send
+        error: 'Please enter an e-mail address'
+    else if not req.session.order.full_address
+      res.send
+        error: 'Please enter a shipping address'
+    else if not req.session.order.url
+      res.send
+        error: 'Please enter a url'
+    else
+      #
+      #
+      #
+      ###
+      TODO
+      
+      - SAVE THEIR INFO HERE
 
-    ###
-    #
-    #
-    #
-    res.send
-      success: true
-    ###
-    res.send
-      error: 'Im sorry this page isnt active yet'
-    ###
+      ###
+      #
+      #
+      #
+      res.send
+        success: true
+      ###
+      res.send
+        error: 'Im sorry this page isnt active yet'
+      ###
 #
 #
 #
