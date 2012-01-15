@@ -1407,6 +1407,8 @@ app.post '/save-theme', (req, res) ->
         # Push the new template in
         found_theme.items = theme.items
         #
+        found_theme.cache = null
+        #
         #
         found_theme.save (err,theme_saved) ->
           if check_no_err_ajax err, res

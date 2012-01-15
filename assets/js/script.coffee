@@ -1194,6 +1194,59 @@ $ ->
               #
               #
               active_theme = result.theme
+              #
+              theme = active_theme
+              #
+              $themes.find('.thumb.active .fg').attr
+                src: '/thumb/'+result.theme._id+'/0?'+Math.random()
+              #
+              $themes.find('.thumb.active .bg').attr
+                src: '/thumb/'+result.theme._id+'/1?'+Math.random()
+              #
+              #
+              #
+              ###
+
+              TODO
+
+              This updating of the preview card is duplicated elsewhere. Make a generic function for this instead.
+
+              ###
+              #
+              $all_card.filter('.preview').each ->
+                #
+                $this_card = $ this
+                #
+                $fg = $this_card.find '.fg'
+                if not $fg.length
+                  $fg = $ '<div class="fg" />'
+                  $fg.addClass 'collapsed2' if side is 'back'
+                  $fg.hide() if side is 'back'
+                  $this_card.append $fg
+                #
+                $bg = $this_card.find '.bg'
+                if not $bg.length
+                  $bg = $ '<div class="bg" />'
+                  $bg.addClass 'collapsed2' if side is 'front'
+                  $bg.hide() if side is 'front'
+                  $this_card.append $bg
+                #
+                #
+                $.create_card_from_theme
+                  height: 300
+                  width: 525
+                  theme: theme
+                  active_view: 0
+                  card: $fg
+                  side: 0
+                #
+                $.create_card_from_theme
+                  height: 300
+                  width: 525
+                  theme: theme
+                  active_view: 0
+                  card: $bg
+                  side: 1
         #
       else
         #
