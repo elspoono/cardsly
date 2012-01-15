@@ -2410,7 +2410,12 @@ $ ->
         url: '/save-order'
         data: JSON.stringify order
       #
-      $total_price.html $q.attr 'cost'
+      #
+      total_price = order.amount - discount
+      #
+      #
+      #
+      $total_price.html total_price
     #
     #
     #
@@ -2665,7 +2670,6 @@ $ ->
   #
   #
   #
-  amount = 10
   discount = 0
   #
   #
@@ -2686,7 +2690,7 @@ $ ->
                 loading_close()
                 if result and result.discount
                   discount = result.discount
-                  update_radio_highlights()
+                  $quantity.filter('.active').click()
                   $.load_alert
                     content: 'Discount of $'+result.discount+' applied.'
                 else

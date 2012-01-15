@@ -2122,6 +2122,10 @@ app.post '/validate-coupon', (req, res, next) ->
     req.session.discount = 10
     res.send
       discount: 10
+  else if req.body.coupon_code and req.body.coupon_code is 'forusonly'
+    req.session.discount = 10
+    res.send
+      discount: 10
   else
     #
     #
