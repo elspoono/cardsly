@@ -664,7 +664,7 @@ $ ->
   #
   #
   # Watch the popup windows every 200ms for when they set a cookie
-  monitor_for_complete = (opened_window) ->
+  monitor_for_complete = (e, opened_window) ->
     $.cookie 'success_login', null
     checkTimer = setInterval ->
       if $.cookie 'success_login'
@@ -674,54 +674,65 @@ $ ->
         #
         #
         #
-        # DO MORE HERE
-        $.load_loading {}, (loading_close) ->
-          $.ajax
-            url: '/get-user'
-            success: (response) ->
-              loading_close()
-              if response.err
-                $.load_alert
-                  content: response.err
-              else
-                #
-                new_url = false
-                for url in response.user.profile_urls
-                  $('.set_link').val(url).keyup()
-                  new_url = url
-                #
-                content = '<p>Connected. Login again anytime using that same button.</p>'
-                if new_url
-                  content += '<p>&nbsp;</p><p>Your cardsly cards now link to:</p><p><a href="'+new_url+'">'+new_url+'</a></p><p>You may change this at anytime.</p>'
-                #
-                $.load_alert
-                  width: 500
-                  height: 400
-                  content: content
+        #
+        $target = $ e.target
+        #
+        #
+        if $target.closest('.navigation').length
+          #
+          document.location.href = '/cards'
+          #
+        else
+          $.load_loading {}, (loading_close) ->
+            $.ajax
+              url: '/get-user'
+              success: (response) ->
+                loading_close()
+                if response.err
+                  $.load_alert
+                    content: response.err
+                else
+                  #
+                  new_url = false
+                  for url in response.user.profile_urls
+                    $('.set_link').val(url).keyup()
+                    new_url = url
+                  #
+                  content = '<p>Connected. Login again anytime using that same button.</p>'
+                  if new_url
+                    content += '<p>&nbsp;</p><p>Your cardsly cards now link to:</p><p><a href="'+new_url+'">'+new_url+'</a></p><p>You may change this at anytime.</p>'
+                  #
+                  $.load_alert
+                    width: 500
+                    height: 400
+                    content: content
+                  #
+                  #
+                  $('.navigation .login .trigger a').remove()
 
-              #
-              #
-            error: (err) ->
-              loading_close()
-              $.load_alert
-                content: 'Our apologies. A server error occurred.'
+                #
+                #
+              error: (err) ->
+                loading_close()
+                $.load_alert
+                  content: 'Our apologies. A server error occurred.'
         #
         #
         #
     ,200
   #
   # Specific Socials Setup
-  $('.google').click () ->
+  $('.google').click (e) ->
     monitor_for_complete window.open 'auth/google', 'auth', 'height=350,width=600'
     false
-  $('.twitter').click () ->
-    monitor_for_complete window.open 'auth/twitter', 'auth', 'height=400,width=500'
+  $('.twitter').click (e) ->
+    monitor_for_complete e, window.open 'auth/twitter', 'auth', 'height=400,width=500'
     false
-  $('.facebook').click () ->
-    monitor_for_complete window.open 'auth/facebook', 'auth', 'height=400,width=900'
+  $('.facebook').click (e) ->
+    monitor_for_complete e, window.open 'auth/facebook', 'auth', 'height=400,width=900'
     false
-  $('.linkedin').click () ->
-    monitor_for_complete window.open 'auth/linkedin', 'auth', 'height=300,width=400'
+  $('.linkedin').click (e) ->
+    monitor_for_complete e, window.open 'auth/linkedin', 'auth', 'height=300,width=400'
     false
   #
   #
@@ -745,34 +756,6 @@ $ ->
   #
   #
   #
-  #
-  #
-  $dropdown = $ '.dropdown'
-  $dropdown.each ->
-    #
-    $d = $ this
-    #
-    #
-    $options = $d.find '.option'
-    #
-    $options.click ->
-      $f = $ this
-      $f.make_active()
-    #
-    $options.first().click()
-    #
-    $d.click ->
-      unless $d.hasClass 'active'
-        $d.addClass 'active'
-        #
-        #
-        #
-        setTimeout ->
-          $body.one 'click', ->
-            $d.removeClass 'active'
-            $d.find('.bg_scroll').scrollTo $d.find '.active'
-        , 0
-        #
   #
   #
   #
@@ -897,28 +880,41 @@ $ ->
   #
   #
   #
-  # TODO  - FIX BUG BECAUSE THIS USES $a !!!!!!
-  #
-
-  $login = $ '.login'
+  $login = $ '.navigation .login'
+  $trigger = $login.find '.trigger'
   $dropdown = $login.find '.dropdown'
-  $body = $(document)
-  close_menu = (e) ->
-    $t = $ e.target
-    if $t.closest('login').length
-      $login = $t.closest('li').find 'a'
+  $trigger.click (e) ->
+    #
+    e.preventDefault()
+    #
+    close_menu = (e) ->
+      #
+      $target = $ e.target
+      #
+      unless $target.closest('.navigation').length
+        #
+        $dropdown.slideUp 150
+        $dropdown.removeClass 'active'
+        #
+        $body.unbind 'click', close_menu
+      #
+    expand_menu = (e) ->
+      $dropdown.slideDown 150
+      $dropdown.removeClass 'active'
+      #
+      #
+    #
+    if $dropdown.hasClass 'active'
+      console.log e
     else
-      $login.removeClass 'click'
-      $dropdown.slideUp(150)
-      $account.one 'click', expand_menu
-      $body.unbind 'click', close_menu
-    false
-  expand_menu = ->
-    $dropdown.slideDown(150)
-    $login.addClass 'click'
-    $body.bind 'click', close_menu
-    false
-  $login.one 'click', expand_menu
+      #
+      #
+      expand_menu e
+      #
+      #
+      $body.bind 'click', close_menu
+
+
   #
   #
   # END MENU

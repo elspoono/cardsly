@@ -733,7 +733,7 @@ EVERYAUTH CONFIG
 handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
   #
   #
-  promise = new Promise()
+  promise = this.Promise()
   #
   #
   #
@@ -824,7 +824,7 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
     if user_meta.link
       userSearch.facebook_url = user_meta.link
     if user_meta.screen_name
-      userSearch.twitter_url = 'http://twitter.com/#!'+user_meta.screen_name
+      userSearch.twitter_url = 'http://twitter.com/'+user_meta.screen_name
     if user_meta.email
       userSearch.email = user_meta.email
     #
@@ -836,7 +836,8 @@ handleGoodResponse = (session, accessToken, accessTokenSecret, user_meta) ->
         add_user_meta_to_user existinguser
       else
         add_user_meta_to_user new mongo_user
-    promise
+    #
+  promise
 #
 #
 ###
@@ -1385,6 +1386,17 @@ save_session = (o) ->
 app.post '/save-order', (req, res) ->
   #
   req.session.order = req.body
+  #
+  if req.user
+    req.user.email = req.session.order.email
+    req.user.phone = req.session.order.phone
+    req.user.alerts = req.session.order.phone
+    #
+    req.user.save (err, saved_user) ->
+      log_err err if err
+      #
+      #
+      console.log saved_user
   #
   res.send
     success: true
@@ -2111,6 +2123,10 @@ app.post '/confirm-purchase', (req, res, next) ->
       # Create a user
       user = new mongo_user
       user.email = req.session.order.email
+      user.phone = req.session.order.phone
+      user.alerts = req.session.order.alerts
+      #
+      #
       user.save (err, saved_user) ->
         if check_no_err_ajax err, res
           #
@@ -2971,7 +2987,8 @@ app.get '/about', (req, res) ->
     req: req
 
 # Cards Page
-app.get '/cards/:page_type?', (req, res) ->
+app.get '/cards/:page_type?', secured_page, (req, res) ->
+  #
   res.render 'cards'
     req: req
 

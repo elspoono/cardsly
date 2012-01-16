@@ -1,4 +1,5 @@
 ./views/*
+./assets/*
 ./public/*
 ./src/public/*
 ./builtAssets/*
