@@ -3295,11 +3295,34 @@ $ ->
   #################################################################
 
 
-
-
-
-
-
+  $try_conversion = $ '.try_conversion'
+  if $try_conversion.length
+    $.ajax
+      url: '/get-conversion'
+      success: (result) ->
+        console.log result
+        if result.order
+          #
+          order = result.order
+          #
+          #
+          _gaq.push ['_addTrans',
+            order.order_number,
+            'Cardsly',
+            order.amount,
+            0,
+            0,
+            order.city
+          ]
+          _gaq.push ['_addItem',
+            order.order_number,
+            'SKU',
+            'Name',
+            'Category',
+            order.amount/order.quantity,
+            order.quantity
+          ]
+          _gaq.push ['_trackTrans']
 
   #################################################################
   #

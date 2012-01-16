@@ -533,6 +533,7 @@ order_schema = new schema
   full_address: String
   latitude: String
   longitude: String
+  conversion_saved: Boolean
   quantity: Number # number of cards
   amount: Number # cost of order
   email: String
@@ -1280,6 +1281,34 @@ check_no_err_ajax = (err, res) ->
 #
 #
 #
+# Get page helper functions
+secured_page_admin = (req, res, next) ->
+  if req.user && req.user.role == 'admin'
+    next()
+  else
+    res.send '',
+      Location: '/cards'
+    ,302
+secured_page = (req, res, next) ->
+  if req.user
+    next()
+  else
+    res.send '',
+      Location: '/'
+    ,302
+check_no_err = (err, res) ->
+  if err
+    log_err err
+    res.send '',
+      Location: '/error'
+    ,302
+  !err
+#
+#
+#
+#
+#
+#
 #
 #
 #
@@ -1696,6 +1725,31 @@ app.post '/get-user', (req,res,next) ->
     res.send
       err: 'Not Logged In'
 
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# Get Session
+app.post '/get-conversion', secured_page, (req, res, next) ->
+  #
+  mongo_order.findOne
+    user_id: req.user._id
+    conversion_saved: null
+  , (err, order_found) ->
+    if check_no_err_ajax err, res
+      #
+      res.send
+        order: order_found
+      #
+      order_found.conversion_saved = true
+      order_found.save (err) ->
+        log_err err if err
+      #
 #
 #
 #
@@ -2516,34 +2570,6 @@ app.get '/path-you-want', (req, res, next) ->
     req: req
 
 ###
-#
-#
-#
-# Get page helper functions
-secured_page_admin = (req, res, next) ->
-  if req.user && req.user.role == 'admin'
-    next()
-  else
-    res.send '',
-      Location: '/cards'
-    ,302
-secured_page = (req, res, next) ->
-  if req.user
-    next()
-  else
-    res.send '',
-      Location: '/'
-    ,302
-check_no_err = (err, res) ->
-  if err
-    log_err err
-    res.send '',
-      Location: '/error'
-    ,302
-  !err
-#
-#
-#
 app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
   #
   #
@@ -3266,6 +3292,7 @@ app.get '/cards/:page_type?', secured_page, get_url_groups, (req, res) ->
   #
   res.render 'cards'
     req: req
+  #
 
 
 
