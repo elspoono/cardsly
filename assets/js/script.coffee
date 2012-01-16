@@ -1186,7 +1186,7 @@ $ ->
       #
       console.log active_theme
       #
-      if active_theme.user_id
+      if active_theme.user_id or document.location.href.match /admin/i
         #
         $.ajax
           url: '/save-theme'

@@ -1418,23 +1418,33 @@ app.post '/save-theme', (req, res) ->
   #
   # If we're updating do this
   if theme._id
+    #
     mongo_theme.findById theme._id, (err, found_theme) ->
       if check_no_err_ajax err, res
-        found_theme.date_updated = new Date()
-        if typeof(theme.active) is 'boolean'
-          found_theme.active = theme.active
         #
-        # Push the new template in
-        found_theme.items = theme.items
-        #
-        found_theme.cache = null
-        #
-        #
-        found_theme.save (err,theme_saved) ->
-          if check_no_err_ajax err, res
-            res.send
-              success: true
-              theme: theme_saved
+
+        if found_theme.user_id or req.header('Referer').match /admin/i
+          #
+          found_theme.date_updated = new Date()
+          #
+          #
+          if typeof(theme.active) is 'boolean'
+            found_theme.active = theme.active
+          #
+          # Push the new template in
+          found_theme.items = theme.items
+          #
+          found_theme.cache = null
+          #
+          #
+          found_theme.save (err,theme_saved) ->
+            if check_no_err_ajax err, res
+              res.send
+                success: true
+                theme: theme_saved
+        else
+          res.send
+            err: 'I had trouble saving that.'
   #
   #
   #
@@ -1507,6 +1517,13 @@ app.post '/get-themes', (req, res) ->
   else if req.sessionID
     user_to_find = 
       $in: [null,req.sessionID]
+  #
+  #
+  #
+  #
+  if req.header('Referer').match /admin/i
+    user_to_find = null
+  #
   #
   #
   mongo_theme.find
@@ -2764,6 +2781,14 @@ if app.settings.env is 'production'
 #
 app.get '/settings', secured_page,  (req, res, next) ->
   res.render 'settings',
+    req: req
+#
+#
+#
+#
+#
+app.get '/admin', secured_page_admin,  (req, res, next) ->
+  res.render 'admin',
     req: req
 #
 #
