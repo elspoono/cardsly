@@ -1114,13 +1114,16 @@ $ ->
     actually_save_active_theme = ->
       clearTimeout theme_modified_timer
       #
+      theme_modified_timer = 0
       #
-      $visible_items = $editor.find '.fg :visible, .bg :visible'
+      #
+      $visible_items = $editor.find '.fg:not(.collapsed2) :visible, .bg:not(.collapsed2) :visible'
       #
       side = 0
       if $front_back.filter('.active').html().toLowerCase() is 'back'
         side = 1
       #
+      console.log $visible_items.length, side
       #
       #
       active_theme.items = _(active_theme.items).filter (item) -> item.side isnt side
@@ -1184,7 +1187,7 @@ $ ->
         #
       #
       #
-      console.log active_theme
+      #console.log active_theme
       #
       if active_theme.user_id or document.location.href.match /admin/i
         #
@@ -2219,9 +2222,11 @@ $ ->
     $front_back = $ '.front_back .option'
     $front_back.click ->
       $f_b = $ this
-      $f_b.make_active()
       #
-      actually_save_active_theme()
+      if theme_modified_timer isnt 0
+        actually_save_active_theme()
+      #
+      $f_b.make_active()
       #
       setTimeout ->
         #
