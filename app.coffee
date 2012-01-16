@@ -1395,7 +1395,7 @@ app.post '/save-order', (req, res) ->
   if req.user
     req.user.email = req.session.order.email
     req.user.phone = req.session.order.phone
-    req.user.alerts = req.session.order.phone
+    req.user.alerts = req.session.order.alerts
     #
     req.user.save (err, saved_user) ->
       log_err err if err
@@ -3053,6 +3053,33 @@ render_image = (o) ->
 #
 #
 #
+# Orders Page
+app.get '/orders', secured_page_admin, (req, res, next) ->
+  mongo_order.find
+    'charge.paid': true
+    'status':
+      '$ne': 'Shipped'
+  , (err, orders) ->
+    req.orders = orders
+    if check_no_err err, res
+      res.render 'orders'
+        req: req
+        scripts:[
+          'orders'
+        ]
+#
+app.get '/shipped', secured_page_admin, (req, res, next) ->
+  mongo_order.find
+    'charge.paid': true
+    'status': 'Shipped'
+  , (err, orders) ->
+    req.orders = orders
+    if check_no_err err, res
+      res.render 'orders'
+        req: req
+        scripts:[
+          'orders'
+        ]
 #
 # Success Page
 #
