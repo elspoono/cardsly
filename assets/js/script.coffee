@@ -1055,6 +1055,7 @@ $ ->
               $active_image.width response.width / 2
               $active_image.height response.height / 2
               new_active()
+              theme_modified()
             else
               $.load_alert
                 content: '<p>I\'m sorry, I had trouble processing that specific image.</p>'
