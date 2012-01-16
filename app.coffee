@@ -2369,6 +2369,7 @@ app.post '/login', (req, res, next) ->
         success: true
       #
       #
+      console.log 'FROM LOGIN:', req.session.auth
       #
       if req.sessionID
         #
@@ -3246,6 +3247,8 @@ app.get '/talking', get_url_groups, (req, res) ->
 # Real Index Page
 app.get '/', (req, res) -> 
   #
+
+  console.log 'FROM HOME:', req.session.auth
   #
   res.render 'home'
     req: req
