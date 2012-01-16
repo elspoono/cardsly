@@ -1318,9 +1318,14 @@ create_urls = (options, next) ->
     next 'Please set volume'
   else
     #
+    #console.log 'STARTED CREATING:', options
+    #
     new_urls = []
     #
     check_if_done = ->
+      #
+      #console.log 'CREATING STEP:', new_urls.length
+      #
       if new_urls.length is options.volume
         next null, new_urls
     #
@@ -1525,6 +1530,110 @@ app.post '/get-theme', (req, res) ->
 #
 #
 #
+app.post '/save-main-redirect', (req, res) ->
+  #
+  # Set up the redirect
+  if not req.body.redirect_to.match /http:\/\//i
+    req.body.redirect_to = 'http://'+req.body.redirect_to
+  #
+  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
+    if check_no_err_ajax err, res
+      if url_group.user_id+'' isnt req.user._id+''
+        res.send
+          err: 'No Permission'
+      else
+        for url in url_group.urls
+          if url.redirect_to is url_group.redirect_to and url.visits*1 is 0
+            url.redirect_to = req.body.redirect_to
+            url.last_updated = new Date()
+
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
+        url_group.redirect_to = req.body.redirect_to
+        url_group.save (err, saved_url_group) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+#
+#
+app.post '/save-redirect', (req, res) ->
+  #
+  # Set up the redirect
+  if not req.body.redirect_to.match /http:\/\//i
+    req.body.redirect_to = 'http://'+req.body.redirect_to
+  #
+  # Set up the Card Numbers from the range given
+  card_numbers = []
+  parts = req.body.range.split ','
+  for part in parts
+    range = part.split '-'
+    spaced = part.split ' '
+    if range.length > 1
+      card_numbers.push(i) for i in [range[0]..range[1]]
+    else if spaced.length > 1
+      card_numbers.push(i) for i in spaced
+    else
+      card_numbers.push part
+  for card_number,i in card_numbers
+    card_numbers[i] = card_number*1
+  #
+  #
+  mongo_url_group.findById req.body.url_group_id, (err, url_group) ->
+    if check_no_err_ajax err, res
+      if url_group.user_id+'' isnt req.user._id+''
+        res.send
+          err: 'No Permission'
+      else
+        for url in url_group.urls
+          if _(card_numbers).contains url.card_number*1
+            url.redirect_to = req.body.redirect_to
+            url.last_updated = new Date()
+            mongo_url_redirect.findOne
+              url_string: url.url_string
+            , (err, url_redirect) ->
+              if not err
+                url_redirect.redirect_to = req.body.redirect_to
+                url_redirect.save()
+        url_group.save (err, saved_url_group) ->
+          if check_no_err_ajax err, res
+            res.send
+              success: true
+#
+#
+#
+app.post  '/get-visits', (req, res) ->
+  mongo_visit.find
+    url_string: req.body.url_string
+    , (err, visits) ->
+      if check_no_err_ajax err, res
+        sorted_visits = _(visits).sortBy (visit) -> visit.date_added
+        sorted_visits.reverse()
+        sent_visits = []
+        for visit in sorted_visits
+          ua =  ua_match visit.user_agent
+          has_word = (word) -> Boolean visit.user_agent.match new RegExp(word,'i')
+          sent_visits.push
+            browser: (if has_word('chrome') then 'Chrome' else if has_word('msie') then 'IE' else if has_word('firefox') then 'Firefox' else if has_word('iphone') then 'iPhone' else if has_word('ipad') then 'iPad' else if has_word('android') then 'Android' else if has_word('safari') then 'Safari' else 'Other')+(if has_word('mobile') then ' Mobile' else '')
+            location: visit.details.city+', '+visit.details.state+' '+visit.details.iso
+            date_added: visit.date_added
+        res.send
+          visits: sent_visits  
+#
+#
+app.post '/update-order-status', (req, res) ->
+  mongo_order.findById req.body.order_id, (err, order) ->
+    if check_no_err_ajax err, res
+      order.status = req.body.status
+      order.save (err, saved_order) ->
+        if check_no_err_ajax err, res
+          res.send
+            success: true
+#
+#
 # Form request for multipart form uploading image
 app.post '/up', (req, res) ->
   #
@@ -1658,7 +1767,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
   console.log 'REDIRECT TO: ', redirect_to
   #
   #
-  volume = order.quantity
+  volume = order.quantity*1
   #
   #
   volume = passed_volume*1 if passed_volume
@@ -3054,8 +3163,108 @@ app.get '/about', (req, res) ->
   res.render 'about'
     req: req
 
+#
+#
+
+#
+#
+get_url_groups = (req, res, next) ->
+  if req.user
+    mongo_url_group.find
+      user_id: req.user._id
+    , (err, url_groups) ->
+      if check_no_err err
+        #
+        #
+        for url_group in url_groups
+          #
+          #
+          #
+          #
+          #
+          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
+          #
+          #
+          # Sort by last updated within the url groups
+          url_group.urls = _(url_group.urls).sortBy (url) ->
+            url.last_updated
+          url_group.urls.reverse()
+          #
+          #
+          #
+          #
+          # -
+          # ------
+          # ---------------
+          # --------------------------------------------------
+          # Try to group the ranges of numbers, BLEGH! :O
+          #
+          #
+          url_group.ranged_urls = []
+          #
+          # Get the groups
+          # Filter out the visited
+          not_visited = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
+          #
+          #
+
+          at_defaults = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
+          #
+          url_group.at_defaults = at_defaults.length
+          #
+          #
+          grouped = _(not_visited).groupBy (url) ->
+            url.redirect_to
+          for redirect_to,group of grouped
+            #
+            #
+            group = _(group).sortBy (url) ->
+              url.card_number
+            #
+            #
+            final = group[0]
+            #
+            prev_card_number = final.card_number-1
+            length = 0
+            for url in group
+              if url.card_number*1 isnt prev_card_number*1+1
+                if length > 1
+                  final.card_number = final.card_number + '-' + prev_card_number
+                final.card_number = final.card_number + ', ' + url.card_number
+                length = 0
+              length++
+              prev_card_number = url.card_number
+              #
+            #
+            if length > 1
+              final.card_number = final.card_number + '-' + prev_card_number
+            #
+            #
+            url_group.ranged_urls.push final
+          #
+          #
+          #
+          # --------------------------------------------------
+          # ---------------
+          # ------
+          # -
+          #
+          #
+        #
+        #
+        #
+        req.url_groups = url_groups
+        #
+        next()
+  else
+    next()
+#
+
+#
 # Cards Page
-app.get '/cards/:page_type?', secured_page, (req, res) ->
+app.get '/cards/:page_type?', secured_page, get_url_groups, (req, res) ->
   #
   res.render 'cards'
     req: req
@@ -3145,9 +3354,9 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   #
   height = req.params.h*1
   width = req.params.w*1
-  widthheight = 'raw' if settings.width > 525
-  widthheight = '158x90' if settings.width < 158
-  widthheight = '525x300' if settings.width > 158 and settings.width < 525
+  widthheight = 'raw' if width > 525
+  widthheight = '158x90' if width < 158
+  widthheight = '525x300' if width > 158 and width < 525
   #
   #
   url = 'cards.ly'

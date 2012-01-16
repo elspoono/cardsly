@@ -1045,3 +1045,130 @@ h1.two
     img
       float right
       margin-left 28px
+
+
+
+
+
+
+
+
+
+
+
+// Add Bar
+.add_bar
+  overflow hidden
+  margin 0 auto
+  padding 10px
+  width 492px
+  .url
+    float left
+    width 300px
+    margin-right 20px
+  .button
+    margin-top -4px
+    float left
+    width 120px
+// URL GROUPS
+.url_group
+  font-family normal_text
+  color color_white
+  input, textarea
+    height 25px
+    font-size 12px
+    line-height 25px
+    margin 0 -10px
+  textarea
+    width 250px
+    height 50px
+  .link_main_row
+    alpha_bg(color_blue,.7)
+    box_shadow(1px,color_black)
+    margin 30px 0
+    padding 0 35px
+    border_radius(45px)
+    color $c_light
+    overflow hidden
+    .pic, .redirect_to
+      img
+        display block
+      line-height 45px
+    .range
+      line-height 23px
+    .status
+      line-height 14px
+  .link_row
+    cursor pointer
+    margin -30px 35px 30px 35px
+    alpha_bg(color_blue,.5)
+    border 1px solid color_black
+    border-top none
+    overflow hidden
+  .pic, .time, .range, .redirect_to, .visited,.add
+    float left
+    padding 10px
+  .range
+    width 140px
+    .range_bottom
+      font-size 10px
+    input
+      width 120px
+  .add, .time, .text, .status, .helper
+    opacity .9
+    font-style italic
+    font-size 14px
+  .add, .time, .text
+    float right
+  .redirect_to
+    cursor pointer
+    overflow hidden
+    .status
+      position absolute
+      width 380px
+      margin-top -15px
+      text-align right
+    textarea
+      float left
+  .buttons
+    float left
+    padding 1px 4px 4px 1px
+    overflow auto
+    .button
+      float left
+    .save
+      width 50px
+      margin-left 20px
+    .cancel
+      width 20px
+      margin-left 10px
+  .add
+    width 100%
+    text-align center
+    color color_black
+  .link_row.visit
+    alpha_bg(color_blue,.65)
+    .pic, .time, .range, .redirect_to, .visited,.add
+      padding 5px 10px
+  .visited
+    width 79px
+  .link_row.expanded
+    alpha_bg(color_blue,.8)
+    .visited
+      padding 70px 0 0 20px
+      margin-bottom -20px
+  .link_row.edit
+    background none
+    border none
+  .visit_dialog
+    cursor default
+    font-size 10px
+    margin 30px 0 20px 20px
+    .item
+      overflow hidden
+      border-top 1px solid color_white
+    .cell
+      float left
+      padding 2px 20px 2px 0
+      width 120px
+
