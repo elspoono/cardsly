@@ -2068,7 +2068,7 @@ app.post '/send-password', (req, res, next) ->
 #
 generate_password_token = (for_user) ->
   #
-  characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split()
+  characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split ''
   n_l = characters.length-1
   #
   psuedo = ''
