@@ -2562,10 +2562,10 @@ $ ->
     #
     #
     $.ajax
-      url: '/get-session'
+      url: '/get-order'
       success: (results) ->
         #
-        if results.session and results.session.order
+        if results.order
           #
           order = results.session.order
           #

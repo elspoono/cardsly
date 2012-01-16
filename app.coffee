@@ -1613,9 +1613,18 @@ app.post '/up', (req, res) ->
 #
 #
 # Get Session
-app.post '/get-session', (req, res, next) ->
+app.post '/get-order', (req, res, next) ->
+  #
+  if req.user
+    req.session.order = {} unless req.session.order
+    #
+    req.session.order.email = req.user.email
+    req.session.order.alerts = req.user.alerts
+    req.session.order.phone = req.user.phone
+    #
+  #
   res.send
-    session: req.session
+    order: req.session.order
 #
 #
 #
