@@ -2804,6 +2804,36 @@ $ ->
   #
   #
   #
+  $login_form = $ '.login_form'
+  $login_form.submit ->
+    $.load_loading {}, (loading_close) ->
+      $.ajax
+        url: '/login'
+        data: JSON.stringify
+          email: $login_form.find('.email').val()
+          password: $login_form.find('.password').val()
+        success: (result) ->
+          loading_close()
+          if result and result.success
+            document.location.href = '/cards'
+          else if result and result.err
+            $.load_alert
+              content: result.err
+          else
+            $.load_alert
+              content: 'Something went wrong, please try again later.'
+        error: ->
+          loading_close()
+          $.load_alert
+            content: 'Something went wrong, please try again later.'
+
+    false
+  #
+  #
+  #
+  #
+  #
+  #
   $set_password_form = $ '.set_password_form'
   $set_password_form.submit ->
     $.load_loading {}, (loading_close) ->
