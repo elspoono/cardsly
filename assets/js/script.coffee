@@ -2678,7 +2678,18 @@ $ ->
     $purchase_button = $ '.purchase'
     $purchase_button.click ->
       $required.last().blur()
-      $errored = $required.filter('.typing')
+      $errored = $required.filter '.typing'
+      #
+      use_credit_card = $('[name=use_credit_card]:checked')
+      #
+      has_an_existing_card = use_credit_card.length and use_credit_card.val() is 'existing'
+      #
+      #
+      if has_an_existing_card
+        #
+        console.log $errored
+        #
+        $errored = $errored.not '.credit_card,.cvc'
       #
       if $errored.length
         $body.scrollTo $errored.first(),
@@ -2755,7 +2766,7 @@ $ ->
                         content: 'We tried that, and the credit card processor told us:<p><blockquote>' + response.error.message + '</blockquote></p>'
                 #
                 #
-                else if $('.existing_payment:visible').length
+                else if has_an_existing_card
                   load_final()
                 #
                 #

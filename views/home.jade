@@ -394,7 +394,19 @@
             .full_address
         .right
           h2 Credit Card
-          p Visa, Amex, Mastercard or Discover
+          if req.user && req.user.stripe && req.user.stripe.id
+            .alt_field
+              input(type='radio', name='use_credit_card', value='existing', checked="checked", id='use_existing')
+              label(for='use_existing') Use existing card on file:
+                p XXXX-XXXX-XXXX-
+                  =req.user.stripe.active_card.last4
+            .clear
+            .alt_field
+              input(type='radio', name='use_credit_card', value='new', id='use_new')
+              label(for='use_new') Or use new card:
+            .clear
+          else
+            p Visa, Amex, Mastercard or Discover
           .field.input
             label Card #
             input.required.credit_card(placeholder='4111111111111111',pattern='[0-9]{13,16}')

@@ -1630,13 +1630,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
   #
   #
   #
-  redirect_to = 'http://cards.ly/'+order.order_number
-  for value in order.values
-    parsed = value.replace /(&nbsp;|\n)/ig, ''
-    if parsed.match(/[a-z0-9]{2,}\.[a-z0-9]{2,}/i) and not parsed.match(/@/)
-      redirect_to = parsed
-  if not redirect_to.match /http:\/\//
-    redirect_to = 'http://'+redirect_to
+  redirect_to = order.url
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
@@ -2014,11 +2008,7 @@ app.post '/validate-coupon', (req, res, next) ->
       error: 'Im sorry this page isnt active yet'
     ###
 #
-#
-#
-app.post '/validate-purchase', (req, res, next) ->
-  #
-  #
+req_session_order_is_fulfilled = (req) ->
   #
   if not req.session.order
     res.send
@@ -2034,7 +2024,13 @@ app.post '/validate-purchase', (req, res, next) ->
       error: 'Please enter a url'
   else
     #
-    #
+    return true
+#
+#
+app.post '/validate-purchase', (req, res, next) ->
+  #
+  #
+  if req_session_order_is_fulfilled req
     #
     ###
     TODO
@@ -2102,38 +2098,45 @@ generate_password_token = (for_user) ->
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
-  if req.user
-    next()
-  else
-    # Create a user
-    user = new mongo_user
-    user.email = req.session.order.email
-    user.save (err, saved_user) ->
-      if check_no_err_ajax err, res
-        #
-        # Generate an email with a login link
-        generate_password_token saved_user
-        #
-        #
-        # Log that user in
-        req.user = saved_user
-        #
-        req.session.auth = 
-          userId: saved_user._id
-        #
-        #
-        mongo_theme.find
-          active: true
-          user_id: req.sessionID
-        , (err, themes) ->
-          if not err
-            for theme in themes
-              theme.user_id = user._id
-              console.log theme
-              theme.save()
-        #
-        # Then pass them forward
-        next()
+  #
+  #
+  if req_session_order_is_fulfilled req
+    #
+    # If we're logged in
+    if req.user
+      next()
+    #
+    # Otherwise, we need to make it based on their email address
+    else
+      # Create a user
+      user = new mongo_user
+      user.email = req.session.order.email
+      user.save (err, saved_user) ->
+        if check_no_err_ajax err, res
+          #
+          # Generate an email with a login link
+          generate_password_token saved_user
+          #
+          #
+          # Log that user in
+          req.user = saved_user
+          #
+          req.session.auth = 
+            userId: saved_user._id
+          #
+          #
+          mongo_theme.find
+            active: true
+            user_id: req.sessionID
+          , (err, themes) ->
+            if not err
+              for theme in themes
+                theme.user_id = user._id
+                console.log theme
+                theme.save()
+          #
+          # Then pass them forward
+          next()
 , (req, res, next) ->
   #
   #
