@@ -2801,6 +2801,44 @@ $ ->
   #
   #
   #
+  $forgot_password = $ '.forgot_password'
+  #
+  $forgot_password.click ->
+    $.load_modal
+      content: '<p>Please enter your email address:</p><input class="email_to_reset" />'
+      buttons: [
+        action: (close) ->
+          email = $('.email_to_reset').val()
+          if email
+            $.load_loading {}, (loading_close) ->
+              $.ajax
+                url: '/send-password' 
+                data: JSON.stringify
+                  email: email
+                success: (result) ->
+                  loading_close()
+                  if result and result.success
+                    $.load_alert
+                      content: 'Email sent, please check your inbox.'
+                  else if result and result.err
+                    $.load_alert
+                      content: result.err
+                  else
+                    $.load_alert
+                      content: 'Something went wrong, please try again later.'
+                error: ->
+                  loading_close()
+                  $.load_alert
+                    content: 'Something went wrong, please try again later.'
+              close()
+        label: 'Send Login Link'
+      ,
+        action: (close) -> 
+          close()
+        label: 'Cancel'
+        class: 'gray'
+      ]
+    false
   #
   #
   #

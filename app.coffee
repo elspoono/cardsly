@@ -2062,7 +2062,7 @@ app.post '/validate-purchase', (req, res, next) ->
 #
 app.post '/send-password', (req, res, next) ->
   #
-  mongo_user.find
+  mongo_user.findOne
     email: req.body.email
   , (err, found_user) ->
     if check_no_err_ajax err, res

@@ -23,7 +23,7 @@
     if ((_ref2 = options.helperContext) == null) {
       options.helperContext = global;
     }
-    if (1==2 || process.env.NODE_ENV === 'production') {
+    if (1==1 || process.env.NODE_ENV === 'production') {
       if ((_ref3 = options.build) == null) {
         options.build = true;
       }
