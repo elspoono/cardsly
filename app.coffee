@@ -2083,7 +2083,7 @@ generate_password_token = (for_user) ->
     log_err err if err
   #
   #
-  password_link = short_domain + psuedo
+  password_link = short_domain + '/set-password/' + psuedo
   #
   #
   # Send the user an email
@@ -2596,6 +2596,14 @@ if app.settings.env is 'production'
 #
 #
 #
+app.get '/set-password/:password_token?', (req, res, next) ->
+  if req.params.password_token
+    next()
+  else
+    next()
+, (req, res, next) ->
+  res.render 'set_password',
+    req: req
 #
 #
 #
