@@ -2095,7 +2095,7 @@ generate_password_token = (for_user) ->
     log_err err if err
   #
   #
-  password_link = short_domain + '/set-password/' + psuedo
+  password_link = short_domain + 'set-password/' + psuedo
   #
   #
   # Send the user an email
@@ -2614,12 +2614,33 @@ if app.settings.env is 'production'
 #
 app.get '/set-password/:password_token?', (req, res, next) ->
   if req.params.password_token
-    next()
+    mongo_user.findOne
+      password_token: req.params.password_token
+    , (err, found_user) ->
+      if check_no_err err
+        if not found_user
+          res.send '',
+            Location: '/settings'
+          , 302
+        else
+          err = null
+          if found_user.password_token_generated < new Date(new Date()-1000*60*60*24)
+            generate_password_token found_user
+            err = '<p>Our apologies, that token has expired.</p><p>We have sent a new one. Please check your inbox.</p>'
+          else
+
+          req.user = found_user
+          #
+          req.session.auth = 
+            userId: found_user._id
+            
+          res.render 'set_password',
+            req: req
+            err: err
   else
-    next()
-, (req, res, next) ->
-  res.render 'set_password',
-    req: req
+    res.send '',
+      Location: '/settings'
+    , 302
 #
 #
 #
