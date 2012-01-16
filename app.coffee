@@ -2060,6 +2060,25 @@ app.post '/validate-purchase', (req, res, next) ->
       error: 'Im sorry this page isnt active yet'
     ###
 #
+app.post '/set-password', (req, res, next) ->
+  if req.user
+    #
+    if req.user.password_token_generated < new Date(new Date()-1000*60*60*24)
+      res.send
+        err: 'Token Expired.'
+    else
+      #
+      req.user.password_encrypted = encrypted(req.body.password);
+      req.user.save (err, user_saved) ->
+        if err
+          log_err err
+      #
+      res.send
+        success: true
+  else
+    res.send
+      err: 'Not logged in.'
+#
 app.post '/send-password', (req, res, next) ->
   #
   mongo_user.findOne
@@ -2610,6 +2629,11 @@ if app.settings.env is 'production'
 #
 #
 #
+app.get '/settings', secured_page,  (req, res, next) ->
+  res.render 'settings',
+    req: req
+#
+#
 #
 #
 app.get '/set-password/:password_token?', (req, res, next) ->
@@ -2628,12 +2652,11 @@ app.get '/set-password/:password_token?', (req, res, next) ->
             generate_password_token found_user
             err = '<p>Our apologies, that token has expired.</p><p>We have sent a new one. Please check your inbox.</p>'
           else
+            req.user = found_user
+            #
+            req.session.auth = 
+              userId: found_user._id
 
-          req.user = found_user
-          #
-          req.session.auth = 
-            userId: found_user._id
-            
           res.render 'set_password',
             req: req
             err: err

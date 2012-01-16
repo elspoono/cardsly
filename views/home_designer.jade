@@ -1,0 +1,130 @@
+.row.home_designer
+  .help_overlay.active
+    .bg
+    .center_column
+      .button_hide Hide Help
+      .button_show Show Help
+      .dialog.left.one
+        .text Click To Edit Text
+  .top
+    .center_column
+      h1.two
+        .one Design Cards
+        .two Customize colors and fonts
+      .images
+        img(src='/images/icons/paint_brush_333333.png')
+  form(action='/up',target='hidden_frame',enctype='multipart/form-data',method='POST').upload_form
+    input(type='file',name='image')
+    iframe(name='hidden_frame')
+  .mid
+    .center_column
+      .row_bg
+      .row_content
+        .left
+          .card.editor
+          .spacer
+          .below_card
+            .below_left
+              .toggle.front_back
+                .bg
+                  .option.active Front
+                  .option Back
+              .button.add_image
+                img(src='/images/icons/camera.png',style='margin-top:3px')
+                | +
+              .button.add_line
+                img(src='/images/icons/alpha.png',style='margin-top:6px')
+                | +
+            .below_right
+              .button.show_themes
+                span Card Designs >
+          .clear
+        .right
+          .controls
+            .areas
+              .area
+                .line_values
+                .clear
+                .mid_spacer
+                - font_families = ['Arial','Comic Sans MS','Courier New','Georgia','Impact','Times New Roman','Trebuchet MS','Verdana','IM FELL English SC','Julee','Syncopate','Gravitas One','Quicksand','Vast Shadow','Smokum','Ovo','Amatic SC','Rancho','Poly','Chivo','Prata','Abril Fatface','Ultra','Love Ya Like A Sister','Carter One','Luckiest Guy','Gruppo','Slackey'].sort()
+                select.font_families
+                  -for font_family in font_families
+                    option(style='font-family:'+font_family+';',value=font_family)=font_family
+                select.font_size
+                  -for size in [8,10,12,14,16,18,20,22,24,28,32,36,40,44,48,56,64,72,80,92,104,116,128]
+                    option(value=size)=size
+                .clear
+                .spacer
+                .toggle.text_align
+                  .bg
+                    .option.active(align='left')
+                      .img.left
+                    .option(align='center')
+                      .img.center
+                    .option(align='right')
+                      .img.right
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+                .clear
+              .area
+                p Foreground
+                .clear
+                .spacer
+                .toggle.qr_style
+                  .bg
+                    .option(qr_style='square')
+                      .img.square
+                    .option.active(qr_style='round')
+                      .img.round
+                    .option(qr_style='circle')
+                      .img.circle
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+                .clear
+                .mid_spacer
+                p Background
+                .clear
+                .spacer
+                select.color_2_opacity
+                  -for(size=0;size<=100;size++)
+                    option(value=size)=size
+                .color_picker
+                  .bg
+                    .color
+                    .shader
+                    .arrow_container
+                      .arrow_1
+                      .arrow_2
+                .clear
+              .area
+                p Use 1050px X 600px for best quality
+                .clear
+                .spacer
+                .button.upload_button
+                  img(src='/images/icons/upload.png', style='margin-top:5px')
+                  | Upload Image
+                .clear
+              .area.active
+                .themes
+                  .ours_yours
+                    p Yours
+                    .clear
+                    .spacer
+                    .my_themes
+                    .clear
+                    .mid_spacer
+                    p Ours
+                    .clear
+                    .spacer
+                .clear
+        .clear

@@ -948,7 +948,7 @@ $ ->
     order = {}
     #
     #
-    #
+    #s
     order.active_theme_id = '4ec3fb7b3bf1fc0100000042'
     #
     #
@@ -988,6 +988,13 @@ $ ->
     help_visible = true
     $help_overlays.each ->
       $h_o = $ this
+      #
+      if document.location.href.match '/settings'
+        $help_bg.hide()
+        $help_show.show()
+        $help_overlays.removeClass 'active'
+        help_visible = false
+        #
       #
       $h_o.click (e) ->
         #
@@ -2797,6 +2804,30 @@ $ ->
   #
   #
   #
+  $set_password_form = $ '.set_password_form'
+  $set_password_form.submit ->
+    $.load_loading {}, (loading_close) ->
+      $.ajax
+        url: '/set-password'
+        data: JSON.stringify
+          password: $set_password_form.find('.set_new_password').val()
+        success: (result) ->
+          loading_close()
+          if result and result.success
+            $.load_alert
+              content: 'Password set.'
+          else if result and result.err
+            $.load_alert
+              content: result.err
+          else
+            $.load_alert
+              content: 'Something went wrong, please try again later.'
+        error: ->
+          loading_close()
+          $.load_alert
+            content: 'Something went wrong, please try again later.'
+
+    false
   #
   #
   #
