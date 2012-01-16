@@ -2233,6 +2233,7 @@ $ ->
       #
       setTimeout ->
         #
+        $thumbs = $themes.find '.thumb'
         #
         #$thumbs.filter('.active').click()
         #
