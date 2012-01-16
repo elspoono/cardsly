@@ -2364,6 +2364,8 @@ app.post '/login', (req, res, next) ->
         err: err
     else
       #
+      req.session.auth =
+        userId: user._id
       #
       session_store.get unescape(req.sessionID), (err, saved_session) ->
         if check_no_err_ajax err, res
@@ -2372,7 +2374,7 @@ app.post '/login', (req, res, next) ->
             userId: user._id
           #
           #
-          session_store.set unescape(req.sessionID), saved_session, (err) ->
+          session_store.set unescape(req.sessionID), saved_session, (err, saved_session_result) ->
             if check_no_err_ajax err, res
               #
               res.send
@@ -2380,6 +2382,8 @@ app.post '/login', (req, res, next) ->
               #
               #
               console.log 'FROM LOGIN:', req.session.auth
+              console.log 'FROM LOGIN:', saved_session
+              console.log 'FROM LOGIN:', saved_session_result
               #
               if req.sessionID
                 #
