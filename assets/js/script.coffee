@@ -1115,6 +1115,61 @@ $ ->
       n = Math.max 0, Math.min n, 255
       "0123456789ABCDEF".charAt((n-n%16)/16)+ "0123456789ABCDEF".charAt(n%16)
     #
+    #
+    #
+    #
+    #
+    #
+    update_preview_with_active = ->
+      ###
+
+      This updating of the preview card
+
+      ###
+      side = 0
+      if $front_back.filter('.active').html().toLowerCase() is 'back'
+        side = 1
+      #
+      $all_card.filter('.preview').each ->
+        #
+        $this_card = $ this
+        #
+        $fg = $this_card.find '.fg'
+        if not $fg.length
+          $fg = $ '<div class="fg" />'
+          $fg.addClass 'collapsed2' if side is 'back'
+          $fg.hide() if side is 'back'
+          $this_card.append $fg
+        #
+        $bg = $this_card.find '.bg'
+        if not $bg.length
+          $bg = $ '<div class="bg" />'
+          $bg.addClass 'collapsed2' if side is 'front'
+          $bg.hide() if side is 'front'
+          $this_card.append $bg
+        #
+        #
+        $.create_card_from_theme
+          height: 300
+          width: 525
+          theme: active_theme
+          active_view: 0
+          card: $fg
+          side: 0
+        #
+        $.create_card_from_theme
+          height: 300
+          width: 525
+          theme: active_theme
+          active_view: 0
+          card: $bg
+          side: 1
+    #
+    #
+    #
+    #
+    #
+    #
     actually_save_active_theme = ->
       clearTimeout theme_modified_timer
       #
@@ -1221,48 +1276,7 @@ $ ->
               #
               #
               #
-              ###
-
-              TODO
-
-              This updating of the preview card is duplicated elsewhere. Make a generic function for this instead.
-
-              ###
-              #
-              $all_card.filter('.preview').each ->
-                #
-                $this_card = $ this
-                #
-                $fg = $this_card.find '.fg'
-                if not $fg.length
-                  $fg = $ '<div class="fg" />'
-                  $fg.addClass 'collapsed2' if side is 'back'
-                  $fg.hide() if side is 'back'
-                  $this_card.append $fg
-                #
-                $bg = $this_card.find '.bg'
-                if not $bg.length
-                  $bg = $ '<div class="bg" />'
-                  $bg.addClass 'collapsed2' if side is 'front'
-                  $bg.hide() if side is 'front'
-                  $this_card.append $bg
-                #
-                #
-                $.create_card_from_theme
-                  height: 300
-                  width: 525
-                  theme: theme
-                  active_view: 0
-                  card: $fg
-                  side: 0
-                #
-                $.create_card_from_theme
-                  height: 300
-                  width: 525
-                  theme: theme
-                  active_view: 0
-                  card: $bg
-                  side: 1
+              update_preview_with_active()
               #
               $.ajax
                 url: '/save-order'
@@ -1318,6 +1332,7 @@ $ ->
               #
               #
               #
+              update_preview_with_active()
               #
               #
               order.active_theme_id = active_theme._id
