@@ -2714,7 +2714,6 @@ $ ->
                     url: '/confirm-purchase'
                     data: JSON.stringify
                       token: token
-                      email: $('.email_to_send input').val()
                     success: (result) ->
                       console.log result
                       if result.err

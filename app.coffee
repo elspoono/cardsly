@@ -2083,22 +2083,22 @@ generate_password_token = (for_user) ->
   for_user.password_token = psuedo
   for_user.password_token_generated = new Date()
   #
-  for_user.save(err, saved_user) -> log_err err if err
+  for_user.save (err, saved_user) -> 
+    log_err err if err
   #
   #
   password_link = short_domain + psuedo
   #
   #
   # Send the user an email
-  if new_order.email
-    nodemailer.send_mail
-      sender: 'help@cards.ly'
-      to: for_user.email
-      subject: 'Cardsly password link'
-      html: '<p>Please use this link to login to cardsly and set your password:</p><p><a href="'+password_link+'">'+password_link+'</a></p><p>This link will expire in 24 hours.</p>'
-    , (err, data) ->
-      if err
-        log_err err
+  nodemailer.send_mail
+    sender: 'help@cards.ly'
+    to: for_user.email
+    subject: 'Cardsly password link'
+    html: '<p>Please use this link to login to cardsly and set your password:</p><p><a href="'+password_link+'">'+password_link+'</a></p><p>This link will expire in 24 hours.</p>'
+  , (err, data) ->
+    if err
+      log_err err
 #
 #
 app.post '/confirm-purchase', (req, res, next) ->
@@ -2107,7 +2107,7 @@ app.post '/confirm-purchase', (req, res, next) ->
   else
     # Create a user
     user = new mongo_user
-    user.email = req.body.email
+    user.email = req.session.order.email
     user.save (err, saved_user) ->
       if check_no_err_ajax err, res
         #
@@ -2117,9 +2117,20 @@ app.post '/confirm-purchase', (req, res, next) ->
         #
         # Log that user in
         req.user = saved_user
+        #
         req.session.auth = 
           userId: saved_user._id
         #
+        #
+        mongo_theme.find
+          active: true
+          user_id: req.sessionID
+        , (err, themes) ->
+          if not err
+            for theme in themes
+              theme.user_id = user._id
+              console.log theme
+              theme.save()
         #
         # Then pass them forward
         next()

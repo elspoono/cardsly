@@ -13,20 +13,32 @@
     ul
       li
         .login
-          a(href='/login') Login
-          .dropdown
-            ul.socials
-              li.facebook F
-              li.twitter.shift t
-              li.linkedin l
-              li.google g
-            .clear
-            .item.push
-              label E-mail  
-              input.email(placeholder='my@email.com',pattern='.+@.+\\..+')
-            .item
-              label Password  
-              input.password(type='password')
+          if req.user
+            a(href='/settings')
+              if req.user.email
+                =req.user.email
+              .gear
+                img(src='/images/gear.png',alt: 'QR code business cards settings')
+            .dropdown
+              .item
+                a(href='/settings') Settings
+              .item
+                a(href='/logout') Logout
+          else
+            a(href='/login') Login
+            .dropdown
+              ul.socials
+                li.facebook F
+                li.twitter.shift t
+                li.linkedin l
+                li.google g
+              .clear
+              .item.push
+                label E-mail  
+                input.email(placeholder='my@email.com',pattern='.+@.+\\..+')
+              .item
+                label Password  
+                input.password(type='password')
 != body
 
 
