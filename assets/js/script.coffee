@@ -1204,14 +1204,14 @@ $ ->
             if result.theme
               #
               #
-              active_theme = result.theme
+              active_theme = result.theme if active_theme._id is result.theme._id
               #
               theme = active_theme
               #
-              $themes.find('.thumb[id='+active_theme._id+'] .fg').attr
+              $themes.find('.thumb[id='+theme._id+'] .fg').attr
                 src: '/thumb/'+result.theme._id+'/0?'+Math.random()
               #
-              $themes.find('.thumb[id='+active_theme._id+'] .bg').attr
+              $themes.find('.thumb[id='+theme._id+'] .bg').attr
                 src: '/thumb/'+result.theme._id+'/1?'+Math.random()
               #
               #
