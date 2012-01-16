@@ -891,7 +891,7 @@ $ ->
       #
       $target = $ e.target
       #
-      unless $target.closest('.navigation').length
+      unless $target.closest('.navigation,.window,.modal').length
         #
         $dropdown.slideUp 150
         $dropdown.removeClass 'active'
