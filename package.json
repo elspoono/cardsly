@@ -24,13 +24,10 @@
     , "request": ">=0.0.1"
     , "xml2json": ">=0.0.1"
     , "oauth": ">=0.0.1"
-<<<<<<< HEAD
     , "mime": ">=0.0.1"
-=======
     , "dnode": ">=0.0.1"
     , "socket.io": ">=0.0.1"
     , "twilio" : ">=0.0.1"
->>>>>>> dereks
     , "canvas": "https://github.com/elspoono/node-canvas-heroku/tarball/master"
   },
   "devDependencies": {
