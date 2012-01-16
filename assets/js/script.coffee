@@ -226,11 +226,13 @@ $.create_card_from_theme = (options) ->
     #
     $imgs = $my_card.find '.img'
     $lines = $my_card.find '.line'
+    $my_qr = $my_card.find('.qr')
     #
     #
     #
     $imgs.hide()
     $lines.hide()
+    $my_qr.hide()
     img_i = 0
     line_i = 0
     #
@@ -259,7 +261,6 @@ $.create_card_from_theme = (options) ->
         #
         if item.type is 'qr'
           #
-          $my_qr = $my_card.find('.qr')
           if not $my_qr.length
             $my_qr = $ '<img class="qr" /></div>'
             $my_card.append $my_qr
