@@ -1,0 +1,86 @@
+.row.alert_row
+  .help_overlay.active
+    .bg
+    .center_column
+      .button_hide Hide Help
+      .button_show Show Help
+      .dialog.right.two
+        .text Email Address
+  .top
+    .center_column
+      h1.two 
+        .one Get Alerts
+        .two Learn who scanned your cards
+      .images
+        img.text(src='/images/icons/alert_333333.png')
+  .mid
+    .center_column
+      .set_alerts
+        .row_bg
+        .row_content
+          .field
+            h2 Contact Info
+          .clear
+          .field
+            p Please register your e-mail address here.
+            p Phone number optional.
+            p Turn automatic alerts on or off at anytime.
+          .field
+            .input
+              label E-mail
+              input.order_email.required(placeholder='my@email.com',pattern='.+@.+\\..+')
+              .symbol *
+            .clear
+            .spacer
+            .input
+              label Phone
+              input.order_phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
+              .symbol
+            .clear
+            .spacer
+            .input
+              label Alerts
+              .toggle.order_alerts
+                .bg
+                  .option.active Off
+                  .option Emails
+                  .option Texts
+                  .option Both
+      .clear
+    .clear
+  .clear
+  .mid_spacer
+  .mid
+    .center_column
+      .set_links
+        .row_bg
+        .row_content
+          .field
+            h2 Set Links
+          .clear
+          .field
+            p Use a social network to login.
+            p Type the url you want your cards to go to.
+          .field
+            .link_editor
+              .input
+                label Login
+                ul.social_links
+                  li.facebook F
+                  li.twitter.shift t
+                  li.linkedin l
+                  li.google g
+              .clear
+              .mid_spacer
+              .input
+                label Website
+                input.set_link.required(placeholder='mysite.com',pattern='.+\\..+')
+                .symbol *
+            .link_items
+            .clear
+          .clear
+        .clear
+      .clear
+    .clear
+  .clear
+.clear

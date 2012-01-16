@@ -905,7 +905,7 @@ draw_qr = (o) ->
   ctx.fillStyle = hex_to_rgba o.hex
   #
   #
-  font_size = border_size*1.2
+  font_size = border_size*1.3
   ctx.font = font_size+'px Lato'
   parsed_url = o.url.replace('http:\/\/','')
   measure = ctx.measureText parsed_url, 0, 0
@@ -913,8 +913,9 @@ draw_qr = (o) ->
   #
   #
   # Draw the Card Number
-  if o.card_number
-    ctx.fillText '#'+o.card_number, border_size, height-font_size/5
+  if not o.card_number
+    o.card_number = 1
+  ctx.fillText '#'+o.card_number, border_size, height-font_size/5
   #
   #
   # Return the canvas

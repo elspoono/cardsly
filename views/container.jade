@@ -1,0 +1,84 @@
+.overlay_container
+  .overlay
+.navigation
+  .center_column
+    a.logo(href='/')
+      img(src='/images/logo35x100.png')
+    .social_mentions
+      .fb-like(data-href='https://www.cards.ly/', data-send='false', data-layout='button_count', data-width='50', data-show-faces='false')
+      .tweet
+        a(href='https://twitter.com/share', class='twitter-share-button', data-url='https://www.cards.ly/', data-related='cardsly') Tweet
+      script
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='//platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>
+    .login
+      if req.user
+        .trigger
+          a(href='/settings')
+            .content
+              if req.user.email
+                =req.user.email
+            img(src='/images/gear.png',alt: 'QR code business cards settings')
+        .dropdown
+          .item
+            a(href='/cards') Cards
+          .item
+            a(href='/settings') Settings
+          .item
+            a(href='/logout') Logout
+      else
+        .trigger
+          a(href='/login') Login
+        .dropdown
+          .item
+            label Social Login
+            ul.social_links
+              li.facebook F
+              li.twitter.shift t
+              li.linkedin l
+              li.google g
+          .item
+            label or
+          form.login_form
+            .item
+              label E-mail  
+              input.email(placeholder='my@email.com',pattern='.+@.+\\..+')
+            .item
+              label Password  
+              input.password(type='password')
+            .item
+              label &nbsp;
+              input.button(type='submit',value='Login')
+            .item
+              label &nbsp;
+              a.forgot_password(href='#') Forgot Password?
+!= body
+
+if req.customer_questions_available
+  a(href='https://jodesco.campfirenow.com/b8b1c',target='_blank').chat_link
+    img(src='/images/lets_chat.png')
+    .questions Questions? Let's chat
+
+.clear
+.footer
+  .center_column
+    .col_one
+      img(src='/images/ghost_st.png')
+      img(src='/images/ghost_j.png')
+      .top
+        a(href='/about') About
+      .bottom
+        a(href='mailto:help@cards.ly') help@cards.ly
+    .col_two
+      a(href='http://fb.com/cardsly')
+        img(src='/images/facebooklink.png')
+      a(href='https://plus.google.com/101327189030192478503/posts')
+        img(src='/images/googlelink.png')
+      a(href='http://twitter.com/cardsly')
+        img(src='/images/twitterlink.png')
+    .col_three
+      img(src='/images/ghost_d.png')
+      img(src='/images/ghost_sc.png')
+      .top
+        a(href='http://blog.cards.ly') Blog
+      .bottom
+        a(href='tel://4804288000') 480.428.8000

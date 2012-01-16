@@ -1,0 +1,159 @@
+
+/********************************
+ *
+ * LIBRARY FUNCTIONS
+ *
+ ********************************/
+
+
+// Alpha Background
+alpha_bg(color,n)
+  background rgb(color);
+  background rgba(color,n);
+
+// Shadow
+box_shadow(n = 12px, color = $c_dark_warm, b = n, do_inset=)
+  -moz-box-shadow do_inset n n b color
+  -webkit-box-shadow do_inset n n b color
+  box-shadow do_inset n n b color
+  behavior: url('/js/libs/PIE')
+text_shadow(n = 4px, color = $c_dark_warm, b = n)
+  text-shadow n n b color
+  behavior: url('/js/libs/PIE')
+
+// Rounded Corners
+border_radius(n = 10px)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  behavior: url('/js/libs/PIE')
+border_radius_top_left_only(n)
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
+border_radius_bottom_left_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+border_radius_except_top_right(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-top-right-radius 0
+  -moz-border-radius-topright 0
+  -webkit-border-top-right-radius 0
+border_radius_right_only(n)
+  border-bottom-right-radius n
+  -moz-border-radius-bottomright n
+  -webkit-border-bottom-right-radius n
+  border-top-right-radius n
+  -moz-border-radius-topright n
+  -webkit-border-top-right-radius n
+border_radius_left_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
+border_radius_top_only(n)
+  border-top-left-radius n
+  -moz-border-radius-topleft n
+  -webkit-border-top-left-radius n
+  border-top-right-radius n
+  -moz-border-radius-topright n
+  -webkit-border-top-right-radius n
+border_radius_bottom_only(n)
+  border-bottom-left-radius n
+  -moz-border-radius-bottomleft n
+  -webkit-border-bottom-left-radius n
+  border-bottom-right-radius n
+  -moz-border-radius-bottomright n
+  -webkit-border-bottom-right-radius n
+border_radius_except_bottom_left(n)
+  -webkit-border-radius n
+  -moz-border-radius n
+  border-radius n
+  border-bottom-left-radius 0
+  -moz-border-radius-bottomleft 0
+  -webkit-border-bottom-left-radius 0
+
+// Transparency
+opacity(n)
+  opacity n
+  filter alpha\(opacity\=n*100\)
+
+absolute()
+  display none
+  position absolute
+  top 0
+  left 0
+
+// Resize Ratio
+transform_matrix(a,c,b,d,tx,ty)
+  -moz-transform: matrix(a,c,b,d,tx,ty);
+  -webkit-transform: matrix(a,c,b,d,tx,ty);
+  -o-transform: matrix(a,c,b,d,tx,ty);
+  -ms-transform: matrix(a,c,b,d,tx,ty);
+  transform: matrix(a,c,b,d,tx,ty);
+
+
+// Resize Ratio
+transform_scale(width=0.5,height=width)
+  -webkit-transform: scale(height, width);
+  -moz-transform: scale(height, width);
+  -ms-transform: scale(height, width);
+  transform: scale(height, width);
+
+transition(speed=1s)
+  -webkit-transition all speed linear
+  -moz-transition all speed linear
+  -o-transition all speed linear
+  -ms-transition all speed linear
+  transition all speed linear
+
+no_transition()
+  -webkit-transition none
+  -moz-transition none
+  -o-transition none
+  -ms-transition none
+  transition none
+
+// Rotate (pass in degrees)
+box_rotate(degrees=7.5deg)
+  -webkit-transform rotate(degrees)
+  -moz-transform rotate(degrees)
+  -ms-transform rotate(degrees)  
+  -o-transform rotate(degrees)  
+  transform rotate(degrees)
+  zoom 1
+
+// Background Gradient from 1 color at top to another color at bottom
+gradient(color1=$c_background,color2=$c_background,alpha=1)
+  color1 = rgba(color1, alpha)
+  background-color color2
+  background-image -webkit-gradient(linear, left top, left bottom, from(color1), to(color2)) /* Saf4+, Chrome */
+  background-image -webkit-linear-gradient(top, color1, color2) /* Chrome 10+, Saf5.1+, iOS 5+ */
+  background-image -moz-linear-gradient(top, color1, color2) /* FF3.6 */
+  background-image -ms-linear-gradient(top, color1, color2) /* IE10 */
+  background-image -o-linear-gradient(top, color1, color2) /* Opera 11.10+ */
+  background-image linear-gradient(top, color1, color2)
+  -pie-background linear-gradient(top, color1, color2)
+  behavior: url('/js/libs/PIE')
+
+/********************************
+ *
+ * END LIBRARY FUNCTIONS
+ *
+ ********************************/
+
+
+
+
+// Colors
+
+$c_main = #000
+
+// Fonts
+
+$f_main = Arial
