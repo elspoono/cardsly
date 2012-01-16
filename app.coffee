@@ -2710,23 +2710,23 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                 #
                 if found_url
                   #
-                  console.log url_group.user_id
+                  #console.log url_group.user_id
                   #
                   # Find the user to send them an email
                   mongo_user.findById url_group.user_id, (err, found_user) ->
                     #
-                    console.log found_user.email
+                    #console.log found_user.email
                     #
-                    if found_user.email
-                      #
-                      #
-                      ordinal = (in_number) ->
-                        decimal = in_number %10
-                        suffix = 'th'
-                        suffix = 'st' if decimal is 1
-                        suffix = 'nd' if decimal is 2
-                        suffix = 'rd' if decimal is 3
-                        in_number+suffix
+                    ordinal = (in_number) ->
+                      decimal = in_number %10
+                      suffix = 'th'
+                      suffix = 'st' if decimal is 1
+                      suffix = 'nd' if decimal is 2
+                      suffix = 'rd' if decimal is 3
+                      in_number+suffix
+                    #
+                    #
+                    if found_user.email and (found_user.alerts is 'both' or found_user.alerts is 'emails')
                       #
                       #
                       # Send it!
@@ -2739,12 +2739,14 @@ app.get '/[A-Za-z0-9]{5,}/?$', (req, res, next) ->
                         if err
                           log_err err
                       #
+                    if found_user.phone and (found_user.alerts is 'both' or found_user.alerts is 'texts')
                       #
                       #
-                      ###
-                      TODO 
-                      client.sendSms '4847722735', '4805445590', 'TESTING MOFO'
-                      ###
+                      found_user.phone = found_user.phone.replace /[^0-9]/g, ''
+                      #
+                      #
+                      client.sendSms '4847722735', found_user.phone, 'Card #'+found_url.card_number+' scanned for the '+ordinal(found_url.visits)+' time '+by_an_in(visit)+'.'
+
 #
 #
 #
