@@ -2372,7 +2372,7 @@ app.post '/login', (req, res, next) ->
             userId: user._id
           #
           #
-          session_store.set unescape(o.sid), saved_session, (err) ->
+          session_store.set unescape(req.sessionID), saved_session, (err) ->
             if check_no_err_ajax err, res
               #
               res.send
