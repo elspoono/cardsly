@@ -2366,37 +2366,33 @@ app.post '/login', (req, res, next) ->
       #
       #
       session_store.get unescape(req.sessionID), (err, saved_session) ->
-        #
-        saved_session.auth =
-          userId: user._id
-        #
-        #
-        session_store.set unescape(o.sid), saved_session, (err) ->
-          if err
-            log_err err
-            res.send
-              err: err
-          else
-            #
-            #
-            res.send
-              success: true
-            #
-            #
-            console.log 'FROM LOGIN:', req.session.auth
-            #
-            if req.sessionID
+        if check_no_err_ajax err, res
+          #
+          saved_session.auth =
+            userId: user._id
+          #
+          #
+          session_store.set unescape(o.sid), saved_session, (err) ->
+            if check_no_err_ajax err, res
+              #
+              res.send
+                success: true
               #
               #
-              mongo_theme.find
-                active: true
-                user_id: req.sessionID
-              , (err, themes) ->
-                if not err
-                  for theme in themes
-                    theme.user_id = user._id
-                    console.log theme
-                    theme.save()
+              console.log 'FROM LOGIN:', req.session.auth
+              #
+              if req.sessionID
+                #
+                #
+                mongo_theme.find
+                  active: true
+                  user_id: req.sessionID
+                , (err, themes) ->
+                  if not err
+                    for theme in themes
+                      theme.user_id = user._id
+                      console.log theme
+                      theme.save()
 #
 #
 #
