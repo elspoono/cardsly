@@ -2565,9 +2565,36 @@ $ ->
       url: '/get-order'
       success: (results) ->
         #
+        #
+        ###
+        TODO
+
+        easy exercise
+
+        find all lines of code like the following:
+
+          if something
+            something_else
+        
+        where something_else is just one line and simple, and convert it to:
+
+          something_else if something
+
+        or:
+
+          something_else unless something
+
+        if the origin looked like:
+
+          if not something
+            something_else
+
+        ###
+        #
+        #
         if results.order
           #
-          order = results.session.order
+          order = results.order
           #
         #
         if order.quantity
