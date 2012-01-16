@@ -53,6 +53,10 @@
               a.forgot_password(href='#') Forgot Password?
 != body
 
+if req.customer_questions_available
+  a(href='https://jodesco.campfirenow.com/b8b1c',target='_blank').chat_link
+    img(src='images/chat.png')
+    .questions Questions? Let's chat
 
 .clear
 .footer
