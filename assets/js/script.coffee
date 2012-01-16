@@ -1266,7 +1266,7 @@ $ ->
               #
               active_theme = result.theme if active_theme._id is result.theme._id
               #
-              theme = active_theme
+              theme = result.theme
               #
               $themes.find('.thumb[id='+theme._id+'] .fg').attr
                 src: '/thumb/'+result.theme._id+'/0?'+Math.random()
@@ -1301,9 +1301,8 @@ $ ->
             if result.theme
               #
               #
-              active_theme = result.theme
+              active_theme = result.theme if active_theme._id is result.theme._id
               #
-              console.log 'AFTER SAVE:', active_theme.user_id
               #
               theme = result.theme
               #
