@@ -941,6 +941,7 @@ $ ->
   #
   #
   #
+  active_theme = {}
   #
   $home_designer = $ '.home_designer'
   #
@@ -1190,7 +1191,7 @@ $ ->
         #
       #
       #
-      #console.log active_theme
+      console.log 'BEFORE SAVE:', active_theme.user_id
       #
       if active_theme.user_id or document.location.href.match /admin/i
         #
@@ -1279,6 +1280,8 @@ $ ->
               #
               active_theme = result.theme
               #
+              console.log 'AFTER SAVE:', active_theme.user_id
+              #
               theme = result.theme
               #
               #
@@ -1305,6 +1308,15 @@ $ ->
               $new_thumb.addClass 'active'
               #
               #
+              #
+              #
+              #
+              order.active_theme_id = active_theme._id
+              #
+              # And save it
+              $.ajax
+                url: '/save-order'
+                data: JSON.stringify order
       #
       #
       #
@@ -1846,7 +1858,6 @@ $ ->
                         item.color_2 = new_color
                       #
                       #
-                      console.log active_theme, active_theme.items[item_i], item_i
                       #
                       #
                       # Calculate the alpha
@@ -2115,7 +2126,6 @@ $ ->
       #
     #
     #
-    active_theme = {}
     #
     $add_image = $home_designer.find '.add_image'
     $add_image.click ->
@@ -2320,6 +2330,10 @@ $ ->
           #
           $thumbs.live 'click', ->
             #
+            #
+            if theme_modified_timer isnt 0
+              actually_save_active_theme()
+            #
             $thumb = $ this
             id = $thumb.attr 'id'
             #
@@ -2335,6 +2349,8 @@ $ ->
                 theme = results.theme
                 #
                 active_theme = theme
+                #
+                console.log 'AFTER GET:', active_theme.user_id
                 #
                 #
                 side = $front_back.filter('.active').html().toLowerCase()
