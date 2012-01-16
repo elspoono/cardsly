@@ -1190,10 +1190,15 @@ $ ->
         active_theme.items.push item
         #
       #
+      order.values = $editor.find('.line').map ->
+        this.innerHTML
+      .get()
+      $.line_copy = order.values
       #
       console.log 'BEFORE SAVE:', active_theme.user_id
       #
       if active_theme.user_id or document.location.href.match /admin/i
+        #
         #
         $.ajax
           url: '/save-theme'
@@ -1258,6 +1263,10 @@ $ ->
                   active_view: 0
                   card: $bg
                   side: 1
+              #
+              $.ajax
+                url: '/save-order'
+                data: JSON.stringify order
         #
       else
         #
@@ -1555,17 +1564,9 @@ $ ->
             #
             #
           #
-          maybe_save_timer = 0
-          maybe_save_values = ->
-            clearTimeout maybe_save_timer
-            maybe_save_timer = setTimeout ->
-              order.values = $lines.map ->
-                this.innerHTML
-              .get()
-              $.ajax
-                url: '/save-order'
-                data: JSON.stringify order
-            , 3000
+          #
+          #
+          #
           #
           #
           $active_lines.each (i) ->
@@ -1625,7 +1626,6 @@ $ ->
                 val = $line_value.val()
                 $active_line.html val
                 shorten_this_line()
-                maybe_save_values()
               , 100
               #
               #
