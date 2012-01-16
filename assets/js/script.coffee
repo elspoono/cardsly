@@ -230,6 +230,7 @@ $.create_card_from_theme = (options) ->
     #
     #
     $imgs.hide()
+    $lines.hide()
     img_i = 0
     line_i = 0
     #
