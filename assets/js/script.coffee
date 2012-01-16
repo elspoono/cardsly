@@ -301,7 +301,7 @@ $.create_card_from_theme = (options) ->
               , 500
               #
             else
-              #$li.html $.line_copy[line_i]
+              $li.html $.line_copy[line_i]
               stylify_a_line $li, n_l, c_w, item
             #
           #
@@ -1208,10 +1208,10 @@ $ ->
               #
               theme = active_theme
               #
-              $themes.find('.thumb.active .fg').attr
+              $themes.find('.thumb[id='+active_theme._id+'] .fg').attr
                 src: '/thumb/'+result.theme._id+'/0?'+Math.random()
               #
-              $themes.find('.thumb.active .bg').attr
+              $themes.find('.thumb[id='+active_theme._id+'] .bg').attr
                 src: '/thumb/'+result.theme._id+'/1?'+Math.random()
               #
               #
