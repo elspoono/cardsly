@@ -2914,7 +2914,7 @@ render_image = (o) ->
                 if item.type is 'image'
                   #
                   #
-                  if item.s3_id
+                  if item.s3_id and item.img
                     #
                     ctx.drawImage item.img, item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
           #
@@ -3043,6 +3043,11 @@ render_image = (o) ->
                         img.src = buff
                         #
                         item.img = img
+                        #
+                        need_to_wait_on--
+                        #
+                        check_if_done()
+                      else
                         #
                         need_to_wait_on--
                         #
@@ -3313,7 +3318,19 @@ get_url_groups = (req, res, next) ->
   else
     next()
 #
-
+app.get '/print/:side/:order_id', secured_page_admin, (req, res, next) ->
+  #
+  mongo_url_group.findOne
+    order_id: req.params.order_id
+  , (err, url_group) ->
+    #
+    req.url_group = url_group
+    #
+    res.render 'print'
+      req: req
+      layout: 'no_layout'
+    #
+    #
 #
 # Cards Page
 app.get '/cards/:page_type?', secured_page, get_url_groups, (req, res) ->

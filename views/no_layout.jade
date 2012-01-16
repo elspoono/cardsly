@@ -1,0 +1,24 @@
+!!! 5
+html
+  head
+    title=title
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    link(rel='shortcut icon', href='/favicon.ico')
+    != css('no_layout')
+    | <script language="javascript">
+    - env = 'env = \''+env+'\';'
+      =env
+    | </script>
+  body
+    !=body
+    != js('script')
+    //if lt IE 7
+      != js('libs/json2.js')
+    script(src='https://js.stripe.com/v1/')
+    script(src='//www.google.com/jsapi')
+    script
+      google.load("webfont", "1");
+    //if IE lt 9
+      != css('ie')
+      != js('libs/PIE.js')
