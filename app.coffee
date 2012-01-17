@@ -1457,6 +1457,7 @@ app.post '/search-address', (req, res) ->
     #
     res.send req.session.order
     #
+    console.log 'ORDER: ', req.session.order
     #
 #
 #
@@ -1764,7 +1765,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
   #
   # Generate order urls, based on "quantity" (which isnt really quantity)
   #
-  console.log 'REDIRECT TO: ', redirect_to
+  #console.log 'REDIRECT TO: ', redirect_to
   #
   #
   volume = order.quantity*1
@@ -1772,7 +1773,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
   #
   volume = passed_volume*1 if passed_volume
   #
-  console.log 'VOLUME: ', volume
+  #console.log 'VOLUME: ', volume
   #
   create_urls
     redirect_to: redirect_to
@@ -1791,7 +1792,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
         #
         url_group = found_url_group
         #
-        console.log 'FOUND GROUP OF LENGTH: ', url_group.urls.length
+        #console.log 'FOUND GROUP OF LENGTH: ', url_group.urls.length
         #
       else
         #
@@ -1802,7 +1803,7 @@ add_urls_to_order = (order, user, res, passed_volume) ->
         url_group.urls = []
         #
         #
-        console.log 'CREATED NEW GROUP'
+        #console.log 'CREATED NEW GROUP'
       #
       #
       #
@@ -3499,8 +3500,7 @@ app.get '/talking', get_url_groups, (req, res) ->
 # Real Index Page
 app.get '/', (req, res) -> 
   #
-
-  console.log 'FROM HOME:', req.session.auth
+  #console.log 'FROM HOME:', req.session.auth
   #
   res.render 'home'
     req: req
