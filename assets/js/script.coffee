@@ -148,10 +148,13 @@ $.create_card_from_theme = (options) ->
   settings =
     height: 90
     width: 158
+    units: 'px'
     theme: null
     active_view: 0
     card: null
     side: 0
+    card_number: 1
+    url: 'cards.ly'
   #
   if options
     $.extend settings, options
@@ -187,12 +190,12 @@ $.create_card_from_theme = (options) ->
       #
       $li.show().css
         position: 'absolute'
-        top: pos.y/100 * settings.height
-        left: n_l
-        width: c_w
-        height: (pos.h/100 * settings.height) + 'px'
-        fontSize: (pos.h/100 * settings.height) + 'px'
-        lineHeight: (pos.h/100 * settings.height) + 'px'
+        top: pos.y/100 * settings.height + settings.units
+        left: n_l + settings.units
+        width: c_w + settings.units
+        height: (pos.h/100 * settings.height) + settings.units
+        fontSize: (pos.h/100 * settings.height) + settings.units
+        lineHeight: (pos.h/100 * settings.height) + settings.units
         fontFamily: pos.font_family
         textAlign: pos.text_align
         whiteSpace: 'nowrap'
@@ -212,8 +215,8 @@ $.create_card_from_theme = (options) ->
           n_l = n_l + (c_w - n_w)/2
         #
         $li.css
-          left: n_l
-          width: n_w
+          left: n_l + settings.units
+          width: n_w + settings.units
     #
     # ----------------------------------------------
     # Images
@@ -222,6 +225,7 @@ $.create_card_from_theme = (options) ->
     widthheight = 'raw' if settings.width > 525
     widthheight = '158x90' if settings.width < 158
     widthheight = '525x300' if settings.width > 158 and settings.width < 525
+    widthheight = 'raw' if settings.width is 3.5
     #
     #
     $imgs = $my_card.find '.img'
@@ -250,10 +254,10 @@ $.create_card_from_theme = (options) ->
           $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
           $img.show().css
             position: 'absolute'
-            top: item.y/100 * settings.height
-            left: item.x/100 * settings.width
-            width: (item.w/100 * settings.width) + 'px'
-            height: (item.h/100 * settings.height) + 'px'
+            top: item.y/100 * settings.height + settings.units
+            left: item.x/100 * settings.width + settings.units
+            width: (item.w/100 * settings.width) + settings.units
+            height: (item.h/100 * settings.height) + settings.units
           #
           img_i++
         #
@@ -267,14 +271,14 @@ $.create_card_from_theme = (options) ->
           #
           alpha = Math.round(item.color_2_opacity * 255).toString 16
           #
-          $my_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+(item.style or 'round')+''
+          $my_qr.attr 'src', '/qr/'+item.color+'/'+item.color_2+alpha+'/'+(item.style or 'round')+'/'+settings.card_number+'?'+settings.url
           #
           $my_qr.show().css
-            height: item.h/100 * settings.height
-            width: item.w/100 * settings.width
+            height: item.h/100 * settings.height + settings.units
+            width: item.w/100 * settings.width + settings.units
             position: 'absolute'
-            top: item.y/100 * settings.height
-            left: item.x/100 * settings.width
+            top: item.y/100 * settings.height + settings.units
+            left: item.x/100 * settings.width + settings.units
           #
           #
         #
@@ -310,8 +314,8 @@ $.create_card_from_theme = (options) ->
     # Set the card background
     $my_card.css
       background: '#FFF'
-      height: settings.height
-      width: settings.width
+      height: settings.height + settings.units
+      width: settings.width + settings.units
     # ----------------------------------------------
     # END Images
     # ----------------------------------------------
@@ -3296,6 +3300,77 @@ $ ->
 
 
 
+  #
+  # For the print page only
+  current_url = document.location.href
+  if current_url.match /print/
+    #
+    url_parts = current_url.match /print\/(0|1)\/([^\/]*)\/([^\/]*)/
+    #
+    side = url_parts[1]
+    order_id = url_parts[2]
+    theme_id = url_parts[3]
+    #
+    $print = $ '.print'
+    #
+    $.ajax
+      url: '/get-theme'
+      data: JSON.stringify
+        theme_id: theme_id
+      success: (results) ->
+        #
+        theme = results.theme
+        #
+        #
+        $.ajax
+          url: '/get-url-group'
+          data: JSON.stringify
+            order_id: order_id
+          success: (result) ->
+            #
+            url_group = result.url_group
+            #
+            #
+            #console.log 'AFTER GET:', active_theme.user_id
+            #
+            #
+            #
+            #
+            for url in url_group.urls
+              #
+              $this_card = $ '<div class="card_container" />'
+              #
+              ###
+              $bg = $ '<div class="bg" />'
+              $bg.addClass 'collapsed2' if side is 'front'
+              $bg.hide() if side is 'front'
+              $this_card.append $bg
+              ###
+              #
+              $fg = $.create_card_from_theme
+                height: 2
+                width: 3.5
+                units: 'in'
+                theme: theme
+                side: side*1
+                card_number: url.card_number
+                url: 'cards.ly/'+url.url_string
+              
+              #
+              $this_card.append $fg
+              #
+              ###
+              $.create_card_from_theme
+                height: 300
+                width: 525
+                theme: theme
+                card: $bg
+                side: 1
+              ###
+              #
+              $print.append $this_card
+            #
+            #
 
 
 
@@ -3303,9 +3378,9 @@ $ ->
 
 
 
-
-
-
+  #
+  #
+  # For the thank you page only
   $try_conversion = $ '.try_conversion'
   if $try_conversion.length
     $.ajax
@@ -3345,8 +3420,8 @@ $ ->
 
 
 
-
-
+  #
+  # For the cards page only
   $url_controls = $ '.url_controls'
   if $url_controls.length
     #

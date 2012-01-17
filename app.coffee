@@ -1495,6 +1495,17 @@ app.post '/get-url-groups', secured_page, (req, res) ->
       url_groups: url_groups
     #
 #
+#
+app.post '/get-url-group', secured_page, (req, res) ->
+  #
+  mongo_url_group.findOne
+    order_id: req.body.order_id
+  , (err, url_group) ->
+    #
+    res.send
+      url_group: url_group
+    #
+#
 # AJAX request for saving theme
 app.post '/save-theme', (req, res) ->
   #
@@ -3204,19 +3215,14 @@ app.get '/about', (req, res) ->
 #
 
 #
-app.get '/print/:side/:order_id', secured_page_admin, (req, res, next) ->
+app.get '/print/:side/:order_id/:theme_id', secured_page_admin, (req, res, next) ->
   #
-  mongo_url_group.findOne
-    order_id: req.params.order_id
-  , (err, url_group) ->
-    #
-    req.url_group = url_group
-    #
-    res.render 'print'
-      req: req
-      layout: 'no_layout'
-    #
-    #
+  #
+  res.render 'print'
+    req: req
+    layout: 'no_layout'
+  #
+  #
 #
 # Cards Page
 app.get '/cards/:page_type?', secured_page, get_url_groups, (req, res) ->
@@ -3475,7 +3481,7 @@ app.get '/fundourprinter', (req, res, next) ->
   , 301
 #
 #
-app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
+app.get '/qr/:color?/:color_2?/:style?/:card_number?', (req, res, next) ->
 
   params =
     url: 'http://cards.ly'
@@ -3483,6 +3489,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
     round: 5
     style: 'round'
     hex_2: 'transparent'
+    card_number: 1
 
   
   
@@ -3507,6 +3514,8 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
   if req.params.style
     params.style = req.params.style
   #
+  if req.params.card_number
+    params.card_number = req.params.card_number
   #
   #
   canvas = qr_code.draw_qr
@@ -3515,6 +3524,7 @@ app.get '/qr/:color?/:color_2?/:style?', (req, res, next) ->
     url: params.url
     hex: params.hex
     hex_2: params.hex_2
+    card_number: params.card_number
 
 
   canvas.toBuffer (err, buff) ->

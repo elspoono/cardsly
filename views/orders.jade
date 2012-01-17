@@ -30,9 +30,9 @@
                   br
                   a.shipped(href='#') Shipped
                 - else
-                  a(href='/print/front/'+req.orders[i]._id, target='_blank') Front
+                  a(href='/print/0/'+req.orders[i]._id+'/'+req.orders[i].theme_id, target='_blank') Front
                   br
-                  a(href='/print/back/'+req.orders[i]._id, target='_blank') Back
+                  a(href='/print/1/'+req.orders[i]._id+'/'+req.orders[i].theme_id, target='_blank') Back
                   br
                   br
                   a.shipped(href='#') Shipped
