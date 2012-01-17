@@ -3360,11 +3360,34 @@ $ ->
             #
             #
             #
+            #
+            $right_buffer = $background_only.clone().css
+              width: '.125in'
+              overflow: 'hidden'
+            $right_buffer.find('.img').each ->
+              $img = $ this
+              c_l = parseInt $img.css 'left'
+              $img.css
+                left: (c_l - 3.375) + 'in'
+            #
+            #
+            $left_buffer = $background_only.clone().css
+              width: '.125in'
+              overflow: 'hidden'
+            #
+            #
+            #
+            #
             for url,i in url_group.urls
               #
               if i%10 is 0
-                $print.append $top_buffer.clone()
-                $print.append $top_buffer.clone()
+                $print.append $top_buffer.clone().css
+                  'margin-left': '.125in'
+                $print.append $top_buffer.clone().css
+                  'margin-right': '.125in'
+              #
+              if i%2 is 0
+                $print.append $left_buffer.clone()
               #
               $this_card = $ '<div class="card_container" />'
               #
@@ -3398,9 +3421,15 @@ $ ->
               #
               $print.append $this_card
               #
+              #
+              if i%2 is 1
+                $print.append $right_buffer.clone()
+              #
               if i%10 is 9
-                $print.append $bottom_buffer.clone()
-                $print.append $bottom_buffer.clone()
+                $print.append $bottom_buffer.clone().css
+                  'margin-left': '.125in'
+                $print.append $bottom_buffer.clone().css
+                  'margin-right': '.125in'
             #
             #
 
