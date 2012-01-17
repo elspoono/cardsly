@@ -1457,7 +1457,7 @@ app.post '/search-address', (req, res) ->
     #
     res.send req.session.order
     #
-    console.log 'ORDER: ', req.session.order
+    console.log 'FULL ADDRESS: ', full_address
     #
 #
 #
