@@ -2775,10 +2775,10 @@ $ ->
           $.ajax
             url: '/validate-purchase'
             success: (result) ->
-              if result.error
+              if result.err
                 loading_close()
                 $.load_alert
-                  content: result.error
+                  content: result.err
               else if result.success
                 #
                 # Set up a default
