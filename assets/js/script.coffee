@@ -262,7 +262,7 @@ $.create_card_from_theme = (options) ->
         if item.type is 'qr'
           #
           if not $my_qr.length
-            $my_qr = $ '<img class="qr" /></div>'
+            $my_qr = $ '<img class="qr" />'
             $my_card.append $my_qr
           #
           alpha = Math.round(item.color_2_opacity * 255).toString 16

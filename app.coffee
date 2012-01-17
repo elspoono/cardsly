@@ -2159,11 +2159,11 @@ req_session_order_is_fulfilled = (req) ->
 #
 app.post '/validate-purchase', (req, res, next) ->
   #
-  console.log 'ONE:', res
+  console.log 'ONE:', typeof(res)
   #
   if req_session_order_is_fulfilled req
     #
-    console.log 'TWO:', res
+    console.log 'TWO:', typeof(res)
     #
     res.send
       success: true
