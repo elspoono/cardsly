@@ -1455,6 +1455,8 @@ app.post '/search-address', (req, res) ->
     req.session.order.latitude = latitude
     req.session.order.longitude = longitude
     #
+    console.log 'TEH FUCK?', req.session.order.full_address
+    #
     res.send req.session.order
     #
     console.log 'FULL ADDRESS: ', full_address
