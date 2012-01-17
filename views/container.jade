@@ -19,8 +19,15 @@
                 =req.user.email
             img(src='/images/gear.png',alt: 'QR code business cards settings')
         .dropdown
+          if req.user.role == 'admin'
+            .item
+              a(href='/admin') Theme Editor
+            .item
+              a(href='/orders') New Orders
+            .item
+              a(href='/shipped') Shipped Orders
           .item
-            a(href='/cards') Cards
+            a(href='/cards') My Cards
           .item
             a(href='/settings') Settings
           .item
