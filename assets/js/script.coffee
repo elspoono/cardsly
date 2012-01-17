@@ -3307,7 +3307,7 @@ $ ->
     #
     url_parts = current_url.match /print\/(0|1)\/([^\/]*)\/([^\/]*)/
     #
-    side = url_parts[1]
+    side = url_parts[1]*1
     order_id = url_parts[2]
     theme_id = url_parts[3]
     #
@@ -3334,9 +3334,37 @@ $ ->
             #console.log 'AFTER GET:', active_theme.user_id
             #
             #
+            $background_only = $.create_card_from_theme
+              height: 2
+              width: 3.5
+              units: 'in'
+              side: side
+              theme: theme
+            #
+            $background_only.find('.line,.qr').remove()
+            #
+            $top_buffer = $background_only.clone().css
+              height: '.125in'
+              overflow: 'hidden'
+            $top_buffer.find('.img').each ->
+              $img = $ this
+              c_t = parseInt $img.css 'top'
+              $img.css
+                top: (c_t - 1.875) + 'in'
             #
             #
-            for url in url_group.urls
+            $bottom_buffer = $background_only.clone().css
+              height: '.125in'
+              overflow: 'hidden'
+            #
+            #
+            #
+            #
+            for url,i in url_group.urls
+              #
+              if i%10 is 0
+                $print.append $top_buffer.clone()
+                $print.append $top_buffer.clone()
               #
               $this_card = $ '<div class="card_container" />'
               #
@@ -3352,7 +3380,7 @@ $ ->
                 width: 3.5
                 units: 'in'
                 theme: theme
-                side: side*1
+                side: side
                 card_number: url.card_number
                 url: 'cards.ly/'+url.url_string
               
@@ -3369,6 +3397,10 @@ $ ->
               ###
               #
               $print.append $this_card
+              #
+              if i%10 is 9
+                $print.append $bottom_buffer.clone()
+                $print.append $bottom_buffer.clone()
             #
             #
 
