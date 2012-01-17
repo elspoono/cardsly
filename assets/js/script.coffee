@@ -3292,6 +3292,20 @@ $ ->
   #################################################################
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   $try_conversion = $ '.try_conversion'
   if $try_conversion.length
     $.ajax
@@ -3320,6 +3334,48 @@ $ ->
             order.quantity
           ]
           _gaq.push ['_trackTrans']
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  $url_controls = $ '.url_controls'
+  if $url_controls.length
+    $.ajax
+      url: '/get-url-groups'
+      success: (result) ->
+        if result.url_groups
+          for url_group in result.url_groups
+            #
+            console.log url_group
+            #
+            $url_group = $ '<div class="group" />'
+            #
+            #
+            $url_group.append '<img src="/render/158/90/'+url_group.order_id+'" />'
+            #
+            $label = $ '<div class="label" />'
+            urls = url_group.urls
+            #
+            $label.html '#' + urls[0].card_number + ' - ' + urls[urls.length-1].card_number
+            #
+            $url_group.append $label
+            #
+            #
+            $url_controls.append $url_group
+
+
+
+
+
 
   #################################################################
   #

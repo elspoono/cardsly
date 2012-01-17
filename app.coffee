@@ -1391,6 +1391,109 @@ app.post '/save-order', (req, res) ->
 #
 #
 #
+get_url_groups = (req, res, next) ->
+  if req.user
+    mongo_url_group.find
+      user_id: req.user._id
+    , (err, url_groups) ->
+      if check_no_err err
+        #
+        #
+        for url_group in url_groups
+          #
+          #
+          #
+          #
+          #
+          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
+          #
+          #
+          # Sort by last updated within the url groups
+          url_group.urls = _(url_group.urls).sortBy (url) ->
+            url.last_updated
+          url_group.urls.reverse()
+          #
+          #
+          #
+          #
+          # -
+          # ------
+          # ---------------
+          # --------------------------------------------------
+          # Try to group the ranges of numbers, BLEGH! :O
+          #
+          #
+          url_group.ranged_urls = []
+          #
+          # Get the groups
+          # Filter out the visited
+          not_visited = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
+          #
+          #
+
+          at_defaults = _(url_group.urls).filter (url) ->
+            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
+          #
+          url_group.at_defaults = at_defaults.length
+          #
+          #
+          grouped = _(not_visited).groupBy (url) ->
+            url.redirect_to
+          for redirect_to,group of grouped
+            #
+            #
+            group = _(group).sortBy (url) ->
+              url.card_number
+            #
+            #
+            final = group[0]
+            #
+            prev_card_number = final.card_number-1
+            length = 0
+            for url in group
+              if url.card_number*1 isnt prev_card_number*1+1
+                if length > 1
+                  final.card_number = final.card_number + '-' + prev_card_number
+                final.card_number = final.card_number + ', ' + url.card_number
+                length = 0
+              length++
+              prev_card_number = url.card_number
+              #
+            #
+            if length > 1
+              final.card_number = final.card_number + '-' + prev_card_number
+            #
+            #
+            url_group.ranged_urls.push final
+          #
+          #
+          #
+          # --------------------------------------------------
+          # ---------------
+          # ------
+          # -
+          #
+          #
+        #
+        #
+        #
+        req.url_groups = url_groups
+        #
+        next()
+  else
+    next()
+#
+#
+app.post '/get-url-groups', secured_page, (req, res) ->
+  #
+  mongo_url_group.find
+    user_id: req.user._id
+  , (err, url_groups) ->
+    #
+    res.send
+      url_groups: url_groups
+    #
 #
 # AJAX request for saving theme
 app.post '/save-theme', (req, res) ->
@@ -3080,101 +3183,6 @@ get_order_info = (req, res, next) ->
 #
 #
 #
-get_url_groups = (req, res, next) ->
-  if req.user
-    mongo_url_group.find
-      user_id: req.user._id
-    , (err, url_groups) ->
-      if check_no_err err
-        #
-        #
-        for url_group in url_groups
-          #
-          #
-          #
-          #
-          #
-          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
-          #
-          #
-          # Sort by last updated within the url groups
-          url_group.urls = _(url_group.urls).sortBy (url) ->
-            url.last_updated
-          url_group.urls.reverse()
-          #
-          #
-          #
-          #
-          # -
-          # ------
-          # ---------------
-          # --------------------------------------------------
-          # Try to group the ranges of numbers, BLEGH! :O
-          #
-          #
-          url_group.ranged_urls = []
-          #
-          # Get the groups
-          # Filter out the visited
-          not_visited = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
-          #
-          #
-
-          at_defaults = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
-          #
-          url_group.at_defaults = at_defaults.length
-          #
-          #
-          grouped = _(not_visited).groupBy (url) ->
-            url.redirect_to
-          for redirect_to,group of grouped
-            #
-            #
-            group = _(group).sortBy (url) ->
-              url.card_number
-            #
-            #
-            final = group[0]
-            #
-            prev_card_number = final.card_number-1
-            length = 0
-            for url in group
-              if url.card_number*1 isnt prev_card_number*1+1
-                if length > 1
-                  final.card_number = final.card_number + '-' + prev_card_number
-                final.card_number = final.card_number + ', ' + url.card_number
-                length = 0
-              length++
-              prev_card_number = url.card_number
-              #
-            #
-            if length > 1
-              final.card_number = final.card_number + '-' + prev_card_number
-            #
-            #
-            url_group.ranged_urls.push final
-          #
-          #
-          #
-          # --------------------------------------------------
-          # ---------------
-          # ------
-          # -
-          #
-          #
-        #
-        #
-        #
-        req.url_groups = url_groups
-        #
-        next()
-  else
-    next()
-#
-#
-#
 #
 # Make me an admin
 app.get '/make-me-admin', secured_page, (req, res) ->
@@ -3195,100 +3203,6 @@ app.get '/about', (req, res) ->
 #
 #
 
-#
-#
-get_url_groups = (req, res, next) ->
-  if req.user
-    mongo_url_group.find
-      user_id: req.user._id
-    , (err, url_groups) ->
-      if check_no_err err
-        #
-        #
-        for url_group in url_groups
-          #
-          #
-          #
-          #
-          #
-          url_group.range = url_group.urls[0].card_number+'-'+url_group.urls[url_group.urls.length-1].card_number
-          #
-          #
-          # Sort by last updated within the url groups
-          url_group.urls = _(url_group.urls).sortBy (url) ->
-            url.last_updated
-          url_group.urls.reverse()
-          #
-          #
-          #
-          #
-          # -
-          # ------
-          # ---------------
-          # --------------------------------------------------
-          # Try to group the ranges of numbers, BLEGH! :O
-          #
-          #
-          url_group.ranged_urls = []
-          #
-          # Get the groups
-          # Filter out the visited
-          not_visited = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to isnt url_group.redirect_to
-          #
-          #
-
-          at_defaults = _(url_group.urls).filter (url) ->
-            url.visits*1 is 0 and url.redirect_to is url_group.redirect_to
-          #
-          url_group.at_defaults = at_defaults.length
-          #
-          #
-          grouped = _(not_visited).groupBy (url) ->
-            url.redirect_to
-          for redirect_to,group of grouped
-            #
-            #
-            group = _(group).sortBy (url) ->
-              url.card_number
-            #
-            #
-            final = group[0]
-            #
-            prev_card_number = final.card_number-1
-            length = 0
-            for url in group
-              if url.card_number*1 isnt prev_card_number*1+1
-                if length > 1
-                  final.card_number = final.card_number + '-' + prev_card_number
-                final.card_number = final.card_number + ', ' + url.card_number
-                length = 0
-              length++
-              prev_card_number = url.card_number
-              #
-            #
-            if length > 1
-              final.card_number = final.card_number + '-' + prev_card_number
-            #
-            #
-            url_group.ranged_urls.push final
-          #
-          #
-          #
-          # --------------------------------------------------
-          # ---------------
-          # ------
-          # -
-          #
-          #
-        #
-        #
-        #
-        req.url_groups = url_groups
-        #
-        next()
-  else
-    next()
 #
 app.get '/print/:side/:order_id', secured_page_admin, (req, res, next) ->
   #
@@ -3397,7 +3311,7 @@ app.get '/render/:w/:h/:order_id', (req, res, next) ->
   height = req.params.h*1
   width = req.params.w*1
   widthheight = 'raw' if width > 525
-  widthheight = '158x90' if width < 158
+  widthheight = '158x90' if width <= 158
   widthheight = '525x300' if width > 158 and width < 525
   #
   #
