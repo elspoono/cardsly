@@ -1302,7 +1302,7 @@ $ ->
             if result.theme
               #
               #
-              active_theme = result.theme if active_theme._id is result.theme._id
+              active_theme = result.theme unless active_theme._id
               #
               #
               theme = result.theme
