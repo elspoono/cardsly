@@ -1455,11 +1455,11 @@ app.post '/search-address', (req, res) ->
     req.session.order.latitude = latitude
     req.session.order.longitude = longitude
     #
-    console.log 'TEH FUCK?', req.session.order.full_address
+    #console.log 'TEH FUCK?', req.session.order.full_address
     #
     res.send req.session.order
     #
-    console.log 'FULL ADDRESS: ', full_address
+    #console.log 'FULL ADDRESS: ', full_address
     #
 #
 #
@@ -2032,26 +2032,26 @@ render_urls_to_doc = (urls, theme_template, line_copy, s3_id, next) ->
 process_pdf = (order_id) ->
   #
   #
-  console.log 'ORDERID:', order_id
+  #console.log 'ORDERID:', order_id
   #
   # Find the Order that's passed in
   mongo_order.findById order_id, (err, order) ->
     #
     #
-    console.log 'ORDER FOUND:', order._id
+    #console.log 'ORDER FOUND:', order._id
     #
     #
     # Find the theme for that order
     mongo_theme.findById order.theme_id, (err, theme) ->
       #
-      console.log 'THEME FOUND:', theme._id
+      #console.log 'THEME FOUND:', theme._id
       #
       # Find the urls we're going to use
       mongo_url_group.findOne
         order_id: order._id
       , (err, url_group) ->
         #
-        console.log 'GROUP FOUND:', url_group._id
+        #console.log 'GROUP FOUND:', url_group._id
         #
         if err
           log_err err
