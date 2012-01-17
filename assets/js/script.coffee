@@ -3349,6 +3349,9 @@ $ ->
 
   $url_controls = $ '.url_controls'
   if $url_controls.length
+    #
+    $groups = $url_controls.find '.groups'
+    #
     $.ajax
       url: '/get-url-groups'
       success: (result) ->
@@ -3370,7 +3373,7 @@ $ ->
             $url_group.append $label
             #
             #
-            $url_controls.append $url_group
+            $groups.append $url_group
 
 
 

@@ -439,6 +439,20 @@ input.typing
     clear both
     padding-bottom 168px
 
+.row.thin
+  .row_bg,.row_content
+    max-width 800px
+
+.url_controls
+  .groups
+    font-family normal_text
+    overflow hidden
+    .group
+      cursor pointer
+      float left
+      margin-right 28px
+      .label
+        text-align center
 
 
 .clear
@@ -1083,16 +1097,6 @@ h1.two
 
 
 
-.url_controls
-  margin 56px 0
-  font-family normal_text
-  overflow hidden
-  .group
-    cursor pointer
-    float left
-    margin-right 28px
-    .label
-      text-align center
 // Add Bar
 .add_bar
   overflow hidden
@@ -1125,7 +1129,7 @@ h1.two
     margin 30px 0
     padding 0 35px
     border_radius(45px)
-    color $c_light
+    color color_white
     overflow hidden
     .pic, .redirect_to
       img
