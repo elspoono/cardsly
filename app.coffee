@@ -2138,20 +2138,24 @@ app.post '/validate-coupon', (req, res, next) ->
       error: 'Im sorry this page isnt active yet'
     ###
 #
-req_session_order_is_fulfilled = (req,res) ->
+req_session_order_is_fulfilled = (req, res) ->
   #
+  err = null
   if not req.session.order
-    res.send
-      error: 'Please design your card'
+    err = 'Please design your card'
   else if not req.session.order.email
-    res.send
-      error: 'Please enter an e-mail address'
+    err = 'Please enter an e-mail address'
   else if not req.session.order.full_address
-    res.send
-      error: 'Please enter a shipping address'
+    err = 'Please enter a shipping address'
   else if not req.session.order.url
+    err = 'Please enter a url'
+  #
+  #
+  #
+  if err
     res.send
-      error: 'Please enter a url'
+      err: err
+    return false
   else
     #
     return true
@@ -2160,7 +2164,7 @@ req_session_order_is_fulfilled = (req,res) ->
 app.post '/validate-purchase', (req, res, next) ->
   #
   #
-  if req_session_order_is_fulfilled req,res
+  if req_session_order_is_fulfilled req, res
     #
     #
     res.send
@@ -2240,7 +2244,7 @@ generate_password_token = (for_user) ->
 app.post '/confirm-purchase', (req, res, next) ->
   #
   #
-  if req_session_order_is_fulfilled req
+  if req_session_order_is_fulfilled req, res
     #
     # If we're logged in
     if req.user
