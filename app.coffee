@@ -2749,6 +2749,9 @@ if app.settings.env is 'production'
 #
 #
 app.get '/settings', secured_page,  (req, res, next) ->
+  #
+  req.settings_page = true
+  #
   res.render 'settings',
     req: req
 #

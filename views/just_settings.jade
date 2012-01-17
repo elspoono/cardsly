@@ -1,18 +1,21 @@
 .row.alert_row
-  .help_overlay.active
-    .bg
-    .center_column
-      .button_hide Hide Help
-      .button_show Show Help
-      .dialog.right.two
-        .text Email Address
-  .top
-    .center_column
-      h1.two 
-        .one Get Alerts
-        .two Learn who scanned your cards
-      .images
-        img.text(src='/images/icons/alert_333333.png')
+  if req.settings_page
+    .top
+  else
+    .help_overlay.active
+      .bg
+      .center_column
+        .button_hide Hide Help
+        .button_show Show Help
+        .dialog.right.two
+          .text Email Address
+    .top
+      .center_column
+        h1.two 
+          .one Get Alerts
+          .two Learn who scanned your cards
+        .images
+          img.text(src='/images/icons/alert_333333.png')
   .mid
     .center_column
       .set_alerts
@@ -22,9 +25,12 @@
             h2 Contact Info
           .clear
           .field
-            p Please register your e-mail address here.
-            p Phone number optional.
-            p Turn automatic alerts on or off at anytime.
+            if req.settings_page
+              p Change settings here.
+            else
+              p Please register your e-mail address here.
+              p Phone number optional.
+              p Turn automatic alerts on or off at anytime.
           .field
             .input
               label E-mail
@@ -59,8 +65,11 @@
             h2 Set Links
           .clear
           .field
-            p Use a social network to login.
-            p Type the url you want your cards to go to.
+            if req.settings_page
+              p Change settings here.
+            else
+              p Use a social network to login.
+              p Type the url you want your cards to go to.
           .field
             .link_editor
               .input

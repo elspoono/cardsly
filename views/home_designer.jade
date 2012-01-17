@@ -9,8 +9,12 @@
   .top
     .center_column
       h1.two
-        .one Design Cards
-        .two Customize colors and fonts
+        if req.settings_page
+          .one New Design
+          .two Order more cards
+        else
+          .one Design Cards
+          .two Customize colors and fonts
       .images
         img(src='/images/icons/paint_brush_333333.png')
   form(action='/up',target='hidden_frame',enctype='multipart/form-data',method='POST').upload_form
