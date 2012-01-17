@@ -2138,7 +2138,7 @@ app.post '/validate-coupon', (req, res, next) ->
       error: 'Im sorry this page isnt active yet'
     ###
 #
-req_session_order_is_fulfilled = (req) ->
+req_session_order_is_fulfilled = (req,res) ->
   #
   if not req.session.order
     res.send
@@ -2159,11 +2159,9 @@ req_session_order_is_fulfilled = (req) ->
 #
 app.post '/validate-purchase', (req, res, next) ->
   #
-  console.log 'ONE:', typeof(res)
   #
-  if req_session_order_is_fulfilled req
+  if req_session_order_is_fulfilled req,res
     #
-    console.log 'TWO:', typeof(res)
     #
     res.send
       success: true
