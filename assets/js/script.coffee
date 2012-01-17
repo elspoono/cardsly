@@ -808,12 +808,12 @@ $ ->
     # Undo 
     if ctrl_pressed and not shift_pressed and k is 90
       e.preventDefault()
-      console.log 'undo'
+      #console.log 'undo'
     #
     # Redo
     if ctrl_pressed and shift_pressed and k is 90
       e.preventDefault()
-      console.log 'redo'
+      #console.log 'redo'
     #
     #
     #
@@ -906,10 +906,7 @@ $ ->
       #
       #
     #
-    if $dropdown.hasClass 'active'
-      console.log e
-    else
-      #
+    unless $dropdown.hasClass 'active'
       #
       expand_menu e
       #
@@ -1182,7 +1179,7 @@ $ ->
       if $front_back.filter('.active').html().toLowerCase() is 'back'
         side = 1
       #
-      console.log $visible_items.length, side
+      #console.log $visible_items.length, side
       #
       #
       active_theme.items = _(active_theme.items).filter (item) -> item.side isnt side
@@ -1250,7 +1247,7 @@ $ ->
       .get()
       $.line_copy = order.values
       #
-      console.log 'BEFORE SAVE:', active_theme.user_id
+      #console.log 'BEFORE SAVE:', active_theme.user_id
       #
       if active_theme.user_id or document.location.href.match /admin/i
         #
@@ -2364,7 +2361,7 @@ $ ->
                 #
                 active_theme = theme
                 #
-                console.log 'AFTER GET:', active_theme.user_id
+                #console.log 'AFTER GET:', active_theme.user_id
                 #
                 #
                 side = $front_back.filter('.active').html().toLowerCase()
@@ -2756,7 +2753,7 @@ $ ->
       #
       if has_an_existing_card
         #
-        console.log $errored
+        #console.log $errored
         #
         $errored = $errored.not '.credit_card,.cvc'
       #
@@ -2795,13 +2792,13 @@ $ ->
                     data: JSON.stringify
                       token: token
                     success: (result) ->
-                      console.log result
+                      #console.log result
                       if result.err
                         loading_close()
                         $.load_alert
                           content: 'We tried that, and the credit card processor told us:<p><blockquote>' + result.err + '</blockquote></p>'
                       else
-                        console.log result
+                        #console.log result
                         if result.charge.paid
                           document.location.href = '/cards/thank-you'
                         else
@@ -2825,7 +2822,7 @@ $ ->
                       exp_month: $('.card_expiry_month').val()
                       exp_year: $('.card_expiry_year').val()
                   , order.amount, (status, response) ->
-                    console.log status, response
+                    #console.log status, response
                     if status is 200
                       token = response.id
                       load_final()
@@ -3300,7 +3297,7 @@ $ ->
     $.ajax
       url: '/get-conversion'
       success: (result) ->
-        console.log result
+        #console.log result
         if result.order
           #
           order = result.order

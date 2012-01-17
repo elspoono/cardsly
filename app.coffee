@@ -2159,24 +2159,17 @@ req_session_order_is_fulfilled = (req) ->
 #
 app.post '/validate-purchase', (req, res, next) ->
   #
+  console.log 'ONE:', res
   #
   if req_session_order_is_fulfilled req
     #
-    ###
-    TODO
-    
-    - SAVE THEIR INFO HERE
-
-    ###
-    #
-    #
+    console.log 'TWO:', res
     #
     res.send
       success: true
-    ###
-    res.send
-      error: 'Im sorry this page isnt active yet'
-    ###
+    #
+    #
+    #
 #
 app.post '/set-password', (req, res, next) ->
   if req.user
