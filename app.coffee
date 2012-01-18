@@ -2884,6 +2884,10 @@ app.get '/customers', secured_page_admin,  (req, res, next) ->
     active: true
     admin:
       $ne: 'admin'
+  ,[],
+    limit: 100
+    sort:
+      date_added: -1
   , (err, customers) ->
     if check_no_err err, res
       req.customers = customers
@@ -3264,13 +3268,6 @@ app.get '/old-browser', (req, res) ->
 app.get '/error', (req, res) -> 
   res.render 'error'
     req: req
-    layout: 'layout_min'
-
-# Cute Animal PAges
-app.get '/cute-animal', (req, res) -> 
-  res.render 'cute_animal'
-    req: req
-    layout: 'layout_min'
 #
 #
 OAuth = require('oauth').OAuth
