@@ -1,0 +1,27 @@
+.hero
+  .center_column
+    h1 Customers
+.row
+  .top
+  .mid
+    .center_column
+      .row_bg
+      .row_content
+        table.customers
+          -for user in req.customers
+            tr
+              td=user.name
+              td=user.email
+              td
+                a(href=user.twitter_url)=user.twitter_url
+                br
+                a(href=user.facebook_url)=user.facebook_url
+                br
+                a(href=user.linkedin_url)=user.linkedin_url
+                br
+                a(href=user.profile_urls)=user.profile_urls
+                br
+                a(href=user.profile_image_url)=user.profile_image_url
+              td.date_added=user.date_added.ago()
+              td.date_added=user.date_added.format('mm/dd/yyyy hh:mm tt')
+  .bottom
