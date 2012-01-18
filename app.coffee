@@ -3027,6 +3027,10 @@ render_image = (o) ->
                   if item.s3_id and item.img
                     #
                     ctx.drawImage item.img, item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
+                  else if item.color
+                    #
+                    ctx.fillStyle = hex_to_rgba item.color
+                    ctx.fillRect item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
           #
           for item, i in theme.items
             do (item) ->

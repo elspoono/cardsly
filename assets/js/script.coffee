@@ -201,6 +201,8 @@ $.create_card_from_theme = (options) ->
         whiteSpace: 'nowrap'
         color: '#'+pos.color
       #
+      #console.log pos.color#
+      #
       if $li.is ':visible'
         #
         t_a = pos.text_align
@@ -249,13 +251,21 @@ $.create_card_from_theme = (options) ->
           if $imgs.eq(img_i).length
             $img = $imgs.eq(img_i)
           else
-            $img = $ '<img class="img" />'
+            #
+            $img = $ '<div class="img"><img /><div class="color" /></div>'
+            #
             $img.appendTo $my_card
+            #
           if item.s3_id
-            $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
+            #
+            $img.find('.color').hide()
+            $img.find('img').show().attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
+            #
           else if item.color
-            $img.removeAttr 'src'
-            $img.css 'background-color', '#'+item.color
+            #
+            $img.find('img').hide()
+            $img.find('.color').show().css 'background-color', '#'+item.color
+            #
           $img.show().css
             position: 'absolute'
             top: item.y/100 * settings.height + settings.units
@@ -300,6 +310,7 @@ $.create_card_from_theme = (options) ->
           do ($li, n_l, c_w, item, line_i) ->
             #
             if not $li.length
+              #
               $li = $ '<div class="line" />'
               $li.appendTo $my_card
               #
@@ -1059,7 +1070,8 @@ $ ->
             loading_close()
             if response and response.s3_id
               $active_image = $editor.find '.active.img'
-              $active_image.attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
+              $active_image.find('.color').hide()
+              $active_image.find('img').show().attr 'src', '//d3eo3eito2cquu.cloudfront.net/525x300/'+response.s3_id
               $active_image.width response.width / 2
               $active_image.height response.height / 2
               new_active()
@@ -1106,8 +1118,8 @@ $ ->
     #
     get_hex_color = (in_color) ->
       if in_color.match /rgb/
-        digits = in_color.match /(\d+), (\d+), (\d+)/
-        in_color = rgb_to_hex digits[2], digits[3], digits[4]
+        digits = in_color.match /\((\d+), (\d+), (\d+)\)/
+        in_color = rgb_to_hex digits[1], digits[2], digits[3]
       #
       #
       in_color.replace /#/, ''
@@ -1236,9 +1248,23 @@ $ ->
         #
         #
         if $visible_item.hasClass 'img'
+          #
           item.type = 'image'
-          src = $visible_item.attr 'src'
-          item.s3_id = src.replace /.*\//g, ''
+          #
+          $color = $visible_item.find '.color:visible'
+          $img = $visible_item.find 'img:visible'
+          #
+          if $img.length
+            src = $img.attr 'src'
+            item.s3_id = src.replace /.*\//g, ''
+            item.color = null
+          else if $color.length
+            item.s3_id = null
+            item.color = get_hex_color $color.css 'background-color'
+          #
+          #
+          #
+
         #
         if $visible_item.hasClass 'line'
           item.type = 'line'
@@ -1825,7 +1851,7 @@ $ ->
           #
           if $active_image.length
             #
-            color = get_hex_color $active_image.css 'background-color'
+            color = get_hex_color $active_image.find('.color').css 'background-color'
             #
             #
             $color_picker.css
@@ -1914,9 +1940,8 @@ $ ->
                 $active_image.each ->
                   $a = $ this
                   #
-                  $a.removeAttr 'src'
-                  #
-                  $a.css
+                  $a.find('img').hide()
+                  $a.find('.color').show().css
                     'background-color': new_color
                   #
                   theme_modified()
