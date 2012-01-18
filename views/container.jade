@@ -15,7 +15,9 @@
         .trigger
           a(href='/settings')
             .content
-              if req.user.email
+              if req.user.name
+                =req.user.name
+              else if req.user.email
                 =req.user.email
             img(src='/images/gear.png',alt: 'QR code business cards settings')
         .dropdown
