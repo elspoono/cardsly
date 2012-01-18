@@ -3344,118 +3344,127 @@ $ ->
       success: (results) ->
         #
         theme = results.theme
-        #
-        #
+            #
         $.ajax
-          url: '/get-url-group'
+          url: '/get-order'
           data: JSON.stringify
             order_id: order_id
-          success: (result) ->
+          success: (results) ->
             #
-            url_group = result.url_group
+            order = results.order
             #
+            $.line_copy = order.values
             #
-            #console.log 'AFTER GET:', active_theme.user_id
-            #
-            #
-            $background_only = $.create_card_from_theme
-              height: 2
-              width: 3.5
-              units: 'in'
-              side: side
-              theme: theme
-            #
-            $background_only.find('.line,.qr').remove()
-            #
-            $top_buffer = $background_only.clone().css
-              height: '.125in'
-              overflow: 'hidden'
-            $top_buffer.find('.img').each ->
-              $img = $ this
-              c_t = parseInt $img.css 'top'
-              $img.css
-                top: (c_t - 1.875) + 'in'
-            #
-            #
-            $bottom_buffer = $background_only.clone().css
-              height: '.125in'
-              overflow: 'hidden'
-            #
-            #
-            #
-            #
-            #
-            $right_buffer = $background_only.clone().css
-              width: '.125in'
-              overflow: 'hidden'
-            $right_buffer.find('.img').each ->
-              $img = $ this
-              c_l = parseInt $img.css 'left'
-              $img.css
-                left: (c_l - 3.375) + 'in'
-            #
-            #
-            $left_buffer = $background_only.clone().css
-              width: '.125in'
-              overflow: 'hidden'
-            #
-            #
-            #
-            #
-            for url,i in url_group.urls
-              #
-              if i%10 is 0
-                $print.append $top_buffer.clone().css
-                  'margin-left': '.125in'
-                $print.append $top_buffer.clone().css
-                  'margin-right': '.125in'
-              #
-              if i%2 is 0
-                $print.append $left_buffer.clone()
-              #
-              $this_card = $ '<div class="card_container" />'
-              #
-              ###
-              $bg = $ '<div class="bg" />'
-              $bg.addClass 'collapsed2' if side is 'front'
-              $bg.hide() if side is 'front'
-              $this_card.append $bg
-              ###
-              #
-              $fg = $.create_card_from_theme
-                height: 2
-                width: 3.5
-                units: 'in'
-                theme: theme
-                side: side
-                card_number: url.card_number
-                url: 'cards.ly/'+url.url_string
-              
-              #
-              $this_card.append $fg
-              #
-              ###
-              $.create_card_from_theme
-                height: 300
-                width: 525
-                theme: theme
-                card: $bg
-                side: 1
-              ###
-              #
-              $print.append $this_card
-              #
-              #
-              if i%2 is 1
-                $print.append $right_buffer.clone()
-              #
-              if i%10 is 9
-                $print.append $bottom_buffer.clone().css
-                  'margin-left': '.125in'
-                $print.append $bottom_buffer.clone().css
-                  'margin-right': '.125in'
-            #
-            #
+            $.ajax
+              url: '/get-url-group'
+              data: JSON.stringify
+                order_id: order_id
+              success: (result) ->
+                #
+                url_group = result.url_group
+                #
+                #
+                #console.log 'AFTER GET:', active_theme.user_id
+                #
+                #
+                $background_only = $.create_card_from_theme
+                  height: 2
+                  width: 3.5
+                  units: 'in'
+                  side: side
+                  theme: theme
+                #
+                $background_only.find('.line,.qr').remove()
+                #
+                $top_buffer = $background_only.clone().css
+                  height: '.125in'
+                  overflow: 'hidden'
+                $top_buffer.find('.img').each ->
+                  $img = $ this
+                  c_t = parseInt $img.css 'top'
+                  $img.css
+                    top: (c_t - 1.875) + 'in'
+                #
+                #
+                $bottom_buffer = $background_only.clone().css
+                  height: '.125in'
+                  overflow: 'hidden'
+                #
+                #
+                #
+                #
+                #
+                $right_buffer = $background_only.clone().css
+                  width: '.125in'
+                  overflow: 'hidden'
+                $right_buffer.find('.img').each ->
+                  $img = $ this
+                  c_l = parseInt $img.css 'left'
+                  $img.css
+                    left: (c_l - 3.375) + 'in'
+                #
+                #
+                $left_buffer = $background_only.clone().css
+                  width: '.125in'
+                  overflow: 'hidden'
+                #
+                #
+                #
+                #
+                for url,i in url_group.urls
+                  #
+                  if i%10 is 0
+                    $print.append $top_buffer.clone().css
+                      'margin-left': '.125in'
+                    $print.append $top_buffer.clone().css
+                      'margin-right': '.125in'
+                  #
+                  if i%2 is 0
+                    $print.append $left_buffer.clone()
+                  #
+                  $this_card = $ '<div class="card_container" />'
+                  #
+                  ###
+                  $bg = $ '<div class="bg" />'
+                  $bg.addClass 'collapsed2' if side is 'front'
+                  $bg.hide() if side is 'front'
+                  $this_card.append $bg
+                  ###
+                  #
+                  $fg = $.create_card_from_theme
+                    height: 2
+                    width: 3.5
+                    units: 'in'
+                    theme: theme
+                    side: side
+                    card_number: url.card_number
+                    url: 'cards.ly/'+url.url_string
+                  
+                  #
+                  $this_card.append $fg
+                  #
+                  ###
+                  $.create_card_from_theme
+                    height: 300
+                    width: 525
+                    theme: theme
+                    card: $bg
+                    side: 1
+                  ###
+                  #
+                  $print.append $this_card
+                  #
+                  #
+                  if i%2 is 1
+                    $print.append $right_buffer.clone()
+                  #
+                  if i%10 is 9
+                    $print.append $bottom_buffer.clone().css
+                      'margin-left': '.125in'
+                    $print.append $bottom_buffer.clone().css
+                      'margin-right': '.125in'
+                #
+                #
 
 
 
