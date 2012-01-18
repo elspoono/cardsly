@@ -1840,25 +1840,6 @@ app.post '/up', (req, res) ->
 # Get Session
 app.post '/get-order', (req, res, next) ->
   #
-  if req.user
-    req.session.order = {} unless req.session.order
-    #
-    req.session.order.email = req.user.email
-    req.session.order.alerts = req.user.alerts
-    req.session.order.phone = req.user.phone
-    #
-  #
-  res.send
-    order: req.session.order
-#
-#
-#
-#
-#
-#
-# Get Session
-app.post '/get-order', (req, res, next) ->
-  #
   if req.body.order_id
     mongo_order.findById req.body.order_id, (err, order) ->
       if check_no_err_ajax err, res
