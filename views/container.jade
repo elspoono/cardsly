@@ -21,6 +21,8 @@
         .dropdown
           if req.user.role == 'admin'
             .item
+              a(href='/customers') Customers
+            .item
               a(href='/admin') Theme Editor
             .item
               a(href='/orders') New Orders

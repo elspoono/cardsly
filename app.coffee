@@ -1740,7 +1740,7 @@ app.post  '/get-visits', (req, res) ->
           visits: sent_visits  
 #
 #
-app.post '/update-order-status', (req, res) ->
+app.post '/update-order-status', secured_page_admin, (req, res) ->
   mongo_order.findById req.body.order_id, (err, order) ->
     if check_no_err_ajax err, res
       order.status = req.body.status
@@ -2879,6 +2879,19 @@ app.get '/admin', secured_page_admin,  (req, res, next) ->
 #
 #
 #
+app.get '/customers', secured_page_admin,  (req, res, next) ->
+  mongo_user.find
+    active: true
+    admin:
+      $ne: 'admin'
+  , (err, customers) ->
+    if check_no_err err, res
+      req.customers = customers
+      res.render 'customers',
+        req: req
+#
+#
+#
 #
 app.get '/set-password/:password_token?', (req, res, next) ->
   if req.params.password_token
@@ -2928,7 +2941,7 @@ app.get '/add-urls-to-order/:volume/:order_id', (req, res, next) ->
   #
   #
   #
-  console.log 'ADD URLS HIT FOR ', req.params.order_id
+  #console.log 'ADD URLS HIT FOR ', req.params.order_id
   # Find the Order that's passed in
   mongo_order.findById req.params.order_id, (err, order) ->
     if check_no_err err
@@ -2946,7 +2959,7 @@ app.get '/re-process-pdf/:order_id', (req, res, next) ->
   # This is where we kick off the processing of the pdf
   process_pdf req.params.order_id
   #
-  console.log 'REPROCESS HIT FOR ', req.params.order_id
+  #console.log 'REPROCESS HIT FOR ', req.params.order_id
   # Find the Order that's passed in
   mongo_order.findById req.params.order_id, (err, order) ->
     if check_no_err err
@@ -3240,13 +3253,6 @@ app.get '/learn-more', (req, res) ->
 #
 #
 #
-
-# Redirect for Kickstarter campagin
-app.get '/fundourprinter', (req, res, next) ->
-  console.log req.url
-  res.send '',
-    Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
-  , 301
   
 # Splash Page
 app.get '/old-browser', (req, res) -> 
@@ -3475,7 +3481,7 @@ app.get '/alerts', (req, res) ->
 
 # Redirect for Kickstarter campagin
 app.get '/fundourprinter', (req, res, next) ->
-  console.log req.url
+  #console.log req.url
   res.send '',
     Location:'http://www.kickstarter.com/projects/cardsly/cardsly-qr-code-business-cards'
   , 301

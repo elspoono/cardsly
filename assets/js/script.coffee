@@ -3523,7 +3523,7 @@ $ ->
   #
   #
   #
-  $('.printed').mouseup ->
+  $('.printed').click ->
     $t = $ this
     $o = $t.closest '.order_row'
     order_id = $o.attr 'order_id'
@@ -3534,10 +3534,6 @@ $ ->
       data: JSON.stringify
         order_id: order_id
         status: 'Printed'
-      success: (result) ->
-        if result.success
-          $s.html 'Printed'
-    false
   $('.shipped').click ->
     $t = $ this
     $o = $t.closest '.order_row'
