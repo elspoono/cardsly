@@ -3164,7 +3164,6 @@ render_image = (o) ->
 # Orders Page
 app.get '/orders', secured_page_admin, (req, res, next) ->
   mongo_order.find
-    'charge.paid': true
     'status':
       '$ne': 'Shipped'
   , (err, orders) ->

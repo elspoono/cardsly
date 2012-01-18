@@ -251,7 +251,11 @@ $.create_card_from_theme = (options) ->
           else
             $img = $ '<img class="img" />'
             $img.appendTo $my_card
-          $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
+          if item.s3_id
+            $img.attr 'src', '//d3eo3eito2cquu.cloudfront.net/'+widthheight+'/'+item.s3_id
+          else if item.color
+            $img.removeAttr 'src'
+            $img.css 'background-color', '#'+item.color
           $img.show().css
             position: 'absolute'
             top: item.y/100 * settings.height + settings.units
@@ -1102,7 +1106,7 @@ $ ->
     #
     get_hex_color = (in_color) ->
       if in_color.match /rgb/
-        digits = in_color.match /(.*?)rgb\((\d+), (\d+), (\d+)\)/
+        digits = in_color.match /(\d+), (\d+), (\d+)/
         in_color = rgb_to_hex digits[2], digits[3], digits[4]
       #
       #
@@ -1796,8 +1800,6 @@ $ ->
           $areas.eq(2).make_active()
           #
           #
-          #
-          #
         else
           #
           $areas.eq(3).make_active()
@@ -1818,6 +1820,16 @@ $ ->
           if $active_lines.length
             $color_picker.css
               background: $active_lines.css 'color'
+          #
+          #
+          #
+          if $active_image.length
+            #
+            color = get_hex_color $active_image.css 'background-color'
+            #
+            #
+            $color_picker.css
+              background: '#' + color or 'FFF'
           #
           #
           if $active_qr.length
@@ -1896,6 +1908,18 @@ $ ->
                   $a = $ this
                   $a.css
                     'color': new_color
+                  #
+                  theme_modified()
+                #
+                $active_image.each ->
+                  $a = $ this
+                  #
+                  $a.removeAttr 'src'
+                  #
+                  $a.css
+                    'background-color': new_color
+                  #
+                  theme_modified()
                   
             #
             $(document.body).append $color_window
