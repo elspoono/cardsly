@@ -495,9 +495,15 @@ h1.two
   .collapsed
     transform_matrix(.0001,.0001,0,1,0,0)
   .img
+    z-index 100
     img,.color
+      position relative
       height 100%
       width 100%
+  .qr
+    z-index 200
+  .line
+    z-index 201
 
 
 
@@ -528,12 +534,6 @@ h1.two
     img
       margin-top 2px
       margin-left 1px
-  .img
-    z-index 100
-  .qr
-    z-index 200
-  .line
-    z-index 201
 
 .card.preview
   margin-top 28px

@@ -1452,7 +1452,7 @@ $ ->
         #
         $editor.find('.close_button,.resize_button').remove()
         #
-        $active_lines.add($active_image).each (i) ->
+        $active_lines.add($active_image).add($active_qr).each (i) ->
           $active_line = $ this
           #
           #
@@ -1472,6 +1472,8 @@ $ ->
           $close_button.click ->
             $close_button.remove()
             $active_line.remove()
+            #
+            theme_modified()
           #
           $active_line.data '$close_button', $close_button
           #
