@@ -1453,6 +1453,11 @@ $ ->
         #
         #
         #
+        side_text = $front_back.filter('.active').html().toLowerCase()
+        side = 0
+        if side_text is 'back'
+          side = 1
+        #
         #
         $editor.find('.close_button,.resize_button').remove()
         #
@@ -1789,9 +1794,12 @@ $ ->
           #
           #
           #
+          # --------------------------------------------------------------------------------
+          # Style
+          # --------------------------------------------------------------------------------
           qr_style = 'round'
           for item in active_theme.items
-            if item.type is 'qr'
+            if item.type is 'qr' and item.side is side
               qr_style = item.style
           #
           #
@@ -1803,7 +1811,7 @@ $ ->
             #
             #
             for item,item_i in active_theme.items
-              if item.type is 'qr'
+              if item.type is 'qr' and item.side is side
                 #
                 active_theme.items[item_i].qr_style = $q_s.attr 'qr_style'
                 #
@@ -1815,11 +1823,14 @@ $ ->
           #
           #
           #
+          # --------------------------------------------------------------------------------
+          # Opacity
+          # --------------------------------------------------------------------------------
+          src = $active_qr.attr 'src'
+          attributes = src.split /\//
+          attributes = _(attributes).compact()
           #
-          color_2_opacity = 0
-          for item in active_theme.items
-            if item.type is 'qr'
-              color_2_opacity = item.color_2_opacity
+          color_2_opacity = parseInt(attributes[2].substr(6,2),16)/255
           #
           $color_2_opacity.unbind('change')
           #
@@ -1833,7 +1844,7 @@ $ ->
             color_2_opacity = $color_2_opacity.val()/100
             #
             for item,item_i in active_theme.items
-              if item.type is 'qr'
+              if item.type is 'qr' and item.side is side
                 #
                 active_theme.items[item_i].color_2_opacity = color_2_opacity
                 #
@@ -1888,7 +1899,7 @@ $ ->
           if $active_qr.length
             #
             for item in active_theme.items
-              if item.type is 'qr'
+              if item.type is 'qr' and item.side is side
                 if i is 0
                   $color_picker.css
                     background: '#' + item.color
@@ -1929,7 +1940,7 @@ $ ->
                   #
                   #
                   for item,item_i in active_theme.items
-                    if item.type is 'qr'
+                    if item.type is 'qr' and item.side is side
                       if i is 0
                         active_theme.items[item_i].color = new_color
                         item.color = new_color
