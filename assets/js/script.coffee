@@ -1505,6 +1505,8 @@ $ ->
             l = x - editor_offset.left
             t = y - editor_offset.top
             #
+            $color_or_img = $active_line.find 'img:visible,.color:visible'
+            #
             #
             position = $active_line.data 'position'
             width = $active_line.width()
@@ -1522,23 +1524,35 @@ $ ->
               moved_x = x - x_2
               moved_y = y - y_2
               #
-              to_change = moved_y
-              #
-              n_h = height - to_change
-              n_w = n_h * width / height
               #
               #
-              #
-              if n_h > max_h
-                n_h = max_h
-                n_w = max_h * width / height
-              #
-              #
-              if n_w > max_w
-                n_w = max_w
-                n_h = max_w * height / width
-              #
-              #
+              if $color_or_img.length and $color_or_img.hasClass 'color'
+                #
+                # Resize any way you want
+                to_change = moved_y
+                #
+                n_h = height - moved_y
+                n_w = width - moved_x
+                #
+                n_h = max_h if n_h > max_h
+                n_w = max_w if n_w > max_w
+                #
+              else
+                #
+                # Resize and maintain aspect ratio version
+                to_change = moved_y
+                #
+                n_h = height - to_change
+                n_w = n_h * width / height
+                #
+                if n_h > max_h
+                  n_h = max_h
+                  n_w = max_h * width / height
+                if n_w > max_w
+                  n_w = max_w
+                  n_h = max_w * height / width
+                #
+                #
               ###
               n_l = min_l if n_l < min_l
               n_t = min_t if n_t < min_t
