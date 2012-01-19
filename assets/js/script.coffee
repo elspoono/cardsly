@@ -3496,16 +3496,16 @@ $ ->
                 $right_buffer = $background_only.clone().css
                   width: '.125in'
                   overflow: 'hidden'
-                $right_buffer.find('.img').each ->
-                  $img = $ this
-                  c_l = parseInt $img.css 'left'
-                  $img.css
-                    left: (c_l - 3.375) + 'in'
                 #
                 #
                 $left_buffer = $background_only.clone().css
                   width: '.125in'
                   overflow: 'hidden'
+                $left_buffer.find('.img').each ->
+                  $img = $ this
+                  c_l = parseInt $img.css 'left'
+                  $img.css
+                    left: (c_l - 3.375) + 'in'
                 #
                 #
                 #
