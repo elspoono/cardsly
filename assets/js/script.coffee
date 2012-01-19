@@ -2238,6 +2238,7 @@ $ ->
           left: 387
         #
         new_active()
+        add_remove_focus_event()
         #
         theme_modified()
         #
