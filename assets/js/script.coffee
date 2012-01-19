@@ -1118,8 +1118,9 @@ $ ->
     #
     get_hex_color = (in_color) ->
       if in_color.match /rgb/
-        digits = in_color.match /\((\d+), (\d+), (\d+)\)/
-        in_color = rgb_to_hex digits[1], digits[2], digits[3]
+        digits = in_color.match /\((\d+), (\d+), (\d+)(\)|,)/
+        if digits
+          in_color = rgb_to_hex digits[1], digits[2], digits[3]
       #
       #
       in_color.replace /#/, ''
