@@ -241,6 +241,13 @@ $.create_card_from_theme = (options) ->
     $my_qr.hide()
     img_i = 0
     line_i = 0
+    qr_i = 0
+    #
+    #
+    #
+    #
+    #
+    #
     #
     #
     for item in theme.items
@@ -295,6 +302,7 @@ $.create_card_from_theme = (options) ->
             left: item.x/100 * settings.width + settings.units
           #
           #
+          qr_i++
         #
         #
         #
@@ -326,11 +334,7 @@ $.create_card_from_theme = (options) ->
           #
           line_i++
     #
-    # Set the card background
-    $my_card.css
-      background: '#FFF'
-      height: settings.height + settings.units
-      width: settings.width + settings.units
+    #
     # ----------------------------------------------
     # END Images
     # ----------------------------------------------
@@ -1472,8 +1476,14 @@ $ ->
           $close_button.click ->
             $close_button.remove()
             $active_line.remove()
+            $editor.find('.resize_button').remove()
             #
             theme_modified()
+            #
+            #
+            if $editor.find('.qr:visible').length then $add_qr.hide() else $add_qr.show()
+            #
+            #
           #
           $active_line.data '$close_button', $close_button
           #
@@ -2208,6 +2218,31 @@ $ ->
     #
     #
     #
+    $add_qr = $home_designer.find '.add_qr'
+    $add_qr.click ->
+      setTimeout ->
+        #
+        $my_card = $editor.find '.fg:visible,.bg:visible'
+        #
+        $my_qr = $ '<img class="qr active" />'
+        $my_card.append $my_qr
+        #
+        #
+        $my_qr.attr 'src', '/qr/000000/FFFFFFFF/round/1?cards.ly'
+        #
+        $my_qr.show().css
+          height: 129
+          width: 130
+          position: 'absolute'
+          top: 62
+          left: 387
+        #
+        new_active()
+        #
+        theme_modified()
+        #
+        $add_qr.hide()
+    #
     $add_image = $home_designer.find '.add_image'
     $add_image.click ->
       #
@@ -2313,6 +2348,7 @@ $ ->
         #
       , 0
     #
+    #
     $front_back = $ '.front_back .option'
     $front_back.click ->
       $f_b = $ this
@@ -2328,11 +2364,11 @@ $ ->
         #
         #$thumbs.filter('.active').click()
         #
-        side = $f_b.html().toLowerCase()
+        side_text = $f_b.html().toLowerCase()
         #
         $front_back.each ->
           $f_b = $ this
-          if $f_b.html().toLowerCase() is side
+          if $f_b.html().toLowerCase() is side_text
             $f_b.make_active()
         #
         #
@@ -2342,8 +2378,10 @@ $ ->
         #
         $first = $fg
         $second = $bg
+        side = 1
         #
-        if side is 'front'
+        if side_text is 'front'
+          side = 0
           $first = $bg
           $second = $fg
         #
@@ -2358,6 +2396,11 @@ $ ->
           setTimeout ->
             $second.removeClass 'collapsed2'
           , 0
+          #
+          #
+          if $editor.find('.qr:visible').length then $add_qr.hide() else $add_qr.show()
+          #
+          #
         , 500
         #
         #
@@ -2474,6 +2517,8 @@ $ ->
                 #
                 card_loaded()
                 #
+                #
+                if $editor.find('.qr:visible').length then $add_qr.hide() else $add_qr.show()
                 #
                 #
                 order.active_theme_id = id
