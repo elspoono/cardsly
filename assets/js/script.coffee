@@ -690,28 +690,38 @@ $ ->
   #
   # Watch the popup windows every 200ms for when they set a cookie
   monitor_for_complete = (e, opened_window) ->
-    $.cookie 'success_login', null
-    checkTimer = setInterval ->
-      if $.cookie 'success_login'
-        $.cookie 'success_login', null
-        window.focus()
-        opened_window.close()
-        #
-        #
-        #
-        #
-        $target = $ e.target
-        #
-        #
-        if $target.closest('.navigation').length
+    $.load_loading {}, (loading_close) ->
+      $.cookie 'success_login', null
+      checkTimer = setInterval ->
+        if $.cookie 'success_login'
+          $.cookie 'success_login', null
+          window.focus()
+          opened_window.close()
           #
-          document.location.href = '/cards'
           #
-        else
-          $.load_loading {}, (loading_close) ->
-            $.ajax
-              url: '/get-user'
-              success: (response) ->
+          #
+          $.ajax
+            url: '/get-user'
+            success: (response) ->
+              #
+              if response and response.user
+                their_name = response.user.name
+                their_name = response.user.email unless their_name
+                _gaq.push ['_setCustomVar', 1, 'Name', their_name, 1]
+                _gaq.push ['_trackPageview', '/login']
+              #
+              #
+              $target = $ e.target
+              #
+              #
+              if $target.closest('.navigation').length
+                #
+                setTimeout ->
+                  document.location.href = '/cards'
+                , 100
+                #
+              else
+                #
                 loading_close()
                 if response.err
                   $.load_alert
@@ -734,16 +744,15 @@ $ ->
                   #
                   #
                   $('.navigation .login .trigger a').remove()
-
-                #
-                #
-              error: (err) ->
-                loading_close()
-                $.load_alert
-                  content: 'Our apologies. A server error occurred.'
-        #
-        #
-        #
+              #
+              #
+            error: (err) ->
+              loading_close()
+              $.load_alert
+                content: 'Our apologies. A server error occurred.'
+          #
+          #
+          #
     ,200
   #
   # Specific Socials Setup
