@@ -3040,7 +3040,7 @@ render_image = (o) ->
                 y = item.y/100*o.height
                 w = item.w/100*o.width
                 #
-                if item.type is 'qr'
+                if item.type is 'qr' and item.qr_img
                   #
                   ctx.drawImage item.qr_img, item.x/100*o.width,item.y/100*o.height, item.w/100*o.width, item.h/100*o.height
           #
@@ -3108,7 +3108,7 @@ render_image = (o) ->
           #
           if item.side*1 is o.side*1
             #
-            if item.type is 'qr'
+            if item.type is 'qr' and o.url
               #
               #
               alpha = Math.round(item.color_2_opacity * 255).toString 16
@@ -3322,6 +3322,28 @@ app.get '/test/:theme_id', (req, res, next) ->
     theme_id: req.params.theme_id
     side: 0
     url: url
+#
+#
+app.get '/render_no_qr/:order_id', (req, res, next) ->
+  #
+  height = 600
+  width = 1050
+  widthheight = 'raw'
+  #
+  mongo_order.findById req.params.order_id, (err, order) ->
+    #
+    #
+    console.log order
+    #
+    render_image
+      res: res
+      widthheight: widthheight
+      width: width
+      height: height
+      theme_id: order.theme_id
+      values: order.values
+      active_view: order.active_view
+      url: null
 #
 #
 #
