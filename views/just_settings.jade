@@ -9,28 +9,28 @@
         .button_show Show Help
         .dialog.right.two
           .text Email Address
+        .dialog.right.five
+          .text A Website
     .top
       .center_column
         h1.two 
-          .one Get Alerts
-          .two Learn who scanned your cards
+          .one Settings
+          .two Set links and adjust notifications
         .images
           img.text(src='/images/icons/alert_333333.png')
+  .clear
+  .mid_spacer
   .mid
     .center_column
       .set_alerts
         .row_bg
         .row_content
           .field
-            h2 Contact Info
+            h2 Login
           .clear
           .field
-            if req.settings_page
-              p Change settings here.
-            else
-              p Please register your e-mail address here.
-              p Phone number optional.
-              p Turn automatic alerts on or off at anytime.
+            p We will send your order confirmation to this email address.
+            p You may use a social network for login instead.
           .field
             .input
               label E-mail
@@ -39,21 +39,12 @@
             .clear
             .spacer
             .input
-              label Phone
-              input.order_phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
-              .symbol
-            .clear
-            .spacer
-            .input
-              label Alerts
-              .toggle.order_alerts
-                .bg
-                  .option.active Off
-                  .option Emails
-                  .option Texts
-                  .option Both
-      .clear
-    .clear
+              label &nbsp;
+              ul.social_links
+                li.facebook F
+                li.twitter.shift t
+                li.linkedin l
+                li.google g
   .clear
   .mid_spacer
   .mid
@@ -62,33 +53,45 @@
         .row_bg
         .row_content
           .field
-            h2 Set Links
+            h2 Link
           .clear
           .field
-            if req.settings_page
-              p Change settings here.
-            else
-              p Use a social network to login.
-              p Login to cardsly to update this url anytime.
+            p Where they go, when they scan.
           .field
             .link_editor
-              .input
-                label Login
-                ul.social_links
-                  li.facebook F
-                  li.twitter.shift t
-                  li.linkedin l
-                  li.google g
-              .clear
-              .mid_spacer
               .input
                 label URL
                 input.set_link.required(placeholder='mysite.com',pattern='.+\\..+')
                 .symbol *
             .link_items
-            .clear
+  .clear
+  .mid_spacer
+  .mid
+    .center_column
+      .set_alerts
+        .row_bg
+        .row_content
+          .field
+            h2 Alert
           .clear
-        .clear
+          .field
+            p When they scan, we can send you an email or an SMS text message indicating which specific card was scanned.
+          .field
+            .input
+              label Send To
+              .toggle.order_alerts
+                .bg
+                  .option.active(alerts='off') None
+                  .option(alerts='emails') Email
+                  .option(alerts='texts') Phone
+            .clear
+            .spacer
+            .input
+              label Phone
+              input.order_phone.optional(placeholder='555 555 5555',pattern='.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*')
+              .symbol
+            .clear
+            .spacer
       .clear
     .clear
   .clear

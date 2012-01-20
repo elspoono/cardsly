@@ -2595,7 +2595,7 @@ $ ->
       $o_a.make_active()
       #
       #
-      order.alerts = $o_a.html().toLowerCase()
+      order.alerts = $o_a.attr 'alerts'
       $.ajax
         url: '/save-order'
         data: JSON.stringify order
@@ -2780,7 +2780,8 @@ $ ->
         if order.alerts
           $order_alerts.each ->
             $o_a = $ this
-            if $o_a.html().toLowerCase() is order.alerts
+            console.log $o_a.attr('alerts')
+            if $o_a.attr('alerts') is order.alerts
               $o_a.make_active()
         #
         #
