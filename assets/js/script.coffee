@@ -1018,7 +1018,7 @@ $ ->
     #
     #
     #
-    $design_now = $ '.design_now'
+    $design_now = $ '.design_now,.create_now_alt'
     #
     $design_now.click ->
       $body.scrollTo $home_designer,

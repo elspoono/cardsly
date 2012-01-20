@@ -3443,23 +3443,23 @@ app.get '/home3', get_url_groups, (req, res) ->
 #
 #
 # Real Index Page
-app.get '/talking', get_url_groups, (req, res) -> 
+app.get '/create', get_url_groups, (req, res) -> 
   #
   #
   #
-  res.render 'home'
+  res.render 'create'
     req: req
     abtest: 4
     #
     # Cut off at 60 characters 
     #
-    title: 'Cardsly | Create and buy QR code business cards you control'
+    title: 'Cardsly | Create QR Code business cards'
     # Cut off at 140 to 150 characters
     #
-    description: 'Design and create your own QR code business cards. See analytics and update links anytime in the Cardsly dashboard.'
+    description: 'Create your own QR code business cards with pretty QR codes. Free shipping, 2 sides and you can update the url anytime. Do more with cards.ly.'
     #
     # Uncomment the following line to add a custom h1 tag!
-    h1: 'Talking business cards send you Email Alerts'
+    #h1: 'Talking business cards send you Email Alerts'
     #
     # (Uncomment means remove the single # character at the start of it :)
     #
