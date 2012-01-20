@@ -2789,7 +2789,7 @@ $ ->
         if order.alerts
           $order_alerts.each ->
             $o_a = $ this
-            console.log $o_a.attr('alerts')
+            #console.log $o_a.attr('alerts')
             if $o_a.attr('alerts') is order.alerts
               $o_a.make_active()
         #
