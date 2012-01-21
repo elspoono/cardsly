@@ -262,9 +262,7 @@ $.create_card_from_theme = (options) ->
         width: settings.width + settings.units
         height: settings.height + settings.units
       #
-      console.log $img
     #
-    console.log settings.order_id
     #
     #
     #
