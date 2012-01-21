@@ -54,13 +54,20 @@ html
     
 
     != js('script')
+    script
+      setTimeout(function(){
+        var a=document.createElement("script");
+        var b=document.getElementsByTagName('script')[0];
+        a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0012/1101.js?"+Math.floor(new Date().getTime()/3600000);
+        a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b);
+      }, 1);
     //if lt IE 7
       != js('libs/json2.js')
     script(src='https://js.stripe.com/v1/')
     script(src='//www.google.com/jsapi')
     script
       google.load("webfont", "1");
-    //if IE lt 9
+    //if lt IE 9
       != css('ie')
       != js('libs/PIE.js')
     #fb-root
@@ -72,8 +79,3 @@ html
         js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=292309860797409";
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
-    script
-      setTimeout(function(){var a=document.createElement("script");
-      var b=document.getElementsByTagName('script')[0];
-      a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0012/1101.js?"+Math.floor(new Date().getTime()/3600000);
-      a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
