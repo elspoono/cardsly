@@ -3470,6 +3470,27 @@ app.get '/create', get_url_groups, (req, res) ->
 #
 #
 #
+# Real Index Page
+app.get '/moo', (req, res) -> 
+  #
+  #
+  #
+  res.render 'moo'
+    req: req
+    abtest: 4
+    #
+    # Cut off at 60 characters 
+    #
+    title: 'Cardsly | Create QR Code business cards'
+    # Cut off at 140 to 150 characters
+    #
+    description: 'Create your own QR code business cards with pretty QR codes. Free shipping, 2 sides and you can update the url anytime. Do more with cards.ly.'
+    
+#
+#
+#
+#
+#
 #
 #
 #
