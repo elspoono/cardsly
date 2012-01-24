@@ -2881,6 +2881,7 @@ app.get '/settings', secured_page,  (req, res, next) ->
 #
 #
 app.get '/admin', secured_page_admin,  (req, res, next) ->
+  req.admin_page = true
   res.render 'admin',
     req: req
 #

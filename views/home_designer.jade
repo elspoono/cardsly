@@ -46,6 +46,14 @@
               .button.show_themes
                 span Card Designs >
           .clear
+          if req.admin_page
+            .mid_spacer
+            .button.delete_card
+              span Delete Card -
+            .clear
+            .spacer
+            .button.add_card
+              span New Card +
         .right
           .controls
             .areas

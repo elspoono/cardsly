@@ -2387,6 +2387,40 @@ $ ->
       , 0
     #
     #
+    $delete_card = $ '.delete_card'
+    $add_card = $ '.add_card'
+    #
+    $delete_card.click ->
+      #
+      $.load_modal
+        content: '<p>Are you sure?</p>'
+        buttons: [
+          action: (close) ->
+              active_theme.active = false
+              #
+              $.ajax
+                url: '/save-theme'
+                data: JSON.stringify active_theme
+              #
+              $themes.find('.thumb.active').remove()
+              #
+              $themes.find('.thumb:first').click()
+              #
+              close()
+              #
+          label: 'Yes'
+        ,
+          action: (close) -> 
+            close()
+          label: 'No'
+          class: 'gray'
+        ]
+      #
+    #
+    $add_card.click ->
+      $.load_alert
+        content: '<p>Not working yet.</p>'
+    #
     $front_back = $ '.front_back .option'
     $front_back.click ->
       $f_b = $ this
