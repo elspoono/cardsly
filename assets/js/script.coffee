@@ -996,10 +996,7 @@ $ ->
     #
     order =
       show_help: true
-    #
-    #
-    #s
-    order.active_theme_id = '4ec3fb7b3bf1fc0100000042'
+      active_theme_id: '4ec3fb7b3bf1fc0100000042'
     #
     #
     $all_card = $ '.card'
@@ -2535,6 +2532,8 @@ $ ->
           , ->
             $(this).removeClass 'hover'
           #
+          first_thumb_clicked_already = false
+          #
           $thumbs.live 'click', ->
             #
             #
@@ -2607,9 +2606,12 @@ $ ->
                 order.active_theme_id = id
                 #
                 # And save it
-                $.ajax
-                  url: '/save-order'
-                  data: JSON.stringify order
+                if first_thumb_clicked_already
+                  $.ajax
+                    url: '/save-order'
+                    data: JSON.stringify order
+                #
+                first_thumb_clicked_already = true
             #
             #
             #console.log id
