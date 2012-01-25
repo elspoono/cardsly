@@ -534,6 +534,7 @@ order_schema = new schema
   latitude: String
   longitude: String
   conversion_saved: Boolean
+  show_help: Boolean
   quantity: Number # number of cards
   amount: Number # cost of order
   email: String

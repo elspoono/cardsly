@@ -994,7 +994,8 @@ $ ->
   if $home_designer.length
     #
     #
-    order = {}
+    order =
+      show_help: true
     #
     #
     #s
@@ -1035,23 +1036,33 @@ $ ->
     $help_show = $help_overlays.find '.button_show'
     #
     help_visible = true
+    #
+    hide_help = ->
+      $help_bg.hide()
+      $help_show.show()
+      $help_overlays.removeClass 'active'
+      help_visible = false
+    #
     $help_overlays.each ->
       $h_o = $ this
       #
       if document.location.href.match '/settings'
-        $help_bg.hide()
-        $help_show.show()
-        $help_overlays.removeClass 'active'
-        help_visible = false
-        #
+        hide_help()
       #
       $h_o.click (e) ->
         #
         if help_visible
-          $help_bg.hide()
-          $help_show.show()
-          $help_overlays.removeClass 'active'
-          help_visible = false
+          #
+          if order.show_help
+            #
+            order.show_help = false
+            $.ajax
+              url: '/save-order'
+              data: JSON.stringify order
+            #
+            #
+          #
+          hide_help()
           #
           $e = $ e.target
           if $e.closest('.row').hasClass 'home_designer'
@@ -2819,6 +2830,9 @@ $ ->
           #
           order = results.order
           #
+        #
+        if !order.show_help
+          hide_help()
         #
         if order.quantity
           $a_q = $quantity.filter('[cards='+order.quantity+']')
